@@ -6,9 +6,33 @@ const CategorySection = ({ category, backgroundColor, items }) => {
         {items.map((item, index) => (
           <div key={index}>
             <p className="subheading text-2xl">{item.title}</p>
-            <a href={item.link} target="_blank" rel="noreferrer">
+            {item.subtitle && <p className="text-lg -mt-2 pb-4">{item.subtitle}</p>}
+            <a
+              href={item.link || item.links[0]}
+              target="_blank"
+              rel="noreferrer"
+            >
               <button className="button1">Download</button>
             </a>
+            {item.links && (
+              <div>
+                {/* start this loop from second index */}
+                {item.links.slice(1).map((link, index) => (
+                  <>
+                    <a
+                      key={index}
+                      href={link}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "red", textDecoration: "underline" }}
+                    >
+                      Link {index + 2}
+                    </a>
+                    {index !== item.links.length - 2 && ", "}
+                  </>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>
