@@ -1,0 +1,54 @@
+@media screen and (max-width: 900px) {
+  .welcomeimg {
+    background: url("/images/home.jpg") no-repeat center;
+    background-size: cover;
+    height: 550px;
+    position: relative;
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+  }
+
+  .centered {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+  }
+
+  .heroText {
+    text-align: center;
+    color: black;
+  }
+
+  .welcomeimgpc {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .heroText {
+    text-align: center;
+    padding-left: 10%;
+    /* isolation: unset; */
+    color: rgb(255, 50, 0);
+  }
+
+  .welcomepc {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+    padding: 5%;
+  }
+}
+
+.heroText {
+  font-weight: 500;
+}
+
+.thumbnailImg {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
