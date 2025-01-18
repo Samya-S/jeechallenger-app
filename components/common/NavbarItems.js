@@ -10,23 +10,23 @@ const NavbarItems = [
     items: [
       {
         title: 'Physics PDFs',
-        url: 'materials/physics'
+        url: '/materials/physics'
       },
       {
         title: 'Chemistry PDFs',
-        url: 'materials/chemistry'
+        url: '/materials/chemistry'
       },
       {
         title: 'Mathematics PDFs',
-        url: 'materials/mathematics'
+        url: '/materials/mathematics'
       },
       {
         title: 'Chapterwise solved PYQs',
-        url: 'materials/chapterwise-solved-pyqs'
+        url: '/materials/chapterwise-solved-pyqs'
       },
       {
         title: 'More study materials',
-        url: 'materials/more-study-materials'
+        url: '/materials/more-study-materials'
       }
     ]
   },
@@ -36,11 +36,11 @@ const NavbarItems = [
     items: [
       {
         title: 'JEE Main',
-        url: 'official-links/jee-main'
+        url: '/official-links/jee-main'
       },
       {
         title: 'JEE Advanced',
-        url: 'official-links/jee-advanced'
+        url: '/official-links/jee-advanced'
       }
     ]
   },
@@ -50,15 +50,15 @@ const NavbarItems = [
     items: [
       {
         title: 'Unacademy',
-        url: 'more-platforms/unacademy'
+        url: '/more-platforms/unacademy'
       },
       {
         title: 'Apni Kaksha',
-        url: 'more-platforms/apnikaksha'
+        url: '/more-platforms/apnikaksha'
       },
       {
         title: 'Physics Wallah',
-        url: 'more-platforms/physicswallah'
+        url: '/more-platforms/physicswallah'
       }
     ]
   }
