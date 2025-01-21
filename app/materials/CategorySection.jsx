@@ -17,19 +17,18 @@ const CategorySection = ({ category, backgroundColor, items }) => {
             {item.links && (
               <div>
                 {/* start this loop from second index */}
-                {item.links.slice(1).map((link, index) => (
-                  <>
+                {item.links.slice(1).map((link, linkIndex) => (
+                  <span key={`${index}-${linkIndex}`}>
                     <a
-                      key={index}
                       href={link}
                       target="_blank"
                       rel="noreferrer"
                       style={{ color: "red", textDecoration: "underline" }}
                     >
-                      Link {index + 2}
+                      Link {linkIndex + 2}
                     </a>
-                    {index !== item.links.length - 2 && ", "}
-                  </>
+                    {linkIndex !== item.links.length - 2 && ", "}
+                  </span>
                 ))}
               </div>
             )}
