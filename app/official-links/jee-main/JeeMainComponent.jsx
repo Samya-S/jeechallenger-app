@@ -65,11 +65,11 @@ const JeeMainComponent = () => {
         </div>
       </div>
 
-      <div id="toggle-show-hide-id-2020" style={{ display: 'none', padding: '2%', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
+      <div id="toggle-show-hide-id-2020" className="px-5 py-10" style={{ display: 'none', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
         <JeeMain2020papers />
       </div>
 
-      <div id="toggle-show-hide-id-2022" style={{ display: 'none', padding: '2%', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
+      <div id="toggle-show-hide-id-2022" className="px-5 py-10" style={{ display: 'none', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
         <JeeMain2022papers />
       </div>
 
