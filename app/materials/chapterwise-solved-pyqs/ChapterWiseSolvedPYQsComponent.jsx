@@ -9,7 +9,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
       <Image
         className="headingimg"
         src="/images/PYQs-banner.png"
-        alt="Mathematics Banner"
+        alt="PYQs Banner"
         width={1920}
         height={1080}
         style={{ width: '100%', boxSizing: 'border-box' }}
