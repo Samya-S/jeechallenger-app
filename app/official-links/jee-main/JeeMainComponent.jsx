@@ -41,21 +41,21 @@ const JeeMainComponent = () => {
       <div className="px-5 py-10">
         <p className="heading text-3xl mb-4">JEE Main Question Papers</p>
         <div className="flex-container">
-          <div className="block">
+          <div className="block2">
             <p className="subheading text-2xl">Question Papers 2022</p>
             <p className="text-lg pb-4">With solutions</p>
             <button className="button1" onClick={toggle_show_hide_Function_2022}>
               Click Here
             </button>
           </div>
-          <div className="block">
+          <div className="block2">
             <p className="subheading text-2xl">Question Papers 2021</p>
             <p className="text-lg pb-4">Booklet by ALLEN</p>
             <a href="https://t.me/c/1655397860/238" target="_blank">
               <button className="button1">Download</button>
             </a>
           </div>
-          <div className="block">
+          <div className="block2">
             <p className="subheading text-2xl">Question Papers 2020</p>
             <p className="text-lg pb-4">With solutions</p>
             <button className="button1" onClick={toggle_show_hide_Function_2020}>

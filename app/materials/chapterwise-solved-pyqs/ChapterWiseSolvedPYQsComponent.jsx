@@ -135,7 +135,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
       <div className="px-5 py-10">
         <p className="heading text-3xl mb-4">JEE Main papers</p>(Chapter-wise solved previous 20 years' JEE Main papers)
         <div className="flex-container">
-          <div className="block">
+          <div>
             <p className="subheading text-2xl">Arihant</p>
             <a
               href="https://t.me/c/1655397860/372"
@@ -149,7 +149,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               <button className="button1">Download</button>
             </a>
           </div>
-          <div className="block">
+          <div>
             <p className="subheading text-2xl">Disha</p>
             <a
               href="https://t.me/c/1655397860/377"
