@@ -83,7 +83,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
 
       <div
         className="px-5 py-10"
-        style={{ backgroundImage: "url('../images/tg-bg.jpg')" }}
+        style={{ backgroundImage: "url('../images/tg-bg.webp')" }}
       >
         <p className="subheading text-2xl">
           *Get chapter-wise solved previous 43 years' JEE papers published by Arihant

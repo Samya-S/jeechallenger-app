@@ -29,7 +29,7 @@ const HomeComponent = () => {
           </div>
           <div className={Styles.welcomeimgpc}>
             <Image
-              src="/images/home.jpg"
+              src="/images/home.webp"
               alt="Welcome"
               width={484}
               height={484}
@@ -40,7 +40,7 @@ const HomeComponent = () => {
 
       <div
         className={`bg-gray-200 bg-opacity-30 bg-cover px-5 py-12`}
-        style={{ backgroundImage: "url('/images/tg-bg.jpg')" }}
+        style={{ backgroundImage: "url('/images/tg-bg.webp')" }}
       >
         <div className="flex flex-col items-center justify-center gap-4 pb-8">
           <Image

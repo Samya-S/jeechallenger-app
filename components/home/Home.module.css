@@ -1,6 +1,6 @@
 @media screen and (max-width: 900px) {
   .welcomeimg {
-    background: url("/images/home.jpg") no-repeat center;
+    background: url("/images/home.webp") no-repeat center;
     background-size: cover;
     height: 550px;
     position: relative;

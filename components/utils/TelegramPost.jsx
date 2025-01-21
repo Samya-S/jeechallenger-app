@@ -7,7 +7,7 @@ const TelegramPost = ({ url }) => {
   return (
     <div
       className="px-5 py-10"
-      style={{ backgroundImage: "url('../images/tg-bg.jpg')" }}
+      style={{ backgroundImage: "url('../images/tg-bg.webp')" }}
     >
       <p className="heading text-4xl pb-4 !font-[500]">More from our Telegram Channel</p>
       <h3 className="pb-4" style={{ fontWeight: 'normal' }}>
