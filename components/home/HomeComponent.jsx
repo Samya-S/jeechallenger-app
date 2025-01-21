@@ -272,6 +272,7 @@ const HomeComponent = () => {
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            loading="lazy"
           ></iframe>
         </div>
         <p className="subheading text-2xl">Guide to ISI website</p>
