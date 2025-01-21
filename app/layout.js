@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="preload" href="/images/home-blur.webp" as="image" media="(max-width: 900px)" />
+        <link rel="preload" href="/images/home.webp" as="image" media="(max-width: 900px)" />
       </head>
       <body
         className={`antialiased`}
