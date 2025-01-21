@@ -264,16 +264,41 @@ const HomeComponent = () => {
         <p className="subheading text-2xl">
           This is for you <span className="darkmode-ignore">👇</span>
         </p>
-        <div className="video-container">
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/6Ebb-oe2IUc"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            loading="lazy"
-          ></iframe>
+        <div
+          className="video-container"
+          style={{
+            position: "relative",
+            paddingBottom: "56.25%",
+            height: 0,
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="https://img.youtube.com/vi/6Ebb-oe2IUc/maxresdefault.jpg"
+            alt="YouTube Video Thumbnail"
+            className="lazy-facade"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              const container = document.querySelector(".video-container");
+              container.innerHTML = `
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/6Ebb-oe2IUc?autoplay=1"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"
+                ></iframe>`;
+            }}
+          />
         </div>
         <p className="subheading text-2xl">Guide to ISI website</p>
         <Link href="https://samya-s.github.io/guidetoisi/" target="_blank">
