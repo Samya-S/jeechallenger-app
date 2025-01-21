@@ -1,4 +1,5 @@
 "use client";
+import TelegramPost from '@/components/utils/TelegramPost';
 import JeeMain2020papers from './JeeMain2020papers';
 import JeeMain2022papers from './JeeMain2022papers';
 
@@ -6,25 +7,25 @@ const JeeMainComponent = () => {
   const toggle_show_hide_Function_2020 = () => {
     const element2020 = document.getElementById("toggle-show-hide-id-2020");
     const element2022 = document.getElementById("toggle-show-hide-id-2022");
-    
+
     // Hide 2022 first
     element2022.style.display = "none";
-    
+
     // Toggle visibility of 2020
     element2020.style.display = element2020.style.display === "none" ? "block" : "none";
   };
-  
+
   const toggle_show_hide_Function_2022 = () => {
     const element2020 = document.getElementById("toggle-show-hide-id-2020");
     const element2022 = document.getElementById("toggle-show-hide-id-2022");
-  
+
     // Hide 2020 first
     element2020.style.display = "none";
-  
+
     // Toggle visibility of 2022
     element2022.style.display = element2022.style.display === "none" ? "block" : "none";
   };
-  
+
   return (
     <div>
       {/* to add proper spacing for navbar */}
@@ -71,6 +72,8 @@ const JeeMainComponent = () => {
       <div id="toggle-show-hide-id-2022" style={{ display: 'none', padding: '2%', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
         <JeeMain2022papers />
       </div>
+
+      <TelegramPost url="jeechallengerindex/10" />
     </div>
   );
 }
