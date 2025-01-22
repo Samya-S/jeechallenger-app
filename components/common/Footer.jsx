@@ -1,24 +1,53 @@
 "use client";
-import Styles from './Footer.module.css';
+import Link from "next/link";
+import { FaTelegram } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className={Styles.footer}>
-      Copyright © 2020-{new Date().getFullYear() % 100} &nbsp;
-      <i style={{ fontWeight: 500 }}>Samya Saha</i>
-      <br />
-      - All Rights Reserved.
-      <br />
-      <br />
+    <footer
+      style={{
+        textAlign: "center",
+        position: "relative",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: "2rem",
+        backgroundColor: "rgba(128, 128, 128, 0.15)" /* gray with 25% opacity */
+      }}
+    >
+      <Link
+        href="https://t.me/+oOnj4y_ZYqYyZjA1"
+        target="_blank"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#2e87ca',
+          textDecoration: 'none',
+          fontSize: '1rem',
+          fontWeight: '500',
+          margin: '10px 0',
+        }}
+      >
+        Join us on Telegram
+        <FaTelegram style={{ marginLeft: '5px', fontSize: '1.5rem' }} />
+      </Link>
+      <div className="my-6">
+        <p>
+          Copyright © 2020-{new Date().getFullYear() % 100}{" "}
+          <i style={{ fontWeight: 450 }}>Samya Saha</i>
+        </p>
+        <p>- All Rights Reserved.</p>
+      </div>
       <p className="text-xs">
         View the source code on{' '}
-        <a
+        <Link
           href="https://github.com/Samya-S/jeechallenger-2.0"
           target="_blank"
           style={{ color: '#0056b3', textDecoration: 'underline', isolation: 'unset' }}
         >
           GitHub
-        </a>
+        </Link>
       </p>
     </footer>
   );
