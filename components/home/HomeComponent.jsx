@@ -4,12 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef } from "react";
 
-// import { YouTubeEmbed } from '@next/third-parties/google'
-import dynamic from 'next/dynamic';
-
-const YouTubeEmbed = dynamic(() =>
-  import('@next/third-parties/google').then((mod) => mod.YouTubeEmbed), { ssr: false }
-);
+import { YouTubeEmbed } from '@next/third-parties/google'
+// import dynamic from 'next/dynamic';
+// const YouTubeEmbed = dynamic(() =>
+//   import('@next/third-parties/google').then((mod) => mod.YouTubeEmbed), { ssr: false }
+// );
 
 const HomeComponent = () => {
   const marqueeRef = useRef(null);
@@ -176,7 +175,7 @@ const HomeComponent = () => {
               height={540}
             />
             <p className="py-4">
-              This is a link to the Official Website of NCERT from where you can get NCERT text books in form of PDF
+              Visit the Official Website of NCERT from where you can get NCERT text books in form of PDF
             </p>
             <Link href="https://ncert.nic.in/textbook.php" target="_blank" aria-label="Get official NCERT textbooks in PDF format">
               <button className="button1">Go</button>
