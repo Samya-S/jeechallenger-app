@@ -11,7 +11,7 @@ const Footer = () => {
       <br />
       <br />
       <p className="text-xs">
-        Access the source code on{' '}
+        View the source code on{' '}
         <a
           href="https://github.com/Samya-S/jeechallenger-2.0"
           target="_blank"
