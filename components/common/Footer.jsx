@@ -18,13 +18,13 @@ const Footer = () => {
       <br />
       <br />
       <p className="text-xs">
-        Source code available on Github:{' '}
+        Access the source code on{' '}
         <a
           href="https://github.com/Samya-S/jeechallenger-2.0"
           target="_blank"
-          style={{ color: 'blue', textDecoration: 'none', isolation: 'unset' }}
+          style={{ color: '#0056b3', textDecoration: 'underline', isolation: 'unset' }}
         >
-          Click here
+          GitHub
         </a>
       </p>
     </footer>
