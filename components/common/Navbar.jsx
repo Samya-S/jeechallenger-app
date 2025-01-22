@@ -87,7 +87,11 @@ export default function NavBar() {
       {/* End of Desktop Navigation */}
 
       {/* Mobile Navigation */}
-      <button className={Styles.hamburger} onClick={toggleMobileNav}>
+      <button
+        className={Styles.hamburger}
+        onClick={toggleMobileNav}
+        aria-label={showMobileNav ? 'Close navigation menu' : 'Open navigation menu'}
+      >
         <div className={Styles.hamburgerIcon}>
           <FaBars style={{ opacity: showMobileNav ? 0 : 1 }} />
           <FaTimes style={{ opacity: showMobileNav ? 1 : 0, color: 'white' }} />
