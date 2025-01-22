@@ -3,6 +3,7 @@ import Styles from "./Home.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRef } from "react";
+import { YouTubeEmbed } from '@next/third-parties/google'
 
 const HomeComponent = () => {
   const marqueeRef = useRef(null);
@@ -253,45 +254,12 @@ const HomeComponent = () => {
         <p className="subheading text-2xl">
           This is for you <span className="darkmode-ignore">👇</span>
         </p>
-        <div
-          className="video-container"
-          style={{
-            position: "relative",
-            paddingBottom: "56.25%",
-            height: 0,
-            overflow: "hidden",
-          }}
-        >
-          <img
-            src="https://img.youtube.com/vi/6Ebb-oe2IUc/maxresdefault.jpg"
-            alt="YouTube Video Thumbnail"
-            className="lazy-facade"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              const container = document.querySelector(".video-container");
-              container.innerHTML = `
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/6Ebb-oe2IUc?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>`;
-            }}
-          />
+        <div className="max-w-[720px] mx-auto">
+          <YouTubeEmbed videoid="6Ebb-oe2IUc" params="" />
         </div>
         <p className="subheading text-2xl">Guide to ISI website</p>
         <Link href="https://samya-s.github.io/guidetoisi/" target="_blank" aria-label="Visit the Guide to ISI website">
-          <button className="button2">Visit</button>
+          <button className="button2 !px-5 !py-1">Visit</button>
         </Link>
       </div>
     </div>
