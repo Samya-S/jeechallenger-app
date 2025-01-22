@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
+import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 
 export const metadata = {
   title: "JEE Challenger",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
         className={`antialiased`}
       >
         <Navbar />
+        <TelegramJoinFloat />
         {children}
         <Footer />
       </body>
