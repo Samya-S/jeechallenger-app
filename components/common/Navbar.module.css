@@ -1,7 +1,7 @@
 .navbar {
   position: fixed;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(200, 200, 200, 0.5);
   height: 5.5rem;
   padding: 1rem;
   display: flex;
@@ -97,7 +97,7 @@
   position: absolute;
   top: 5.5rem;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(200, 200, 200, 0.5);
   transition: height 0.4s ease-in-out;
   /* backdrop-filter: blur(25px); : not working */
   z-index: 100;

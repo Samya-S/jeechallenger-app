@@ -22,6 +22,19 @@ body {
   z-index: 5;
 }
 
+body.darkmode--activated .navbar {
+  background-color: rgba(0, 0, 0, 0.5); /* Dark background */
+  color: white; /* Dark mode text color */
+}
+
+body.darkmode--activated .navbarLinks li {
+  color: rgb(200, 200, 200); /* text color for links in dark mode */
+}
+
+body.darkmode--activated .columnsDropdownContent {
+  background-color: rgba(0, 0, 0, 0.5); /* Dark background for dropdown */
+}
+
 .thumbnailImg {
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -62,6 +75,7 @@ body {
 }
 
 @media screen and (min-width: 680px) {
+
   .flex-container,
   .flex-container2 {
     flex-wrap: nowrap;
@@ -77,6 +91,7 @@ body {
 }
 
 @media screen and (max-width: 680px) {
+
   .flex-container,
   .flex-container2 {
     flex-wrap: wrap;
@@ -147,17 +162,6 @@ body {
 
 @media screen and (min-width: 680px) {
 
-  .block1,
-  .block2 {
-    /* border: 1px solid black; */
-    /* border-top-right-radius: 20px; */
-    /* border-bottom-right-radius: 20px; */
-    /* border-top-left-radius: 20px; */
-    /* border-bottom-left-radius: 20px; */
-    /* background-color: skyblue; */
-    transition: transform 0.8s;
-  }
-
   .darkmode--activated .block1:hover .subheading,
   .darkmode--activated .block1:hover p,
   .darkmode--activated .block2:hover .subheading,
@@ -171,6 +175,17 @@ body {
   .darkmode--activated .block2:not(:hover) p {
     color: white;
     isolation: isolate;
+  }
+
+  .block1,
+  .block2 {
+    /* border: 1px solid black; */
+    /* border-top-right-radius: 20px; */
+    /* border-bottom-right-radius: 20px; */
+    /* border-top-left-radius: 20px; */
+    /* border-bottom-left-radius: 20px; */
+    /* background-color: skyblue; */
+    transition: transform 0.8s;
   }
 
   .block1:hover {

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^15.1.6",
+    "darkmode-js": "^1.5.7",
     "next": "^15.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

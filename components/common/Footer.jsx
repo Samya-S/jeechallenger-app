@@ -7,10 +7,6 @@ const Footer = () => {
     <footer
       style={{
         textAlign: "center",
-        position: "relative",
-        bottom: 0,
-        left: 0,
-        right: 0,
         padding: "2rem",
         backgroundColor: "rgba(128, 128, 128, 0.15)" /* gray with 25% opacity */
       }}
@@ -32,6 +28,7 @@ const Footer = () => {
         Join us on Telegram
         <FaTelegram style={{ marginLeft: '5px', fontSize: '1.5rem' }} />
       </Link>
+
       <div className="my-6">
         <p>
           Copyright © 2020-{new Date().getFullYear() % 100}{" "}
@@ -39,12 +36,13 @@ const Footer = () => {
         </p>
         <p>- All Rights Reserved.</p>
       </div>
+
       <p className="text-xs">
         View the source code on{' '}
         <Link
           href="https://github.com/Samya-S/jeechallenger-2.0"
           target="_blank"
-          style={{ color: '#0056b3', textDecoration: 'underline', isolation: 'unset' }}
+          style={{ color: "#2e87ca", textDecoration: 'underline' }}
         >
           GitHub
         </Link>

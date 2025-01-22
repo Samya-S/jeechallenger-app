@@ -29,7 +29,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className={`${Styles.navbar}`}>
+    <nav className={`${Styles.navbar} navbar`}>
       {/* Navbar Logo */}
       <div className={Styles.navbarLogo}>
         <Link href="/">JEE Challenger</Link>
@@ -37,7 +37,7 @@ export default function NavBar() {
       {/* End of Navbar Logo */}
 
       {/* Desktop Navigation */}
-      <ul className={Styles.navbarLinks}>
+      <ul className={`${Styles.navbarLinks} navbarLinks`}>
         {NavbarItems.map((item, index) => {
           if (item.type === "link") {
             return (
@@ -71,7 +71,7 @@ export default function NavBar() {
                   </span>
                 </p>
                 <div
-                  className={`${Styles.columnsDropdownContent}`}
+                  className={`${Styles.columnsDropdownContent} columnsDropdownContent`}
                   style={{ height: dropdownState[index] ? 'auto' : '0' }}
                 >
                   <ul>
