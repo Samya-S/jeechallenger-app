@@ -3,7 +3,13 @@ import Styles from "./Home.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRef } from "react";
-import { YouTubeEmbed } from '@next/third-parties/google'
+
+// import { YouTubeEmbed } from '@next/third-parties/google'
+import dynamic from 'next/dynamic';
+
+const YouTubeEmbed = dynamic(() =>
+  import('@next/third-parties/google').then((mod) => mod.YouTubeEmbed), { ssr: false }
+);
 
 const HomeComponent = () => {
   const marqueeRef = useRef(null);
