@@ -311,6 +311,7 @@ a button {
   border-radius: 20em;
   min-width: 60px;
   isolation: isolate;
+  font-weight: 500;
 }
 
 .button1:hover {
@@ -319,6 +320,7 @@ a button {
 
 .button2 {
   background-color: transparent;
+  font-weight: 500;
   font-size: 1.25rem;
   /* 20px */
   line-height: 1.75rem;
@@ -327,7 +329,7 @@ a button {
   padding-right: 4%;
   padding-top: 1%;
   padding-bottom: 1%;
-  border: 0.5px solid rgb(255, 0, 0);
+  border: 2px solid rgb(255, 0, 0);
   color: rgb(255, 0, 0);
   border-radius: 50em;
   isolation: isolate;
@@ -354,7 +356,7 @@ a button {
   padding-right: 4%;
   padding-top: 1%;
   padding-bottom: 1%;
-  border: 0.5px solid #2e87ca;
+  border: 2px solid #2e87ca;
   color: #2e87ca;
   border-radius: 50em;
   isolation: isolate;
@@ -363,6 +365,7 @@ a button {
 .button2_tele a {
   text-decoration: none;
   color: #2e87ca;
+  font-weight: 500;
 }
 
 .button2_tele:hover {

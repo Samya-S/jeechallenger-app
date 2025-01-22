@@ -230,9 +230,8 @@ const MoreMaterialsComponent = () => {
             <button
               className="message"
               style={{
-                fontSize: "25px",
                 padding: "0 15px",
-                border: "0.5px solid rgb(255, 0, 0)",
+                border: "2px solid rgb(255, 0, 0)",
                 backgroundColor: "transparent",
               }}
             >
