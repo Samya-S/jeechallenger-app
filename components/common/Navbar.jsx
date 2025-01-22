@@ -42,7 +42,9 @@ export default function NavBar() {
           if (item.type === "link") {
             return (
               <li key={index} className={Styles.li}>
-                <Link href={item.url}>{item.title}</Link>
+                <Link href={item.url} aria-label={`Go to ${item.title} page`}>
+                  {item.title}
+                </Link>
               </li>
             );
           } else if (item.type === "dropdown") {
@@ -55,6 +57,7 @@ export default function NavBar() {
                   className={Styles.columnsDropdown}
                   onMouseEnter={() => toggleDropdown(index)} // Open on hover
                   onClick={() => toggleDropdown(index)} // Toggle on click
+                  aria-label={`Open dropdown for ${item.title} options`}
                 >
                   {item.title}&nbsp;
                   <span
@@ -74,7 +77,9 @@ export default function NavBar() {
                   <ul>
                     {item.items.map((subitem, subindex) => (
                       <li key={subindex} className={Styles.columnsDropdownContentli}>
-                        <Link href={subitem.url}>{subitem.title}</Link>
+                        <Link href={subitem.url} aria-label={`Go to ${subitem.title} page`}>
+                          {subitem.title}
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -107,7 +112,7 @@ export default function NavBar() {
             if (item.type === 'link') {
               return (
                 <li key={index}>
-                  <Link href={item.url} onClick={toggleMobileNav}>
+                  <Link href={item.url} onClick={toggleMobileNav} aria-label={`Go to ${item.title} page`}>
                     {item.title}
                   </Link>
                 </li>
@@ -121,6 +126,7 @@ export default function NavBar() {
                       event.preventDefault();
                       toggleDropdown(index);
                     }}
+                    aria-label={`Open dropdown for ${item.title} options`}
                   >
                     {item.title}&nbsp;
                     <span
@@ -140,7 +146,7 @@ export default function NavBar() {
                     <ul>
                       {item.items.map((subitem, subindex) => (
                         <li key={subindex}>
-                          <Link href={subitem.url} onClick={toggleMobileNav}>
+                          <Link href={subitem.url} onClick={toggleMobileNav} aria-label={`Go to ${subitem.title} page`}>
                             {subitem.title}
                           </Link>
                         </li>

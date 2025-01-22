@@ -52,7 +52,7 @@ const HomeComponent = () => {
           />
           <p className="text-4xl font-bold">JEE Challenger</p>
         </div>
-        <Link href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank">
+        <Link href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank" aria-label="Join the JEE Challenger Telegram Channel for updates and resources">
           <button className={`button2_tele text-xl`}>
             Join us on Telegram
           </button>
@@ -64,13 +64,13 @@ const HomeComponent = () => {
         <div className="flex-container gap-8">
           <div className="block1">
             <p className="subheading text-2xl">JEE Main</p>
-            <Link href="/official-links/jee-main">
+            <Link href="/official-links/jee-main" aria-label="Access official JEE Main resources and links">
               <button className={`button1`}>Go</button>
             </Link>
           </div>
           <div className="block1">
             <p className="subheading text-2xl">JEE Advanced</p>
-            <Link href="/official-links/jee-advanced">
+            <Link href="/official-links/jee-advanced" aria-label="Access official JEE Advanced resources and links">
               <button className={`button1`}>Go</button>
             </Link>
           </div>
@@ -90,14 +90,12 @@ const HomeComponent = () => {
             />
             <p className="py-5">
               <b>
-                "Physics is an attempt conceptually to grasp reality as
-                something that is considered to be independent of its being
-                observed. In this sense one speaks of physical reality."
+                "Physics is an attempt conceptually to grasp reality as something that is considered to be independent of its being observed. In this sense one speaks of physical reality."
               </b>
               <br />
               <em>- Albert Einstein</em>
             </p>
-            <Link href="/materials/physics">
+            <Link href="/materials/physics" aria-label="Explore Physics study materials">
               <button className="button1">Find out more</button>
             </Link>
           </div>
@@ -111,14 +109,12 @@ const HomeComponent = () => {
             />
             <p className="py-5">
               <b>
-                "Chemists do not usually stutter. It would be very awkward if
-                they did, seeing that they have at times to get out such words
-                as methylethylamylophenylium."
+                "Chemists do not usually stutter. It would be very awkward if they did, seeing that they have at times to get out such words as methylethylamylophenylium."
               </b>
               <br />
               <em>- William Crookes</em>
             </p>
-            <Link href="/materials/chemistry">
+            <Link href="/materials/chemistry" aria-label="Explore Chemistry study materials">
               <button className="button1">Find out more</button>
             </Link>
           </div>
@@ -132,14 +128,12 @@ const HomeComponent = () => {
             />
             <p className="py-5">
               <b>
-                "A man is like a fraction whose numerator is what he is and
-                whose denominator is what he thinks of himself. The larger the
-                denominator, the smaller the fraction."
+                "A man is like a fraction whose numerator is what he is and whose denominator is what he thinks of himself. The larger the denominator, the smaller the fraction."
               </b>
               <br />
               <em>- Leo Tolstoy</em>
             </p>
-            <Link href="/materials/mathematics">
+            <Link href="/materials/mathematics" aria-label="Explore Mathematics study materials">
               <button className="button1">Find out more</button>
             </Link>
           </div>
@@ -150,9 +144,7 @@ const HomeComponent = () => {
         <p className="heading text-3xl">More Contents</p>
         <div className="flex-container2 gap-8">
           <div className="block1">
-            <p className="subheading text-2xl">
-              Chapter wise solved PYQs
-            </p>
+            <p className="subheading text-2xl">Chapter wise solved PYQs</p>
             <Image
               className="thumbnailImg"
               src="/images/pyqs.jpg"
@@ -161,10 +153,9 @@ const HomeComponent = () => {
               height={540}
             />
             <p className="py-4">
-              Get chapter wise solved previous (43) years' JEE papers published
-              by Arihant and Disha publication
+              Get chapter wise solved previous (43) years' JEE papers published by Arihant and Disha publication
             </p>
-            <Link href="/materials/chapterwise-solved-pyqs">
+            <Link href="/materials/chapterwise-solved-pyqs" aria-label="View Chapter wise solved previous years' JEE papers">
               <button className="button1">Go</button>
             </Link>
           </div>
@@ -178,10 +169,9 @@ const HomeComponent = () => {
               height={540}
             />
             <p className="py-4">
-              This is a link to the Official Website of NCERT from where you can
-              get NCERT text books in form of PDF
+              This is a link to the Official Website of NCERT from where you can get NCERT text books in form of PDF
             </p>
-            <Link href="https://ncert.nic.in/textbook.php" target="_blank">
+            <Link href="https://ncert.nic.in/textbook.php" target="_blank" aria-label="Get official NCERT textbooks in PDF format">
               <button className="button1">Go</button>
             </Link>
           </div>
@@ -199,7 +189,7 @@ const HomeComponent = () => {
             <p className="py-4">
               India's Largest Learning Platform. Coaching by Top Educators.
             </p>
-            <Link href="/more-platforms/unacademy">
+            <Link href="/more-platforms/unacademy" aria-label="Visit Unacademy for India's largest learning platform">
               <button className="button1">Go</button>
             </Link>
           </div>
@@ -215,10 +205,9 @@ const HomeComponent = () => {
               height={540}
             />
             <p className="py-4">
-              Premium Education for All for free or at the most affordable
-              price
+              Premium Education for All for free or at the most affordable price
             </p>
-            <Link href="/more-platforms/apnikaksha">
+            <Link href="/more-platforms/apnikaksha" aria-label="Visit Apni Kaksha for affordable education">
               <button className="button1">Go</button>
             </Link>
           </div>
@@ -233,7 +222,7 @@ const HomeComponent = () => {
             <p className="py-4">
               The most affordable learning platform that cares about you
             </p>
-            <Link href="/more-platforms/physicswallah">
+            <Link href="/more-platforms/physicswallah" aria-label="Visit Physics Wallah for affordable learning">
               <button className="button1">Go</button>
             </Link>
           </div>
@@ -248,12 +237,12 @@ const HomeComponent = () => {
           scrollamount={15}
           className="subheading text-2xl pb-4"
         >
-          Now you can contribute study materials to this website. Just click
-          here 👇 and upload your file(s).
+          Now you can contribute study materials to this website. Just click here 👇 and upload your file(s).
         </marquee>
         <Link
           href="https://drive.google.com/drive/folders/1gs_ehca1F1-K9g3q_Q0mTteUSGzd6z8F?usp=sharing"
           target="_blank"
+          aria-label="Upload your study materials to the website"
         >
           <button className={`button2`}>Click here</button>
         </Link>
@@ -288,20 +277,20 @@ const HomeComponent = () => {
             onClick={() => {
               const container = document.querySelector(".video-container");
               container.innerHTML = `
-                <iframe
-                  width="560"
-                  height="315"
-                  src="https://www.youtube.com/embed/6Ebb-oe2IUc?autoplay=1"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                  loading="lazy"
-                ></iframe>`;
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/6Ebb-oe2IUc?autoplay=1"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>`;
             }}
           />
         </div>
         <p className="subheading text-2xl">Guide to ISI website</p>
-        <Link href="https://samya-s.github.io/guidetoisi/" target="_blank">
+        <Link href="https://samya-s.github.io/guidetoisi/" target="_blank" aria-label="Visit the Guide to ISI website">
           <button className="button2">Visit</button>
         </Link>
       </div>
