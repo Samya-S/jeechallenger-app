@@ -2,11 +2,11 @@ import { FaTelegram } from "react-icons/fa"
 
 const TelegramJoinFloat = () => {
   return (
-    <div>
+    <div className="hidden sm:block">
       <a
         href="https://t.me/+oOnj4y_ZYqYyZjA1"
         target="_blank"
-        class="telegram-float"
+        className="telegram-float"
         style={{
           position: "fixed",
           zIndex: "5",
