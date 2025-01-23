@@ -5,6 +5,7 @@ import Link from "next/link";
 import Styles from "./Navbar.module.css";
 import { FaBars, FaTimes, FaCaretDown } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
+import ToggleThemeButton from "@/components/utils/ToggleThemeButton";
 
 export default function NavBar() {
   const [showMobileNav, setShowMobileNav] = useState(false);
@@ -88,6 +89,9 @@ export default function NavBar() {
             );
           }
         })}
+        <li className="flex justify-center items-center">
+          <ToggleThemeButton />
+        </li>
       </ul>
       {/* End of Desktop Navigation */}
 
@@ -158,6 +162,10 @@ export default function NavBar() {
             }
             return null;
           })}
+          {/* Dark Mode Toggle for Mobile */}
+          <li>
+            <ToggleThemeButton />
+          </li>
         </ul>
       </div>
       {/* End of Mobile Navigation */}

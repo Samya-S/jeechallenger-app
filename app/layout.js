@@ -1,7 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import DarkModeToggle from "@/components/utils/DarkModeToggle";
 // import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 
 export const metadata = {
@@ -21,7 +20,6 @@ export default function RootLayout({ children }) {
         <Navbar />
         {/* <TelegramJoinFloat /> */}
         {children}
-        <DarkModeToggle />
         <Footer />
       </body>
     </html>
