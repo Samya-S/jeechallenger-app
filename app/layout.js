@@ -3,6 +3,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import DarkModeToggle from "@/components/utils/DarkModeToggle";
 import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata = {
   title: "JEE Challenger",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         <DarkModeToggle />
         <Footer />
       </body>
+      <GoogleAnalytics gaId="G-6YPF169T9S" />
     </html>
   );
 }
