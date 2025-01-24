@@ -198,7 +198,7 @@ const MoreMaterialsComponent = () => {
         </div>
 
         <p
-          className="flex-container2"
+          className="flex-container2 mb-4"
           style={{
             display: "flex",
             justifyContent: "center",
