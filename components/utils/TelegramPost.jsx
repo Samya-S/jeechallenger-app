@@ -1,8 +1,32 @@
 "use client";
-import  { useState } from 'react'
+import { useState, useEffect } from "react";
 
 const TelegramPost = ({ url }) => {
-  // const [tgError, setTgError] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.async = true;
+    script.setAttribute("data-telegram-post", url);
+    script.setAttribute("data-width", "100%");
+    script.setAttribute("data-dark", "1");
+
+    script.onerror = () => {
+      setError(true); // Trigger error state if the script fails to load
+    };
+
+    const container = document.getElementById("telegram-widget-container");
+    if (container) {
+      container.appendChild(script);
+    }
+
+    return () => {
+      if (container) {
+        container.innerHTML = ""; // Cleanup on component unmount
+      }
+    };
+  }, [url]);
 
   return (
     <div
@@ -10,31 +34,21 @@ const TelegramPost = ({ url }) => {
       style={{ backgroundImage: "url('../images/tg-bg.webp')" }}
     >
       <p className="heading text-4xl pb-4 !font-[500]">More from our Telegram Channel</p>
-      <h3 className="pb-4" style={{ fontWeight: 'normal' }}>
-        (<strong>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If so, please proceed. Or else, please join our Telegram channel before proceeding.)
+      <h3 className="pb-4" style={{ fontWeight: "normal" }}>
+        (<strong>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If so, please proceed. Otherwise, please join our Telegram channel before proceeding.)
       </h3>
 
-      {/* {!tgError ? */}
-        <div style={{ isolation: 'isolate' }}>
-          <script
-            async
-            src="https://telegram.org/js/telegram-widget.js?22"
-            data-telegram-post={url}
-            data-width="100%"
-            data-dark="1"
-          />
-        </div> 
-        {/* :
-        <div style={{ fontFamily: "monospace" }}>
-          Unable to load contents from telegram!
-          <br />
-          https://telegram.org is being blocked!!
-          <br />
-          Please reload!
-        </div> 
-      } */}
+      {error ? (
+        <div style={{ fontFamily: "monospace", color: "red" }}>
+          <p>Unable to load contents from Telegram!</p>
+          <p>It seems <strong>https://telegram.org</strong> is being blocked or the content could not be loaded.</p>
+          <p>Please reload the page or check your network settings.</p>
+        </div>
+      ) : (
+        <div id="telegram-widget-container" className="darkmode-ignore w-full" />
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default TelegramPost
+export default TelegramPost;
