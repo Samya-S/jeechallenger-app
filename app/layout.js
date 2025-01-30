@@ -15,6 +15,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preload" href="/images/home.webp" as="image" media="(max-width: 900px)" />
+        <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
       </head>
       <body
         className={`antialiased`}
