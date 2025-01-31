@@ -16,6 +16,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preload" href="/images/home.webp" as="image" media="(max-width: 900px)" />
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossorigin="anonymous" />
       </head>
       <body
         className={`antialiased`}

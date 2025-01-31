@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { FaTelegram } from "react-icons/fa";
+import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
 
 const Footer = () => {
   return (
@@ -47,6 +48,8 @@ const Footer = () => {
           GitHub
         </Link>
       </p>
+
+      <GoogleAdsUnit />
     </footer>
   );
 };
