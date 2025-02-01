@@ -17,7 +17,21 @@ export const submitContactUsForm = async (formData) => {
       from: process.env.SENDER_EMAIL,
       to: process.env.RECEIVER_EMAIL,
       subject: 'New Contact Us Form Submission | JEE Challenger', // Subject of the email
-      text: `Name: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`, // The email body
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
+          <h2 style="color: #333;">New Contact Us Form Submission</h2>
+          <p><strong>Name:</strong> ${formData.name}</p>
+          <p><strong>Email:</strong> ${formData.email}</p>
+          <p><strong>Message:</strong></p>
+          <p style="background-color: #fff; padding: 10px; border-radius: 4px; color: #333; border: 1px solid #ddd;">
+            ${formData.message}
+          </p>
+          <hr style="border: 1px solid #ddd;">
+          <p style="color: #888; font-size: 12px;">
+            This email was sent from your website's Contact Us form on <a href="https://jeechallenger.vercel.app" style="color: #007bff;">JEE Challenger</a>.
+          </p>
+        </div>
+      `,
     };
 
     // Step 3: Send the email
