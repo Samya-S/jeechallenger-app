@@ -61,6 +61,11 @@ const NavbarItems = [
         url: '/more-platforms/physicswallah'
       }
     ]
+  },
+  {
+    title: 'Contact us',
+    type: 'link',
+    url: '/contact-us'
   }
 ];
 
