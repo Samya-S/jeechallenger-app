@@ -16,7 +16,7 @@ export const submitContactUsForm = async (formData) => {
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: process.env.RECEIVER_EMAIL,
-      subject: 'New Contact Us Form Submission | JEE Challenger', // Subject of the email
+      subject: `New Contact Us Form Submission by ${formData.name} | JEE Challenger`, // Subject of the email
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
           <h2 style="color: #333;">New Contact Us Form Submission</h2>
