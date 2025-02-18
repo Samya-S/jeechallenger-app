@@ -67,7 +67,7 @@ const HomeComponent = () => {
 
       <div className="px-5 py-10">
         <p className="heading text-3xl mb-4">JEE Papers and Official Links</p>
-        <div className="flex-container gap-8">
+        <div className="flex-container !gap-4 !md:gap-0">
           <div className="block1">
             <p className="subheading text-2xl">JEE Main</p>
             <Link href="/official-links/jee-main" aria-label="Access official JEE Main resources and links">
@@ -85,7 +85,7 @@ const HomeComponent = () => {
 
       <div className="bg-gray-200 bg-opacity-30 px-5 py-10">
         <p className="heading text-3xl mb-4">The Subjects</p>
-        <div className="flex-container gap-8">
+        <div className="flex-container !gap-4 !md:gap-0">
           <div className="block1">
             <Image
               className="thumbnailImg"
@@ -148,7 +148,7 @@ const HomeComponent = () => {
 
       <div className="px-5 py-10">
         <p className="heading text-3xl">More Contents</p>
-        <div className="flex-container2 gap-8">
+        <div className="flex-container2 !gap-4 !md:gap-0">
           <div className="block1">
             <p className="subheading text-2xl">Chapter wise solved PYQs</p>
             <Image
@@ -201,7 +201,7 @@ const HomeComponent = () => {
           </div>
         </div>
 
-        <div className="flex-container2 gap-8">
+        <div className="flex-container2 !gap-4 !md:gap-0">
           <div className="block1">
             <Image
               className="thumbnailImg"
