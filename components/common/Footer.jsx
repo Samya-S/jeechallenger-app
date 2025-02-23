@@ -49,7 +49,7 @@ const Footer = () => {
         </Link>
       </p>
 
-      <GoogleAdsUnit />
+      {/* <GoogleAdsUnit /> */}
     </footer>
   );
 };
