@@ -4,6 +4,7 @@ import Footer from "@/components/common/Footer";
 import DarkModeToggle from "@/components/utils/DarkModeToggle";
 import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 export const metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         {children}
         <DarkModeToggle />
         <Footer />
+        <AIAnnouncementModal />
         {/* <SplashCursor /> */}
       </body>
       <GoogleAnalytics gaId="G-6YPF169T9S" />
