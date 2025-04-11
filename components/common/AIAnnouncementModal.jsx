@@ -66,7 +66,7 @@ const AIAnnouncementModal = () => {
         </div>
 
         {/* Button - Fixed at bottom */}
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <Link 
             href="https://t.me/JEEChallengerOfficialBot" 
             target="_blank"
