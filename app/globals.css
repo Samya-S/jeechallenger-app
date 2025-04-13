@@ -17,22 +17,16 @@ body {
   text-align: center;
 }
 
-
-.darkmode-toggle {
-  z-index: 5;
+.navbar {
+  @apply bg-white/50 dark:bg-black/50 text-black dark:text-white;
 }
 
-body.darkmode--activated .navbar {
-  background-color: rgba(0, 0, 0, 0.5); /* Dark background */
-  color: white; /* Dark mode text color */
+.navbarLinks li {
+  @apply text-gray-800 dark:text-gray-200;
 }
 
-body.darkmode--activated .navbarLinks li {
-  color: rgb(200, 200, 200); /* text color for links in dark mode */
-}
-
-body.darkmode--activated .columnsDropdownContent {
-  background-color: rgba(0, 0, 0, 0.5); /* Dark background for dropdown */
+.columnsDropdownContent {
+  @apply bg-white/50 dark:bg-black/50;
 }
 
 .thumbnailImg {
@@ -41,7 +35,6 @@ body.darkmode--activated .columnsDropdownContent {
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
-
 
 @media screen and (min-width: 1140px) {
 
@@ -152,31 +145,10 @@ body.darkmode--activated .columnsDropdownContent {
 
 .block1 p,
 .block2 p {
-  color: rgb(68, 68, 68);
-}
-
-.darkmode--activated .block1 p,
-.darkmode--activated .block2 p {
-  color: rgb(0, 0, 0);
+  @apply text-gray-700 dark:text-gray-300;
 }
 
 @media screen and (min-width: 680px) {
-
-  .darkmode--activated .block1:hover .subheading,
-  .darkmode--activated .block1:hover p,
-  .darkmode--activated .block2:hover .subheading,
-  .darkmode--activated .block2:hover p {
-    color: white;
-  }
-
-  .darkmode--activated .block1:not(:hover) .subheading,
-  .darkmode--activated .block1:not(:hover) p,
-  .darkmode--activated .block2:not(:hover) .subheading,
-  .darkmode--activated .block2:not(:hover) p {
-    color: white;
-    isolation: isolate;
-  }
-
   .block1,
   .block2 {
     /* border: 1px solid black; */

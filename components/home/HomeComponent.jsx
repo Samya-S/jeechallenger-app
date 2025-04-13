@@ -27,7 +27,7 @@ const HomeComponent = () => {
 
   return (
     <div>
-      <div className="relative text-center">
+      <div className="relative text-center bg-white dark:bg-black">
         <div className={Styles.welcomeimg}></div>
         <div className={Styles.welcomepc}>
           <div className={Styles.centered}>
@@ -45,27 +45,29 @@ const HomeComponent = () => {
       </div>
 
       <div
-        className={`bg-gray-200 bg-opacity-30 bg-cover px-5 py-12`}
-        style={{ backgroundImage: "url('/images/tg-bg.webp')" }}
+        className={`bg-gray-200 bg-opacity-30 bg-cover px-5 py-12 relative`}
       >
-        <div className="flex flex-col items-center justify-center gap-4 pb-8">
-          <Image
-            src="/images/jcicon.jpg"
-            alt="JEE Challenger Icon"
-            width={180}
-            height={180}
-            className="rounded-full max-w-[180px]"
-          />
-          <p className="text-4xl font-bold">JEE Challenger</p>
+        <div className="absolute inset-0 bg-cover dark:invert" style={{ backgroundImage: "url('/images/tg-bg.webp')" }}></div>
+        <div className="relative z-10">
+          <div className="flex flex-col items-center justify-center gap-4 pb-8">
+            <Image
+              src="/images/jcicon.jpg"
+              alt="JEE Challenger Icon"
+              width={180}
+              height={180}
+              className="rounded-full max-w-[180px]"
+            />
+            <p className="text-4xl font-bold">JEE Challenger</p>
+          </div>
+          <Link href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank" aria-label="Join the JEE Challenger Telegram Channel for updates and resources">
+            <button className={`button2_tele text-xl`}>
+              Join us on Telegram
+            </button>
+          </Link>
         </div>
-        <Link href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank" aria-label="Join the JEE Challenger Telegram Channel for updates and resources">
-          <button className={`button2_tele text-xl`}>
-            Join us on Telegram
-          </button>
-        </Link>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">JEE Papers and Official Links</p>
         <div className="flex-container !gap-4 !md:gap-0">
           <div className="block1">
@@ -83,7 +85,7 @@ const HomeComponent = () => {
         </div>
       </div>
 
-      <div className="bg-gray-200 bg-opacity-30 px-5 py-10">
+      <div className="bg-gray-200/30 dark:bg-zinc-900/30 px-5 py-10">
         <p className="heading text-3xl mb-4">The Subjects</p>
         <div className="flex-container !gap-4 !md:gap-0">
           <div className="block1">
@@ -146,7 +148,7 @@ const HomeComponent = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl">More Contents</p>
         <div className="flex-container2 !gap-4 !md:gap-0">
           <div className="block1">
@@ -235,7 +237,7 @@ const HomeComponent = () => {
         </div>
       </div>
 
-      <div className="message bg-gray-200 bg-opacity-30 px-5 py-10">
+      <div className="message bg-gray-200/30 dark:bg-zinc-900/30 px-5 py-10">
         <marquee
           ref={marqueeRef}
           onMouseOver={handleMouseOver}
@@ -254,7 +256,7 @@ const HomeComponent = () => {
         </Link>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl">ISI Aspirant?</p>
         <p className="subheading text-2xl">
           This is for you <span className="darkmode-ignore">👇</span>

@@ -5,7 +5,7 @@ const JeeMain2022papers = () => {
     <div>
       <style jsx>{`
         table, th, td {
-          border: 1px solid black;
+          border: 1px solid;
           border-collapse: collapse;
           padding: 5px 10px;
         }

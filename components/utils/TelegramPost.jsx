@@ -30,23 +30,25 @@ const TelegramPost = ({ url }) => {
 
   return (
     <div
-      className="px-5 py-10"
-      style={{ backgroundImage: "url('../images/tg-bg.webp')" }}
+      className={`bg-gray-200 bg-opacity-30 bg-cover px-5 py-12 relative`}
     >
-      <p className="heading text-4xl pb-4 !font-[500]">More from our Telegram Channel</p>
-      <h3 className="pb-4" style={{ fontWeight: "normal" }}>
-        (<strong>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If so, please proceed. Otherwise, please join our Telegram channel before proceeding.)
-      </h3>
+      <div className="absolute inset-0 bg-cover dark:invert" style={{ backgroundImage: "url('../images/tg-bg.webp')", backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "repeat" }}></div>
+      <div className="relative z-10">
+        <p className="heading text-4xl pb-4 !font-[500]">More from our Telegram Channel</p>
+        <h3 className="pb-4" style={{ fontWeight: "normal" }}>
+          (<strong>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If so, please proceed. Otherwise, please join our Telegram channel before proceeding.)
+        </h3>
 
-      {error ? (
-        <div style={{ fontFamily: "monospace", color: "red" }}>
-          <p>Unable to load contents from Telegram!</p>
-          <p>It seems <strong>https://telegram.org</strong> is being blocked or the content could not be loaded.</p>
-          <p>Please reload the page or check your network settings.</p>
-        </div>
-      ) : (
-        <div id="telegram-widget-container" className="darkmode-ignore w-full" />
-      )}
+        {error ? (
+          <div style={{ fontFamily: "monospace", color: "red" }}>
+            <p>Unable to load contents from Telegram!</p>
+            <p>It seems <strong>https://telegram.org</strong> is being blocked or the content could not be loaded.</p>
+            <p>Please reload the page or check your network settings.</p>
+          </div>
+        ) : (
+          <div id="telegram-widget-container" className="darkmode-ignore w-full" />
+        )}
+      </div>
     </div>
   );
 };

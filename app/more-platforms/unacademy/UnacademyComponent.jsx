@@ -12,7 +12,7 @@ const UnacademyComponent = () => {
         style={{ width: '100%', boxSizing: 'border-box' }}
       />
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <div className="flex-container2" style={{ padding: "2rem" }}>
           <div className="block2">
             <p className="subheading text-2xl">Unacademy App</p>
@@ -37,12 +37,7 @@ const UnacademyComponent = () => {
         </div>
       </div>
 
-      <div
-      className="px-5 py-10"
-        style={{
-          backgroundColor: "rgba(212, 212, 212, 0.26)",
-        }}
-      >
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <div className="flex-container2">
           <div className="block2">
             <p className="subheading text-2xl">JEE YouTube Channel</p>
@@ -89,7 +84,7 @@ const UnacademyComponent = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">Get Unacademy subscription</p>
         <img
           src="../images/Unacademy-subscription.gif"

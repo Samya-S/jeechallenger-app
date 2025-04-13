@@ -21,7 +21,7 @@ const ChemistryComponent = () => {
         <CategorySection
           key={index}
           category={resource.category}
-          backgroundColor={(ChemistryResources.length - index) % 2 === 0 ? 'white' : 'rgba(212, 212, 212, 0.26)'}
+          backgroundColor={(ChemistryResources.length - index) % 2 === 0 ? 'bg-white dark:bg-black' : 'bg-gray-200/30 dark:bg-zinc-900/30'}
           items={resource.items}
         />
       ))}

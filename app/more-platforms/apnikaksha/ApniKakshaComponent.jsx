@@ -12,7 +12,7 @@ const ApniKakshaComponent = () => {
         style={{ width: '100%', boxSizing: 'border-box' }}
       />
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <div className="flex-container">
           <div className="block2">
             <p className="subheading text-2xl">YouTube Channel</p>

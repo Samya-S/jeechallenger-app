@@ -15,7 +15,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         style={{ width: '100%', boxSizing: 'border-box' }}
       />
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">Arihant</p>(41 years')
         <div className="flex-container">
           <div>
@@ -48,7 +48,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10" style={{ backgroundColor: "rgba(212, 212, 212, 0.26)" }}>
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">Disha</p>(41 years')
         <div className="flex-container">
           <div>
@@ -82,57 +82,59 @@ const ChapterWiseSolvedPYQsComponent = () => {
       </div>
 
       <div
-        className="px-5 py-10"
-        style={{ backgroundImage: "url('../images/tg-bg.webp')" }}
+        className={`bg-gray-200 bg-opacity-30 bg-cover px-5 py-12 relative`}
       >
-        <p className="subheading text-2xl">
-          *Get chapter-wise solved previous 43 years' JEE papers published by Arihant
-          and Disha publication from our telegram channel
-        </p>
+        <div className="absolute inset-0 bg-cover dark:invert" style={{ backgroundImage: "url('../images/tg-bg.webp')" }}></div>
+        <div className="relative z-10">
+          <p className="subheading text-2xl">
+            *Get chapter-wise solved previous 43 years' JEE papers published by Arihant
+            and Disha publication from our telegram channel
+          </p>
 
-        <p
-          className="flex-container2 pb-5"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          <img
-            src="../images/jcicon.jpg"
-            alt=""
-            style={{ borderRadius: "50%", maxWidth: "150px" }}
-          />
-          <b style={{ fontSize: "30px", textAlign: "center" }}>JEE Challenger</b>
-        </p>
+          <p
+            className="flex-container2 pb-5"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
+            <img
+              src="../images/jcicon.jpg"
+              alt=""
+              style={{ borderRadius: "50%", maxWidth: "150px" }}
+            />
+            <b style={{ fontSize: "30px", textAlign: "center" }}>JEE Challenger</b>
+          </p>
 
-        <a
-          href="https://t.me/c/1655397860/180"
-          target="_blank"
-          className="pr-5"
-          onClick={(e) => {
-            if (!confirm(joinTgAlertMsg)) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <button className="button2_tele text-xl">Arihant</button>
-        </a>
-        <a
-          href="https://t.me/c/1655397860/211"
-          target="_blank"
-          onClick={(e) => {
-            if (!confirm(joinTgAlertMsg)) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <button className="button2_tele text-xl">Disha</button>
-        </a>
+          <a
+            href="https://t.me/c/1655397860/180"
+            target="_blank"
+            className="pr-5"
+            onClick={(e) => {
+              if (!confirm(joinTgAlertMsg)) {
+                e.preventDefault();
+              }
+            }}
+          >
+            <button className="button2_tele text-xl">Arihant</button>
+          </a>
+          <a
+            href="https://t.me/c/1655397860/211"
+            target="_blank"
+            onClick={(e) => {
+              if (!confirm(joinTgAlertMsg)) {
+                e.preventDefault();
+              }
+            }}
+          >
+            <button className="button2_tele text-xl">Disha</button>
+          </a>
+        </div>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">JEE Main papers</p>(Chapter-wise solved previous 20 years' JEE Main papers)
         <div className="flex-container">
           <div>
@@ -166,7 +168,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10" style={{ backgroundColor: "rgba(212, 212, 212, 0.26)" }}>
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">Wiley</p>22 Years' (1998-2019)
         <div className="flex-container">
           <div>
@@ -186,7 +188,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">Disha</p>15 Years' (2006-2020)
         <div className="flex-container">
           <div>

@@ -6,7 +6,7 @@ const MoreMaterialsComponent = () => {
       {/* to add proper spacing for navbar */}
       <div className="headingimg"></div>
 
-      <div className="px-5 pt-5 pb-10" style={{ backgroundColor: "rgba(212, 212, 212, 0.26)" }}>
+      <div className="px-5 pt-5 pb-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">More Study Materials</p>
         <p className="subheading text-2xl">
           AKASH - I TUTOR LECTURE FOR CHEMISTRY <span className="darkmode-ignore">👇</span>
@@ -159,8 +159,8 @@ const MoreMaterialsComponent = () => {
         </a>
       </div>
 
-      <div className="px-5 py-10">
-        <p className="heading text-3xl mb-4 mr-5" style={{ color: "rgb(0, 0, 0)", display: "inline", isolation: "unset" }}>
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
+        <p className="heading text-3xl mb-4 mr-5" style={{ display: "inline", isolation: "unset" }}>
           Find out more
         </p>
         <a href="https://drive.google.com/drive/folders/19r66GAkz0zAsEY_GlI-Ehf0lNqGm5caA?usp=sharing" target="_blank">
@@ -170,7 +170,7 @@ const MoreMaterialsComponent = () => {
         </a>
       </div>
 
-      <div className="px-5 py-10" style={{ backgroundColor: "rgba(212, 212, 212, 0.26)" }}>
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">Etoos lectures</p>
         <p className="subheading text-2xl">All Etoos lectures by NV sir, PS sir, NJ sir in one place</p>
         (
@@ -182,12 +182,12 @@ const MoreMaterialsComponent = () => {
         <br />
         <iframe
           style={{ height: "500px", width: "90%" }}
-          className="m-auto"
+          className="m-auto dark:!invert"
           src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTIZhOA_KrJYPUirK-Xp5XutggAWlQzCbeE7q735675W3OiJTstbvNzZrbHBzLvM7g_bFHQDuiGPLNO/pubhtml?widget=true&headers=false"
         ></iframe>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">Couldn't find what you are searching for?</p>
 
         <div className="message">

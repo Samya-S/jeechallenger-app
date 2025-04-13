@@ -6,7 +6,7 @@ const TelegramJoinFloat = () => {
       <a
         href="https://t.me/+oOnj4y_ZYqYyZjA1"
         target="_blank"
-        className="telegram-float"
+        className="telegram-float bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-md dark:shadow-gray-900"
         style={{
           position: "fixed",
           zIndex: "5",
@@ -15,15 +15,12 @@ const TelegramJoinFloat = () => {
           top: "50%",
           transform: "translate(0, -50%)",
           left: "0px",
-          backgroundColor: "rgb(255, 255, 255)",
-          color: "#2e87ca",
           borderRadius: "15px",
           borderTopLeftRadius: "0px",
           borderBottomLeftRadius: "0px",
           textAlign: "center",
           textDecoration: "none",
-          padding: "5px",
-          boxShadow: "2px 2px 3px #999"
+          padding: "5px"
         }}
       >
         <p className="text-xl">Join us on</p>

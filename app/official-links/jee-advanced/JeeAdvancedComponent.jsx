@@ -7,14 +7,14 @@ const JeeAdvancedComponent = () => {
       {/* to add proper spacing for navbar */}
       <div className="headingimg"></div>
 
-      <div className="px-5 py-10 bg-[rgba(212,212,212,0.26)]">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4 message">Link to JEE Advanced Official Website</p>
         <a href="https://jeeadv.ac.in/" target="_blank">
           <button className="button2">Go</button>
         </a>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">More Official links</p>
         <div className="flex-container">
           <div className="block2">

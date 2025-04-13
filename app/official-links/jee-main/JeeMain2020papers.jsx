@@ -3,7 +3,7 @@ const JeeMain2020papers = () => {
     <div>
       <p className="heading text-3xl mb-4">JEE Main 2020</p>
       <p className="subheading text-2xl -mt-5">Question Papers with Solutions</p>
-      <div className="flex-container px-5 py-10" style={{ backgroundColor: 'rgba(212, 212, 212, 0.15)' }}>
+      <div className="flex-container px-5 py-10">
         <div>
           <p className="subheading text-2xl">January 7</p>
           <a href="https://cdn1.byjus.com/wp-content/uploads/2020/09/jee-main-2020-question-paper-physics-jan-7-shift-1.pdf" target="_blank" style={{ textDecoration: 'none', color: 'red' }}>Physics Shift-1</a><br />
@@ -33,7 +33,7 @@ const JeeMain2020papers = () => {
         </div>
       </div>
 
-      <div className="flex-container px-5 py-10" style={{ backgroundColor: 'rgba(212, 212, 212, 0.26)' }}>
+      <div className="flex-container px-5 py-10">
         <div>
           <p className="subheading text-2xl">September 2</p>
           <a href="https://cdn1.byjus.com/wp-content/uploads/2020/09/JEE-Main-2020-Sep-2nd-Shift-1-Physics-Paper.pdf" target="_blank" style={{ textDecoration: 'none', color: 'red' }}>Physics Shift-1</a><br />
@@ -63,7 +63,7 @@ const JeeMain2020papers = () => {
         </div>
       </div>
 
-      <div className="flex-container2 px-5 py-10" style={{ backgroundColor: 'rgba(212, 212, 212, 0.26)' }}>
+      <div className="flex-container2 px-5 py-10">
         <div>
           <p className="subheading text-2xl">September 5</p>
           <a href="https://cdn1.byjus.com/wp-content/uploads/2020/10/jee-main-2020-question-paper-physics-september-5-shift-1.pdf" target="_blank" style={{ textDecoration: 'none', color: 'red' }}>Physics Shift-1</a><br />
@@ -84,7 +84,7 @@ const JeeMain2020papers = () => {
         </div>
       </div>
 
-      <div className="px-5 py-10" style={{ backgroundColor: 'rgba(212, 212, 212, 0.15)' }}>
+      <div className="px-5 py-10">
         <p className="subheading text-2xl">From Allen</p>
         <div>
           <p className="text-lg pb-4">JEE-Main-January-September-2020-TEST-PAPERS-EN.pdf</p>

@@ -6,10 +6,10 @@ import { FaTelegram, FaInstagram, FaYoutube } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer
+      className="bg-gray-200/30 dark:bg-zinc-900"
       style={{
         textAlign: "center",
         padding: "2rem",
-        backgroundColor: "rgba(128, 128, 128, 0.15)" /* gray with 25% opacity */
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '10px' }}>

@@ -31,14 +31,14 @@ const JeeMainComponent = () => {
       {/* to add proper spacing for navbar */}
       <div className="headingimg"></div>
 
-      <div className="px-5 py-10 bg-[rgba(212,212,212,0.26)]">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4 message">Link to JEE Main Official Website</p>
         <a href="https://jeemain.nta.nic.in/" target="_blank">
           <button className="button2">Go</button>
         </a>
       </div>
 
-      <div className="px-5 py-10">
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">JEE Main Question Papers</p>
         <div className="flex-container">
           <div className="block2">
@@ -65,11 +65,11 @@ const JeeMainComponent = () => {
         </div>
       </div>
 
-      <div id="toggle-show-hide-id-2020" className="px-5 py-10" style={{ display: 'none', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
+      <div id="toggle-show-hide-id-2020" className="px-5 py-10 bg-white dark:bg-black/30" style={{ display: 'none', marginTop: '20px' }}>
         <JeeMain2020papers />
       </div>
 
-      <div id="toggle-show-hide-id-2022" className="px-5 py-10" style={{ display: 'none', backgroundColor: 'rgba(212, 212, 212, 0.1)', marginTop: '20px' }}>
+      <div id="toggle-show-hide-id-2022" className="px-5 py-10 bg-white dark:bg-black/30" style={{ display: 'none', marginTop: '20px' }}>
         <JeeMain2022papers />
       </div>
 

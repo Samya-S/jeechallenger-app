@@ -5,6 +5,7 @@ import Link from "next/link";
 import Styles from "./Navbar.module.css";
 import { FaBars, FaTimes, FaCaretDown } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
+import ThemeToggle from "@/components/utils/ThemeToggle";
 
 export default function NavBar() {
   const [showMobileNav, setShowMobileNav] = useState(false);
@@ -88,20 +89,26 @@ export default function NavBar() {
             );
           }
         })}
+        <li className="h-full my-auto">
+          <ThemeToggle />
+        </li>
       </ul>
       {/* End of Desktop Navigation */}
 
-      {/* Mobile Navigation */}
-      <button
-        className={Styles.hamburger}
-        onClick={toggleMobileNav}
-        aria-label={showMobileNav ? 'Close navigation menu' : 'Open navigation menu'}
-      >
-        <div className={Styles.hamburgerIcon}>
-          <FaBars style={{ opacity: showMobileNav ? 0 : 1 }} />
-          <FaTimes style={{ opacity: showMobileNav ? 1 : 0, color: 'white' }} />
-        </div>
-      </button>
+      {/* Mobile Navigation Controls */}
+      <div className="flex [@media(min-width:900px)]:hidden items-center gap-10">
+        <ThemeToggle />
+        <button
+          className={Styles.hamburger}
+          onClick={toggleMobileNav}
+          aria-label={showMobileNav ? 'Close navigation menu' : 'Open navigation menu'}
+        >
+          <div className={Styles.hamburgerIcon}>
+            <FaBars style={{ opacity: showMobileNav ? 0 : 1 }} />
+            <FaTimes style={{ opacity: showMobileNav ? 1 : 0, color: 'white' }} />
+          </div>
+        </button>
+      </div>
 
       <div
         className={`${Styles.mobileNav}`}
