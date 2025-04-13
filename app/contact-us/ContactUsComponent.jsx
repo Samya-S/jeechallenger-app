@@ -41,7 +41,7 @@ const ContactUsComponent = () => {
   };
 
   return (
-    <div className="headingimg flex items-center justify-center bg-gray-200/10 dark:bg-zinc-900/30 px-5">
+    <div className="headingimg flex items-center justify-center bg-gray-200/10 dark:bg-black/5 px-5">
       <div className="w-full max-w-lg my-10 p-6 bg-white dark:bg-black/30 rounded-lg shadow-lg dark:shadow-zinc-700/50">
         <h2 className="heading text-3xl font-bold mb-4">Contact Us</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
