@@ -11,9 +11,7 @@ export default function NewsComponent() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(
-          `https://gnews.io/api/v4/search?q=jee&lang=en&country=in&max=10&apikey=${process.env.NEXT_PUBLIC_GNEWS_API_KEY}`
-        );
+        const response = await fetch('/api/news');
 
         if (!response.ok) {
           throw new Error('Failed to fetch news');
