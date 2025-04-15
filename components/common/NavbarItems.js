@@ -63,9 +63,9 @@ const NavbarItems = [
     ]
   },
   {
-    title: 'Contact us',
+    title: 'Latest News',
     type: 'link',
-    url: '/contact-us'
+    url: '/news'
   }
 ];
 
