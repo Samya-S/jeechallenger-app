@@ -24,6 +24,7 @@ A one-stop platform for all your JEE preparation needs, featuring books, notes, 
 - [All versions](#all-versions)
 - [Contributing](#contributing)
 - [License](#license)
+- [Support](#support)
 
 ## Features
 
@@ -104,3 +105,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you find this project helpful and would like to support its development, consider becoming a sponsor. Your support helps maintain and improve the project.
+
+<a href="https://github.com/sponsors/Samya-S">
+  <img src="https://img.shields.io/badge/Sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA" alt="Sponsor">
+</a>
