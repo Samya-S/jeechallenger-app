@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const AIAnnouncementModal = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if modal has been shown in this session
+    const hasSeenModal = sessionStorage.getItem('hasSeenAIAnnouncement');
+    if (!hasSeenModal) {
+      setIsOpen(true);
+      sessionStorage.setItem('hasSeenAIAnnouncement', 'true');
+    }
+  }, []);
 
   if (!isOpen) return null;
 
