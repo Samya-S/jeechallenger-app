@@ -34,6 +34,7 @@ A one-stop platform for all your JEE preparation needs, featuring books, notes, 
 - Contact form functionality with email integration
 - SEO optimized with automatic sitemap generation
 - Mobile-first design approach
+- Real-time JEE news and updates powered by GNews API
 
 ## Technologies Used
 
@@ -44,6 +45,9 @@ A one-stop platform for all your JEE preparation needs, featuring books, notes, 
 - **Email Service**: Nodemailer
 - **Theme Management**: next-themes
 - **SEO**: next-sitemap
+- **News API**: GNews API
+- **Development**: Turbopack for faster development builds
+- **Server**: Node.js server for backend functionality
 
 ## Getting Started
 
@@ -65,6 +69,9 @@ AUTH_EMAIL=your-email@example.com
 AUTH_PASS=your-email-password
 SENDER_EMAIL=your-email@example.com
 RECEIVER_EMAIL=recipient@example.com
+
+# GNews API Configuration
+GNEWS_API_KEY=your-gnews-api-key
 ```
 
 4. Run the development server:
