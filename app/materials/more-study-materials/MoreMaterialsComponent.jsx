@@ -8,169 +8,37 @@ const MoreMaterialsComponent = () => {
 
       <div className="px-5 pt-5 pb-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">More Study Materials</p>
-        <p className="subheading text-2xl">
-          AKASH - I TUTOR LECTURE FOR CHEMISTRY <span className="darkmode-ignore">👇</span>
-        </p>
-        <div className="flex-container2">
-          <div>
-            <a
-              href="https://drive.google.com/drive/mobile/folders/14SqDu6AUYnykgXNBsZm2Dmon0HrJ7ZgM/1x0J8uVg-1agkjLntoTnOvAcZj4FDwxQZ?usp=sharing&sort=13&direction=a"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>for class 11th -</u>
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://drive.google.com/drive/mobile/folders/18yUdRRryYvfLmxyN1csUt5sNIJb88kcV?usp=sharing"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>for class 12th -</u>
-            </a>
-          </div>
+        <div className="space-y-3 mb-6 mx-auto w-fit">
+          <p className="text-lg font-medium">Miscellaneous Resources Drive Link</p>
+          <p className="text-left">Available Materials:</p>
+          <ul className="text-left list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+            <li>Allen JEE Modules (Complete PCM) Latest</li>
+            <li>Bansal Maths Module</li>
+            <li>FIITJEE AITS for JEE Mains and JEE Advanced 2022</li>
+            <li>JEE Previous Year Questions</li>
+            <li>Miscellaneous PCM Resources</li>
+            <li>Resonance + Allen Study Materials</li>
+            <li>Resonance Complete Sheets with solutions</li>
+            <li>Unacademy Plus Notes (PMS, BJ, MKA, VJ sir)</li>
+            <li>Unacademy Iconic JEE Notes</li>
+            <li>Unacademy JEE - Predictor papers</li>
+          </ul>
+          <p className="text-left">And many more...</p>
         </div>
-        <br />
-        <p className="subheading text-2xl">
-          "Motion" material PCM <span className="darkmode-ignore">👇</span>
-        </p>
-        <div className="flex-container2">
-          <div>
-            <a
-              href="https://drive.google.com/drive/folders/1JpCELE7ggQ5qza2egVPhr4hHM0K-rL7s?usp=sharing"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>Physics</u>
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/1-IbDqf2bcO5f3gD8bTzULOupcmNoYPiL"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>Chemistry</u>
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/1q_s6M6mEy7Xi8YVhmuK2vPhN5TXt8mBz"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>Mathematics</u>
-            </a>
-          </div>
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/0Bw_HeuQYV7uVaDlCQVZrSGplNlU"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>Module solutions</u>
-            </a>
-          </div>
-        </div>
-        <br />
-        <p className="subheading text-2xl">
-          More IIT-JEE Main & Advanced Pdf <span className="darkmode-ignore">👇</span>
-        </p>
-        <div className="flex-container">
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/0B7EaN2e8usIgYVkzaFZLT010cUE"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>Errorless physics</u>
-            </a>
-          </div>
-        </div>
-        <div className="flex-container">
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/1Dky6sduOe9u2zDDxpqoCn0HBIjqZbJyf"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>SOJ sir etoos maths class notes</u>
-            </a>
-          </div>
-        </div>
-        <div className="flex-container">
-          <div>
-            <a
-              href="https://mega.nz/folder/GtBHVarQ#m0o_6fmK2Qufy42A3Dn1MQ"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>DT sir etoos organic chemistry lectures</u>
-            </a>
-          </div>
-        </div>
-        <div className="flex-container">
-          <div>
-            <a
-              href="https://drive.google.com/drive/u/0/mobile/folders/1mEDN68GRU4dcXlNvDj2CnobYGg55SNEk"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>GB sir etoos notes</u>
-            </a>
-          </div>
-        </div>
-        <div className="flex-container">
-          <div>
-            <a
-              href="https://drive.google.com/file/d/0B0d-UkWYmTPhYnZRX2hDU0VvLVk/view?usp=drivesdk"
-              target="_blank"
-              style={{ textDecoration: "none", color: "red" }}
-            >
-              <u>SL Loney plane trigonometry</u>
-            </a>
-          </div>
-        </div>
-        <br />
-        <p className="subheading text-2xl" style={{ display: "inline" }}>
-          Resonance, Allen complete study materials <span className="darkmode-ignore">👉</span>
-        </p>
-        <a
-          href="https://drive.google.com/drive/folders/1jzz8Zmd5hUcYtVFckPjggsMTb2anAFRH?usp=sharing"
-          target="_blank"
-          style={{ textDecoration: "none", color: "red" }}
-        >
-          <u>GO</u>
-        </a>
-        <br />
-        <br />
-        <br />
-        <p className="subheading text-2xl" style={{ display: "inline" }}>
-          Resonance Complete Sheets with solutions 11th+12th JEE{" "}
-          <span className="darkmode-ignore">👉</span>
-        </p>
-        <a
-          href="https://drive.google.com/drive/folders/10EhfkYk0Ye1zDfylBWetrOWdkfSbMkSS?usp=sharing"
-          target="_blank"
-          style={{ textDecoration: "none", color: "red" }}
-        >
-          <u>GO</u>
-        </a>
-      </div>
 
-      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
-        <p className="heading text-3xl mb-4 mr-5" style={{ display: "inline", isolation: "unset" }}>
-          Find out more
-        </p>
-        <a href="https://drive.google.com/drive/folders/19r66GAkz0zAsEY_GlI-Ehf0lNqGm5caA?usp=sharing" target="_blank">
-          <button className="button1" style={{ transform: "translate(0, -5px)" }}>
-            GO
+        <a
+          href="https://drive.google.com/drive/folders/19r66GAkz0zAsEY_GlI-Ehf0lNqGm5caA?usp=drive_link"
+          target="_blank"
+          className="block"
+          rel="noopener noreferrer"
+        >
+          <button className="button1 px-6 py-3 rounded-lg text-white font-medium transition-colors duration-200">
+            Access More Study Materials
           </button>
         </a>
       </div>
 
-      <div className="px-5 py-10 bg-white dark:bg-black">
+      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
         <p className="heading text-3xl mb-4">Etoos lectures</p>
         <p className="subheading text-2xl">All Etoos lectures by NV sir, PS sir, NJ sir in one place</p>
         (
@@ -187,7 +55,7 @@ const MoreMaterialsComponent = () => {
         ></iframe>
       </div>
 
-      <div className="px-5 py-10 bg-gray-200/30 dark:bg-zinc-900/30">
+      <div className="px-5 py-10 bg-white dark:bg-black">
         <p className="heading text-3xl mb-4">Couldn't find what you are searching for?</p>
 
         <div className="message">
@@ -208,24 +76,24 @@ const MoreMaterialsComponent = () => {
         >
           <img
             src="../images/jcicon.jpg"
-            alt=""
-            style={{ borderRadius: "50%", maxWidth: "150px" }}
+            alt="JEE Challenger Telegram Channel Icon"
+            className="max-w-[180px] rounded-[50px] shadow-md"
           />
-          <b style={{ fontSize: "30px", textAlign: "center" }}>JEE Challenger</b>
         </p>
 
-        <a href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank" className="py-5">
+        <a href="https://t.me/+oOnj4y_ZYqYyZjA1" target="_blank">
           <button className="button2_tele" style={{ fontSize: "20px" }}>
             Join us on Telegram
           </button>
         </a>
 
         <div className="py-5" style={{ fontSize: "25px" }}>
-          Also now you can contribute study materials to this website if you find absent here. <br />
+          You can also contribute study materials to this website if you find something missing here. <br />
           Just{" "}
           <a
             href="https://drive.google.com/drive/folders/1gs_ehca1F1-K9g3q_Q0mTteUSGzd6z8F?usp=sharing"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <button
               className="message"
@@ -233,12 +101,15 @@ const MoreMaterialsComponent = () => {
                 padding: "0 15px",
                 border: "2px solid rgb(255, 0, 0)",
                 backgroundColor: "transparent",
+                borderRadius: "8px",
+                fontSize: "20px",
+                fontWeight: "500",
               }}
             >
               Click here
             </button>
           </a>{" "}
-          and upload your file(s)
+          and upload your file(s).
         </div>
       </div>
 
