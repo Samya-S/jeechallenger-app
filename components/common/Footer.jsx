@@ -48,7 +48,7 @@ const Footer = () => {
             Latest News
           </Link>
           <Link
-            href="mailto:contact@jeechallenger.com"
+            href="/contact-us"
             className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center gap-2 px-3 py-1 rounded-md hover:bg-white dark:hover:bg-gray-800"
           >
             <FaEnvelope className="text-base" />
