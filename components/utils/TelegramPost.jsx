@@ -25,6 +25,14 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
     'from-indigo-600 to-cyan-600': {
       background: 'from-indigo-50 to-cyan-50 dark:from-indigo-900/20 dark:to-cyan-900/20',
       textColor: 'text-indigo-600 dark:text-indigo-400'
+    },
+    'from-yellow-600 to-orange-600': {
+      background: 'from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20',
+      textColor: 'text-yellow-600 dark:text-yellow-400'
+    },
+    'from-emerald-600 to-teal-600': {
+      background: 'from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20',
+      textColor: 'text-emerald-600 dark:text-emerald-400'
     }
   };
 
