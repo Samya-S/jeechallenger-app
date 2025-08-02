@@ -66,7 +66,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
         </div>
       )}
       <style jsx global>{`
-        .google-btn-parent > div {
+        .google-btn-parent > * {
           width: 100% !important;
           min-width: 100% !important;
           max-width: 100% !important;
