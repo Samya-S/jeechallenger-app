@@ -510,3 +510,16 @@ textarea {
     background-position: 0% 50%;
   }
 }
+
+/* Screen reader only class - hides content visually but keeps it accessible to crawlers and screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

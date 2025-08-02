@@ -270,8 +270,8 @@ const HomeComponent = () => {
         </Link>
       </div>
 
-      {/* Hidden SEO links for AI Tutor pages */}
-      <div style={{ display: 'none' }}>
+      {/* SEO links for AI Tutor pages - visually hidden but accessible to crawlers */}
+      <div className="sr-only">
         <Link href="/ai-tutor/privacy">AI Tutor Privacy Policy</Link>
         <Link href="/ai-tutor/terms">AI Tutor Terms of Service</Link>
       </div>
