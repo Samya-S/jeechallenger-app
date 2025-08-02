@@ -133,17 +133,7 @@ body {
   text-align: center;
 }
 
-.navbar {
-  @apply bg-white/50 dark:bg-black/50 text-black dark:text-white;
-}
-
-.navbarLinks li {
-  @apply text-gray-800 dark:text-gray-200;
-}
-
-.columnsDropdownContent {
-  @apply bg-white/50 dark:bg-black/50;
-}
+/* Navbar styles moved to module CSS for better organization */
 
 .thumbnailImg {
   border-top-right-radius: 20px;
@@ -217,21 +207,15 @@ body {
 }
 
 @media screen and (min-width: 768px) {
-  .headingimg {
-    padding-top: 88px;
-  }
+  /* Removed headingimg styles - now using main tag spacing */
 }
 
 @media screen and (min-width: 680px) and (max-width: 768px) {
-  .headingimg {
-    padding-top: 60px;
-  }
+  /* Removed headingimg styles - now using main tag spacing */
 }
 
 @media screen and (max-width: 680px) {
-  .headingimg {
-    padding-top: 64px;
-  }
+  /* Removed headingimg styles - now using main tag spacing */
 }
 
 @media screen and (max-width: 472px) {
@@ -522,4 +506,22 @@ textarea {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Add proper spacing for fixed navbar */
+main {
+  padding-top: 4.5rem; /* Matches navbar height */
+}
+
+/* Responsive spacing for different screen sizes */
+@media screen and (max-width: 900px) {
+  main {
+    padding-top: 4rem; /* Slightly less on mobile */
+  }
+}
+
+@media screen and (max-width: 640px) {
+  main {
+    padding-top: 4rem;
+  }
 }
