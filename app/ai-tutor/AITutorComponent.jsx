@@ -19,76 +19,75 @@ const AITutorComponent = () => {
 
   // Load user and messages from backend on mount
   useEffect(() => {
-    const loadUserAndMessages = async () => {
-      const token = localStorage.getItem('ai-tutor-token');
+    loadUserAndMessages();
+  }, []);
 
-      if (token) {
-        try {
-          // Get current user profile from backend
-          const userResponse = await fetch('/api/auth/me', {
+  // Note: Messages are now stored on the backend, no need for localStorage
+  const loadUserAndMessages = async () => {
+    const token = localStorage.getItem('ai-tutor-token');
+
+    if (token) {
+      try {
+        // Get current user profile from backend
+        const userResponse = await fetch('/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          setUser(userData);
+
+          // Load chat history from backend
+          const historyResponse = await fetch('/api/chat/history', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           });
 
-          if (userResponse.ok) {
-            const userData = await userResponse.json();
-            setUser(userData);
+          if (historyResponse.ok) {
+            const historyData = await historyResponse.json();
+            // Convert backend format to frontend format
+            const messagesWithDates = historyData.messages.map(msg => {
+              // Create user message
+              const userMessage = {
+                id: `user_${msg.id}`,
+                text: msg.message,
+                sender: "user",
+                timestamp: new Date(msg.timestamp),
+                isError: false
+              };
 
-            // Load chat history from backend
-            const historyResponse = await fetch('/api/chat/history', {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            });
+              // Create AI message
+              const aiMessage = {
+                id: `ai_${msg.id}`,
+                text: msg.response,
+                sender: "ai",
+                timestamp: new Date(msg.timestamp),
+                isError: false
+              };
 
-            if (historyResponse.ok) {
-              const historyData = await historyResponse.json();
-              // Convert backend format to frontend format
-              const messagesWithDates = historyData.messages.map(msg => {
-                // Create user message
-                const userMessage = {
-                  id: `user_${msg.id}`,
-                  text: msg.message,
-                  sender: "user",
-                  timestamp: new Date(msg.timestamp),
-                  isError: false
-                };
+              return [userMessage, aiMessage];
+            }).flat(); // Flatten the array of message pairs
 
-                // Create AI message
-                const aiMessage = {
-                  id: `ai_${msg.id}`,
-                  text: msg.response,
-                  sender: "ai",
-                  timestamp: new Date(msg.timestamp),
-                  isError: false
-                };
-
-                return [userMessage, aiMessage];
-              }).flat(); // Flatten the array of message pairs
-
-              setMessages(messagesWithDates);
-            }
-          } else {
-            // Token is invalid, clear storage
-            localStorage.removeItem('ai-tutor-user');
-            localStorage.removeItem('ai-tutor-token');
-            localStorage.removeItem('ai-tutor-messages');
+            setMessages(messagesWithDates);
           }
-        } catch (error) {
-          console.error('Error loading user data:', error);
-          // Clear invalid data
+        } else {
+          // Token is invalid, clear storage
           localStorage.removeItem('ai-tutor-user');
           localStorage.removeItem('ai-tutor-token');
           localStorage.removeItem('ai-tutor-messages');
         }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        // Clear invalid data
+        localStorage.removeItem('ai-tutor-user');
+        localStorage.removeItem('ai-tutor-token');
+        localStorage.removeItem('ai-tutor-messages');
       }
-    };
-
-    loadUserAndMessages();
-  }, []);
-
-  // Note: Messages are now stored on the backend, no need for localStorage
+    }
+  };
 
   // Auto-scroll to bottom when new messages are added
   const scrollToBottom = () => {
@@ -244,6 +243,7 @@ const AITutorComponent = () => {
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     setAuthError("");
+    loadUserAndMessages();
   };
 
   const handleLoginError = (errorMessage) => {
