@@ -52,7 +52,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           <span>Signing in...</span>
         </div>
       ) : (
-        <div className="google-btn-parent">
+        <div className="w-full flex justify-center">
           <GoogleLogin
             onSuccess={handleSuccess}
             onError={handleError}
@@ -65,13 +65,6 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           />
         </div>
       )}
-      <style jsx global>{`
-        .google-btn-parent > * > * {
-          width: 100% !important;
-          min-width: 100% !important;
-          max-width: 100% !important;
-        }
-      `}</style>
     </div>
   );
 };
