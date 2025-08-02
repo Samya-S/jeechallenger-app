@@ -1,10 +1,8 @@
 import "./globals.css";
-import Navbar from "@/components/common/Navbar";
-import Footer from "@/components/common/Footer";
-import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
+import ConditionalLayout from "@/components/AiTutorComponents/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
-import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
 import { ThemeProvider } from 'next-themes';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 export const metadata = {
@@ -21,14 +19,14 @@ export default function RootLayout({ children }) {
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          <TelegramJoinFloat />
-          {children}
-          <Footer />
-          <AIAnnouncementModal />
-          {/* <SplashCursor /> */}
-        </ThemeProvider>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+            {/* <SplashCursor /> */}
+          </ThemeProvider>
+        </GoogleOAuthProvider>
       </body>
       <GoogleAnalytics gaId="G-6YPF169T9S" />
     </html>

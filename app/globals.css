@@ -2,6 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Scrollbar Styles */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thumb-gray-300 {
+    scrollbar-color: #d1d5db transparent;
+  }
+
+  .scrollbar-thumb-gray-400 {
+    scrollbar-color: #9ca3af transparent;
+  }
+
+  .scrollbar-thumb-gray-500 {
+    scrollbar-color: #6b7280 transparent;
+  }
+
+  .scrollbar-thumb-gray-600 {
+    scrollbar-color: #4b5563 transparent;
+  }
+
+  .scrollbar-track-transparent {
+    scrollbar-color: transparent transparent;
+  }
+
+  /* Webkit scrollbar styles for Chrome/Safari */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+    min-height: 20px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+
+  /* Dark mode scrollbar styles */
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+  }
+
+  /* Conditional scrollbar - only show when needed */
+  .scrollbar-conditional {
+    overflow-y: auto;
+  }
+
+  .scrollbar-conditional::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-conditional::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0;
+  }
+
+  .scrollbar-conditional::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+    min-height: 20px;
+  }
+
+  .scrollbar-conditional::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+
+  /* Dark mode conditional scrollbar */
+  .dark .scrollbar-conditional::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+  }
+
+  .dark .scrollbar-conditional::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+  }
+}
+
+/* Custom scrollbar for AI Tutor textarea */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
 @font-face {
   font-family: "Jost";
   src: url('/fonts/Jost-VariableFont_wght.ttf') format('truetype');
@@ -149,6 +265,7 @@ body {
 }
 
 @media screen and (min-width: 680px) {
+
   .block1,
   .block2 {
     /* border: 1px solid black; */
