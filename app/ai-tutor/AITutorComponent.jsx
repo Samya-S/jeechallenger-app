@@ -55,7 +55,7 @@ const AITutorComponent = () => {
                 id: `user_${msg.id}`,
                 text: msg.message,
                 sender: "user",
-                timestamp: new Date(msg.timestamp),
+                timestamp: new Date(msg.timestamp + 'Z'), // Ensure UTC interpretation
                 isError: false
               };
 
@@ -64,7 +64,7 @@ const AITutorComponent = () => {
                 id: `ai_${msg.id}`,
                 text: msg.response,
                 sender: "ai",
-                timestamp: new Date(msg.timestamp),
+                timestamp: new Date(msg.timestamp + 'Z'), // Ensure UTC interpretation
                 isError: false
               };
 
@@ -150,7 +150,7 @@ const AITutorComponent = () => {
       id: Date.now(),
       text: inputMessage.trim(),
       sender: "user",
-      timestamp: new Date(),
+      timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -181,7 +181,7 @@ const AITutorComponent = () => {
         id: `ai_${Date.now()}`,
         text: data.response,
         sender: "ai",
-        timestamp: new Date(),
+        timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -192,7 +192,7 @@ const AITutorComponent = () => {
         id: Date.now() + 1,
         text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
         sender: "ai",
-        timestamp: new Date(),
+        timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
         isError: true,
       };
 
