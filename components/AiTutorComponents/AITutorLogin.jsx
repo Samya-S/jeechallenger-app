@@ -51,7 +51,7 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
             </div>
 
             {/* Benefits */}
-            <div className="space-y-3">
+            <div className="space-y-3 w-fit mx-auto">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                 What you'll get:
               </h3>

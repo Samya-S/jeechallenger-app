@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FaPaperPlane, FaRobot, FaUser, FaSpinner, FaTrash } from "react-icons/fa";
+import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 
@@ -250,6 +251,10 @@ const AITutorComponent = () => {
   };
 
   const handleLogout = () => {
+    // Clear Google OAuth session
+    googleLogout();
+    
+    // Clear local state and storage
     setUser(null);
     setMessages([]);
     localStorage.removeItem('ai-tutor-user');

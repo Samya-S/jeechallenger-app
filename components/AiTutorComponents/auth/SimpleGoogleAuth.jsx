@@ -25,11 +25,11 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
       }
 
       const data = await response.json();
-      
+
       // Store token and user data based on your API response
       localStorage.setItem('ai-tutor-token', data.access_token);
       localStorage.setItem('ai-tutor-user', JSON.stringify(data.user));
-      
+
       onLoginSuccess(data.user);
     } catch (error) {
       console.error('Google login error:', error);
@@ -61,6 +61,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           text="continue_with"
           shape="rectangular"
           width="100%"
+          className="!w-full"
         />
       )}
     </div>
