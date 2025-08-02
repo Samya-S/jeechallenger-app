@@ -13,7 +13,7 @@ export default function ConditionalLayout({ children }) {
   return (
     <>
       {!isAITutorPage && <Navbar />}
-      {!isAITutorPage && <TelegramJoinFloat />}
+      {/* {!isAITutorPage && <TelegramJoinFloat />} */}
       {isAITutorPage ? (
         <div className="text-left">
           {children}

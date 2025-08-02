@@ -5,7 +5,7 @@ import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaNewspaper }
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-200/30 dark:bg-zinc-900">
+    <footer className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-[20px] border-t border-gray-200/50 dark:border-gray-700/50">
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Social Links */}
         <div className="flex justify-center gap-8 mb-10">
@@ -68,7 +68,7 @@ const Footer = () => {
         <div className="text-center text-gray-600 dark:text-gray-400">
           <p className="text-base">
             Copyright © 2020-{new Date().getFullYear()}{" "}
-            <span className="font-medium">Samya Saha</span>
+            <span className="font-medium">JEE Challenger</span>
           </p>
           <p className="text-sm mt-2">All Rights Reserved</p>
         </div>
