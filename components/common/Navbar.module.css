@@ -146,28 +146,18 @@
   left: 0;
   min-width: 200px;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgb(255, 255, 255);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
 }
 
 :global(.dark) .columnsDropdownContent {
-  background: rgba(31, 41, 55, 0.95);
+  background: rgb(31, 41, 55);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-}
-
-.columnsDropdownContent[style*="height: auto"] {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
 }
 
 .columnsDropdownContent ul {

@@ -120,7 +120,11 @@ export default function NavBar() {
                 </button>
                 <div
                   className={Styles.columnsDropdownContent}
-                  style={{ height: dropdownState[index] ? 'auto' : '0' }}
+                  style={{ 
+                    opacity: dropdownState[index] ? 1 : 0,
+                    visibility: dropdownState[index] ? 'visible' : 'hidden',
+                    transform: dropdownState[index] ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'
+                  }}
                   role="menu"
                   aria-label={`${item.title} submenu`}
                 >
