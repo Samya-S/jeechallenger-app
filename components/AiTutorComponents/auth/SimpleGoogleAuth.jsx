@@ -52,18 +52,26 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           <span>Signing in...</span>
         </div>
       ) : (
-        <GoogleLogin
-          onSuccess={handleSuccess}
-          onError={handleError}
-          disabled={isLoading}
-          theme="outline"
-          size="large"
-          text="continue_with"
-          shape="rectangular"
-          width="100%"
-          className="mx-auto"
-        />
+        <div className="google-btn-parent">
+          <GoogleLogin
+            onSuccess={handleSuccess}
+            onError={handleError}
+            disabled={isLoading}
+            theme="outline"
+            size="large"
+            text="continue_with"
+            shape="rectangular"
+            width="100%"
+          />
+        </div>
       )}
+      <style jsx global>{`
+        .google-btn-parent > div {
+          width: 100% !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
+        }
+      `}</style>
     </div>
   );
 };
