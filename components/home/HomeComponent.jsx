@@ -269,6 +269,12 @@ const HomeComponent = () => {
           <button className="button2 !px-5 !py-1">Visit</button>
         </Link>
       </div>
+
+      {/* Hidden SEO links for AI Tutor pages */}
+      <div style={{ display: 'none' }}>
+        <Link href="/ai-tutor/privacy">AI Tutor Privacy Policy</Link>
+        <Link href="/ai-tutor/terms">AI Tutor Terms of Service</Link>
+      </div>
     </div>
   );
 };
