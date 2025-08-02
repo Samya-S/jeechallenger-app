@@ -61,7 +61,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           text="continue_with"
           shape="rectangular"
           width="100%"
-          className="!w-full"
+          className="mx-auto"
         />
       )}
     </div>
