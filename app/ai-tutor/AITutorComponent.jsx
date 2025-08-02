@@ -135,6 +135,11 @@ const AITutorComponent = () => {
       groups[dateKey].push(message);
     });
 
+    // Sort messages within each group by timestamp
+    Object.keys(groups).forEach(dateKey => {
+      groups[dateKey].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    });
+
     return groups;
   };
 
@@ -262,6 +267,13 @@ const AITutorComponent = () => {
   };
 
   const messageGroups = groupMessagesByDate(messages);
+  
+  // Sort groups by their earliest message timestamp
+  const sortedGroupEntries = Object.entries(messageGroups).sort(([, messagesA], [, messagesB]) => {
+    const earliestA = Math.min(...messagesA.map(m => new Date(m.timestamp)));
+    const earliestB = Math.min(...messagesB.map(m => new Date(m.timestamp)));
+    return earliestA - earliestB;
+  });
 
   // Show login screen if user is not authenticated
   if (!user) {
@@ -352,7 +364,7 @@ const AITutorComponent = () => {
                 </div>
               </div>
             ) : (
-              Object.entries(messageGroups).map(([date, dateMessages]) => (
+              sortedGroupEntries.map(([date, dateMessages]) => (
                 <div key={date}>
                   {/* Date Separator */}
                   <div className="flex items-center justify-center my-8">
