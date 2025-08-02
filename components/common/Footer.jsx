@@ -5,7 +5,7 @@ import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaNewspaper }
 
 const Footer = () => {
   return (
-    <footer className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-[20px] border-t border-gray-200/50 dark:border-gray-700/50">
+    <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-[20px]">
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Social Links */}
         <div className="flex justify-center gap-8 mb-10">
