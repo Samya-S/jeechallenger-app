@@ -199,7 +199,7 @@ const JeeMainComponent = () => {
         {/* Papers Content Sections */}
         {show2020 && (
           <section className="py-8 px-4 sm:px-6 lg:px-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-6xl mx-auto">
+            <div className="rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 max-w-6xl mx-auto overflow-hidden">
               <JeeMain2020papers />
             </div>
           </section>
@@ -207,7 +207,7 @@ const JeeMainComponent = () => {
 
         {show2022 && (
           <section className="py-8 px-4 sm:px-6 lg:px-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-6xl mx-auto">
+            <div className="rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 max-w-6xl mx-auto overflow-hidden">
               <JeeMain2022papers />
             </div>
           </section>
