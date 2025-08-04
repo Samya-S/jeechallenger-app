@@ -470,7 +470,7 @@ const HomeComponent = () => {
 
           <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-lg border border-yellow-200 dark:border-yellow-800 p-6 mb-6">
             <h4 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3 text-center">How to Contribute:</h4>
-            <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 text-left max-w-2xl mx-auto">
+            <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 text-left w-fit mx-auto">
               <li className="flex items-start">
                 <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">1</span>
                 Click the "Upload Files" button below
