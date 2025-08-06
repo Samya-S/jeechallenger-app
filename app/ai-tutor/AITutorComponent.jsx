@@ -1,10 +1,55 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { FaPaperPlane, FaRobot, FaUser, FaSpinner, FaTrash } from "react-icons/fa";
+import { FaPaperPlane, FaRobot, FaUser, FaSpinner, FaTrash, FaPaperclip } from "react-icons/fa";
 import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
+import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
+import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
+import { authenticatedFetch, clearAuthData } from "@/lib/auth-utils";
+import ReactMarkdown from 'react-markdown';
+import 'katex/dist/katex.min.css';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
+// Component to render AI responses with markdown and math support
+const AIResponseRenderer = ({ content }) => {
+  return (
+    <div className="text-base leading-relaxed">
+      <ReactMarkdown 
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={{
+          p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+          h1: ({children}) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+          h2: ({children}) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+          h3: ({children}) => <h3 className="text-sm font-bold mb-2">{children}</h3>,
+          ul: ({children}) => <ul className="list-disc mb-2 space-y-1 ml-4">{children}</ul>,
+          ol: ({children}) => <ol className="list-decimal mb-2 space-y-1 ml-4">{children}</ol>,
+          li: ({children}) => <li className="mb-1 leading-relaxed">{children}</li>,
+          a: ({href, children}) => (
+            <a 
+              href={href} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+            >
+              {children}
+            </a>
+          ),
+          code: ({children}) => (
+            <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
+          ),
+          pre: ({children}) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
+          blockquote: ({children}) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+};
 
 const AITutorComponent = () => {
   const [user, setUser] = useState(null);
@@ -14,8 +59,37 @@ const AITutorComponent = () => {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showClearError, setShowClearError] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Add CSS to constrain KaTeX elements
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .katex-display {
+        margin: 0.5em 0 !important;
+        overflow-x: auto !important;
+        max-width: 100% !important;
+        position: relative !important;
+      }
+      .katex {
+        font-size: 1em !important;
+        position: relative !important;
+      }
+      .katex-html {
+        position: relative !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   // Load user and messages from backend on mount
   useEffect(() => {
@@ -29,34 +103,95 @@ const AITutorComponent = () => {
     if (token) {
       try {
         // Get current user profile from backend
-        const userResponse = await fetch('/api/auth/me', {
+        const userResponse = await authenticatedFetch(API_ENDPOINTS.AUTH.ME, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
-        });
+        }, handleLogout);
 
         if (userResponse.ok) {
           const userData = await userResponse.json();
           setUser(userData);
 
           // Load chat history from backend
-          const historyResponse = await fetch('/api/chat/history', {
+          const historyResponse = await authenticatedFetch(API_ENDPOINTS.CHAT.HISTORY, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
-          });
+          }, handleLogout);
 
           if (historyResponse.ok) {
             const historyData = await historyResponse.json();
+
             // Convert backend format to frontend format
-            const messagesWithDates = historyData.messages.map(msg => {
+            const messagesWithDates = await Promise.all(historyData.messages.map(async msg => {
+              // Fetch file details if attached_files exist
+              let attachedFiles = [];
+              if (msg.attached_files && msg.attached_files.length > 0) {
+                try {
+                  // Check if attached_files contains file objects or just IDs
+                  const firstFile = msg.attached_files[0];
+
+                  if (typeof firstFile === 'string') {
+                    // If it's just file IDs, try to get file metadata from the list endpoint
+                    try {
+                      const listResponse = await authenticatedFetch(API_ENDPOINTS.FILES.LIST, {
+                        headers: {
+                          'Authorization': `Bearer ${token}`
+                        }
+                      }, handleLogout);
+
+                      if (listResponse.ok) {
+                        const listData = await listResponse.json();
+                        // Find files that match the attached file IDs
+                        attachedFiles = msg.attached_files.map(fileId => {
+                          const fileData = listData?.find(file => file.id === fileId);
+                          return fileData || {
+                            id: fileId,
+                            original_filename: `File ${fileId}`,
+                            file_size: 0,
+                            mime_type: 'application/octet-stream',
+                            file_type: 'other'
+                          };
+                        });
+                      } else {
+                        // Fallback to basic file objects
+                        attachedFiles = msg.attached_files.map(fileId => ({
+                          id: fileId,
+                          original_filename: `File ${fileId}`,
+                          file_size: 0,
+                          mime_type: 'application/octet-stream',
+                          file_type: 'other'
+                        }));
+                      }
+                    } catch (error) {
+                      console.error('Error fetching file list:', error);
+                      // Fallback to basic file objects
+                      attachedFiles = msg.attached_files.map(fileId => ({
+                        id: fileId,
+                        original_filename: `File ${fileId}`,
+                        file_size: 0,
+                        mime_type: 'application/octet-stream',
+                        file_type: 'other'
+                      }));
+                    }
+                  } else {
+                    // If it's already file objects, use them directly
+                    attachedFiles = msg.attached_files;
+                  }
+                } catch (error) {
+                  console.error('Error fetching file details:', error);
+                }
+              }
+
               // Create user message
               const userMessage = {
                 id: `user_${msg.id}`,
                 text: msg.message,
                 sender: "user",
                 timestamp: new Date(msg.timestamp + 'Z'), // Ensure UTC interpretation
-                isError: false
+                isError: false,
+                attachedFiles: attachedFiles
               };
 
               // Create AI message
@@ -69,22 +204,20 @@ const AITutorComponent = () => {
               };
 
               return [userMessage, aiMessage];
-            }).flat(); // Flatten the array of message pairs
+            }));
 
-            setMessages(messagesWithDates);
+            // Flatten the array of message pairs
+            const flattenedMessages = messagesWithDates.flat();
+            setMessages(flattenedMessages);
           }
         } else {
           // Token is invalid, clear storage
-          localStorage.removeItem('ai-tutor-user');
-          localStorage.removeItem('ai-tutor-token');
-          localStorage.removeItem('ai-tutor-messages');
+          clearAuthData();
         }
       } catch (error) {
         console.error('Error loading user data:', error);
         // Clear invalid data
-        localStorage.removeItem('ai-tutor-user');
-        localStorage.removeItem('ai-tutor-token');
-        localStorage.removeItem('ai-tutor-messages');
+        clearAuthData();
       }
     }
   };
@@ -151,6 +284,7 @@ const AITutorComponent = () => {
       text: inputMessage.trim(),
       sender: "user",
       timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
+      attachedFiles: attachedFiles.length > 0 ? attachedFiles : undefined
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -159,7 +293,7 @@ const AITutorComponent = () => {
 
     try {
       const token = localStorage.getItem('ai-tutor-token');
-      const response = await fetch("/api/chat", {
+      const response = await authenticatedFetch(API_ENDPOINTS.CHAT.SEND, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -167,9 +301,9 @@ const AITutorComponent = () => {
         },
         body: JSON.stringify({
           message: userMessage.text,
-          context_data: "",
+          file_ids: attachedFiles.map(file => file.id),
         }),
-      });
+      }, handleLogout);
 
       if (!response.ok) {
         throw new Error("Failed to get response from AI");
@@ -185,6 +319,9 @@ const AITutorComponent = () => {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+
+      // Clear attached files after sending
+      setAttachedFiles([]);
     } catch (error) {
       console.error("Error sending message:", error);
 
@@ -217,12 +354,39 @@ const AITutorComponent = () => {
     const token = localStorage.getItem('ai-tutor-token');
 
     try {
-      const response = await fetch('/api/chat/history', {
+      // First, collect all file IDs from messages
+      const fileIds = [];
+      messages.forEach(message => {
+        if (message.attachedFiles && message.attachedFiles.length > 0) {
+          message.attachedFiles.forEach(file => {
+            if (file.id && !fileIds.includes(file.id)) {
+              fileIds.push(file.id);
+            }
+          });
+        }
+      });
+
+      // Delete all files first
+      if (fileIds.length > 0) {
+        const deletePromises = fileIds.map(fileId =>
+          authenticatedFetch(API_ENDPOINTS.FILES.DELETE(fileId), {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }, handleLogout)
+        );
+
+        await Promise.all(deletePromises);
+      }
+
+      // Then clear chat history
+      const response = await authenticatedFetch(API_ENDPOINTS.CHAT.HISTORY, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
         }
-      });
+      }, handleLogout);
 
       if (response.ok) {
         setMessages([]);
@@ -258,16 +422,25 @@ const AITutorComponent = () => {
   const handleLogout = () => {
     // Clear Google OAuth session
     googleLogout();
-    
-    // Clear local state and storage
+
+    // Reset all states to initial values
     setUser(null);
     setMessages([]);
-    localStorage.removeItem('ai-tutor-user');
-    localStorage.removeItem('ai-tutor-token');
+    setInputMessage("");
+    setIsLoading(false);
+    setShowClearConfirm(false);
+    setShowClearError(false);
+    setAuthError("");
+    setAttachedFiles([]);
+    setIsUploading(false);
+    setUploadError("");
+
+    // Clear all auth-related data from localStorage
+    clearAuthData();
   };
 
   const messageGroups = groupMessagesByDate(messages);
-  
+
   // Sort groups by their earliest message timestamp
   const sortedGroupEntries = Object.entries(messageGroups).sort(([, messagesA], [, messagesB]) => {
     const earliestA = Math.min(...messagesA.map(m => new Date(m.timestamp)));
@@ -285,6 +458,54 @@ const AITutorComponent = () => {
       />
     );
   }
+
+  // Direct file upload handler
+  const handleDirectFileUpload = async (files) => {
+    setUploadError("");
+    setIsUploading(true);
+    const token = localStorage.getItem('ai-tutor-token');
+    if (!token) {
+      handleLogout();
+      setIsUploading(false);
+      return;
+    }
+    const formData = new FormData();
+    Array.from(files).forEach((file) => {
+      formData.append('files', file);
+    });
+    try {
+      const response = await authenticatedFetch(API_ENDPOINTS.FILES.UPLOAD, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      }, handleLogout);
+      
+      if (!response.ok) {
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        try {
+          const errorData = await response.text();
+          try {
+            const jsonError = JSON.parse(errorData);
+            errorMessage = jsonError.detail || jsonError.message || errorMessage;
+          } catch {
+            errorMessage = errorData || errorMessage;
+          }
+        } catch { }
+        throw new Error(errorMessage);
+      }
+      const data = await response.json();
+      setAttachedFiles(prev => [...prev, ...(data.files || [])]);
+    } catch (error) {
+      setUploadError(error.message || 'Failed to upload files');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Restore removeAttachedFile handler
+  const removeAttachedFile = (fileId) => {
+    setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
+  };
 
   return (
     <div className="h-screen bg-gray-50 dark:bg-black overflow-hidden">
@@ -410,14 +631,32 @@ const AITutorComponent = () => {
                                   : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md"
                                 }`}
                             >
-                              <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                {message.text}
-                              </p>
+                              {message.sender === "ai" ? (
+                                <AIResponseRenderer content={message.text} />
+                              ) : (
+                                <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
+                                  {message.text}
+                                </p>
+                              )}
+
+                              {/* Display attached files in user messages */}
+                              {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
+                                <div className="mt-3 space-y-2">
+                                  {/* <p className="text-xs opacity-80">Attached files:</p> */}
+                                  {message.attachedFiles.map((file) => (
+                                    <FileAttachment
+                                      key={file.id}
+                                      file={file}
+                                      showRemove={false}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                             </div>
                             {/* Timestamp */}
                             <p
                               className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
-                                ? "text-blue-500 dark:text-blue-400"
+                                ? "text-blue-500 dark:text-blue-400 text-right"
                                 : message.isError
                                   ? "text-red-600 dark:text-red-400"
                                   : "text-gray-500 dark:text-gray-400"
@@ -538,39 +777,100 @@ const AITutorComponent = () => {
         {/* Input Area */}
         <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-8 py-6 shadow-lg">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-end space-x-3">
-              <div className="flex-1 relative">
-                <textarea
-                  ref={inputRef}
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask me anything about JEE preparation..."
-                  className="w-full px-5 py-4 pr-8 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
-                  rows="1"
-                  style={{
-                    minHeight: "48px",
-                    maxHeight: "120px",
-                  }}
-                  onInput={(e) => {
-                    e.target.style.height = "auto";
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-                  }}
-                />
+            {/* Attached Files Display */}
+            {attachedFiles.length > 0 && (
+              <div className="mb-4 space-y-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Attached files ({attachedFiles.length}):
+                </p>
+                <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+                  {attachedFiles.map((file) => (
+                    <FileAttachment
+                      key={file.id}
+                      file={file}
+                      onRemove={removeAttachedFile}
+                      showRemove={true}
+                    />
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Uploading animation above textarea */}
+            {isUploading && (
+              <div className="flex items-center justify-center mb-2">
+                <FaSpinner className="animate-spin text-blue-600 mr-2" />
+                <span className="text-blue-700 dark:text-blue-300">Uploading files...</span>
+              </div>
+            )}
+            {uploadError && (
+              <div className="mb-2 p-2 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm text-center">
+                {uploadError}
+              </div>
+            )}
+
+            <div className="relative">
+              <textarea
+                ref={inputRef}
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask me anything about JEE preparation..."
+                className="w-full px-16 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
+                rows="1"
+                style={{
+                  minHeight: "48px",
+                  maxHeight: "120px",
+                }}
+                onInput={(e) => {
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+                }}
+                onPaste={e => {
+                  if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+                    e.preventDefault();
+                    handleDirectFileUpload(e.clipboardData.files);
+                  }
+                }}
+              />
+
+              {/* Hidden file input for direct upload */}
+              <input
+                type="file"
+                multiple
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={e => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    handleDirectFileUpload(e.target.files);
+                    e.target.value = null;
+                  }
+                }}
+                accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
+              />
+              {/* File Upload Button - Left side */}
+              <button
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                disabled={isLoading || isUploading}
+                className="absolute left-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                title="Attach files"
+              >
+                <FaPaperclip className="text-xl" />
+              </button>
+              {/* Send Button - Right side */}
               <button
                 onClick={sendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className={`p-4 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${!inputMessage.trim() || isLoading
+                className={`absolute right-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${!inputMessage.trim() || isLoading
                   ? "bg-gray-300 dark:bg-gray-600 text-gray-500 cursor-not-allowed"
                   : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
                   }`}
               >
-                <FaPaperPlane className="text-sm" />
+                <FaPaperPlane className="text-lg -ml-[2px]" />
               </button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Press Enter to send, Shift+Enter for new line
+              Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
             </p>
           </div>
         </div>
