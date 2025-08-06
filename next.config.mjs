@@ -9,11 +9,15 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    // Conditional destination based on environment
+    const destination = process.env.NODE_ENV === 'production' 
+      ? 'https://jee-challenger-ai.vercel.app/:path*'
+      : 'http://localhost:8000/:path*';
+    
     return [
       {
         source: '/api/:path*',
-        destination: 'https://jee-challenger-ai.vercel.app/:path*', 
-        // destination: 'http://localhost:8000/:path*',
+        destination: destination,
       }
     ];
   },
