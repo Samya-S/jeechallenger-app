@@ -201,6 +201,7 @@ const AITutorProfileComponent = () => {
                   <div className="space-y-3">
                     <Link
                       href="/ai-tutor/privacy"
+                      target="_blank"
                       className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                     >
                       <div>
@@ -211,6 +212,7 @@ const AITutorProfileComponent = () => {
                     </Link>
                     <Link
                       href="/ai-tutor/terms"
+                      target="_blank"
                       className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                     >
                       <div>
