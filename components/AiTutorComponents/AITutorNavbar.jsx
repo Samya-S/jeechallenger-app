@@ -11,6 +11,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
   const dropdownRef = useRef(null);
   const pathname = usePathname();
   const isProfilePage = pathname === '/ai-tutor/profile';
+  const isChatPage = pathname === '/ai-tutor';
 
   // Handle scroll detection for the messages container
   useEffect(() => {
@@ -18,11 +19,11 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
       // Look for the messages container within the AI Tutor component
       const messagesContainer = document.querySelector('.overflow-y-auto');
       if (messagesContainer) {
-        const scrolled = messagesContainer.scrollTop > 10;
+        const scrolled = messagesContainer.scrollTop > 10 && isChatPage;
         setIsScrolled(scrolled);
       } else {
         // Fallback to window scroll
-        const scrolled = window.scrollY > 10;
+        const scrolled = window.scrollY > 10 && isChatPage;
         setIsScrolled(scrolled);
       }
     };
