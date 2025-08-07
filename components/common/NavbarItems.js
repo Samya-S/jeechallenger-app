@@ -45,22 +45,9 @@ const NavbarItems = [
     ]
   },
   {
-    title: 'More platforms',
-    type: 'dropdown',
-    items: [
-      {
-        title: 'Unacademy',
-        url: '/more-platforms/unacademy'
-      },
-      {
-        title: 'Apni Kaksha',
-        url: '/more-platforms/apnikaksha'
-      },
-      {
-        title: 'Physics Wallah',
-        url: '/more-platforms/physicswallah'
-      }
-    ]
+    title: 'AI Tutor 🤖',
+    type: 'link',
+    url: '/ai-tutor'
   },
   {
     title: 'Latest News',
