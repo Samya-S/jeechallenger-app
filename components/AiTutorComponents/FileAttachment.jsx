@@ -181,7 +181,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
       {/* Image Preview Modal */}
       {showPreview && previewUrl && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 !m-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="relative max-w-4xl max-h-[90vh] mx-4">
             <button
               onClick={closePreview}
