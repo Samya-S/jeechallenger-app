@@ -845,15 +845,15 @@ const AITutorComponent = () => {
         )}
 
         {/* Input Area */}
-        <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-8 py-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg">
           <div className="max-w-4xl mx-auto">
             {/* Attached Files Display */}
             {attachedFiles.length > 0 && (
-              <div className="mb-4 space-y-2">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="mb-3 space-y-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Attached files ({attachedFiles.length}):
                 </p>
-                <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+                <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
                   {attachedFiles.map((file) => (
                     <FileAttachment
                       key={file.id}
@@ -868,13 +868,13 @@ const AITutorComponent = () => {
 
             {/* Uploading animation above textarea */}
             {isUploading && (
-              <div className="flex items-center justify-center mb-2">
-                <FaSpinner className="animate-spin text-blue-600 mr-2" />
-                <span className="text-blue-700 dark:text-blue-300">Uploading files...</span>
+              <div className="flex items-center justify-center mb-1">
+                <FaSpinner className="animate-spin text-blue-600 mr-2 text-sm" />
+                <span className="text-blue-700 dark:text-blue-300 text-sm">Uploading file(s)...</span>
               </div>
             )}
             {uploadError && (
-              <div className="mb-2 p-2 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm text-center">
+              <div className="mb-1 p-1.5 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs text-center">
                 {uploadError}
               </div>
             )}
@@ -886,11 +886,11 @@ const AITutorComponent = () => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me anything about JEE preparation..."
-                className="w-full px-16 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
+                className="w-full px-14 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
                 rows="1"
                 style={{
-                  minHeight: "48px",
-                  maxHeight: "120px",
+                  minHeight: "40px",
+                  maxHeight: "100px",
                 }}
                 onInput={(e) => {
                   e.target.style.height = "auto";
@@ -922,25 +922,25 @@ const AITutorComponent = () => {
               <button
                 onClick={() => fileInputRef.current && fileInputRef.current.click()}
                 disabled={isLoading || isUploading}
-                className="absolute left-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                className="absolute left-2.5 bottom-[18px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
                 title="Attach files"
               >
-                <FaPaperclip className="text-xl" />
+                <FaPaperclip className="text-lg" />
               </button>
               {/* Send Button - Right side */}
               <button
                 onClick={sendMessage}
                 disabled={!inputMessage.trim() || isLoading || isUploading}
-                className={`absolute right-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
+                className={`absolute right-2.5 bottom-[18px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
                   inputMessage.trim() && !isLoading && !isUploading
                     ? "bg-blue-600 hover:bg-blue-700 text-white"
                     : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                 }`}
               >
-                <FaPaperPlane className="text-lg -ml-[2px]" />
+                <FaPaperPlane className="text-base -ml-[1px]" />
               </button>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
               Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
             </p>
           </div>
