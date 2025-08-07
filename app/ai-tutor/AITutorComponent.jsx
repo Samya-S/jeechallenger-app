@@ -906,7 +906,7 @@ const AITutorComponent = () => {
               <button
                 onClick={sendMessage}
                 disabled={!inputMessage.trim() || isLoading || isUploading}
-                className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full transition-all duration-200 ${
+                className={`absolute right-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
                   inputMessage.trim() && !isLoading && !isUploading
                     ? "bg-blue-600 hover:bg-blue-700 text-white"
                     : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
