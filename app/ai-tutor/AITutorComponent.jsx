@@ -922,7 +922,7 @@ const AITutorComponent = () => {
               <button
                 onClick={() => fileInputRef.current && fileInputRef.current.click()}
                 disabled={isLoading || isUploading}
-                className="absolute left-2.5 bottom-[18px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                className="absolute left-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
                 title="Attach files"
               >
                 <FaPaperclip className="text-lg" />
@@ -931,7 +931,7 @@ const AITutorComponent = () => {
               <button
                 onClick={sendMessage}
                 disabled={!inputMessage.trim() || isLoading || isUploading}
-                className={`absolute right-2.5 bottom-[18px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
+                className={`absolute right-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
                   inputMessage.trim() && !isLoading && !isUploading
                     ? "bg-blue-600 hover:bg-blue-700 text-white"
                     : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
