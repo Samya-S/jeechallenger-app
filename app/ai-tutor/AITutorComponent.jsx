@@ -306,7 +306,25 @@ const AITutorComponent = () => {
       }, handleLogout);
 
       if (!response.ok) {
-        throw new Error("Failed to get response from AI");
+        let errorMessage = "Failed to get response from AI";
+        
+        if (response.status === 429) {
+          errorMessage = "You've reached your daily limit for AI chat messages. Please try again tomorrow or upgrade your plan for higher limits.";
+        } else {
+          try {
+            const errorData = await response.text();
+            try {
+              const jsonError = JSON.parse(errorData);
+              errorMessage = jsonError.detail || jsonError.message || errorMessage;
+            } catch {
+              errorMessage = errorData || errorMessage;
+            }
+          } catch {
+            // Use default error message
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -325,9 +343,18 @@ const AITutorComponent = () => {
     } catch (error) {
       console.error("Error sending message:", error);
 
+      let displayMessage = "Sorry, I'm having trouble connecting right now. Please try again in a moment.";
+      if (typeof error.message === 'string' && (
+        error.message.includes('limit') ||
+        error.message.includes('File size') ||
+        error.message.includes('Unsupported file type')
+      )) {
+        displayMessage = error.message;
+      }
+
       const errorMessage = {
         id: Date.now() + 1,
-        text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        text: displayMessage,
         sender: "ai",
         timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
         isError: true,
@@ -482,21 +509,39 @@ const AITutorComponent = () => {
       
       if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        try {
-          const errorData = await response.text();
+        
+        if (response.status === 429) {
+          errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+        } else if (response.status === 413) {
+          errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+        } else if (response.status === 400) {
+          errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+        } else {
           try {
-            const jsonError = JSON.parse(errorData);
-            errorMessage = jsonError.detail || jsonError.message || errorMessage;
-          } catch {
-            errorMessage = errorData || errorMessage;
-          }
-        } catch { }
+            const errorData = await response.text();
+            try {
+              const jsonError = JSON.parse(errorData);
+              errorMessage = jsonError.detail || jsonError.message || errorMessage;
+            } catch {
+              errorMessage = errorData || errorMessage;
+            }
+          } catch { }
+        }
+        
         throw new Error(errorMessage);
       }
       const data = await response.json();
       setAttachedFiles(prev => [...prev, ...(data.files || [])]);
     } catch (error) {
-      setUploadError(error.message || 'Failed to upload files');
+      let displayError = 'Failed to upload files';
+      if (typeof error.message === 'string' && (
+        error.message.includes('limit') ||
+        error.message.includes('File size') ||
+        error.message.includes('Unsupported file type')
+      )) {
+        displayError = error.message;
+      }
+      setUploadError(displayError);
     } finally {
       setIsUploading(false);
     }
@@ -860,11 +905,12 @@ const AITutorComponent = () => {
               {/* Send Button - Right side */}
               <button
                 onClick={sendMessage}
-                disabled={!inputMessage.trim() || isLoading}
-                className={`absolute right-3 bottom-4 h-10 w-10 p-2 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${!inputMessage.trim() || isLoading
-                  ? "bg-gray-300 dark:bg-gray-600 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
-                  }`}
+                disabled={!inputMessage.trim() || isLoading || isUploading}
+                className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full transition-all duration-200 ${
+                  inputMessage.trim() && !isLoading && !isUploading
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                }`}
               >
                 <FaPaperPlane className="text-lg -ml-[2px]" />
               </button>

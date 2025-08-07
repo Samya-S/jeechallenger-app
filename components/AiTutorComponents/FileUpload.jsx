@@ -144,13 +144,21 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
           const errorData = await response.text();
           console.log('Error response body:', errorData);
 
-          // Try to parse as JSON
-          try {
-            const jsonError = JSON.parse(errorData);
-            errorMessage = jsonError.detail || jsonError.message || errorMessage;
-          } catch (jsonError) {
-            // If not JSON, use the raw text
-            errorMessage = errorData || errorMessage;
+          if (response.status === 429) {
+            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+          } else if (response.status === 413) {
+            errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+          } else if (response.status === 400) {
+            errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+          } else {
+            // Try to parse as JSON
+            try {
+              const jsonError = JSON.parse(errorData);
+              errorMessage = jsonError.detail || jsonError.message || errorMessage;
+            } catch (jsonError) {
+              // If not JSON, use the raw text
+              errorMessage = errorData || errorMessage;
+            }
           }
         } catch (textError) {
           console.error('Error reading response text:', textError);
@@ -178,7 +186,15 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setError(error.message || 'Failed to upload files');
+      let displayError = 'Failed to upload files';
+      if (typeof error.message === 'string' && (
+        error.message.includes('limit') ||
+        error.message.includes('File size') ||
+        error.message.includes('Unsupported file type')
+      )) {
+        displayError = error.message;
+      }
+      setError(displayError);
     } finally {
       setUploading(false);
     }
