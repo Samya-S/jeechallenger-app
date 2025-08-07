@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaUser, FaRobot, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
-import SubscriptionStatusWidget from "@/components/AiTutorComponents/SubscriptionStatusWidget";
+// import SubscriptionStatusWidget from "@/components/AiTutorComponents/SubscriptionStatusWidget";
 import { useTheme } from "next-themes";
 
 const fetchUserProfile = async (token) => {
@@ -22,11 +22,11 @@ const AITutorProfileComponent = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const subscriptionRef = useRef(null);
+  // const subscriptionRef = useRef(null);
 
-  const scrollToSubscription = () => {
-    subscriptionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // const scrollToSubscription = () => {
+  //   subscriptionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // };
 
   useEffect(() => {
     const token = localStorage.getItem('ai-tutor-token');
@@ -164,7 +164,7 @@ const AITutorProfileComponent = () => {
                 </div>
 
                 {/* Subscription Management */}
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3 flex items-center space-x-2">
                     <FaCreditCard className="text-green-500" />
                     <span>Subscription</span>
@@ -188,9 +188,9 @@ const AITutorProfileComponent = () => {
                       <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                         View
                       </button>
-                    </div> */}
+                    </div> * /}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Security & Privacy */}
                 <div className="space-y-4">
@@ -286,9 +286,9 @@ const AITutorProfileComponent = () => {
             </div>
 
             {/* Subscription Status Widget */}
-            <div ref={subscriptionRef}>
+            {/* <div ref={subscriptionRef}>
               <SubscriptionStatusWidget />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
-import AITutorPlansComponent from "./AITutorPlansComponent";
+import { notFound } from "next/navigation";
+// import AITutorPlansComponent from "./AITutorPlansComponent";
 
 export const metadata = {
   title: "Subscription Plans - AI Tutor - JEE Challenger",
@@ -6,5 +7,6 @@ export const metadata = {
 };
 
 export default function AITutorPlansPage() {
-  return <AITutorPlansComponent />;
+  // return <AITutorPlansComponent />;
+  return notFound();
 }
