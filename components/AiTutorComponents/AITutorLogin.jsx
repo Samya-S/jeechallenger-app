@@ -77,11 +77,11 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
         <div className="text-center mt-6 space-y-4">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             By signing in, you agree to our{" "}
-            <Link href="/ai-tutor/terms" className="text-blue-600 hover:underline">
+            <Link href="/ai-tutor/terms" target="_blank" className="text-blue-600 hover:underline">
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="/ai-tutor/privacy" className="text-blue-600 hover:underline">
+            <Link href="/ai-tutor/privacy" target="_blank" className="text-blue-600 hover:underline">
               Privacy Policy
             </Link>
           </p>
