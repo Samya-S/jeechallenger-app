@@ -7,9 +7,56 @@ import { useRef, useEffect, useState } from "react";
 
 const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSignIn }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname();
   const isProfilePage = pathname === '/ai-tutor/profile';
+
+  // Handle scroll detection for the messages container
+  useEffect(() => {
+    const handleScroll = () => {
+      // Look for the messages container within the AI Tutor component
+      const messagesContainer = document.querySelector('.overflow-y-auto');
+      if (messagesContainer) {
+        const scrolled = messagesContainer.scrollTop > 10;
+        setIsScrolled(scrolled);
+      } else {
+        // Fallback to window scroll
+        const scrolled = window.scrollY > 10;
+        setIsScrolled(scrolled);
+      }
+    };
+
+    // Set up a timer to check for the container periodically
+    const checkForContainer = () => {
+      const messagesContainer = document.querySelector('.overflow-y-auto');
+      if (messagesContainer) {
+        messagesContainer.addEventListener('scroll', handleScroll);
+        return () => messagesContainer.removeEventListener('scroll', handleScroll);
+      }
+      return null;
+    };
+
+    // Try immediately
+    let cleanup = checkForContainer();
+
+    // If not found, check periodically
+    if (!cleanup) {
+      const interval = setInterval(() => {
+        cleanup = checkForContainer();
+        if (cleanup) {
+          clearInterval(interval);
+        }
+      }, 100);
+
+      return () => {
+        clearInterval(interval);
+        if (cleanup) cleanup();
+      };
+    }
+
+    return cleanup;
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -28,30 +75,38 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
     };
   }, [dropdownOpen]);
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white px-6 py-4 shadow-lg">
+    <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1' : 'py-4'
+      }`}>
       <div className="flex items-center justify-between">
         {/* Left - Home Button */}
         <div className="flex items-center">
           <Link
             href="/"
-            className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 px-4 py-2 rounded-full text-white"
+            className={`flex items-center space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 py-1' : 'px-4 py-2'
+              }`}
             title="Go to Home"
           >
-            <FaHome className="text-sm" />
-            <span className="text-sm font-medium">Home</span>
+            <FaHome className={`transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm'
+              }`} />
+            <span className={`font-medium transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm'
+              }`}>Return</span>
           </Link>
         </div>
 
         {/* Center - Title */}
         <Link href="/ai-tutor" className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-            <FaRobot className="text-white text-xl" />
+          <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 ${isScrolled ? 'w-8 h-8 m-1' : 'w-12 h-12'
+            }`}>
+            <FaRobot className={`text-white transition-all duration-300 ${isScrolled ? 'text-md' : 'text-xl'
+              }`} />
           </div>
           <div className="text-left">
-            <h1 className="text-2xl font-bold">
+            <h1 className={`font-bold transition-all duration-300 ${isScrolled ? 'text-xl' : 'text-2xl'
+              }`}>
               JEE Challenger AI Tutor
             </h1>
-            <p className="text-blue-100 text-sm">
+            <p className={`text-blue-100 transition-all duration-300 ${isScrolled ? 'text-xs opacity-0 h-0 overflow-hidden' : 'text-sm'
+              }`}>
               Your personalized JEE preparation assistant
             </p>
           </div>
@@ -62,7 +117,8 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
           {showSignIn ? (
             <button
               onClick={onSignIn}
-              className="bg-white/20 hover:bg-white/30 text-white font-semibold px-5 py-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-3 py-1' : 'px-5 py-2'
+                }`}
             >
               Sign In
             </button>
@@ -70,22 +126,28 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((open) => !open)}
-                className="flex items-center space-x-1 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 px-2 sm:px-3 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`flex items-center space-x-1 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2 py-1' : 'px-2 sm:px-3 py-2'
+                  }`}
                 title="User menu"
               >
                 {user.picture ? (
                   <img
                     src={user.picture}
                     alt={user.name}
-                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white/30 object-cover"
+                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 ${isScrolled ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-5 h-5 sm:w-6 sm:h-6'
+                      }`}
                   />
                 ) : (
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center">
-                    <FaUser className="text-white text-xs sm:text-sm" />
+                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 ${isScrolled ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-5 h-5 sm:w-6 sm:h-6'
+                    }`}>
+                    <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-xs sm:text-sm'
+                      }`} />
                   </div>
                 )}
-                <span className="text-xs sm:text-sm font-medium text-white hidden sm:inline">{user.name}</span>
-                <FaChevronDown className={`text-xs sm:text-sm text-white transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                <span className={`font-medium text-white hidden sm:inline transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-xs sm:text-sm'
+                  }`}>{user.name}</span>
+                <FaChevronDown className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-xs sm:text-sm'
+                  } ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
