@@ -12,13 +12,14 @@ import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 
 // Component to render AI responses with markdown and math support
 const AIResponseRenderer = ({ content }) => {
   return (
     <div className="text-base leading-relaxed">
       <ReactMarkdown 
-        remarkPlugins={[remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
           p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -43,6 +44,31 @@ const AIResponseRenderer = ({ content }) => {
           ),
           pre: ({children}) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
           blockquote: ({children}) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
+          table: ({children}) => {
+            const tableRef = useRef(null);
+            useEffect(() => {
+              const ref = tableRef.current;
+              if (!ref) return;
+              const onWheel = (e) => {
+                if (e.deltaY !== 0) {
+                  ref.scrollLeft += e.deltaY;
+                  e.preventDefault();
+                }
+              };
+              ref.addEventListener('wheel', onWheel, { passive: false });
+              return () => ref.removeEventListener('wheel', onWheel);
+            }, []);
+            return (
+              <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4">
+                <table className="min-w-full border border-gray-300 dark:border-gray-700 whitespace-nowrap">{children}</table>
+              </div>
+            );
+          },
+          thead: ({children}) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
+          tbody: ({children}) => <tbody>{children}</tbody>,
+          tr: ({children}) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
+          th: ({children}) => <th className="px-3 py-2 text-left font-semibold border border-gray-300 dark:border-gray-700">{children}</th>,
+          td: ({children}) => <td className="px-3 py-2 border border-gray-300 dark:border-gray-700">{children}</td>,
         }}
       >
         {content}
@@ -666,7 +692,7 @@ const AITutorComponent = () => {
                             )}
                           </div>
 
-                          <div className="flex flex-col">
+                          <div className="flex flex-col max-w-full">
                             {/* Message Bubble */}
                             <div
                               className={`px-5 py-4 rounded-2xl shadow-sm ${message.sender === "user"
