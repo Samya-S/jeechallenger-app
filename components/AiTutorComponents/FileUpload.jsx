@@ -276,7 +276,7 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
                 Drop files here or click to browse
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Supports images, documents, audio, and text files (max 50MB each)
+                Supports images, documents, audio, and text files
               </p>
             </div>
             <button
