@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const response = await fetch(
-      `https://gnews.io/api/v4/search?q=jee&lang=en&country=in&max=10&apikey=${process.env.GNEWS_API_KEY}`,
+      `https://gnews.io/api/v4/search?q=iit%20jee&lang=en&country=in&max=10&apikey=${process.env.GNEWS_API_KEY}`,
       {
         next: { revalidate: 3600 } // Cache for 1 hour
       }
