@@ -13,9 +13,16 @@ export const submitContactUsForm = async (formData) => {
     });
 
     // Step 2: Compose the email content
+    // Support multiple receiver emails via env var: RECEIVER_EMAILS (comma separated).
+    // Falls back to single RECEIVER_EMAIL for backward compatibility.
+    const receiverEmails = (process.env.RECEIVER_EMAILS || process.env.RECEIVER_EMAIL || '')
+      .split(',')
+      .map(email => email.trim())
+      .filter(Boolean);
+
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
-      to: process.env.RECEIVER_EMAIL,
+      to: receiverEmails,
       subject: `New Contact Us Form Submission by ${formData.name} | JEE Challenger`, // Subject of the email
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
