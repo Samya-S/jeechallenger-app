@@ -19,14 +19,14 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://jeechallenger.vercel.app',
+    url: '/',
     title: "JEE Challenger - Complete JEE Preparation Platform",
     description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials. Get free access to Physics, Chemistry, and Mathematics resources.",
     siteName: "JEE Challenger",
     images: [
       {
-        url: 'https://jeechallenger.vercel.app/images/jcicon.jpg',
-        secureUrl: 'https://jeechallenger.vercel.app/images/jcicon.jpg',
+        url: '/images/jcicon.jpg',
+        secureUrl: '/images/jcicon.jpg',
         width: 1200,
         height: 630,
         alt: 'JEE Challenger - Your JEE Preparation Partner',
@@ -38,7 +38,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "JEE Challenger - Complete JEE Preparation Platform",
     description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials.",
-    images: ['https://jeechallenger.vercel.app/images/jcicon.jpg'],
+    images: ['/images/jcicon.jpg'],
     creator: '@JEEChallenger',
     site: '@JEEChallenger',
   },
