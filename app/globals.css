@@ -115,6 +115,44 @@
       transform: translateY(0);
     }
   }
+
+  /* Syllabus Tracker Animations */
+  .animate-fadeIn {
+    animation: fadeInModal 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeInModal {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.4s ease-out forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+      max-height: 0;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 5000px;
+    }
+  }
+
+  /* Dark mode specific hover color */
+  .dark .dark\:hover\:bg-gray-750:hover {
+    background-color: rgb(31, 36, 46);
+  }
 }
 
 @font-face {

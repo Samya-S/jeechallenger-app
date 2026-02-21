@@ -45,6 +45,11 @@ const NavbarItems = [
     ]
   },
   {
+    title: 'Syllabus Tracker 📊',
+    type: 'link',
+    url: '/syllabus-tracker'
+  },
+  {
     title: 'AI Tutor 🤖',
     type: 'link',
     url: '/ai-tutor'
