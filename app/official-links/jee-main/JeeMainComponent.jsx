@@ -1,23 +1,13 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import TelegramPost from '@/components/utils/TelegramPost';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 import JeeMain2020papers from './JeeMain2020papers';
 import JeeMain2022papers from './JeeMain2022papers';
 
 const JeeMainComponent = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [show2020, setShow2020] = useState(false);
   const [show2022, setShow2022] = useState(false);
-
-  useEffect(() => {
-    // Simulate loading time for better UX
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const toggle2020 = () => {
     setShow2020(!show2020);
@@ -28,17 +18,6 @@ const JeeMainComponent = () => {
     setShow2022(!show2022);
     setShow2020(false);
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading JEE Main Resources...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
