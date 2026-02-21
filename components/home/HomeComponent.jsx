@@ -264,6 +264,104 @@ const HomeComponent = () => {
         </div>
       </section>
 
+      {/* Syllabus Tracker Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Track Your Progress 📊
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Stay organized and motivated with our comprehensive JEE Syllabus Tracker. Monitor your preparation across all chapters and subjects.
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Features Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
+                Key Features
+              </h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Track Theory, PYQs, and Revision for each chapter</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>All 88 chapters across Physics, Chemistry, Math</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Visual progress indicators and completion stats</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Export and import progress across devices</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Automatic local storage - never lose progress</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Benefits Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
+                Why Track Progress?
+              </h3>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Stay motivated by seeing your achievements</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Identify weak areas that need more focus</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Plan your study schedule more effectively</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Complete syllabus coverage before exam day</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
+                  <span>Boost confidence with systematic preparation</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link href="/syllabus-tracker" aria-label="Open JEE Syllabus Tracker">
+              <button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
+                <span className="flex items-center justify-center">
+                  <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Start Tracking Your Progress
+                </span>
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* AI Tutor Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
