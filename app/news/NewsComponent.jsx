@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import NewsCard from './NewsCard';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import { fetchNews } from '@/lib/news-actions';
 
 export default function NewsComponent() {
   const [articles, setArticles] = useState([]);
@@ -10,24 +11,19 @@ export default function NewsComponent() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const loadNews = async () => {
       try {
-        const response = await fetch('/api/news');
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch news');
-        }
-
-        const data = await response.json();
+        const data = await fetchNews();
         setArticles(data.articles || []);
       } catch (err) {
-        setError(err.message);
+        console.error('Failed to load news:', err);
+        setError(err.message || 'Failed to load news. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchNews();
+    loadNews();
   }, []);
 
   if (loading) {
@@ -132,7 +128,7 @@ export default function NewsComponent() {
         
         {articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
+            {articles.slice(0, 9).map((article, index) => (
               <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <NewsCard article={article} />
               </div>
