@@ -25,10 +25,12 @@ export const metadata = {
     siteName: "JEE Challenger",
     images: [
       {
-        url: '/images/jcicon.jpg',
+        url: 'https://jeechallenger.vercel.app/images/jcicon.jpg',
+        secureUrl: 'https://jeechallenger.vercel.app/images/jcicon.jpg',
         width: 1200,
         height: 630,
         alt: 'JEE Challenger - Your JEE Preparation Partner',
+        type: 'image/jpeg',
       }
     ],
   },
@@ -36,7 +38,9 @@ export const metadata = {
     card: 'summary_large_image',
     title: "JEE Challenger - Complete JEE Preparation Platform",
     description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials.",
-    images: ['/images/jcicon.jpg'],
+    images: ['https://jeechallenger.vercel.app/images/jcicon.jpg'],
+    creator: '@JEEChallenger',
+    site: '@JEEChallenger',
   },
   robots: {
     index: true,
