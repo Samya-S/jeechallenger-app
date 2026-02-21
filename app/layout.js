@@ -69,7 +69,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="antialiased">
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <ConditionalLayout>
               {children}
             </ConditionalLayout>
