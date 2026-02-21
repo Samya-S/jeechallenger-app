@@ -33,10 +33,10 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600">
       {/* Header Section */}
       <div 
-        className="p-4 sm:p-6 cursor-pointer select-none hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-200"
+        className="p-4 sm:p-6 cursor-pointer select-none hover:bg-gray-50/50 dark:hover:bg-gray-700/30"
         onClick={onToggle}
       >
         <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -47,7 +47,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
             </h2>
           </div>
           <button 
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-1.5 sm:p-2 transition-all duration-300 touch-manipulation"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-1.5 sm:p-2 touch-manipulation"
             style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
             aria-label={expanded ? 'Collapse' : 'Expand'}
           >
@@ -80,7 +80,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
             <div 
-              className={`h-full ${getProgressColor()} transition-all duration-500 ease-out rounded-full shadow-sm`}
+              className={`h-full ${getProgressColor()} rounded-full shadow-sm`}
               style={{ width: `${percentage}%` }}
             ></div>
           </div>
@@ -88,7 +88,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
 
         {/* Statistics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-3 sm:mt-4">
-          <div className="text-center bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-3 hover:bg-blue-100/70 dark:hover:bg-blue-900/30 transition-colors duration-200">
+          <div className="text-center bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-3 hover:bg-blue-100/70 dark:hover:bg-blue-900/30">
             <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
               {chaptersCompleted}/{totalChapters}
             </div>
@@ -96,7 +96,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
               Chapters
             </div>
           </div>
-          <div className="text-center bg-green-50 dark:bg-green-900/20 rounded-lg p-2 sm:p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30 transition-colors duration-200">
+          <div className="text-center bg-green-50 dark:bg-green-900/20 rounded-lg p-2 sm:p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30">
             <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
               {theoryDone}
             </div>
@@ -104,7 +104,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
               Theory Done
             </div>
           </div>
-          <div className="text-center bg-purple-50 dark:bg-purple-900/20 rounded-lg p-2 sm:p-3 hover:bg-purple-100/70 dark:hover:bg-purple-900/30 transition-colors duration-200">
+          <div className="text-center bg-purple-50 dark:bg-purple-900/20 rounded-lg p-2 sm:p-3 hover:bg-purple-100/70 dark:hover:bg-purple-900/30">
             <div className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">
               {pyqsDone}
             </div>
@@ -112,7 +112,7 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
               PYQs Done
             </div>
           </div>
-          <div className="text-center bg-orange-50 dark:bg-orange-900/20 rounded-lg p-2 sm:p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30 transition-colors duration-200">
+          <div className="text-center bg-orange-50 dark:bg-orange-900/20 rounded-lg p-2 sm:p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30">
             <div className="text-xl sm:text-2xl font-bold text-orange-600 dark:text-orange-400">
               {revisionDone}
             </div>

@@ -24,7 +24,6 @@ const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
         border-b border-gray-200 dark:border-gray-700 
         py-3 px-3 sm:py-4 sm:px-4 
         hover:bg-gray-100/50 dark:hover:bg-gray-700/30
-        transition-all duration-200
         ${isFullyCompleted ? 'bg-green-50/50 dark:bg-green-900/10 border-l-4 border-l-green-500 dark:border-l-green-400' : ''}
       `}
     >
@@ -57,7 +56,7 @@ const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
         {/* Checkboxes */}
         <div className="flex gap-4 sm:gap-6 md:gap-8">
           {/* Theory Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-blue-500/10 dark:hover:bg-blue-500/20 transition-colors duration-200">
+          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-blue-500/10 dark:hover:bg-blue-500/20">
             <input
               type="checkbox"
               checked={progress.theory}
@@ -70,7 +69,7 @@ const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
           </label>
 
           {/* PYQs Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-colors duration-200">
+          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-purple-500/10 dark:hover:bg-purple-500/20">
             <input
               type="checkbox"
               checked={progress.pyqs}
@@ -83,7 +82,7 @@ const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
           </label>
 
           {/* Revision Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-orange-500/10 dark:hover:bg-orange-500/20 transition-colors duration-200">
+          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-orange-500/10 dark:hover:bg-orange-500/20">
             <input
               type="checkbox"
               checked={progress.revision}
