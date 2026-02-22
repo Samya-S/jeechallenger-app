@@ -134,6 +134,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
                 className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'
                   }`}
                 title="User menu"
+                aria-label="User menu"
               >
                 {user.picture ? (
                   <img

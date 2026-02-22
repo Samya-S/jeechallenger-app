@@ -152,6 +152,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
               disabled={loading}
               className="p-1.5 text-gray-400 hover:text-blue-500 transition-colors"
               title="Preview"
+              aria-label="Preview image"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -164,6 +165,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
             onClick={handleDownload}
             className="p-1.5 text-gray-400 hover:text-green-500 transition-colors"
             title="Download"
+            aria-label="Download file"
           >
             <FaDownload className="text-sm" />
           </button>
@@ -172,6 +174,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
               onClick={() => onRemove(file.id)}
               className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
               title="Remove"
+              aria-label="Remove file"
             >
               <FaTimes className="text-sm" />
             </button>
@@ -186,6 +189,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
             <button
               onClick={closePreview}
               className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              aria-label="Close preview"
             >
               <FaTimes className="text-2xl" />
             </button>

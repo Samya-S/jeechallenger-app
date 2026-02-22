@@ -346,6 +346,7 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
                     <button
                       onClick={() => deleteFile(file.id)}
                       className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      aria-label="Delete file"
                     >
                       <FaTimes className="text-sm" />
                     </button>
