@@ -174,6 +174,8 @@ const JeeAdvancedComponent = () => {
                   src="/images/flashingNew.gif" 
                   alt="New" 
                   className="h-12 w-12"
+                  width="48"
+                  height="48"
                 />
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Revised Syllabus to be followed from JEE (Advanced) 2023

@@ -13,6 +13,7 @@ const PhysicsWallahComponent = () => {
         width={1920}
         height={1080}
         style={{ width: '100%', boxSizing: 'border-box' }}
+        priority
       />
 
       {/* Content Section */}
@@ -44,13 +45,14 @@ const PhysicsWallahComponent = () => {
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Free JEE preparation content
                 </p>
-                <div className="mb-6">
+                <div className="mb-6 relative w-full" style={{ aspectRatio: '4/3' }}>
                   <Image
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="rounded-lg"
                     src="/images/pwyt.jpg"
                     alt="Physics Wallah YouTube Channel"
-                    width={800}
-                    height={600}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                    style={{ objectFit: 'cover' }}
                   />
                 </div>
                 <div className="mt-auto">
@@ -86,13 +88,14 @@ const PhysicsWallahComponent = () => {
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Comprehensive online platform
                 </p>
-                <div className="mb-6">
+                <div className="mb-6 relative w-full" style={{ aspectRatio: '4/3' }}>
                   <Image
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="rounded-lg"
                     src="/images/pwweb.jpg"
                     alt="Physics Wallah Official Website"
-                    width={800}
-                    height={600}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                    style={{ objectFit: 'cover' }}
                   />
                 </div>
                 <div className="mt-auto">
@@ -128,13 +131,14 @@ const PhysicsWallahComponent = () => {
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Download the mobile application
                 </p>
-                <div className="mb-6">
+                <div className="mb-6 relative w-full" style={{ aspectRatio: '4/3' }}>
                   <Image
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="rounded-lg"
                     src="/images/pwapp.jpg"
                     alt="Physics Wallah Mobile App"
-                    width={800}
-                    height={600}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                    style={{ objectFit: 'cover' }}
                   />
                 </div>
                 <div className="mt-auto">

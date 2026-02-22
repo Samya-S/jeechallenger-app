@@ -13,6 +13,7 @@ const UnacademyComponent = () => {
         width={1920}
         height={1080}
         style={{ width: '100%', boxSizing: 'border-box' }}
+        priority
       />
 
       {/* Content Section */}
