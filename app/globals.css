@@ -158,7 +158,7 @@
 @font-face {
   font-family: "Jost";
   src: url('/fonts/Jost-VariableFont_wght.ttf') format('truetype');
-  font-display: optional; /* Prevents layout shift from font swapping */
+  font-display: swap; /* Ensures font loads reliably while preventing text blocking */
   font-weight: 100 900;
 }
 

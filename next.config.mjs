@@ -10,7 +10,7 @@ const nextConfig = {
   },
   async rewrites() {
     // Conditional destination based on environment
-    const destination = process.env.NODE_ENV === 'production' 
+    const destination = process.env.NODE_ENV === 'production' || true
       ? 'https://jee-challenger-ai.vercel.app/:path*'
       : 'http://localhost:8000/:path*';
     
