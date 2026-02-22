@@ -34,9 +34,9 @@ const JeeAdvancedComponent = () => {
           </div>
 
           <div className="text-center">
-            <a 
-              href="https://jeeadv.ac.in/" 
-              target="_blank" 
+            <a
+              href="https://jeeadv.ac.in/"
+              target="_blank"
               rel="noopener noreferrer"
             >
               <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -79,9 +79,9 @@ const JeeAdvancedComponent = () => {
                   Link to official website
                 </p>
                 <div className="mt-auto">
-                  <a 
-                    href="https://jeeadv.ac.in/archive.html" 
-                    target="_blank" 
+                  <a
+                    href="https://jeeadv.ac.in/archive.html"
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -106,15 +106,15 @@ const JeeAdvancedComponent = () => {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                  Syllabus
+                  JEE Advanced 2026 Syllabus
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Link to official website
                 </p>
                 <div className="mt-auto">
-                  <a 
-                    href="https://jeeadv.ac.in/syllabus/combined-syllabus.pdf" 
-                    target="_blank" 
+                  <a
+                    href="https://jeeadv.ac.in/documents/jee-advanced-2026-syllabus.pdf"
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -145,9 +145,9 @@ const JeeAdvancedComponent = () => {
                   Link to official website
                 </p>
                 <div className="mt-auto">
-                  <a 
-                    href="https://jeeadv.ac.in/reports.html" 
-                    target="_blank" 
+                  <a
+                    href="https://jeeadv.ac.in/reports.html"
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -166,7 +166,7 @@ const JeeAdvancedComponent = () => {
         </section>
 
         {/* Revised Syllabus Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        {/* <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-4xl mx-auto">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-4 mb-6">
@@ -200,7 +200,7 @@ const JeeAdvancedComponent = () => {
               </a>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Telegram Post Section */}
         <div className="py-8">
@@ -209,7 +209,7 @@ const JeeAdvancedComponent = () => {
       </div>
 
       {/* Floating Action Button */}
-      <ScrollToTopButton 
+      <ScrollToTopButton
         gradientColors="from-yellow-600 to-orange-600"
         hoverColors="hover:from-yellow-700 hover:to-orange-700"
       />
