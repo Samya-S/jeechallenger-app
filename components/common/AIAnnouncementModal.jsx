@@ -66,8 +66,8 @@ const AIAnnouncementModal = () => {
               <div className="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/30 dark:to-teal-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-green-100 dark:border-green-800/50">
                 <p className="font-semibold text-green-700 dark:text-green-300">📝 Problem Solving</p>
               </div>
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-amber-100 dark:border-amber-800/50">
-                <p className="font-semibold text-amber-700 dark:text-amber-300">📄 File Analysis</p>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-purple-100 dark:border-purple-800/50">
+                <p className="font-semibold text-purple-700 dark:text-purple-300">📄 File Analysis</p>
               </div>
             </div>
 

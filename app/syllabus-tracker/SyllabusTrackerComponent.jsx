@@ -261,7 +261,7 @@ const SyllabusTrackerComponent = () => {
 
         {/* Motivational Footer */}
         <div className="mt-8 sm:mt-12 max-w-3xl mx-auto">
-          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border border-purple-400/20">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border border-blue-400/20">
             <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 flex items-center justify-center gap-2">
               Keep Going! 
               <span className="animate-bounce">🚀</span>

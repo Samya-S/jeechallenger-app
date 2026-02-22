@@ -87,9 +87,9 @@ const HomeComponent = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-sky-200 dark:border-sky-800 overflow-hidden flex flex-col h-full">
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-yellow-200 dark:border-yellow-800 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
@@ -102,25 +102,25 @@ const HomeComponent = () => {
                 </p>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 mb-6 space-y-2 w-fit mx-auto flex-grow">
                   <li className="flex items-center">
-                    <div className="w-2 h-2 bg-sky-500 rounded-full mr-3"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
                     Previous year papers
                   </li>
                   <li className="flex items-center">
-                    <div className="w-2 h-2 bg-sky-500 rounded-full mr-3"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
                     Official solutions
                   </li>
                   <li className="flex items-center">
-                    <div className="w-2 h-2 bg-sky-500 rounded-full mr-3"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
                     Cut-off analysis
                   </li>
                   <li className="flex items-center">
-                    <div className="w-2 h-2 bg-sky-500 rounded-full mr-3"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
                     Admission information
                   </li>
                 </ul>
                 <div className="text-center">
                   <Link href="/official-links/jee-advanced" aria-label="Access official JEE Advanced resources and links" className="mt-auto">
-                    <button className="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                    <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -381,35 +381,35 @@ const HomeComponent = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Features Card */}
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-teal-200 dark:border-teal-800 overflow-hidden flex flex-col h-full">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-blue-200 dark:border-blue-800 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-teal-800 dark:text-teal-200 mb-4 text-center">
+                <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4 text-center">
                   Key Features
                 </h3>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto flex-grow">
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Track Theory, PYQs, and Revision for each chapter</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
                     <span>All 88 chapters across Physics, Chemistry, Math</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Visual progress indicators and completion stats</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Export and import progress across devices</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Automatic local storage - never lose progress</span>
                   </li>
                 </ul>
@@ -417,35 +417,35 @@ const HomeComponent = () => {
             </div>
 
             {/* Benefits Card */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-orange-200 dark:border-orange-800 overflow-hidden flex flex-col h-full">
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-purple-200 dark:border-purple-800 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-orange-800 dark:text-orange-200 mb-4 text-center">
+                <h3 className="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4 text-center">
                   Why Track Progress?
                 </h3>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto flex-grow">
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Stay motivated by seeing your achievements</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Identify weak areas that need more focus</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Plan your study schedule more effectively</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Complete syllabus coverage before exam day</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
                     <span>Boost confidence with systematic preparation</span>
                   </li>
                 </ul>
@@ -455,7 +455,7 @@ const HomeComponent = () => {
 
           <div className="text-center">
             <Link href="/syllabus-tracker" aria-label="Open JEE Syllabus Tracker">
-              <button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
+              <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
                 <span className="flex items-center justify-center">
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -501,10 +501,10 @@ const HomeComponent = () => {
                     Get chapter-wise solved previous 43 years' JEE papers published by Arihant and Disha publication
                   </p>
                   <Link href="/materials/chapterwise-solved-pyqs" aria-label="View Chapter wise solved previous years' JEE papers" className="mt-auto">
-                    <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                    <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                         View PYQs
                       </span>
@@ -530,7 +530,7 @@ const HomeComponent = () => {
                     Access official NCERT textbooks in PDF format from the NCERT official website
                   </p>
                   <Link href="https://ncert.nic.in/textbook.php" target="_blank" aria-label="Get official NCERT textbooks in PDF format" className="mt-auto">
-                    <button className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                    <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -594,7 +594,7 @@ const HomeComponent = () => {
                     Premium Education for All for free or at the most affordable price
                   </p>
                   <Link href="/more-platforms/apnikaksha" aria-label="Visit Apni Kaksha for affordable education" className="mt-auto">
-                    <button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                    <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -653,64 +653,64 @@ const HomeComponent = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-lg border border-green-200 dark:border-green-800 p-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-800 p-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-green-700 dark:text-green-400 mb-2 text-center">📚 Study Notes</h4>
+              <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">📚 Study Notes</h4>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your handwritten notes, summaries, and important formulas
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-800 p-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-sky-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">📝 Practice Papers</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
-                Upload solved papers, mock tests, and practice questions
               </p>
             </div>
 
             <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg border border-purple-200 dark:border-purple-800 p-6">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h4 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">📝 Practice Papers</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                Upload solved papers, mock tests, and practice questions
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl shadow-lg border border-indigo-200 dark:border-indigo-800 p-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">🎯 Tips & Tricks</h4>
+              <h4 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 text-center">🎯 Tips & Tricks</h4>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your study strategies, time management tips, and shortcuts
               </p>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-lg border border-yellow-200 dark:border-yellow-800 p-6 mb-6">
-            <h4 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3 text-center">How to Contribute:</h4>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-800 p-6 mb-6">
+            <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 text-center">How to Contribute:</h4>
             <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 text-left w-fit mx-auto">
               <li className="flex items-start">
-                <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">1</span>
+                <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">1</span>
                 Click the "Upload Files" button below
               </li>
               <li className="flex items-start">
-                <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">2</span>
+                <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">2</span>
                 You'll be redirected to our Google Drive folder
               </li>
               <li className="flex items-start">
-                <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">3</span>
+                <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">3</span>
                 Upload your study materials (PDF, images, documents)
               </li>
               <li className="flex items-start">
-                <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">4</span>
+                <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">4</span>
                 Add a brief description of your content
               </li>
               <li className="flex items-start">
-                <span className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">5</span>
+                <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">5</span>
                 Your materials will be reviewed and added to the website
               </li>
             </ol>
@@ -721,7 +721,7 @@ const HomeComponent = () => {
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}
             scrollamount={15}
-            className="text-2xl pb-4 text-red-600 dark:text-red-400 font-semibold"
+            className="text-2xl pb-4 text-blue-600 dark:text-blue-400 font-semibold"
           >
             🎉 Join our community of contributors! Your materials can help thousands of JEE aspirants 👇
           </marquee>
@@ -733,7 +733,7 @@ const HomeComponent = () => {
               aria-label="Upload your study materials to the website"
               className="inline-block"
             >
-              <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg text-lg">
+              <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg text-lg">
                 <span className="flex items-center justify-center">
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />

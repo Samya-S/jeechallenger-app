@@ -6,7 +6,7 @@ const MoreMaterialsComponent = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-indigo-700 to-cyan-700 dark:from-indigo-900 dark:to-cyan-900 py-20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 py-20">
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">
@@ -30,7 +30,7 @@ const MoreMaterialsComponent = () => {
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Access a comprehensive collection of study materials from top coaching institutes
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-xl mx-auto">
@@ -87,7 +87,7 @@ const MoreMaterialsComponent = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                                 <button className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                                 <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                    <span className="flex items-center justify-center">
                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -109,7 +109,7 @@ const MoreMaterialsComponent = () => {
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               All Etoos lectures by NV sir, PS sir, NJ sir in one place
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>
 
           <div className="rounded-2xl max-w-6xl mx-auto">
@@ -143,7 +143,7 @@ const MoreMaterialsComponent = () => {
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
               Some materials are not directly published on the website due to copyright issues. If you are searching for something like that, you may get it from our telegram channel.
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-2xl mx-auto">
@@ -165,7 +165,7 @@ const MoreMaterialsComponent = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                                 <button className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+                                 <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                    <span className="flex items-center justify-center">
                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
@@ -195,14 +195,14 @@ const MoreMaterialsComponent = () => {
 
         {/* Telegram Post Section */}
         <div className="py-8">
-          <TelegramPost url="jeechallengerindex/7" themeGradient="from-indigo-600 to-cyan-600" />
+          <TelegramPost url="jeechallengerindex/7" themeGradient="from-blue-600 to-purple-600" />
         </div>
       </div>
 
       {/* Floating Action Button */}
       <ScrollToTopButton 
-        gradientColors="from-indigo-600 to-cyan-600"
-        hoverColors="hover:from-indigo-700 hover:to-cyan-700"
+        gradientColors="from-blue-600 to-purple-600"
+        hoverColors="hover:from-blue-700 hover:to-purple-700"
       />
     </div>
   );
