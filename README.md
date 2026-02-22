@@ -40,6 +40,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 🎯 Core Features
 - **AI Tutor**: Personalized JEE preparation assistance with Google OAuth integration
+- **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
 - **Study Materials**: Comprehensive resources for Physics, Chemistry, and Mathematics
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
 - **Chapter-wise PYQs**: Solved previous year questions organized by chapters
@@ -58,6 +59,14 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Chemistry Resources**: Comprehensive chemistry study guides
 - **Mathematics Resources**: Extensive math preparation materials
 - **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha
+
+### 📊 Syllabus Tracker Features
+- Progress tracking for Physics, Chemistry, and Mathematics
+- Chapter-wise completion tracking for Theory, PYQs, and Revision
+- Visual progress indicators and statistics
+- Local storage persistence for progress data
+- Motivation-driven progress visualization
+- Subject-wise progress overview
 
 ### 👨‍🏫 AI Tutor Features
 - Google OAuth authentication
@@ -152,18 +161,19 @@ npm start
 
 ```
 jeechallenger-2.0/
-├── app/                          # Next.js App Router pages
-│   ├── ai-tutor/                # AI Tutor functionality
-│   ├── contact-us/              # Contact form
-│   ├── materials/               # Study materials
+├── app/                        # Next.js App Router pages
+│   ├── ai-tutor/               # AI Tutor functionality
+│   ├── syllabus-tracker/       # Progress tracking system
+│   ├── materials/              # Study materials
 │   │   ├── physics/            # Physics resources
 │   │   ├── chemistry/          # Chemistry resources
 │   │   ├── mathematics/        # Mathematics resources
 │   │   └── chapterwise-solved-pyqs/  # PYQs by chapter
 │   ├── more-platforms/         # External platform links
 │   ├── news/                   # News section
-│   └── official-links/         # JEE official papers
-├── components/                  # Reusable React components
+│   ├── official-links/         # JEE official papers
+│   └── contact-us/             # Contact form
+├── components/                 # Reusable React components
 │   ├── AiTutorComponents/      # AI Tutor specific components
 │   ├── common/                 # Shared components
 │   ├── home/                   # Home page components
