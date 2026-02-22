@@ -765,7 +765,7 @@ const HomeComponent = () => {
 
           <div className="max-w-[720px] mx-auto mb-8">
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-              <YouTubeEmbed videoid="6Ebb-oe2IUc" params="" />
+              <YouTubeEmbed videoid="6Ebb-oe2IUc" params="rel=0&modestbranding=1" />
             </div>
           </div>
 
