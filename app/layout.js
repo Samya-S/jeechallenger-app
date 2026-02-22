@@ -2,7 +2,7 @@ import "./globals.css";
 import ConditionalLayout from "@/components/AiTutorComponents/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from 'next-themes';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import Script from 'next/script';
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 export const metadata = {
@@ -66,17 +66,22 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/images/home.webp" as="image" media="(max-width: 900px)" />
         {/* <meta name="google-site-verification" content="dhTZDOYU3j0wTAQ4ttTfL9hupgGzAAOVHVJofDPIaKQ" /> */}
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" />
+        {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" /> */}
       </head>
       <body className="antialiased">
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <ConditionalLayout>
-              {children}
-            </ConditionalLayout>
-            {/* <SplashCursor /> */}
-          </ThemeProvider>
-        </GoogleOAuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
+          {/* <SplashCursor /> */}
+        </ThemeProvider>
+
+        {/* Lazy load Google AdSense only when needed */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
+          strategy="lazyOnload"
+          crossOrigin="anonymous"
+        />
       </body>
       <GoogleAnalytics gaId="G-6YPF169T9S" />
     </html>

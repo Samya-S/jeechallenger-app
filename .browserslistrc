@@ -1,0 +1,6 @@
+# Modern browsers that support ES6+ features natively
+# This eliminates unnecessary polyfills for Array.prototype.flat,
+# Object.fromEntries, and other modern JavaScript features
+
+defaults and supports es6-module
+maintained node versions
