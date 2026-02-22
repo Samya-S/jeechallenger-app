@@ -1,14 +1,122 @@
 "use client";
 import Link from "next/link";
-import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaNewspaper } from "react-icons/fa";
+import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine } from "react-icons/fa";
 // import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-[20px]">
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          
+          {/* Study Materials */}
+          <div className="order-2 lg:order-1">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Study Materials</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/materials/physics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Physics PDFs
+                </Link>
+              </li>
+              <li>
+                <Link href="/materials/chemistry" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Chemistry PDFs
+                </Link>
+              </li>
+              <li>
+                <Link href="/materials/mathematics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Mathematics PDFs
+                </Link>
+              </li>
+              <li>
+                <Link href="/materials/chapterwise-solved-pyqs" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Chapterwise PYQs
+                </Link>
+              </li>
+              <li>
+                <Link href="/materials/more-study-materials" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  More Materials
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Quick Access */}
+          <div className="order-1 lg:order-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Quick Access</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/ai-tutor" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaChalkboardTeacher className="text-sm" />
+                  AI Tutor
+                </Link>
+              </li>
+              <li>
+                <Link href="/syllabus-tracker" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaChartLine className="text-sm" />
+                  Syllabus Tracker
+                </Link>
+              </li>
+              <li>
+                <Link href="/news" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaNewspaper className="text-sm" />
+                  Latest News
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-us" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaEnvelope className="text-sm" />
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href="https://github.com/Samya-S/jeechallenger-2.0" target="_blank" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaGithub className="text-sm" />
+                  Source Code
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Platforms & Official Links */}
+          <div className="order-3">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Platforms & Official Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/more-platforms/physicswallah" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Physics Wallah
+                </Link>
+              </li>
+              <li>
+                <Link href="/more-platforms/apnikaksha" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Apni Kaksha
+                </Link>
+              </li>
+              <li>
+                <Link href="/more-platforms/unacademy" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Unacademy
+                </Link>
+              </li>
+              <li>
+                <Link href="/official-links/jee-main" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  JEE Main Links
+                </Link>
+              </li>
+              <li>
+                <Link href="/official-links/jee-advanced" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  JEE Advanced Links
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gray-300 dark:bg-gray-700 mb-8"></div>
+
         {/* Social Links */}
-        <div className="flex justify-center gap-8 mb-10">
+        <div className="flex justify-center gap-8 mb-8">
           <Link
             href="https://t.me/+oOnj4y_ZYqYyZjA1"
             target="_blank"
@@ -32,35 +140,6 @@ const Footer = () => {
             aria-label="Subscribe to our YouTube channel"
           >
             <FaYoutube className="text-3xl" />
-          </Link>
-        </div>
-
-        {/* Divider */}
-        <div className="w-24 h-px bg-gray-300 dark:bg-gray-700 mx-auto mb-10"></div>
-
-        {/* Quick Links */}
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 mb-10">
-          <Link
-            href="/news"
-            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center gap-2 px-3 py-1 rounded-md hover:bg-white dark:hover:bg-gray-800"
-          >
-            <FaNewspaper className="text-base" />
-            Latest News
-          </Link>
-          <Link
-            href="/contact-us"
-            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center gap-2 px-3 py-1 rounded-md hover:bg-white dark:hover:bg-gray-800"
-          >
-            <FaEnvelope className="text-base" />
-            Contact Us
-          </Link>
-          <Link
-            href="https://github.com/Samya-S/jeechallenger-2.0"
-            target="_blank"
-            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center gap-2 px-3 py-1 rounded-md hover:bg-white dark:hover:bg-gray-800"
-          >
-            <FaGithub className="text-base" />
-            Source Code
           </Link>
         </div>
 
