@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaUser, FaRobot, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
+import { FaUser, FaChalkboardTeacher, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 // import SubscriptionStatusWidget from "@/components/AiTutorComponents/SubscriptionStatusWidget";
 import { useTheme } from "next-themes";

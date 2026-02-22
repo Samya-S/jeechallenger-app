@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { FaPaperPlane, FaRobot, FaUser, FaSpinner, FaTrash, FaPaperclip } from "react-icons/fa";
+import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaTrash, FaPaperclip } from "react-icons/fa";
 import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
@@ -595,7 +595,7 @@ const AITutorComponent = () => {
             {Object.keys(messageGroups).length === 0 ? (
               <div className="text-center py-8 sm:py-16">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
-                  <FaRobot className="text-white text-2xl sm:text-3xl" />
+                  <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
                   Welcome to JEE Challenger AI Tutor!
@@ -687,7 +687,7 @@ const AITutorComponent = () => {
                             {message.sender === "user" ? (
                               <FaUser className="text-white text-sm" />
                             ) : (
-                              <FaRobot className="text-white text-sm" />
+                              <FaChalkboardTeacher className="text-white text-sm" />
                             )}
                           </div>
 
@@ -752,7 +752,7 @@ const AITutorComponent = () => {
               <div className="flex justify-start">
                 <div className="flex items-start space-x-3 max-w-[70%]">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <FaRobot className="text-white text-sm" />
+                    <FaChalkboardTeacher className="text-white text-sm" />
                   </div>
                   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl">
                     <div className="flex items-center space-x-2">

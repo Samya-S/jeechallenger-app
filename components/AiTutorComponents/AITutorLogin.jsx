@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaHome, FaRobot } from "react-icons/fa";
+import { FaHome, FaChalkboardTeacher } from "react-icons/fa";
 import SimpleGoogleAuth from "./auth/SimpleGoogleAuth";
 
 const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
@@ -11,7 +11,7 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <FaRobot className="text-white text-3xl" />
+            <FaChalkboardTeacher className="text-white text-3xl" />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">

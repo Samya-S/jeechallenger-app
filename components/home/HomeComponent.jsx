@@ -278,7 +278,7 @@ const HomeComponent = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Personal AI Tutor 🤖
+              Personal AI Tutor 👨‍🏫
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Experience personalized JEE preparation with our advanced AI Tutor. Get instant help with any subject, concept, or problem.

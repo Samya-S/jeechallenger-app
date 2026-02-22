@@ -59,7 +59,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Mathematics Resources**: Extensive math preparation materials
 - **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha
 
-### 🤖 AI Tutor Features
+### 👨‍🏫 AI Tutor Features
 - Google OAuth authentication
 - File upload and attachment support
 - Markdown and LaTeX rendering for mathematical expressions

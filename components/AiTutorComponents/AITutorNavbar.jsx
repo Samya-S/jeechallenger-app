@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaRobot, FaChevronDown, FaTrash, FaSignOutAlt, FaUser, FaComments } from "react-icons/fa";
+import { FaHome, FaChalkboardTeacher, FaChevronDown, FaTrash, FaSignOutAlt, FaUser, FaComments } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
 
 const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSignIn }) => {
@@ -98,7 +98,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
         <Link href="/ai-tutor" className="flex items-center space-x-4">
           <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 ${isScrolled ? 'w-8 h-8 m-1' : 'w-12 h-12'
             }`}>
-            <FaRobot className={`text-white transition-all duration-300 ${isScrolled ? 'text-md' : 'text-xl'
+            <FaChalkboardTeacher className={`text-white transition-all duration-300 ${isScrolled ? 'text-md' : 'text-xl'
               }`} />
           </div>
           <div className="text-left">

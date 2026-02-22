@@ -45,11 +45,11 @@ const AIAnnouncementModal = () => {
         <div className="overflow-y-auto pr-2 -mr-2">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              {/* <span className="text-blue-500 text-2xl sm:text-3xl">🤖</span> */}
+              {/* <span className="text-blue-500 text-2xl sm:text-3xl">👨‍🏫</span> */}
               <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Introducing AI Tutor
               </h2>
-              <span className="text-blue-500 text-2xl sm:text-3xl ml-1">🤖</span>
+              <span className="text-blue-500 text-2xl sm:text-3xl ml-1">👨‍🏫</span>
               {/* <span className="text-purple-500 text-2xl sm:text-3xl">✨</span> */}
             </div>
             <p className="text-lg sm:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-300">
