@@ -288,71 +288,75 @@ const HomeComponent = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Features Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-teal-200 dark:border-teal-800 overflow-hidden flex flex-col h-full">
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-teal-800 dark:text-teal-200 mb-4 text-center">
+                  Key Features
+                </h3>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto flex-grow">
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Track Theory, PYQs, and Revision for each chapter</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>All 88 chapters across Physics, Chemistry, Math</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Visual progress indicators and completion stats</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Export and import progress across devices</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Automatic local storage - never lose progress</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
-                Key Features
-              </h3>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto">
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Track Theory, PYQs, and Revision for each chapter</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>All 88 chapters across Physics, Chemistry, Math</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Visual progress indicators and completion stats</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Export and import progress across devices</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Automatic local storage - never lose progress</span>
-                </li>
-              </ul>
             </div>
 
             {/* Benefits Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-orange-200 dark:border-orange-800 overflow-hidden flex flex-col h-full">
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-orange-800 dark:text-orange-200 mb-4 text-center">
+                  Why Track Progress?
+                </h3>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto flex-grow">
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Stay motivated by seeing your achievements</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Identify weak areas that need more focus</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Plan your study schedule more effectively</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Complete syllabus coverage before exam day</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-1.5"></div>
+                    <span>Boost confidence with systematic preparation</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
-                Why Track Progress?
-              </h3>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3 w-fit mx-auto">
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Stay motivated by seeing your achievements</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Identify weak areas that need more focus</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Plan your study schedule more effectively</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Complete syllabus coverage before exam day</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 mt-1.5"></div>
-                  <span>Boost confidence with systematic preparation</span>
-                </li>
-              </ul>
             </div>
           </div>
 
