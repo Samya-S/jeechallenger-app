@@ -10,8 +10,12 @@ const AIAnnouncementModal = () => {
     // Check if modal has been shown in this session
     const hasSeenModal = sessionStorage.getItem('hasSeenAIAnnouncement');
     if (!hasSeenModal) {
-      setIsOpen(true);
+      // Delay modal appearance to prevent CLS
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+      }, 500);
       sessionStorage.setItem('hasSeenAIAnnouncement', 'true');
+      return () => clearTimeout(timer);
     }
   }, []);
 

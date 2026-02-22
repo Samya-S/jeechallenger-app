@@ -176,13 +176,16 @@ const HomeComponent = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <Image
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                  src="/images/physics.jpg"
-                  alt="Physics"
-                  width={180}
-                  height={180}
-                />
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                  <Image
+                    className="rounded-lg mb-4"
+                    src="/images/physics.jpg"
+                    alt="Physics"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Physics</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
                   "Physics is an attempt conceptually to grasp reality as something that is considered to be independent of its being observed. In this sense one speaks of physical reality."
@@ -205,13 +208,16 @@ const HomeComponent = () => {
 
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <Image
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                  src="/images/chemistry.jpg"
-                  alt="Chemistry"
-                  width={180}
-                  height={180}
-                />
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                  <Image
+                    className="rounded-lg mb-4"
+                    src="/images/chemistry.jpg"
+                    alt="Chemistry"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Chemistry</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
                   "Chemists do not usually stutter. It would be very awkward if they did, seeing that they have at times to get out such words as methylethylamylophenylium."
@@ -234,13 +240,16 @@ const HomeComponent = () => {
 
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <Image
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                  src="/images/maths.jpg"
-                  alt="Mathematics"
-                  width={180}
-                  height={180}
-                />
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                  <Image
+                    className="rounded-lg mb-4"
+                    src="/images/maths.jpg"
+                    alt="Mathematics"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Mathematics</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
                   "A man is like a fraction whose numerator is what he is and whose denominator is what he thinks of himself. The larger the denominator, the smaller the fraction."
@@ -474,13 +483,16 @@ const HomeComponent = () => {
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 h-full flex flex-col flex-grow">
                   <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📚 Chapter-wise Solved PYQs</h4>
-                  <Image
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    src="/images/pyqs.jpg"
-                    alt="Chapter wise solved PYQs"
-                    width={1080}
-                    height={540}
-                  />
+                  <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
+                    <Image
+                      className="rounded-lg"
+                      src="/images/pyqs.jpg"
+                      alt="Chapter wise solved PYQs"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
                     Get chapter-wise solved previous 43 years' JEE papers published by Arihant and Disha publication
                   </p>
@@ -500,13 +512,16 @@ const HomeComponent = () => {
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 h-full flex flex-col flex-grow">
                   <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📖 NCERT Books (PDF)</h4>
-                  <Image
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    src="/images/ncertpdfs.jpg"
-                    alt="NCERT PDFs"
-                    width={1080}
-                    height={540}
-                  />
+                  <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
+                    <Image
+                      className="rounded-lg"
+                      src="/images/ncertpdfs.jpg"
+                      alt="NCERT PDFs"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
                     Access official NCERT textbooks in PDF format from the NCERT official website
                   </p>
@@ -531,13 +546,16 @@ const HomeComponent = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 flex flex-col flex-grow">
-                  <Image
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    src="/images/Unacademy-banner.jpg"
-                    alt="Unacademy"
-                    width={1080}
-                    height={540}
-                  />
+                  <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
+                    <Image
+                      className="rounded-lg"
+                      src="/images/Unacademy-banner.jpg"
+                      alt="Unacademy"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Unacademy</h4>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm flex-grow">
                     India's Largest Learning Platform. Coaching by Top Educators.
@@ -557,13 +575,16 @@ const HomeComponent = () => {
 
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 flex flex-col flex-grow">
-                  <Image
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    src="/images/apnikaksha2.jpg"
-                    alt="Apni Kaksha"
-                    width={1080}
-                    height={540}
-                  />
+                  <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
+                    <Image
+                      className="rounded-lg"
+                      src="/images/apnikaksha2.jpg"
+                      alt="Apni Kaksha"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Apni Kaksha</h4>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm flex-grow">
                     Premium Education for All for free or at the most affordable price
@@ -583,13 +604,16 @@ const HomeComponent = () => {
 
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 flex flex-col flex-grow">
-                  <Image
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    src="/images/pwallah.jpg"
-                    alt="Physics Wallah"
-                    width={1080}
-                    height={540}
-                  />
+                  <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
+                    <Image
+                      className="rounded-lg"
+                      src="/images/pwallah.jpg"
+                      alt="Physics Wallah"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Physics Wallah</h4>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm flex-grow">
                     The most affordable learning platform that cares about you

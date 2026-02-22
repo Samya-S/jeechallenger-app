@@ -9,14 +9,16 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Visual Side - Mobile First */}
           <div className="relative order-1 lg:order-2">
-            <Image
-              src="/images/home.webp"
-              alt="JEE Challenger - Your Path to Success"
-              width={600}
-              height={600}
-              className="w-full h-auto rounded-2xl"
-              priority
-            />
+            <div className="relative w-full aspect-square">
+              <Image
+                src="/images/home.webp"
+                alt="JEE Challenger - Your Path to Success"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                className="object-cover rounded-2xl"
+                priority
+              />
+            </div>
           </div>
 
           {/* Content Side */}

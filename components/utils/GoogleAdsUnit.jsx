@@ -13,10 +13,10 @@ const GoogleAdsUnit = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ minHeight: '250px' }} className="flex items-center justify-center">
       {/* Ad unit 2 */}
       <ins className="adsbygoogle"
-           style={{ display: 'block' }}
+           style={{ display: 'block', minHeight: '250px' }}
            data-ad-client="ca-pub-5566043353022333"
            data-ad-slot="4992040057"
            data-ad-format="auto"

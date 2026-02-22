@@ -158,7 +158,8 @@
 @font-face {
   font-family: "Jost";
   src: url('/fonts/Jost-VariableFont_wght.ttf') format('truetype');
-  font-display: swap;
+  font-display: optional; /* Prevents layout shift from font swapping */
+  font-weight: 100 900;
 }
 
 html {
@@ -232,6 +233,17 @@ textarea {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Prevent CLS from images loading */
+img {
+  content-visibility: auto;
+}
+
+/* Improve rendering performance for sections */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
 }
 
 /* Add proper spacing for fixed navbar */
