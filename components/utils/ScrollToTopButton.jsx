@@ -14,14 +14,21 @@ const ScrollToTopButton = ({ gradientColors, hoverColors }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!showScrollButton) return null;
-
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+    <div 
+      className="fixed bottom-6 right-6 z-50 transition-opacity duration-300"
+      style={{ 
+        opacity: showScrollButton ? 1 : 0,
+        pointerEvents: showScrollButton ? 'auto' : 'none',
+        transform: 'translateZ(0)' // Force GPU acceleration
+      }}
+    >
       <button 
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className={`bg-gradient-to-r ${gradientColors} ${hoverColors} text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110`}
         aria-label="Scroll to top"
+        aria-hidden={!showScrollButton}
+        tabIndex={showScrollButton ? 0 : -1}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

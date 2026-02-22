@@ -123,11 +123,12 @@ const MoreMaterialsComponent = () => {
                 https://bit.ly/etooslectures
               </a>
             </div>
-            <div className='rounded-lg border border-gray-200 dark:border-gray-700'>
+            <div className='rounded-lg border border-gray-200 dark:border-gray-700' style={{ minHeight: '500px' }}>
               <iframe
                 className="w-full h-[500px] rounded-lg dark:!invert"
                 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTIZhOA_KrJYPUirK-Xp5XutggAWlQzCbeE7q735675W3OiJTstbvNzZrbHBzLvM7g_bFHQDuiGPLNO/pubhtml?widget=true&headers=false"
                 title="Etoos Lectures Spreadsheet"
+                loading="lazy"
               />
             </div>
           </div>

@@ -274,11 +274,14 @@ const UnacademyComponent = () => {
 
           <div className="p-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <img
-                src="/images/Unacademy-subscription.gif"
-                alt="Unacademy Subscription"
-                className="max-w-full h-auto rounded-lg mb-8"
-              />
+              <div className="relative w-full max-w-2xl mx-auto mb-8" style={{ aspectRatio: '16/9' }}>
+                <img
+                  src="/images/Unacademy-subscription.gif"
+                  alt="Unacademy Subscription"
+                  className="w-full h-full rounded-lg object-contain"
+                  loading="lazy"
+                />
+              </div>
               <a
                 href="https://unacademy.com/goal/jee-main-and-advanced-preparation/TMUVD/subscribe?referral_code=PLUSX9K6W"
                 target="_blank"

@@ -246,9 +246,32 @@ section {
   contain-intrinsic-size: auto 500px;
 }
 
+/* Fixed elements should not cause layout shifts */
+.fixed,
+[style*="position: fixed"],
+[style*="position:fixed"] {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Ensure iframes have defined dimensions */
+iframe {
+  display: block;
+}
+
+/* YouTube embeds - prevent CLS */
+[data-ntpc="YouTubeEmbed"],
+.youtube-embed-container {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  position: relative;
+}
+
 /* Add proper spacing for fixed navbar */
 main {
   padding-top: 4.5rem; /* Matches navbar height */
+  min-height: 100vh; /* Prevent CLS from short content */
+  will-change: auto;
 }
 
 /* Responsive spacing for different screen sizes */
@@ -261,5 +284,16 @@ main {
 @media screen and (max-width: 640px) {
   main {
     padding-top: 4rem;
+  }
+}
+
+/* Reserve space for navbar to prevent CLS */
+.navbar-spacer {
+  height: 4.5rem;
+}
+
+@media screen and (max-width: 900px) {
+  .navbar-spacer {
+    height: 4rem;
   }
 }

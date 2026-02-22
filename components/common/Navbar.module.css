@@ -56,6 +56,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   transition: transform 0.3s ease, filter 0.3s ease;
+  white-space: nowrap;
 }
 
 .navbarLogo a:hover {
@@ -86,6 +87,7 @@
   border-radius: 0.5rem;
   transition: transform 0.2s ease;
   color: #374151;
+  white-space: nowrap;
 }
 
 :global(.dark) .li a {
@@ -116,6 +118,7 @@
   background: none;
   border: none;
   outline: none;
+  white-space: nowrap;
 }
 
 :global(.dark) .columnsDropdown {
@@ -341,6 +344,7 @@
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .mobileNavLinks li a::before {
@@ -398,6 +402,7 @@
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .mobileDropdownButton::before {
@@ -478,6 +483,7 @@
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .columnsDropdownMobile li a::before {
