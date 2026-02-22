@@ -89,12 +89,6 @@ export default function RootLayout({ children }) {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
           strategy="lazyOnload"
           crossOrigin="anonymous"
-          onLoad={() => {
-            // Set longer cache in memory after load
-            if (typeof window !== 'undefined') {
-              window.adsLoaded = true;
-            }
-          }}
         />
       </body>
       <GoogleAnalytics gaId="G-6YPF169T9S" />
