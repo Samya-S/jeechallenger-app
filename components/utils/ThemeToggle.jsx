@@ -18,6 +18,7 @@ export default function ThemeToggle() {
 
   return (
     <button 
+      role="menuitem"
       aria-label='theme toggler'
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="flex items-center justify-center text-black rounded-full cursor-pointer h-9 w-9 dark:text-white md:h-12 md:w-12"
