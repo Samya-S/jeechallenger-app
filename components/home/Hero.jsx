@@ -17,6 +17,7 @@ const Hero = () => {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover rounded-2xl"
                 priority
+                fetchpriority="high"
               />
             </div>
           </div>
