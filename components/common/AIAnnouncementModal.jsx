@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const AIAnnouncementModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     // Check if modal has been shown in this session
@@ -45,49 +45,47 @@ const AIAnnouncementModal = () => {
         <div className="overflow-y-auto pr-2 -mr-2">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              {/* <span className="text-blue-500 text-2xl sm:text-3xl">👨‍🏫</span> */}
               <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Introducing AI Tutor
               </h2>
               <span className="text-blue-500 text-2xl sm:text-3xl ml-1">👨‍🏫</span>
-              {/* <span className="text-purple-500 text-2xl sm:text-3xl">✨</span> */}
             </div>
             <p className="text-lg sm:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-300">
               Experience personalized JEE preparation with our advanced AI Tutor. Get instant help with:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-blue-100 dark:border-blue-800/50">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-3 sm:p-4 rounded-lg shadow-sm border border-blue-100 dark:border-blue-800/50">
                 <p className="font-semibold text-blue-700 dark:text-blue-300">🎯 Personalized Learning</p>
               </div>
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-purple-100 dark:border-purple-800/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300">📚 Concept Explanations</p>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-3 sm:p-4 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800/50">
+                <p className="font-semibold text-indigo-700 dark:text-indigo-300">📚 Concept Explanations</p>
               </div>
-              <div className="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/30 dark:to-teal-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-green-100 dark:border-green-800/50">
-                <p className="font-semibold text-green-700 dark:text-green-300">📝 Problem Solving</p>
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-3 sm:p-4 rounded-lg shadow-sm border border-purple-100 dark:border-purple-800/50">
+                <p className="font-semibold text-purple-700 dark:text-purple-300">📝 Problem Solving</p>
               </div>
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-3 sm:p-4 rounded-lg shadow-sm border border-purple-100 dark:border-purple-800/50">
-                <p className="font-semibold text-purple-700 dark:text-purple-300">📄 File Analysis</p>
+              <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 dark:from-indigo-900/20 dark:via-blue-900/20 dark:to-purple-900/20 p-3 sm:p-4 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800/50">
+                <p className="font-semibold text-indigo-700 dark:text-indigo-300">📄 File Analysis</p>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4 sm:p-5 rounded-lg border border-green-100 dark:border-green-800/50">
-              <p className="text-lg font-medium mb-2 text-green-800 dark:text-green-200">Key Features:</p>
+            <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 p-4 sm:p-5 rounded-lg border border-blue-100 dark:border-blue-800/50">
+              <p className="text-lg font-medium mb-2 text-blue-800 dark:text-blue-200">Key Features:</p>
               <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 text-left w-fit mx-auto">
                 <li className="flex items-center space-x-2">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                   <span>Ask questions in natural language</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
                   <span>Upload study materials for analysis</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                   <span>Get step-by-step solutions</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                   <span>Save chat history across devices</span>
                 </li>
               </ul>
@@ -111,4 +109,4 @@ const AIAnnouncementModal = () => {
   );
 };
 
-export default AIAnnouncementModal; 
+export default AIAnnouncementModal;
