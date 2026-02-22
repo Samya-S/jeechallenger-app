@@ -131,7 +131,7 @@ const SyllabusTrackerComponent = () => {
                 </span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 sm:h-5 overflow-hidden shadow-inner">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-full shadow-lg"
                   style={{ width: `${overallStats.percentage}%` }}
                 ></div>
@@ -222,7 +222,7 @@ const SyllabusTrackerComponent = () => {
           {Object.entries(syllabusData).map(([subject, subjectData]) => {
             const stats = calculateSubjectProgress(subject, subjectData.chapters);
             const subjectProgressData = progressData[subject] || {};
-            
+
             return (
               <div key={subject}>
                 {/* Subject Summary Card */}
@@ -263,7 +263,7 @@ const SyllabusTrackerComponent = () => {
         <div className="mt-8 sm:mt-12 max-w-3xl mx-auto">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border border-blue-400/20">
             <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 flex items-center justify-center gap-2">
-              Keep Going! 
+              Keep Going!
               <span className="animate-bounce">🚀</span>
             </h3>
             <p className="text-white text-base sm:text-lg font-medium text-center">
@@ -281,19 +281,19 @@ const SyllabusTrackerComponent = () => {
             </h3>
             <ul className="max-w-fit mx-auto space-y-2 sm:space-y-3 text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
                 <span className="text-sm sm:text-base font-medium">Click on any subject card to expand and view all chapters</span>
               </li>
               <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
                 <span className="text-sm sm:text-base font-medium">Mark checkboxes for Theory, PYQs, and Revision as you complete them</span>
               </li>
               <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
                 <span className="text-sm sm:text-base font-medium">Your progress is automatically saved in your browser</span>
               </li>
               <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
                 <span className="text-sm sm:text-base font-medium">Export your progress to save a backup or transfer to another device</span>
               </li>
             </ul>
