@@ -76,14 +76,14 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
     };
   }, [dropdownOpen]);
   return (
-    <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-1' : 'py-2.5 sm:py-3 lg:py-4'
+    <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-2 lg:py-2.5' : 'py-2.5 sm:py-3 lg:py-4'
       }`}>
       <div className="relative flex items-center justify-between">
         {/* Left - Home Button */}
         <div className="flex items-center flex-shrink-0 z-10">
           <Link
             href="/"
-            className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 sm:px-2.5 py-1 sm:py-1' : 'px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2'
+            className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 sm:px-3 lg:px-3.5 py-1 sm:py-1.5 lg:py-1.5' : 'px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2'
               }`}
             title="Go to Home"
           >
@@ -96,9 +96,9 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
 
         {/* Center - Title (Absolutely centered) */}
         <Link href="/ai-tutor" className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2 sm:space-x-2 lg:space-x-4">
-          <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isScrolled ? 'w-7 h-7 sm:w-8 sm:h-8 lg:m-1' : 'w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12'
+          <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isScrolled ? 'w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10' : 'w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12'
             }`}>
-            <FaChalkboardTeacher className={`text-white transition-all duration-300 ${isScrolled ? 'text-sm sm:text-md lg:text-md' : 'text-base sm:text-lg lg:text-xl'
+            <FaChalkboardTeacher className={`text-white transition-all duration-300 ${isScrolled ? 'text-sm sm:text-md lg:text-lg' : 'text-base sm:text-lg lg:text-xl'
               }`} />
           </div>
           <div className="text-left">
@@ -119,7 +119,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
           {showSignIn ? (
             <button
               onClick={onSignIn}
-              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap ${isScrolled ? 'px-3 sm:px-3 py-1 sm:py-1 text-sm sm:text-sm' : 'px-4 sm:px-4 lg:px-5 py-1.5 sm:py-1.5 lg:py-2 text-sm sm:text-sm'
+              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap ${isScrolled ? 'px-3 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-1.5 text-sm sm:text-sm' : 'px-4 sm:px-4 lg:px-5 py-1.5 sm:py-1.5 lg:py-2 text-sm sm:text-sm'
                 }`}
             >
               <span className="hidden xs:inline">Sign In</span>
@@ -131,7 +131,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((open) => !open)}
-                className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2 py-1 sm:py-1' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'
+                className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'
                   }`}
                 title="User menu"
               >
@@ -139,11 +139,11 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
                   <img
                     src={user.picture}
                     alt={user.name}
-                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-6 sm:h-6' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
+                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
                       }`}
                   />
                 ) : (
-                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-6 sm:h-6' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
+                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
                     }`}>
                     <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'
                       }`} />
