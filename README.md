@@ -21,7 +21,8 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - [Core Features](#-core-features)
   - [User Experience](#-user-experience)
   - [Study Resources](#-study-resources)
-  - [AI Tutor Features](#-ai-tutor-features)
+  - [AI Tutor](#%E2%80%8D-ai-tutor)
+  - [Syllabus Tracker](#-syllabus-tracker)
   - [News & Updates](#-news--updates)
   - [Platform Integrations](#-platform-integrations)
 - [Technologies Used](#technologies-used)
@@ -39,6 +40,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ## Features
 
 ### 🎯 Core Features
+
 - **AI Tutor**: Personalized JEE preparation assistance with Google OAuth integration
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
 - **Study Materials**: Comprehensive resources for Physics, Chemistry, and Mathematics
@@ -48,6 +50,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Contact Form**: Email integration for user queries and feedback
 
 ### 🎨 User Experience
+
 - Modern and responsive UI built with Next.js and Tailwind CSS
 - Dark/Light theme support with system preference detection
 - Mobile-first design approach
@@ -55,20 +58,14 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - SEO optimized with automatic sitemap generation
 
 ### 📚 Study Resources
+
 - **Physics Resources**: Complete study materials and reference books
 - **Chemistry Resources**: Comprehensive chemistry study guides
 - **Mathematics Resources**: Extensive math preparation materials
 - **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha
 
-### 📊 Syllabus Tracker Features
-- Progress tracking for Physics, Chemistry, and Mathematics
-- Chapter-wise completion tracking for Theory, PYQs, and Revision
-- Visual progress indicators and statistics
-- Local storage persistence for progress data
-- Motivation-driven progress visualization
-- Subject-wise progress overview
+### 👨‍🏫 AI Tutor
 
-### 👨‍🏫 AI Tutor Features
 - Google OAuth authentication
 - File upload and attachment support
 - Markdown and LaTeX rendering for mathematical expressions
@@ -76,13 +73,24 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Real-time message streaming
 - Subscription management system
 
+### 📊 Syllabus Tracker
+
+- Progress tracking for Physics, Chemistry, and Mathematics
+- Chapter-wise completion tracking for Theory, PYQs, and Revision
+- Visual progress indicators and statistics
+- Local storage persistence for progress data
+- Motivation-driven progress visualization
+- Subject-wise progress overview
+
 ### 📰 News & Updates
+
 - Real-time JEE news from GNews API
 - Categorized news cards
 - Automatic content refresh
 - Mobile-responsive news layout
 
 ### 🔗 Platform Integrations
+
 - **Unacademy**: Direct links to Unacademy JEE courses
 - **Physics Wallah**: Access to PW study materials
 - **Apni Kaksha**: Additional study resources
@@ -90,6 +98,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ## Technologies Used
 
 ### Frontend
+
 - **Framework**: Next.js 15 with App Router
 - **UI Library**: React 19
 - **Styling**: Tailwind CSS with custom animations
@@ -99,6 +108,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Math Rendering**: KaTeX for mathematical expressions
 
 ### Backend & APIs
+
 - **Email Service**: Nodemailer for contact form
 - **News API**: GNews API for real-time updates
 - **Authentication**: Google OAuth with @react-oauth/google
@@ -106,6 +116,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **API Routes**: Next.js API routes with rewrites
 
 ### Development & Deployment
+
 - **Build Tool**: Turbopack for faster development
 - **SEO**: next-sitemap for automatic sitemap generation
 - **Analytics**: Google Analytics integration
@@ -115,17 +126,20 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ## Getting Started
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/Samya-S/jeechallenger-2.0.git
 cd jeechallenger-2.0
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env.local` file in the root directory and add your environment variables:
+
 ```env
 # Email Configuration for Contact form
 AUTH_EMAIL=your-email@example.com
@@ -144,6 +158,7 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
 ```
 
 4. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -186,18 +201,22 @@ jeechallenger-2.0/
 ## All versions
 
 ### jeechallenger v2.0
+
 Upgraded the vanilla JavaScript project to a modern `Next.js` application with AI-powered features.
 
 > [!NOTE]
 > This is a major update and managed in this repository
 
 ### jeechallenger v1.2
+
 This is version 1.2, made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at the `main branch` of the repository [Samya-S/jeechallenger](https://github.com/Samya-S/jeechallenger) (archived) and at [Samya-S/jeechallenger-v1.2](https://github.com/Samya-S/jeechallenger-v1.2) (archived).
 
 ### jeechallenger v1.1
+
 This version includes `PHP`. The code is available at `v1.1 branch` of the repository [Samya-S/jeechallenger](https://github.com/Samya-S/jeechallenger) (archived) and at [Samya-S/jeechallenger-v1.1](https://github.com/Samya-S/jeechallenger-v1.1) (archived).
 
 ### jeechallenger v1.0
+
 This version is made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at `v1.0 branch` of the repository [Samya-S/jeechallenger](https://github.com/Samya-S/jeechallenger) (archived).
 
 ## Contributing
@@ -205,6 +224,7 @@ This version is made using `HTML`, `CSS` and vanilla `JavaScript`. The code is a
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ### Development Guidelines
+
 - Follow the existing code structure and naming conventions
 - Ensure responsive design for all new components
 - Add proper TypeScript types if applicable
