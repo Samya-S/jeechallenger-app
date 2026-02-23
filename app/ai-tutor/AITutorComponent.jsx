@@ -597,9 +597,9 @@ const AITutorComponent = () => {
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
                   <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
                   Welcome to JEE Challenger AI Tutor!
-                </h3>
+                </h1>
                 <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
                   Your personalized JEE preparation assistant
                 </p>
@@ -779,9 +779,9 @@ const AITutorComponent = () => {
                   <FaTrash className="text-red-600 dark:text-red-400 text-lg" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Clear Chat History
-                  </h3>
+                  </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     This action cannot be undone
                   </p>
@@ -819,9 +819,9 @@ const AITutorComponent = () => {
                   <FaTrash className="text-red-600 dark:text-red-400 text-lg" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Failed to Clear Chat
-                  </h3>
+                  </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Something went wrong
                   </p>

@@ -12,7 +12,7 @@ const Footer = () => {
           
           {/* Study Materials */}
           <div className="order-2 lg:order-1">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Study Materials</h3>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Study Materials</p>
             <ul className="space-y-2">
               <li>
                 <Link href="/materials/physics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
@@ -44,7 +44,7 @@ const Footer = () => {
 
           {/* Quick Access */}
           <div className="order-1 lg:order-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Quick Access</h3>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Quick Access</p>
             <ul className="space-y-2">
               <li>
                 <Link href="/ai-tutor" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
@@ -81,7 +81,7 @@ const Footer = () => {
 
           {/* Platforms & Official Links */}
           <div className="order-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Platforms & Official Links</h3>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Platforms & Official Links</p>
             <ul className="space-y-2">
               <li>
                 <Link href="/more-platforms/physicswallah" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">

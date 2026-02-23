@@ -24,7 +24,7 @@ const PlanCard = ({ plan, isPopular, user, isCurrent, isStarter, onGetStarted })
       {isPopular && (
         <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg z-10">Most Popular</span>
       )}
-      <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2 text-center">{plan.name}</h3>
+      <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2 text-center">{plan.name}</h2>
       <p className="text-gray-600 dark:text-gray-300 mb-4 text-center">{plan.description}</p>
       <div className="flex flex-col items-center mb-6">
         <div className="flex items-end gap-2">

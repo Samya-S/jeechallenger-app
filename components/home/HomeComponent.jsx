@@ -176,9 +176,9 @@ const HomeComponent = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                <div className="relative w-full mb-4" style={{ aspectRatio: '16/9' }}>
                   <Image
-                    className="rounded-lg mb-4"
+                    className="rounded-lg"
                     src="/images/physics.jpg"
                     alt="Physics"
                     fill
@@ -208,9 +208,9 @@ const HomeComponent = () => {
 
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                <div className="relative w-full mb-4" style={{ aspectRatio: '16/9' }}>
                   <Image
-                    className="rounded-lg mb-4"
+                    className="rounded-lg"
                     src="/images/chemistry.jpg"
                     alt="Chemistry"
                     fill
@@ -240,9 +240,9 @@ const HomeComponent = () => {
 
             <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
               <div className="p-6 flex flex-col flex-grow">
-                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                <div className="relative w-full mb-4" style={{ aspectRatio: '16/9' }}>
                   <Image
-                    className="rounded-lg mb-4"
+                    className="rounded-lg"
                     src="/images/maths.jpg"
                     alt="Mathematics"
                     fill
@@ -486,7 +486,7 @@ const HomeComponent = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 h-full flex flex-col flex-grow">
-                  <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📚 Chapter-wise Solved PYQs</h4>
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📚 Chapter-wise Solved PYQs</h3>
                   <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
                     <Image
                       className="rounded-lg"
@@ -515,7 +515,7 @@ const HomeComponent = () => {
 
               <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
                 <div className="p-6 h-full flex flex-col flex-grow">
-                  <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📖 NCERT Books (PDF)</h4>
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">📖 NCERT Books (PDF)</h3>
                   <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
                     <Image
                       className="rounded-lg"
@@ -659,7 +659,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">📚 Study Notes</h4>
+              <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">📚 Study Notes</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your handwritten notes, summaries, and important formulas
               </p>
@@ -671,7 +671,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">📝 Practice Papers</h4>
+              <h3 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">📝 Practice Papers</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Upload solved papers, mock tests, and practice questions
               </p>
@@ -683,7 +683,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 text-center">🎯 Tips & Tricks</h4>
+              <h3 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 text-center">🎯 Tips & Tricks</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your study strategies, time management tips, and shortcuts
               </p>
@@ -691,7 +691,7 @@ const HomeComponent = () => {
           </div>
 
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-800 p-6 mb-6">
-            <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 text-center">How to Contribute:</h4>
+            <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 text-center">How to Contribute:</h3>
             <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 text-left w-fit mx-auto">
               <li className="flex items-start">
                 <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">1</span>

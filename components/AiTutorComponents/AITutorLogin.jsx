@@ -52,9 +52,9 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
 
             {/* Benefits */}
             <div className="space-y-3 w-fit mx-auto">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white text-center">
                 What you'll get:
-              </h3>
+              </h2>
               <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
                 <li className="flex items-center space-x-2">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
