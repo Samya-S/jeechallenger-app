@@ -100,7 +100,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
         await navigator.share({
           files: [file],
           title: 'My JEE Syllabus Progress',
-          text: `I've completed ${overallStats.percentage}% of my JEE syllabus! 🎯 Track your progress at https://jeechallenger.vercel.app/syllabus-tracker`
+          text: `I've completed ${overallStats.percentage}% of my JEE syllabus! 🎯\n\nTrack your progress at https://jeechallenger.vercel.app/syllabus-tracker`
         });
       } else {
         // Fallback: Download the image
