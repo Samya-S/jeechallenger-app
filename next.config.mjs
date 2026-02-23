@@ -135,36 +135,27 @@ const nextConfig = {
 if (process.env.NODE_ENV === 'production') {
   nextConfig.webpack = (config, { isServer }) => {
     if (!isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            // Vendor chunk for node_modules
-            vendor: {
-              name: 'vendor',
-              chunks: 'all',
-              test: /node_modules/,
-              priority: 20,
-            },
-            // Common chunk for shared code
-            common: {
-              name: 'common',
-              minChunks: 2,
-              chunks: 'all',
-              priority: 10,
-              reuseExistingChunk: true,
-              enforce: true,
-            },
-            // Separate CSS to prevent it from being treated as JS
-            styles: {
-              name: 'styles',
-              type: 'css/mini-extract',
-              chunks: 'all',
-              enforce: true,
-            },
+      // Only customize JS chunk splitting, let Next.js handle CSS automatically
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Vendor chunk for node_modules (JS only)
+          vendor: {
+            name: 'vendor',
+            chunks: 'all',
+            test: /[\\/]node_modules[\\/].*\.js$/,
+            priority: 20,
+          },
+          // Common chunk for shared code (JS only)
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            test: /\.js$/,
+            priority: 10,
+            reuseExistingChunk: true,
+            enforce: true,
           },
         },
       };
