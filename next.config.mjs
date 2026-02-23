@@ -59,8 +59,36 @@ const nextConfig = {
         ],
       },
       {
+        // Explicitly set MIME type and cache for CSS files
+        source: '/:path*.css',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400, immutable',
+          },
+        ],
+      },
+      {
+        // Explicitly set MIME type and cache for JS files
+        source: '/:path*.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400, immutable',
+          },
+        ],
+      },
+      {
         // Cache all other static assets
-        source: '/:path*.{js,css,webp,jpg,jpeg,png,gif,svg,ico,woff,woff2,ttf,otf,eot}',
+        source: '/:path*.{webp,jpg,jpeg,png,gif,svg,ico,woff,woff2,ttf,otf,eot}',
         headers: [
           {
             key: 'Cache-Control',
@@ -128,6 +156,13 @@ if (process.env.NODE_ENV === 'production') {
               chunks: 'all',
               priority: 10,
               reuseExistingChunk: true,
+              enforce: true,
+            },
+            // Separate CSS to prevent it from being treated as JS
+            styles: {
+              name: 'styles',
+              type: 'css/mini-extract',
+              chunks: 'all',
               enforce: true,
             },
           },
