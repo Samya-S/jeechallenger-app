@@ -9,9 +9,13 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "overrides": {
+    "minimatch": ">=10.2.1"
+  },
   "dependencies": {
     "@next/third-parties": "^15.1.6",
     "@react-oauth/google": "^0.12.2",
+    "html-to-image": "^1.11.13",
     "katex": "^0.16.22",
     "next": "^15.2.3",
     "next-sitemap": "^4.2.3",
@@ -27,9 +31,9 @@
     "tailwind-scrollbar": "^3.0.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.4",
+    "@eslint/eslintrc": "^3.3.3",
+    "eslint": "^10.0.1",
+    "eslint-config-next": "^0.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }

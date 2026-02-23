@@ -13,6 +13,7 @@ import {
 } from './progressUtils';
 import SubjectCard from './SubjectCard';
 import { ChapterList } from './ChapterRow';
+import ShareProgressModal from './ShareProgressModal';
 
 /**
  * SyllabusTrackerComponent - Main component for JEE Syllabus Tracker
@@ -30,6 +31,7 @@ const SyllabusTrackerComponent = () => {
     totalTasks: 0
   });
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Load progress data on mount
   useEffect(() => {
@@ -146,6 +148,17 @@ const SyllabusTrackerComponent = () => {
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
           <button
+            onClick={() => setShowShareModal(true)}
+            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 dark:from-purple-500 dark:to-pink-500 dark:hover:from-purple-600 dark:hover:to-pink-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg touch-manipulation"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+            </svg>
+            <span className="sm:hidden">Share</span>
+            <span className="hidden sm:inline">Share Progress</span>
+          </button>
+
+          <button
             onClick={handleExport}
             className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg touch-manipulation"
           >
@@ -181,6 +194,15 @@ const SyllabusTrackerComponent = () => {
             <span className="hidden sm:inline">Reset All</span>
           </button>
         </div>
+
+        {/* Share Progress Modal */}
+        <ShareProgressModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          progressData={progressData}
+          overallStats={overallStats}
+          syllabusData={syllabusData}
+        />
 
         {/* Reset Confirmation Modal */}
         {showResetConfirm && (
