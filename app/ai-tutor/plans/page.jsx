@@ -7,8 +7,9 @@ export const metadata = {
   alternates: {
     canonical: '/ai-tutor/plans',
   },
+  // TODO: Change to index: true when AITutorPlansComponent is enabled
   robots: {
-    index: true,
+    index: false,
     follow: true,
   },
   openGraph: {
