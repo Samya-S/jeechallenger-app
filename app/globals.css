@@ -2,8 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Scrollbar Styles */
+/* Font optimization */
+@layer base {
+  @font-face {
+    font-family: 'Jost';
+    src: url('/fonts/Jost-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+  }
+}
+
+/* Performance optimizations and Custom Scrollbar Styles */
 @layer utilities {
+  /* Content visibility for below-the-fold sections */
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
   }
@@ -153,13 +181,6 @@
   .dark .dark\:hover\:bg-gray-750:hover {
     background-color: rgb(31, 36, 46);
   }
-}
-
-@font-face {
-  font-family: "Jost";
-  src: url('/fonts/Jost-VariableFont_wght.ttf') format('truetype');
-  font-display: swap; /* Ensures font loads reliably while preventing text blocking */
-  font-weight: 100 900;
 }
 
 html {

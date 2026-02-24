@@ -2,11 +2,20 @@
 import Styles from "./Home.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useRef } from "react";
 import Hero from "./Hero";
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
-import { YouTubeEmbed } from '@next/third-parties/google'
+// Lazy load heavy components for better performance
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false,
+  loading: () => null
+});
+
+const YouTubeEmbed = dynamic(
+  () => import('@next/third-parties/google').then(mod => ({ default: mod.YouTubeEmbed })),
+  { ssr: false }
+);
 
 const HomeComponent = () => {
   const marqueeRef = useRef(null);
@@ -28,7 +37,7 @@ const HomeComponent = () => {
       <Hero />
 
       {/* JEE Papers and Official Links Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -161,7 +170,7 @@ const HomeComponent = () => {
       </section>
 
       {/* The Subjects Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -184,6 +193,7 @@ const HomeComponent = () => {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
+                    loading="lazy"
                   />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Physics</h3>
@@ -216,6 +226,7 @@ const HomeComponent = () => {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
+                    loading="lazy"
                   />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Chemistry</h3>
@@ -248,6 +259,7 @@ const HomeComponent = () => {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
+                    loading="lazy"
                   />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Mathematics</h3>
@@ -274,7 +286,7 @@ const HomeComponent = () => {
       </section>
 
       {/* AI Tutor Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -367,7 +379,7 @@ const HomeComponent = () => {
       </section>
 
       {/* Syllabus Tracker Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -469,7 +481,7 @@ const HomeComponent = () => {
       </section>
 
       {/* Study Materials Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -495,6 +507,7 @@ const HomeComponent = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
                     />
                   </div>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
@@ -524,6 +537,7 @@ const HomeComponent = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
                     />
                   </div>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
@@ -558,6 +572,7 @@ const HomeComponent = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
                     />
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Unacademy</h4>
@@ -587,6 +602,7 @@ const HomeComponent = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
                     />
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Apni Kaksha</h4>
@@ -616,6 +632,7 @@ const HomeComponent = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
                     />
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Physics Wallah</h4>
@@ -640,7 +657,7 @@ const HomeComponent = () => {
       </section>
 
       {/* Contribute to JEE Challenger Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -751,7 +768,7 @@ const HomeComponent = () => {
       </section>
 
       {/* ISI Aspirant Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
