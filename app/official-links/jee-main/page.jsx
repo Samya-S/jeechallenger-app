@@ -1,8 +1,8 @@
 import JeeMainComponent from './JeeMainComponent'
 
 export const metadata = {
-  title: 'JEE Main | JEE Challenger',
-  description: 'Official links for JEE Main and previous year question papers.',
+  title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
+  description: 'Download Official JEE Main Papers, Answer Keys & Solutions from NTA. Previous year question papers, official notifications, exam pattern, cutoffs. Direct links to JEE Main resources. Prepare with authentic materials!',
   alternates: {
     canonical: '/official-links/jee-main',
   },

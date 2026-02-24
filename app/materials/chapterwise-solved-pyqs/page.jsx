@@ -1,8 +1,8 @@
 import ChapterWiseSolvedPYQsComponent from './ChapterWiseSolvedPYQsComponent'
 
 export const metadata = {
-  title: "Chapter-wise Solved PYQs | JEE Challenger",
-  description: "Chapter-wise solved previous years' questions for JEE Main and JEE Advanced.",
+  title: "Chapter-wise Solved JEE PYQs - Last 43 Years | Free Download PDFs",
+  description: "Download Free Chapter-wise Solved Previous Year Questions (PYQs) for JEE Main & Advanced from last 43 years. Published by Arihant & Disha. Physics, Chemistry & Maths - All chapters covered. Master PYQs and crack JEE!",
   alternates: {
     canonical: '/materials/chapterwise-solved-pyqs',
   },

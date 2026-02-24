@@ -1,8 +1,8 @@
 import NewsComponent from './NewsComponent';
 
 export const metadata = {
-  title: 'Latest JEE News | JEE Challenger',
-  description: 'Stay updated with the latest news and information for JEE aspirants',
+  title: 'Latest JEE News - Exam Dates, Results & Important Updates',
+  description: 'Latest JEE Main & JEE Advanced News: Exam dates, registration deadlines, admit cards, results, cutoffs, counseling updates. Real-time notifications. Never miss important JEE dates! Check now.',
   alternates: {
     canonical: '/news',
   },

@@ -180,7 +180,7 @@ const HomeComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/physics.jpg"
-                    alt="Physics"
+                    alt="JEE Physics Study Materials - Free Books, Notes and PDFs for JEE Main and Advanced preparation"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -212,7 +212,7 @@ const HomeComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/chemistry.jpg"
-                    alt="Chemistry"
+                    alt="JEE Chemistry Study Materials - Free Organic, Inorganic and Physical Chemistry Notes and PDFs"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -244,7 +244,7 @@ const HomeComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/maths.jpg"
-                    alt="Mathematics"
+                    alt="JEE Mathematics Study Materials - Free Calculus, Algebra, Trigonometry Books and PDFs"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -491,7 +491,7 @@ const HomeComponent = () => {
                     <Image
                       className="rounded-lg"
                       src="/images/pyqs.jpg"
-                      alt="Chapter wise solved PYQs"
+                      alt="JEE Chapter-wise Solved Previous Year Questions PYQs from last 43 years - Arihant and Disha publications"
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       style={{ objectFit: 'cover' }}
@@ -520,7 +520,7 @@ const HomeComponent = () => {
                     <Image
                       className="rounded-lg"
                       src="/images/ncertpdfs.jpg"
-                      alt="NCERT PDFs"
+                      alt="Download Free NCERT Books PDFs for class 11 and 12 - Official Physics, Chemistry and Mathematics textbooks"
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       style={{ objectFit: 'cover' }}
@@ -554,7 +554,7 @@ const HomeComponent = () => {
                     <Image
                       className="rounded-lg"
                       src="/images/Unacademy-banner.jpg"
-                      alt="Unacademy"
+                      alt="Unacademy - India's Largest Online Learning Platform for JEE Main and Advanced preparation"
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}
@@ -583,7 +583,7 @@ const HomeComponent = () => {
                     <Image
                       className="rounded-lg"
                       src="/images/apnikaksha2.jpg"
-                      alt="Apni Kaksha"
+                      alt="Apni Kaksha - Premium JEE Education Platform at Affordable Prices for all students"
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}
@@ -612,7 +612,7 @@ const HomeComponent = () => {
                     <Image
                       className="rounded-lg"
                       src="/images/pwallah.jpg"
-                      alt="Physics Wallah"
+                      alt="Physics Wallah - Most Affordable Online JEE Coaching Platform for IIT JEE aspirants"
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                       style={{ objectFit: 'cover' }}

@@ -1,8 +1,8 @@
 import PhysicsComponent from './PhysicsComponent'
 
 export const metadata = {
-  title: "Physics | JEE Challenger",
-  description: "Physics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+  title: "JEE Physics Study Materials - Free Books, Notes & Solutions | Download PDFs",
+  description: "Free JEE Physics Study Materials: Mechanics, Electromagnetism, Thermodynamics, Modern Physics. Download HC Verma Solutions, DC Pandey PDFs, 1000+ Solved Problems & Chapter-wise Notes. Master Physics for JEE Main & Advanced!",
   alternates: {
     canonical: '/materials/physics',
   },

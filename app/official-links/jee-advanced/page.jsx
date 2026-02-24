@@ -1,8 +1,8 @@
 import JeeAdvancedComponent from './JeeAdvancedComponent'
 
 export const metadata = {
-  title: 'JEE Advanced | JEE Challenger',
-  description: 'Official links for JEE Advanced and previous year question papers.',
+  title: 'JEE Advanced Official Papers - Download Solutions & Question Papers',
+  description: 'Download Official JEE Advanced Papers, Detailed Solutions & Answer Keys from IITs. Previous year papers, cutoff analysis, admission information. Direct links to authentic JEE Advanced resources. Your IIT dream starts here!',
   alternates: {
     canonical: '/official-links/jee-advanced',
   },

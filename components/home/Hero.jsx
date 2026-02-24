@@ -12,7 +12,7 @@ const Hero = () => {
             <div className="relative w-full aspect-square">
               <Image
                 src="/images/home.webp"
-                alt="JEE Challenger - Your Path to Success"
+                alt="JEE Challenger - Free IIT JEE Study Materials, AI Tutor, Previous Year Questions and Complete Preparation Platform for JEE Main and Advanced"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-cover rounded-2xl"

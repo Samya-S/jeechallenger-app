@@ -1,8 +1,8 @@
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
 
 export const metadata = {
-  title: 'Syllabus Tracker | JEE Challenger',
-  description: 'Track your JEE preparation progress across Physics, Chemistry, and Mathematics. Mark chapters as complete for Theory, PYQs, and Revision. Stay organized and motivated with our comprehensive syllabus tracker.',
+  title: 'Free JEE Syllabus Tracker - Track Your Progress | All 88 Chapters',
+  description: 'Track your JEE preparation progress free across 88 chapters of Physics, Chemistry & Maths. Monitor Theory, PYQs & Revision completion. Visual progress indicators, export/import data. Stay organized and ace JEE! Start tracking now.',
   alternates: {
     canonical: '/syllabus-tracker',
   },

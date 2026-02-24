@@ -1,8 +1,8 @@
 import MathematicsComponent from './MathematicsComponent'
 
 export const metadata = {
-  title: "Mathematics | JEE Challenger",
-  description: "Mathematics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+  title: "JEE Mathematics Study Materials - Free Books, Notes & PYQs | Download PDFs",
+  description: "Download Free JEE Mathematics PDFs: 500+ Solved Problems, Calculus, Algebra, Trigonometry, Coordinate Geometry. Best Books by Cengage, Arihant & RD Sharma. Start Scoring 100/100 in JEE Maths Today!",
   alternates: {
     canonical: '/materials/mathematics',
   },

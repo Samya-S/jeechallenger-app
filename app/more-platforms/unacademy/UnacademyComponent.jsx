@@ -9,7 +9,7 @@ const UnacademyComponent = () => {
       <Image
         className="w-full"
         src="/images/Unacademy_header.png"
-        alt="Unacademy Banner"
+        alt="Unacademy - India's Largest Online Learning Platform for JEE Preparation"
         width={1920}
         height={1080}
         style={{ width: '100%', boxSizing: 'border-box' }}
@@ -278,7 +278,7 @@ const UnacademyComponent = () => {
               <div className="relative w-full max-w-2xl mx-auto mb-8" style={{ aspectRatio: '16/9' }}>
                 <img
                   src="/images/Unacademy-subscription.gif"
-                  alt="Unacademy Subscription"
+                  alt="Unacademy Plus Subscription Plans for JEE Main and Advanced Preparation"
                   className="w-full h-full rounded-lg object-contain"
                   loading="lazy"
                 />

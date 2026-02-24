@@ -49,7 +49,7 @@ const ApniKakshaComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/apnikaksha-ytchannel.png"
-                    alt="YouTube Channel"
+                    alt="Apni Kaksha YouTube Channel - Free JEE Preparation Videos and Lectures"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -92,7 +92,7 @@ const ApniKakshaComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/apnikaksha-website.png"
-                    alt="Official Website"
+                    alt="Apni Kaksha Official Website - Comprehensive Online JEE Learning Platform"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -135,7 +135,7 @@ const ApniKakshaComponent = () => {
                   <Image
                     className="rounded-lg"
                     src="/images/apnikaksha-app.png"
-                    alt="Mobile App"
+                    alt="Apni Kaksha Mobile App - Download for Android and iOS JEE Preparation"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                     style={{ objectFit: 'cover' }}

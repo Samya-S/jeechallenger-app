@@ -6,9 +6,9 @@ import Script from 'next/script';
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 export const metadata = {
-  title: "JEE Challenger - Complete JEE Preparation Platform",
-  description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials. Get free access to Physics, Chemistry, and Mathematics resources.",
-  keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books"],
+  title: "JEE Challenger - Free JEE Preparation Platform | Study Materials, AI Tutor & PYQs",
+  description: "Download Free JEE Study Materials: 5000+ Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
+  keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books", "IIT JEE", "free JEE materials", "AI tutor", "JEE 2026"],
   authors: [{ name: "JEE Challenger" }],
   creator: "JEE Challenger",
   publisher: "JEE Challenger",
@@ -75,6 +75,9 @@ export default function RootLayout({ children }) {
         {/* <meta name="google-site-verification" content="dhTZDOYU3j0wTAQ4ttTfL9hupgGzAAOVHVJofDPIaKQ" /> */}
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
         {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" /> */}
+        
+        {/* RSS Feed */}
+        <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>

@@ -4,9 +4,12 @@ module.exports = {
   generateRobotsTxt: true,
   changefreq: "daily",
   priority: 0.7,
-  exclude: [],
+  exclude: ['/rss.xml', '/image-sitemap.xml', '/api/*'],
   generateIndexSitemap: false, // Prevents creating an index sitemap
   robotsTxtOptions: {
     policies: [{ userAgent: "*", allow: "/" }],
+    additionalSitemaps: [
+      'https://jeechallenger.vercel.app/image-sitemap.xml',
+    ],
   },
 };

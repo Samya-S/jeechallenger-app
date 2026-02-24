@@ -1,8 +1,8 @@
 import ChemistryComponent from './ChemistryComponent'
 
 export const metadata = {
-  title: "Chemistry | JEE Challenger",
-  description: "Chemistry study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+  title: "JEE Chemistry Study Materials - Free Books, Notes & Tricks | Download PDFs",
+  description: "Complete JEE Chemistry Study Materials: Organic, Inorganic & Physical Chemistry. Download Free NCERT Solutions, OP Tandon PDFs, Reaction Mechanisms, Named Reactions & 500+ Solved Examples. Ace JEE Chemistry!",
   alternates: {
     canonical: '/materials/chemistry',
   },
