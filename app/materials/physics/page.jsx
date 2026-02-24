@@ -1,4 +1,6 @@
 import PhysicsComponent from './PhysicsComponent'
+import StructuredData from '@/components/common/StructuredData'
+import { physicsFAQs } from '@/lib/faq-data'
 
 export const metadata = {
   title: "JEE Physics Study Materials - Free Books, Notes & Solutions | Download PDFs",
@@ -36,7 +38,31 @@ export const metadata = {
 
 const PhysicsPage = () => {
   return (
-    <PhysicsComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={physicsFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Study Materials", path: "/materials/physics" },
+            { name: "Physics", path: "/materials/physics" }
+          ]
+        }} 
+      />
+      <StructuredData 
+        type="educationalOccupationalCredential" 
+        data={{
+          name: "JEE Physics Study Materials",
+          description: "Complete Physics study materials for JEE Main and Advanced preparation including HC Verma, DC Pandey, and NCERT solutions",
+          subject: "Physics",
+          chapters: 29
+        }} 
+      />
+      
+      <PhysicsComponent />
+    </>
   )
 }
 

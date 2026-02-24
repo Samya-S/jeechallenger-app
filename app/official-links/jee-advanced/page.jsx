@@ -1,4 +1,5 @@
 import JeeAdvancedComponent from './JeeAdvancedComponent'
+import StructuredData from '@/components/common/StructuredData'
 
 export const metadata = {
   title: 'JEE Advanced Official Papers - Download Solutions & Question Papers',
@@ -36,7 +37,21 @@ export const metadata = {
 
 const JeeAdvancedPage = () => {
   return (
-    <JeeAdvancedComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Official Links", path: "/official-links/jee-advanced" },
+            { name: "JEE Advanced", path: "/official-links/jee-advanced" }
+          ]
+        }} 
+      />
+      
+      <JeeAdvancedComponent />
+    </>
   )
 }
 

@@ -1,4 +1,6 @@
 import MathematicsComponent from './MathematicsComponent'
+import StructuredData from '@/components/common/StructuredData'
+import { mathematicsFAQs } from '@/lib/faq-data'
 
 export const metadata = {
   title: "JEE Mathematics Study Materials - Free Books, Notes & PYQs | Download PDFs",
@@ -36,7 +38,31 @@ export const metadata = {
 
 const MathematicsPage = () => {
   return (
-    <MathematicsComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={mathematicsFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Study Materials", path: "/materials/mathematics" },
+            { name: "Mathematics", path: "/materials/mathematics" }
+          ]
+        }} 
+      />
+      <StructuredData 
+        type="educationalOccupationalCredential" 
+        data={{
+          name: "JEE Mathematics Study Materials",
+          description: "Complete Mathematics study materials for JEE Main and Advanced including RD Sharma, Cengage, and NCERT",
+          subject: "Mathematics",
+          chapters: 29
+        }} 
+      />
+      
+      <MathematicsComponent />
+    </>
   )
 }
 

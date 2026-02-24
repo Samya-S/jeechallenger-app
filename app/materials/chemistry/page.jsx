@@ -1,4 +1,6 @@
 import ChemistryComponent from './ChemistryComponent'
+import StructuredData from '@/components/common/StructuredData'
+import { chemistryFAQs } from '@/lib/faq-data'
 
 export const metadata = {
   title: "JEE Chemistry Study Materials - Free Books, Notes & Tricks | Download PDFs",
@@ -36,7 +38,31 @@ export const metadata = {
 
 const ChemistryPage = () => {
   return (
-    <ChemistryComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={chemistryFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Study Materials", path: "/materials/chemistry" },
+            { name: "Chemistry", path: "/materials/chemistry" }
+          ]
+        }} 
+      />
+      <StructuredData 
+        type="educationalOccupationalCredential" 
+        data={{
+          name: "JEE Chemistry Study Materials",
+          description: "Complete Chemistry study materials for JEE Main and Advanced including NCERT, OP Tandon, and MS Chouhan",
+          subject: "Chemistry",
+          chapters: 30
+        }} 
+      />
+      
+      <ChemistryComponent />
+    </>
   )
 }
 

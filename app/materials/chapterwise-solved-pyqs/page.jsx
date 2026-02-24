@@ -1,4 +1,6 @@
 import ChapterWiseSolvedPYQsComponent from './ChapterWiseSolvedPYQsComponent'
+import StructuredData from '@/components/common/StructuredData'
+import { pyqFAQs } from '@/lib/faq-data'
 
 export const metadata = {
   title: "Chapter-wise Solved JEE PYQs - Last 43 Years | Free Download PDFs",
@@ -36,7 +38,22 @@ export const metadata = {
 
 const ChapterWiseSolvedPYQsPage = () => {
   return (
-    <ChapterWiseSolvedPYQsComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={pyqFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Study Materials", path: "/materials/chapterwise-solved-pyqs" },
+            { name: "Chapter-wise Solved PYQs", path: "/materials/chapterwise-solved-pyqs" }
+          ]
+        }} 
+      />
+      
+      <ChapterWiseSolvedPYQsComponent />
+    </>
   )
 }
 

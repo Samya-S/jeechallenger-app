@@ -1,4 +1,6 @@
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
+import StructuredData from '@/components/common/StructuredData';
+import { syllabusTrackerFAQs } from '@/lib/faq-data';
 
 export const metadata = {
   title: 'Free JEE Syllabus Tracker - Track Your Progress | All 88 Chapters',
@@ -35,5 +37,38 @@ export const metadata = {
 };
 
 export default function SyllabusTrackerPage() {
-  return <SyllabusTrackerComponent />;
+  return (
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={syllabusTrackerFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Syllabus Tracker", path: "/syllabus-tracker" }
+          ]
+        }} 
+      />
+      <StructuredData 
+        type="softwareApplication" 
+        data={{
+          name: "JEE Syllabus Tracker",
+          description: "Free online progress tracking tool for JEE preparation covering all 88 chapters of Physics, Chemistry, and Mathematics",
+          price: "0",
+          features: [
+            "88 Chapter Coverage",
+            "Theory Progress Tracking",
+            "PYQ Completion Tracking",
+            "Revision Status Monitor",
+            "Visual Progress Indicators",
+            "Export/Import Data",
+            "Local Storage"
+          ]
+        }} 
+      />
+      
+      <SyllabusTrackerComponent />
+    </>
+  );
 }

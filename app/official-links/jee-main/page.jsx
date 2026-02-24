@@ -1,4 +1,5 @@
 import JeeMainComponent from './JeeMainComponent'
+import StructuredData from '@/components/common/StructuredData'
 
 export const metadata = {
   title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
@@ -36,7 +37,21 @@ export const metadata = {
 
 const JeeMainPage = () => {
   return (
-    <JeeMainComponent />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Official Links", path: "/official-links/jee-main" },
+            { name: "JEE Main", path: "/official-links/jee-main" }
+          ]
+        }} 
+      />
+      
+      <JeeMainComponent />
+    </>
   )
 }
 

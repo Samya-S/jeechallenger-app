@@ -1,4 +1,6 @@
 import NewsComponent from './NewsComponent';
+import StructuredData from '@/components/common/StructuredData';
+import { newsFAQs } from '@/lib/faq-data';
 
 export const metadata = {
   title: 'Latest JEE News - Exam Dates, Results & Important Updates',
@@ -35,5 +37,21 @@ export const metadata = {
 };
 
 export default function NewsPage() {
-  return <NewsComponent />;
+  return (
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={newsFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Latest JEE News", path: "/news" }
+          ]
+        }} 
+      />
+      
+      <NewsComponent />
+    </>
+  );
 } 

@@ -1,4 +1,6 @@
 import AITutorComponent from "./AITutorComponent";
+import StructuredData from '@/components/common/StructuredData';
+import { aiTutorFAQs } from '@/lib/faq-data';
 
 export const metadata = {
   title: "Free AI Tutor for JEE - 24/7 Doubt Solving & Step-by-Step Solutions",
@@ -35,5 +37,37 @@ export const metadata = {
 };
 
 export default function AITutorPage() {
-  return <AITutorComponent />;
+  return (
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={aiTutorFAQs} />
+      <StructuredData 
+        type="breadcrumb" 
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "AI Tutor", path: "/ai-tutor" }
+          ]
+        }} 
+      />
+      <StructuredData 
+        type="softwareApplication" 
+        data={{
+          name: "JEE Challenger AI Tutor",
+          description: "AI-powered JEE doubt solver providing 24/7 instant solutions for Physics, Chemistry, and Mathematics with step-by-step explanations",
+          price: "0",
+          features: [
+            "24/7 Doubt Solving",
+            "Step-by-step Solutions",
+            "LaTeX Mathematical Formatting",
+            "File Upload Support",
+            "Chat History",
+            "Physics, Chemistry, Math Coverage"
+          ]
+        }} 
+      />
+      
+      <AITutorComponent />
+    </>
+  );
 } 
