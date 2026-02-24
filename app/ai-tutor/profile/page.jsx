@@ -3,6 +3,13 @@ import AITutorProfileComponent from "./AITutorProfileComponent";
 export const metadata = {
   title: "Profile - AI Tutor - JEE Challenger",
   description: "Manage your AI Tutor profile, settings, and preferences for personalized JEE preparation.",
+  alternates: {
+    canonical: '/ai-tutor/profile',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     title: 'Profile - AI Tutor | JEE Challenger',
     description: "Manage your AI Tutor profile, settings, and preferences for personalized JEE preparation.",

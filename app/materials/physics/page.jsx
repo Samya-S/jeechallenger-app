@@ -3,6 +3,13 @@ import PhysicsComponent from './PhysicsComponent'
 export const metadata = {
   title: "Physics | JEE Challenger",
   description: "Physics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+  alternates: {
+    canonical: '/materials/physics',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Physics Study Materials - JEE Challenger",
     description: "Physics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",

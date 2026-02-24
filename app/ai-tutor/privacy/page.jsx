@@ -3,6 +3,13 @@ import AITutorPrivacyComponent from "./AITutorPrivacyComponent";
 export const metadata = {
   title: "Privacy Policy - AI Tutor - JEE Challenger",
   description: "Privacy Policy for JEE Challenger AI Tutor. Learn how we collect, use, and protect your personal information.",
+  alternates: {
+    canonical: '/ai-tutor/privacy',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Privacy Policy - AI Tutor | JEE Challenger',
     description: "Privacy Policy for JEE Challenger AI Tutor. Learn how we collect, use, and protect your personal information.",

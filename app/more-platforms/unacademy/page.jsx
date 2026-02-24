@@ -3,6 +3,13 @@ import UnacademyComponent from './UnacademyComponent'
 export const metadata = {
   title: 'Unacademy | JEE Challenger',
   description: 'Unacademy is a platform that provides online classes for JEE aspirants. Get the best JEE preparation resources from Unacademy.',
+  alternates: {
+    canonical: '/more-platforms/unacademy',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Unacademy - Online JEE Classes | JEE Challenger',
     description: 'Unacademy is a platform that provides online classes for JEE aspirants. Get the best JEE preparation resources from Unacademy.',

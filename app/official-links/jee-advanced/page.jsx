@@ -3,6 +3,13 @@ import JeeAdvancedComponent from './JeeAdvancedComponent'
 export const metadata = {
   title: 'JEE Advanced | JEE Challenger',
   description: 'Official links for JEE Advanced and previous year question papers.',
+  alternates: {
+    canonical: '/official-links/jee-advanced',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'JEE Advanced Official Links & PYQs - JEE Challenger',
     description: 'Official links for JEE Advanced and previous year question papers.',

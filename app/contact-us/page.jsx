@@ -3,6 +3,13 @@ import ContactUsComponent from './ContactUsComponent'
 export const metadata = {
   title: "Contact Us | JEE Challenger",
   description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",
+  alternates: {
+    canonical: '/contact-us',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Contact Us - JEE Challenger",
     description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",

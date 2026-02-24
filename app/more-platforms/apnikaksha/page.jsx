@@ -3,6 +3,13 @@ import ApniKakshaComponent from './ApniKakshaComponent'
 export const metadata = {
   title: 'Apni Kaksha | JEE Challenger',
   description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',
+  alternates: {
+    canonical: '/more-platforms/apnikaksha',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Apni Kaksha - Free JEE YouTube Channel | JEE Challenger',
     description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',

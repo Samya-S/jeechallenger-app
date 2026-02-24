@@ -3,6 +3,13 @@ import PhysicsWallahComponent from './PhysicsWallahComponent'
 export const metadata = {
   title: "Physics Wallah | JEE Challenger",
   description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",
+  alternates: {
+    canonical: '/more-platforms/physicswallah',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Physics Wallah - Free JEE Preparation | JEE Challenger',
     description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",

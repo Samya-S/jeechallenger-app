@@ -3,6 +3,13 @@ import NewsComponent from './NewsComponent';
 export const metadata = {
   title: 'Latest JEE News | JEE Challenger',
   description: 'Stay updated with the latest news and information for JEE aspirants',
+  alternates: {
+    canonical: '/news',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: 'Latest JEE News - JEE Challenger',
     description: 'Stay updated with the latest news and information for JEE aspirants',
