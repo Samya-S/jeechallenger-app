@@ -84,6 +84,11 @@ const Footer = () => {
             <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Platforms & Official Links</p>
             <ul className="space-y-2">
               <li>
+                <Link href="/more-platforms/unacademy" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Unacademy
+                </Link>
+              </li>
+              <li>
                 <Link href="/more-platforms/physicswallah" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Physics Wallah
                 </Link>
@@ -91,11 +96,6 @@ const Footer = () => {
               <li>
                 <Link href="/more-platforms/apnikaksha" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Apni Kaksha
-                </Link>
-              </li>
-              <li>
-                <Link href="/more-platforms/unacademy" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  Unacademy
                 </Link>
               </li>
               <li>
