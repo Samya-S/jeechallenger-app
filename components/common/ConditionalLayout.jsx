@@ -5,6 +5,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
+import FeedbackModal from "@/components/common/FeedbackModal";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
@@ -24,7 +25,8 @@ export default function ConditionalLayout({ children }) {
         </main>
       )}
       {!isAITutorPage && <Footer />}
-      {!isAITutorPage && <AIAnnouncementModal />}
+      {/* {!isAITutorPage && <AIAnnouncementModal />} */}
+      {!isAITutorPage && <FeedbackModal />}
     </>
   );
 } 

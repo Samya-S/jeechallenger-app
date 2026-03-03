@@ -52,3 +52,55 @@ export const submitContactUsForm = async (formData) => {
     return { success: false };
   }
 };
+
+export const submitFeedbackForm = async (formData) => {
+  try {
+    // Step 1: Create a transporter object using your email service provider details
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.AUTH_EMAIL,
+        pass: process.env.AUTH_PASS
+      }
+    });
+
+    // Step 2: Compose the email content
+    // Support multiple receiver emails via env var: RECEIVER_EMAILS (comma separated).
+    // Falls back to single RECEIVER_EMAIL for backward compatibility.
+    const receiverEmails = (process.env.RECEIVER_EMAILS || process.env.RECEIVER_EMAIL || '')
+      .split(',')
+      .map(email => email.trim())
+      .filter(Boolean);
+
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: receiverEmails,
+      subject: `New Feedback from ${formData.name} | JEE Challenger`, // Subject of the email
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
+          <h2 style="color: #333;">New Website Feedback</h2>
+          <p><strong>Name:</strong> ${formData.name}</p>
+          <p><strong>Email:</strong> ${formData.email}</p>
+          <p><strong>Feedback:</strong></p>
+          <p style="background-color: #fff; padding: 10px; border-radius: 4px; color: #333; border: 1px solid #ddd;">
+            ${formData.feedback}
+          </p>
+          <hr style="border: 1px solid #ddd;">
+          <p style="color: #888; font-size: 12px;">
+            This email was sent from your website's Feedback Modal on <a href="https://jeechallenger.vercel.app" style="color: #007bff;">JEE Challenger</a>.
+          </p>
+        </div>
+      `,
+    };
+
+    // Step 3: Send the email
+    await transporter.sendMail(mailOptions);
+
+    // Log the success and return a success response
+    console.log('Email for feedback form submission sent successfully');
+    return { success: true };
+  } catch (error) {
+    console.error("Error handling feedback submission:", error);
+    return { success: false };
+  }
+};
