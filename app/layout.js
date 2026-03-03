@@ -1,5 +1,5 @@
 import "./globals.css";
-import ConditionalLayout from "@/components/AiTutorComponents/ConditionalLayout";
+import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
