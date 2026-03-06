@@ -3,6 +3,13 @@ import DisclaimerComponent from './DisclaimerComponent'
 export const metadata = {
   title: "Disclaimer | JEE Challenger",
   description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
+  alternates: {
+    canonical: '/disclaimer',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Disclaimer - JEE Challenger",
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
@@ -24,9 +31,6 @@ export const metadata = {
     title: "Disclaimer - JEE Challenger",
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
     images: ['/images/jcicon.jpg'],
-  },
-  alternates: {
-    canonical: '/disclaimer',
   },
   robots: {
     index: true,

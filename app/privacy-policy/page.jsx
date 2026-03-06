@@ -3,6 +3,13 @@ import PrivacyPolicyComponent from "./PrivacyPolicyComponent";
 export const metadata = {
   title: "Privacy Policy | JEE Challenger",
   description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information when you use our platform.",
+  alternates: {
+    canonical: '/privacy-policy',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Privacy Policy - JEE Challenger",
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
@@ -24,9 +31,6 @@ export const metadata = {
     title: "Privacy Policy - JEE Challenger",
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
     images: ['/images/jcicon.jpg'],
-  },
-  alternates: {
-    canonical: '/privacy-policy',
   },
   robots: {
     index: true,
