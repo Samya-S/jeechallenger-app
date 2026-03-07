@@ -3,13 +3,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
 import { ArrowLeft } from 'lucide-react';
 
 // Components
 import BlogPostClient from './BlogPostClient';
 import BlogHeader from './components/BlogHeader';
 import BlogCTA from './components/BlogCTA';
+import KaTeXStyles from './components/KaTeXStyles';
 import { getMarkdownComponents } from './components/markdownComponents';
 
 export default function BlogPostComponent({ post }) {
@@ -28,36 +28,48 @@ export default function BlogPostComponent({ post }) {
     );
   }
 
+  // Check if article has math from frontmatter
+  const hasMath = post.hasMath === true;
+
+  // Configure plugins based on frontmatter setting
+  const remarkPlugins = hasMath ? [remarkGfm, remarkMath] : [remarkGfm];
+  const rehypePlugins = hasMath ? [rehypeKatex] : [];
+
   return (
-    <BlogPostClient content={post.content}>
-      <BlogHeader 
-        post={post} 
-        shareTitle={post.title} 
-      />
+    <>
+      {/* Conditionally load KaTeX CSS only for articles with math */}
+      {hasMath && <KaTeXStyles />}
 
-      {/* Article Content - Server-rendered markdown */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 border border-gray-200 dark:border-gray-700">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex]}
-          components={getMarkdownComponents()}
-        >
-          {post.content}
-        </ReactMarkdown>
-      </div>
+      <BlogPostClient content={post.content}>
+        <BlogHeader
+          post={post}
+          shareTitle={post.title}
+        />
 
-      <BlogCTA />
+        {/* Article Content - Server-rendered markdown */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 border border-gray-200 dark:border-gray-700">
+          <ReactMarkdown
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
+            components={getMarkdownComponents()}
+          >
+            {post.content}
+          </ReactMarkdown>
+        </div>
 
-      {/* Back to Blogs */}
-      <div className="mt-12 text-center">
-        <Link 
-          href="/blogs" 
-          className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:gap-3 transition-all font-medium"
-        >
-          <ArrowLeft size={18} />
-          Back to All Articles
-        </Link>
-      </div>
-    </BlogPostClient>
+        <BlogCTA />
+
+        {/* Back to Blogs */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/blogs"
+            className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:gap-3 transition-all font-medium"
+          >
+            <ArrowLeft size={18} />
+            Back to All Articles
+          </Link>
+        </div>
+      </BlogPostClient>
+    </>
   );
 }
