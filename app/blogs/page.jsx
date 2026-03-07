@@ -52,6 +52,14 @@ export default function BlogPage() {
         }} 
       />
       
+      {/* Blog List Structured Data */}
+      <StructuredData 
+        type="blogList" 
+        data={{
+          items: articles
+        }} 
+      />
+      
       <BlogListingComponent articles={articles} />
     </>
   );
