@@ -47,7 +47,7 @@ const Footer = () => {
             <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Quick Access</p>
             <ul className="space-y-2">
               <li>
-                <Link href="/ai-tutor" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                <Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
                   <FaChalkboardTeacher className="text-sm" />
                   AI Tutor
                 </Link>

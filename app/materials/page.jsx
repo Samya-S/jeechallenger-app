@@ -284,7 +284,7 @@ export default function MaterialsPage() {
 											</div>
 										</div>
 										<div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-											<Link href="/ai-tutor" aria-label="Start learning with AI Tutor">
+											<Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" aria-label="Start learning with AI Tutor">
 												<button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
 													<span className="flex items-center justify-center">
 														<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

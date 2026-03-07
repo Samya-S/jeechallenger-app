@@ -361,7 +361,7 @@ const HomeComponent = () => {
           </div>
 
           <div className="text-center">
-            <Link href="/ai-tutor" aria-label="Start learning with AI Tutor">
+            <Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" aria-label="Start learning with AI Tutor">
               <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
                 <span className="flex items-center justify-center">
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -807,8 +807,8 @@ const HomeComponent = () => {
 
       {/* SEO links for AI Tutor pages - visually hidden but accessible to crawlers */}
       <div className="sr-only">
-        <Link href="/ai-tutor/privacy">AI Tutor Privacy Policy</Link>
-        <Link href="/ai-tutor/terms">AI Tutor Terms of Service</Link>
+        <Link href="/ai-tutor/privacy" target="_blank" rel="noopener noreferrer">AI Tutor Privacy Policy</Link>
+        <Link href="/ai-tutor/terms" target="_blank" rel="noopener noreferrer">AI Tutor Terms of Service</Link>
       </div>
 
       {/* Floating Action Button */}

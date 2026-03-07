@@ -241,6 +241,8 @@ const PrivacyPolicyComponent = () => {
 												<div className="text-cyan-800 dark:text-cyan-300">
 													→ <Link
 														href="/ai-tutor/privacy"
+														target="_blank"
+														rel="noopener noreferrer"
 														className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
 													>
 														AI Tutor Privacy Policy
@@ -249,6 +251,8 @@ const PrivacyPolicyComponent = () => {
 												<div className="text-cyan-800 dark:text-cyan-300">
 													→ <Link
 														href="/ai-tutor/terms"
+														target="_blank"
+														rel="noopener noreferrer"
 														className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
 													>
 														AI Tutor Terms of Service

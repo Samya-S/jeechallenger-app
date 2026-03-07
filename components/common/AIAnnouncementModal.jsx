@@ -98,6 +98,8 @@ const AIAnnouncementModal = () => {
         <div className="mt-6 text-center">
           <Link
             href="/ai-tutor"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block"
           >
             <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium text-lg sm:text-xl px-5 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">
