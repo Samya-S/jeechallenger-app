@@ -44,7 +44,6 @@ const JeeAdvancedPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "Official Links", path: "/official-links/jee-advanced" },
             { name: "JEE Advanced", path: "/official-links/jee-advanced" }
           ]
         }} 

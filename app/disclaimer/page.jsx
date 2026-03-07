@@ -32,10 +32,6 @@ export const metadata = {
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
     images: ['/images/jcicon.jpg'],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
 }
 
 export default function DisclaimerPage() {

@@ -32,10 +32,6 @@ export const metadata = {
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
     images: ['/images/jcicon.jpg'],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
 export default function PrivacyPolicyPage() {

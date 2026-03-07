@@ -46,7 +46,7 @@ const ChemistryPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "Study Materials", path: "/materials/chemistry" },
+            { name: "Study Materials", path: "/materials" },
             { name: "Chemistry", path: "/materials/chemistry" }
           ]
         }} 

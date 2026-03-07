@@ -46,7 +46,7 @@ const ChapterWiseSolvedPYQsPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "Study Materials", path: "/materials/chapterwise-solved-pyqs" },
+            { name: "Study Materials", path: "/materials" },
             { name: "Chapter-wise Solved PYQs", path: "/materials/chapterwise-solved-pyqs" }
           ]
         }} 
