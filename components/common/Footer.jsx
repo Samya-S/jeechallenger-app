@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine } from "react-icons/fa";
+import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb } from "react-icons/fa";
 // import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
 
 const Footer = () => {
@@ -59,6 +59,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/blogs" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaLightbulb className="text-sm" />
+                  Articles & Tips
+                </Link>
+              </li>
+              <li>
                 <Link href="/news" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
                   <FaNewspaper className="text-sm" />
                   Latest News
@@ -68,12 +74,6 @@ const Footer = () => {
                 <Link href="/contact-us" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
                   <FaEnvelope className="text-sm" />
                   Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="https://github.com/Samya-S/jeechallenger-2.0" target="_blank" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
-                  <FaGithub className="text-sm" />
-                  Source Code
                 </Link>
               </li>
             </ul>
@@ -165,6 +165,18 @@ const Footer = () => {
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
             >
               Privacy Policy
+            </Link>
+          </div>
+          
+          {/* Source Code Link */}
+          <div className="flex justify-center mt-4">
+            <Link 
+              href="https://github.com/Samya-S/jeechallenger-2.0" 
+              target="_blank"
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors inline-flex items-center gap-1.5 text-sm"
+            >
+              <FaGithub className="text-sm" />
+              Source Code
             </Link>
           </div>
         </div>

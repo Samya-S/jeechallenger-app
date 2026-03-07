@@ -55,9 +55,18 @@ const NavbarItems = [
     url: '/ai-tutor'
   },
   {
-    title: 'Latest News',
-    type: 'link',
-    url: '/news'
+    title: 'Resources',
+    type: 'dropdown',
+    items: [
+      {
+        title: 'Articles & Tips',
+        url: '/blogs'
+      },
+      {
+        title: 'Latest News',
+        url: '/news'
+      }
+    ]
   }
 ];
 

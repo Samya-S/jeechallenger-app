@@ -84,6 +84,15 @@ Each subject maintains its own identity for easy recognition.
 - Progress bar: `from-green-400 via-blue-500 to-purple-500` (rainbow effect for motivation)
 - Stats card: `from-blue-600 via-purple-600 to-pink-600` (achievement celebration)
 
+### Blog/Articles
+- **Blue-Cyan Gradient** (Distinct from brand purple)
+- Hero: `from-blue-600 via-blue-500 to-cyan-500`
+- Dark mode: `from-blue-900 via-blue-800 to-cyan-900`
+- Progress bar: `from-blue-600 via-blue-500 to-cyan-500`
+- Featured card borders: `from-blue-600 via-blue-500 to-cyan-500`
+- CTA sections: `from-blue-600 via-blue-500 to-cyan-500`
+- Note: Consistent blue-cyan gradient across all blog elements for unified appearance
+
 ## Background Colors
 
 ### Page Backgrounds

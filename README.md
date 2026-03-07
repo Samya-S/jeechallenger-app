@@ -46,6 +46,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Study Materials**: Comprehensive resources for Physics, Chemistry, and Mathematics
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
 - **Chapter-wise PYQs**: Solved previous year questions organized by chapters
+- **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and filtering
 - **Real-time News**: Latest JEE-related news and updates powered by GNews API
 - **Contact Form**: Email integration for user queries and feedback
 
@@ -89,6 +90,18 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Automatic content refresh
 - Mobile-responsive news layout
 
+### 📝 Blog & Articles
+
+- Expert preparation tips and strategies
+- Subject-wise study guides and book recommendations
+- Time management and common mistakes advice
+- MDX-based article system with frontmatter metadata
+- Search and category filtering
+- Featured article highlighting
+- Reading progress tracking with table of contents
+- Social sharing integration
+- SEO optimized with structured data
+
 ### 🔗 Platform Integrations
 
 - **Unacademy**: Direct links to Unacademy JEE courses
@@ -102,10 +115,11 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Framework**: Next.js 15 with App Router
 - **UI Library**: React 19
 - **Styling**: Tailwind CSS with custom animations
-- **Icons**: React Icons
+- **Icons**: Lucide React & React Icons
 - **Theme Management**: next-themes
-- **Markdown Rendering**: React Markdown with KaTeX support
-- **Math Rendering**: KaTeX for mathematical expressions
+- **Markdown Rendering**: React Markdown with remark-gfm for GitHub Flavored Markdown
+- **Math Rendering**: KaTeX with rehype-katex for mathematical expressions
+- **Content Management**: gray-matter for MDX frontmatter parsing
 
 ### Backend & APIs
 
@@ -179,6 +193,11 @@ jeechallenger-2.0/
 ├── app/                        # Next.js App Router pages
 │   ├── ai-tutor/               # AI Tutor functionality
 │   ├── syllabus-tracker/       # Progress tracking system
+│   ├── blog/                   # Blog post display with dynamic routes
+│   │   ├── [slug]/             # Dynamic blog post pages
+│   │   ├── components/         # Blog UI components (TOC, Share, etc.)
+│   │   └── hooks/              # Blog custom hooks
+│   ├── blogs/                  # Blog listing page with search/filter
 │   ├── materials/              # Study materials
 │   │   ├── physics/            # Physics resources
 │   │   ├── chemistry/          # Chemistry resources
@@ -193,6 +212,13 @@ jeechallenger-2.0/
 │   ├── common/                 # Shared components
 │   ├── home/                   # Home page components
 │   └── utils/                  # Utility components
+├── data/                       # Content data
+│   └── blog/                   # Blog articles
+│       └── articles/           # MDX article files
+├── docs/                       # Documentation
+│   ├── blog-structure.md       # Blog system documentation
+│   ├── color-system.md         # Design system colors
+│   └── traffic-growth-strategy.md  # SEO & growth strategy
 ├── lib/                        # Utility functions and configs
 ├── server/                     # Server actions
 └── public/                     # Static assets

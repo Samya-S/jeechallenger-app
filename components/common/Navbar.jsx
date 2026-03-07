@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Styles from "./Navbar.module.css";
-import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaNewspaper, FaChartLine, FaChalkboardTeacher } from "react-icons/fa";
+import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/utils/ThemeToggle";
 import { useTheme } from "next-themes";
@@ -60,8 +60,8 @@ export default function NavBar() {
         return <FaChalkboardTeacher />;
       case 'more platforms':
         return <FaGlobe />;
-      case 'latest news':
-        return <FaNewspaper />;
+      case 'resources':
+        return <FaLightbulb />;
       default:
         return null;
     }
