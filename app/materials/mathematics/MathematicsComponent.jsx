@@ -1,23 +1,8 @@
-"use client";
-import dynamic from 'next/dynamic';
 import MathematicsResources from './MathematicsResources';
 import CategorySection from '../CategorySection';
 import PYQandMoreSection from '../PYQandMoreSection';
-
-// Lazy load client-only components
-const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
-  loading: () => (
-    <div className="flex items-center justify-center py-8">
-      <div className="animate-pulse space-y-4 w-full max-w-4xl px-4">
-        <div className="h-8 bg-purple-200 dark:bg-purple-800 rounded w-1/3 mx-auto"></div>
-        <div className="h-32 bg-purple-100 dark:bg-purple-900/30 rounded-xl"></div>
-      </div>
-    </div>
-  )
-});
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
-  ssr: false
-});
+import TelegramPost from '@/components/utils/TelegramPost';
+import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
 const MathematicsComponent = () => {
   return (

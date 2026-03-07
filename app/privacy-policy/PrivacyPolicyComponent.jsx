@@ -1,10 +1,5 @@
-"use client";
-import dynamic from 'next/dynamic';
+import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 import Link from "next/link";
-
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
-  ssr: false
-});
 
 const PrivacyPolicyComponent = () => {
 	return (

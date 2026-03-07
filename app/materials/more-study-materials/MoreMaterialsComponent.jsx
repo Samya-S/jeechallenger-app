@@ -1,22 +1,5 @@
-"use client";
-import dynamic from 'next/dynamic';
-
-// Dynamic imports for better performance and code splitting
-const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center py-8">
-      <div className="animate-pulse space-y-4 w-full max-w-4xl px-4">
-        <div className="h-8 bg-blue-200 dark:bg-blue-800 rounded w-1/3 mx-auto"></div>
-        <div className="h-32 bg-blue-100 dark:bg-blue-900/30 rounded-xl"></div>
-      </div>
-    </div>
-  )
-});
-
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
-  ssr: false
-});
+import TelegramPost from '@/components/utils/TelegramPost';
+import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
 const MoreMaterialsComponent = () => {
   return (

@@ -1,10 +1,5 @@
-"use client";
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
-  ssr: false
-});
+import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
 const PhysicsWallahComponent = () => {
   return (
