@@ -1,7 +1,23 @@
 "use client";
 import { useState } from 'react';
-import TelegramPost from '@/components/utils/TelegramPost';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for better performance and code splitting
+const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-8">
+      <div className="animate-pulse space-y-4 w-full max-w-4xl px-4">
+        <div className="h-8 bg-emerald-200 dark:bg-emerald-800 rounded w-1/3 mx-auto"></div>
+        <div className="h-32 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl"></div>
+      </div>
+    </div>
+  )
+});
+
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 import JeeMain2020papers from './JeeMain2020papers';
 import JeeMain2022papers from './JeeMain2022papers';
 

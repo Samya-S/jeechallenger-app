@@ -1,6 +1,10 @@
 "use client";
 import Image from 'next/image';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import dynamic from 'next/dynamic';
+
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 
 const UnacademyComponent = () => {
   return (

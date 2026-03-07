@@ -1,7 +1,11 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import NewsCard from './NewsCard';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 
 export default function NewsComponent({ articles, error }) {
   if (error) {

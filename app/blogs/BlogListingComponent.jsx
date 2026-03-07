@@ -3,8 +3,12 @@
 import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import BlogCard from './BlogCard';
-import ScrollToTopButton from '../../components/utils/ScrollToTopButton';
+
+const ScrollToTopButton = dynamic(() => import('../../components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 
 export default function BlogListingComponent({ articles }) {
   const [searchQuery, setSearchQuery] = useState('');

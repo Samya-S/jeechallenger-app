@@ -1,7 +1,11 @@
 "use client";
 import { submitContactUsForm } from "@/server/contact-actions";
 import { useState } from "react";
-import ScrollToTopButton from "@/components/utils/ScrollToTopButton";
+import dynamic from 'next/dynamic';
+
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 
 const ContactUsComponent = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });

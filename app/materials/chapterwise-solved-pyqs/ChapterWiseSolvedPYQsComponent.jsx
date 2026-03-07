@@ -1,6 +1,22 @@
 "use client";
-import TelegramPost from '@/components/utils/TelegramPost';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for better performance and code splitting
+const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-8">
+      <div className="animate-pulse space-y-4 w-full max-w-4xl px-4">
+        <div className="h-8 bg-orange-200 dark:bg-orange-800 rounded w-1/3 mx-auto"></div>
+        <div className="h-32 bg-orange-100 dark:bg-orange-900/30 rounded-xl"></div>
+      </div>
+    </div>
+  )
+});
+
+const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+  ssr: false
+});
 
 const ChapterWiseSolvedPYQsComponent = () => {
   const joinTgAlertMsg = "This link will only work if you are a subscriber of our official telegram channel. If so, please proceed.\n\nOr else, please join our telegram channel before proceeding.";
