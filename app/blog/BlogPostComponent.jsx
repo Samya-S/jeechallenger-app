@@ -3,13 +3,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { ArrowLeft } from 'lucide-react';
 
 // Components
 import BlogPostClient from './BlogPostClient';
 import BlogHeader from './components/BlogHeader';
 import BlogCTA from './components/BlogCTA';
-import KaTeXStyles from './components/KaTeXStyles';
 import { getMarkdownComponents } from './components/markdownComponents';
 
 export default function BlogPostComponent({ post }) {
@@ -31,15 +31,12 @@ export default function BlogPostComponent({ post }) {
   // Check if article has math from frontmatter
   const hasMath = post.hasMath === true;
 
-  // Configure plugins based on frontmatter setting
+  // Configure plugins based on frontmatter setting (same as AI tutor)
   const remarkPlugins = hasMath ? [remarkGfm, remarkMath] : [remarkGfm];
   const rehypePlugins = hasMath ? [rehypeKatex] : [];
 
   return (
     <>
-      {/* Conditionally load KaTeX CSS only for articles with math */}
-      {hasMath && <KaTeXStyles />}
-
       <BlogPostClient content={post.content}>
         <BlogHeader
           post={post}
@@ -52,6 +49,7 @@ export default function BlogPostComponent({ post }) {
             remarkPlugins={remarkPlugins}
             rehypePlugins={rehypePlugins}
             components={getMarkdownComponents()}
+            skipHtml={false}
           >
             {post.content}
           </ReactMarkdown>

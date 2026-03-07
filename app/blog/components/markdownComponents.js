@@ -116,7 +116,12 @@ export const getMarkdownComponents = () => ({
       </blockquote>
     );
   },
-  code: ({ inline, children }) => {
+  code: ({ inline, children, className }) => {
+    // Skip styling for KaTeX-generated code elements
+    if (className?.includes('katex')) {
+      return <code className={className}>{children}</code>;
+    }
+    
     if (inline) {
       return (
         <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-blue-600 dark:text-blue-400">
