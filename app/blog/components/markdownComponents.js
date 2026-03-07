@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export const getMarkdownComponents = () => ({
   h1: ({ children }) => {
     const text = children?.toString() || '';
@@ -157,6 +159,51 @@ export const getMarkdownComponents = () => ({
       >
         {children}
       </a>
+    );
+  },
+  img: ({ src, alt }) => {
+    // Handle both local and external images
+    if (!src) return null;
+    
+    // For external images (CDN, diagrams from external sources)
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return (
+        <span className="block my-8">
+          <Image
+            src={src}
+            alt={alt || 'Blog image'}
+            width={800}
+            height={500}
+            className="rounded-xl shadow-md w-full h-auto"
+            style={{ objectFit: 'contain' }}
+            unoptimized // External images need unoptimized flag
+          />
+          {alt && (
+            <span className="block text-center text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+              {alt}
+            </span>
+          )}
+        </span>
+      );
+    }
+    
+    // For local images in /public folder
+    return (
+      <span className="block my-8">
+        <Image
+          src={src}
+          alt={alt || 'Blog image'}
+          width={800}
+          height={500}
+          className="rounded-xl shadow-md w-full h-auto"
+          style={{ objectFit: 'contain' }}
+        />
+        {alt && (
+          <span className="block text-center text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+            {alt}
+          </span>
+        )}
+      </span>
     );
   },
 });
