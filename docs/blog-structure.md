@@ -1,7 +1,7 @@
 # Blog Articles Structure
 
 ## Overview
-Blog articles have been restructured from a single monolithic JavaScript file to separate MDX files for better maintainability and scalability.
+Blog articles are stored as individual MDX files in the `data/blog/articles/` directory. Each article is a self-contained file with YAML frontmatter for metadata and markdown content.
 
 ## Structure
 
@@ -13,33 +13,31 @@ data/blog/articles/
 └── ...
 ```
 
-## Benefits
+## Key Features
 
-### 1. **Better Organization**
-- Each article is in its own file
-- Easy to find and edit specific articles
-- Clear separation of concerns
+### **File-Based Architecture**
+- One article per MDX file
+- Filename becomes the URL slug (e.g., `my-article.mdx` → `/blog/my-article`)
+- Direct file editing with markdown syntax highlighting
+- Clean separation between articles
 
-### 2. **Cleaner Metadata**
-- YAML frontmatter for structured metadata
-- No need for JavaScript template literals
-- Easy to validate and parse
+### **Structured Metadata**
+- YAML frontmatter for article properties
+- Consistent schema across all articles
+- Easy to parse and validate
+- Supports custom fields
 
-### 3. **Easier to Maintain**
-- Adding new articles: Just create a new `.mdx` file
-- Editing articles: Direct markdown editing
-- No post-processing needed
-- Version control friendly (smaller diffs)
+### **Developer Experience**
+- Simple file operations (create, edit, delete)
+- Version control friendly with isolated changes
+- Linting and validation support
+- Direct markdown preview in editors
 
-### 4. **Scalability**
-- Can handle hundreds of articles without performance issues
-- No single file bloat (old file was 1092 lines!)
-- Easier collaboration (multiple people can work on different articles)
-
-### 5. **Better Developer Experience**
-- Markdown syntax highlighting in editors
-- Linting and validation possible
-- Preview markdown directly
+### **Scalability**
+- Handles large numbers of articles efficiently
+- No single file bottlenecks
+- Parallel collaboration support
+- Fast build times
 
 ## Article Format
 
@@ -54,6 +52,7 @@ author: "Author Name"
 category: "Category"
 readTime: "X min read"
 keywords: "comma, separated, keywords"
+hasMath: false
 ---
 
 # Article content in Markdown
@@ -67,7 +66,11 @@ Your content here...
 ```javascript
 import { getAllArticles } from '@/lib/articles';
 
+// Get all articles with content (default)
 const articles = getAllArticles();
+
+// Get all articles without content (for listing pages, better performance)
+const articles = getAllArticles(false);
 ```
 
 ### Get single article:
@@ -84,18 +87,34 @@ import { getArticlesByCategory } from '@/lib/articles';
 const categoryArticles = getArticlesByCategory('Category');
 ```
 
-## Adding New Articles
+### Get all categories:
+```javascript
+import { getAllCategories } from '@/lib/articles';
 
-1. Create a new `.mdx` file in `data/blog/articles/`
-2. Use kebab-case for filename (becomes the slug)
-3. Add frontmatter with all required fields
-4. Write content in Markdown
-5. Save and rebuild
-
-Example:
-```bash
-# Create new article
-touch data/blog/articles/my-new-article.mdx
-
-# Will be accessible at: /blog/my-new-article
+const categories = getAllCategories();
 ```
+
+## Creating New Articles
+
+To add a new article to the blog:
+
+1. Create an `.mdx` file in `data/blog/articles/` with a kebab-case name
+2. Add YAML frontmatter with required metadata fields
+3. Write article content in Markdown below the frontmatter
+4. The filename automatically becomes the URL slug
+
+**Example:**
+```bash
+# Create: data/blog/articles/my-new-article.mdx
+# URL: /blog/my-new-article
+```
+
+**Required frontmatter fields:**
+- `title`: Article headline
+- `excerpt`: Short description for listings
+- `date`: Publication date (YYYY-MM-DD)
+- `author`: Author name (empty string "" defaults to "JEE Challenger Team" in metadata)
+- `category`: Article category
+- `readTime`: Estimated reading time (e.g., "4 min read")
+- `keywords`: SEO keywords (comma-separated string)
+- `hasMath`: Boolean flag for LaTeX/KaTeX support (optional, default: false)
