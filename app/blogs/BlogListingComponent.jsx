@@ -28,7 +28,8 @@ export default function BlogListingComponent({ articles }) {
       const matchesSearch = !searchQuery || 
         post.title.toLowerCase().includes(lowerSearchQuery) ||
         post.excerpt.toLowerCase().includes(lowerSearchQuery) ||
-        post.category.toLowerCase().includes(lowerSearchQuery);
+        post.category.toLowerCase().includes(lowerSearchQuery) ||
+        (post.keywords && post.keywords.toLowerCase().includes(lowerSearchQuery));
       
       const matchesCategory = 
         selectedCategory === 'All' || post.category === selectedCategory;
@@ -88,7 +89,7 @@ export default function BlogListingComponent({ articles }) {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search articles by title, topic, or category..."
+              placeholder="Search articles by title, topic, category, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 dark:text-white placeholder-gray-500"
