@@ -107,42 +107,42 @@ export default function ShareButtons({ shareUrl, shareTitle, inline = false }) {
         <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={() => handleShare('twitter')}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Share on Twitter"
           >
             <FaXTwitter size={18} />
           </button>
           <button
             onClick={() => handleShare('facebook')}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Share on Facebook"
           >
             <FaFacebook size={18} />
           </button>
           <button
             onClick={() => handleShare('linkedin')}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Share on LinkedIn"
           >
             <FaLinkedin size={18} />
           </button>
           <button
             onClick={() => handleShare('whatsapp')}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-900 text-gray-700 dark:text-gray-300 hover:text-green-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Share on WhatsApp"
           >
             <FaWhatsapp size={18} />
           </button>
           <button
             onClick={handleInstagramShare}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-pink-100 dark:hover:bg-pink-900 text-gray-700 dark:text-gray-300 hover:text-pink-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             aria-label="Share on Instagram"
           >
             <FaInstagram size={18} />
           </button>
           <button
             onClick={copyLink}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors relative"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors relative"
             aria-label="Copy link"
           >
             {copied ? <Check size={18} /> : <Link2 size={18} />}
