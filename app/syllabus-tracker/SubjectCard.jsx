@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 /**
  * SubjectCard Component - Displays subject progress with visual progress bar
@@ -11,7 +11,7 @@ import React from 'react';
  * @param {boolean} props.expanded - Whether the card is expanded
  * @param {Function} props.onToggle - Toggle expansion handler
  */
-const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
+const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle }) => {
   const { name, color } = subjectData;
   const { 
     percentage, 
@@ -129,6 +129,8 @@ const SubjectCard = ({ subject, subjectData, stats, expanded, onToggle }) => {
       </div>
     </div>
   );
-};
+});
+
+SubjectCard.displayName = 'SubjectCard';
 
 export default SubjectCard;

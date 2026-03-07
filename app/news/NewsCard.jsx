@@ -1,12 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { memo } from 'react';
 
-export default function NewsCard({ article }) {
-  const formattedDate = new Date(article.publishedAt).toLocaleDateString('en-US', {
+// Memoize date formatting to avoid recalculation
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+};
+
+function NewsCard({ article }) {
+  const formattedDate = formatDate(article.publishedAt);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden group h-full flex flex-col">
@@ -64,4 +70,7 @@ export default function NewsCard({ article }) {
       </div>
     </div>
   );
-} 
+}
+
+// Memo the component to prevent unnecessary re-renders
+export default memo(NewsCard); 

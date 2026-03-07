@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 
 /**
  * ChapterRow Component - Displays a chapter with checkboxes for different task types
@@ -10,13 +10,13 @@ import React from 'react';
  * @param {Object} props.progress - Progress state for this chapter
  * @param {Function} props.onToggle - Handler for checkbox toggle
  */
-const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
+const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
   const { id, name, unit } = chapter;
   const isFullyCompleted = progress.theory && progress.pyqs && progress.revision;
 
-  const handleCheckboxChange = (taskType) => {
+  const handleCheckboxChange = useCallback((taskType) => {
     onToggle(subject, id, taskType, !progress[taskType]);
-  };
+  }, [onToggle, subject, id, progress]);
 
   return (
     <div 
@@ -97,7 +97,9 @@ const ChapterRow = ({ chapter, subject, progress, onToggle }) => {
       </div>
     </div>
   );
-};
+});
+
+ChapterRow.displayName = 'ChapterRow';
 
 /**
  * ChapterList Component - Groups and displays chapter rows by unit
