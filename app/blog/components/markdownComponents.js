@@ -44,7 +44,7 @@ export const getMarkdownComponents = () => ({
   },
   ul: ({ children }) => {
     return (
-      <ul className="space-y-2.5 my-6">
+      <ul className="space-y-2.5 my-6 list-disc list-inside marker:text-blue-600 dark:marker:text-blue-400 marker:font-bold">
         {children}
       </ul>
     );
@@ -88,9 +88,9 @@ export const getMarkdownComponents = () => ({
       );
     }
     
-    // Default list item with bullet inside
+    // Default list item - inherits list style from parent (ol/ul)
     return (
-      <li className="text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed list-disc list-inside marker:text-blue-600 dark:marker:text-blue-400">
+      <li className="text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
         {children}
       </li>
     );
