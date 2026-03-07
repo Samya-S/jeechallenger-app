@@ -260,7 +260,7 @@ export default function MaterialsPage() {
 									</div>
 									<div className="flex-1 text-center md:text-left">
 										<h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-											Personal AI Tutor 👨‍🏫
+											Personalized AI Tutor
 										</h3>
 										<p className="text-gray-600 dark:text-gray-300 mb-6">
 											Experience personalized JEE preparation with our advanced AI Tutor. Get instant help with any subject, concept, or problem - anytime, anywhere.
@@ -287,8 +287,8 @@ export default function MaterialsPage() {
 											<Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" aria-label="Start learning with AI Tutor">
 												<button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
 													<span className="flex items-center justify-center">
-														<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+														<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 640 512">
+															<path d="M208 352c-2.39 0-4.78.35-7.06 1.09C187.98 357.3 174.35 360 160 360c-14.35 0-27.98-2.7-40.95-6.91-2.28-.74-4.66-1.09-7.05-1.09C49.94 352-.33 402.48 0 464.62.14 490.88 21.73 512 48 512h224c26.27 0 47.86-21.12 48-47.38.33-62.14-49.94-112.62-112-112.62zm-48-32c53.02 0 96-42.98 96-96s-42.98-96-96-96-96 42.98-96 96 42.98 96 96 96zM592 0H208c-26.47 0-48 22.25-48 49.59V96c23.42 0 45.1 6.78 64 17.8V64h352v288h-64v-64H384v64h-76.24c19.1 16.69 33.12 38.73 39.69 64H592c26.47 0 48-22.25 48-49.59V49.59C640 22.25 618.47 0 592 0z"/>
 														</svg>
 														Try AI Tutor Now
 													</span>

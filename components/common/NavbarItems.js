@@ -31,7 +31,7 @@ const NavbarItems = [
     ]
   },
   {
-    title: 'Official links',
+    title: 'Official Links',
     type: 'dropdown',
     items: [
       {
@@ -45,12 +45,12 @@ const NavbarItems = [
     ]
   },
   {
-    title: 'Syllabus Tracker 📊',
+    title: 'Syllabus Tracker',
     type: 'link',
     url: '/syllabus-tracker'
   },
   {
-    title: 'AI Tutor 👨‍🏫',
+    title: 'AI Tutor',
     type: 'link',
     url: '/ai-tutor'
   },

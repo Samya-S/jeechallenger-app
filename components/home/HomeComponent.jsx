@@ -290,7 +290,7 @@ const HomeComponent = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Personal AI Tutor 👨‍🏫
+              Personalized AI Tutor
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Experience personalized JEE preparation with our advanced AI Tutor. Get instant help with any subject, concept, or problem.
@@ -364,8 +364,8 @@ const HomeComponent = () => {
             <Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" aria-label="Start learning with AI Tutor">
               <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
                 <span className="flex items-center justify-center">
-                  <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0" fill="currentColor" viewBox="0 0 640 512">
+                    <path d="M208 352c-2.39 0-4.78.35-7.06 1.09C187.98 357.3 174.35 360 160 360c-14.35 0-27.98-2.7-40.95-6.91-2.28-.74-4.66-1.09-7.05-1.09C49.94 352-.33 402.48 0 464.62.14 490.88 21.73 512 48 512h224c26.27 0 47.86-21.12 48-47.38.33-62.14-49.94-112.62-112-112.62zm-48-32c53.02 0 96-42.98 96-96s-42.98-96-96-96-96 42.98-96 96 42.98 96 96 96zM592 0H208c-26.47 0-48 22.25-48 49.59V96c23.42 0 45.1 6.78 64 17.8V64h352v288h-64v-64H384v64h-76.24c19.1 16.69 33.12 38.73 39.69 64H592c26.47 0 48-22.25 48-49.59V49.59C640 22.25 618.47 0 592 0z" />
                   </svg>
                   Start Learning with AI Tutor
                 </span>
@@ -383,7 +383,7 @@ const HomeComponent = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Track Your Progress 📊
+              Track Your Progress
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Stay organized and motivated with our comprehensive JEE Syllabus Tracker. Monitor your preparation across all chapters and subjects.
@@ -676,7 +676,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">📚 Study Notes</h3>
+              <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 text-center">Study Notes</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your handwritten notes, summaries, and important formulas
               </p>
@@ -688,7 +688,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">📝 Practice Papers</h3>
+              <h3 className="font-semibold text-purple-700 dark:text-purple-400 mb-2 text-center">Practice Papers</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Upload solved papers, mock tests, and practice questions
               </p>
@@ -700,7 +700,7 @@ const HomeComponent = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 text-center">🎯 Tips & Tricks</h3>
+              <h3 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 text-center">Tips & Tricks</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                 Share your study strategies, time management tips, and shortcuts
               </p>
