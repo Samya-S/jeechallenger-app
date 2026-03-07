@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, User } from 'lucide-react';
 import ShareButtons from './ShareButtons';
 
-export default function BlogHeader({ post, shareUrl, shareTitle }) {
+export default function BlogHeader({ post, shareTitle }) {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -53,11 +53,11 @@ export default function BlogHeader({ post, shareUrl, shareTitle }) {
           </div>
 
           {/* Mobile Share Button - Inline with date */}
-          <ShareButtons shareUrl={shareUrl} shareTitle={shareTitle} inline={true} />
+          <ShareButtons shareTitle={shareTitle} inline={true} />
         </div>
 
         {/* Desktop Share Buttons - Separate section */}
-        <ShareButtons shareUrl={shareUrl} shareTitle={shareTitle} inline={false} />
+        <ShareButtons shareTitle={shareTitle} inline={false} />
       </header>
     </>
   );
