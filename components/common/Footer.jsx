@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb } from "react-icons/fa";
 // import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
