@@ -1,39 +1,53 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
 import BlogCard from './BlogCard';
 import ScrollToTopButton from '../../components/utils/ScrollToTopButton';
 
 export default function BlogListingComponent({ articles }) {
-  const allPosts = articles;
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Extract unique categories
+  // Extract unique categories (memoized to avoid recalculation)
   const categories = useMemo(() => {
-    const cats = ['All', ...new Set(allPosts.map(post => post.category))];
+    const cats = ['All', ...new Set(articles.map(post => post.category))];
     return cats;
-  }, [allPosts]);
+  }, [articles]);
 
-  // Filter posts based on search and category
+  // Filter posts based on search and category (memoized for performance)
   const filteredPosts = useMemo(() => {
-    return allPosts.filter(post => {
-      const matchesSearch = 
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.category.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!searchQuery && selectedCategory === 'All') {
+      return articles; // Skip filtering if no filters applied
+    }
+    
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    
+    return articles.filter(post => {
+      const matchesSearch = !searchQuery || 
+        post.title.toLowerCase().includes(lowerSearchQuery) ||
+        post.excerpt.toLowerCase().includes(lowerSearchQuery) ||
+        post.category.toLowerCase().includes(lowerSearchQuery);
       
       const matchesCategory = 
         selectedCategory === 'All' || post.category === selectedCategory;
       
       return matchesSearch && matchesCategory;
     });
-  }, [allPosts, searchQuery, selectedCategory]);
+  }, [articles, searchQuery, selectedCategory]);
 
-  // Get featured post (most recent)
-  const featuredPost = allPosts[0];
+  // Get featured post (most recent) - memoized
+  const featuredPost = useMemo(() => articles[0], [articles]);
+  
+  // Memoize callback functions
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery('');
+    setSelectedCategory('All');
+  }, []);
+
+  // Memoize article count for hero section
+  const articleCount = useMemo(() => articles.length, [articles]);
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
@@ -55,7 +69,7 @@ export default function BlogListingComponent({ articles }) {
             <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-white/90">
               <div className="flex items-center gap-2">
                 <BookOpen size={20} />
-                <span className="text-sm font-medium">{allPosts.length} Articles</span>
+                <span className="text-sm font-medium">{articleCount} Articles</span>
               </div>
               <div className="flex items-center gap-2">
                 <TrendingUp size={20} />
@@ -146,10 +160,7 @@ export default function BlogListingComponent({ articles }) {
               Try adjusting your search or filter criteria
             </p>
             <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('All');
-              }}
+              onClick={handleClearFilters}
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
               Clear Filters

@@ -140,6 +140,22 @@ export default function StructuredData({ type, data }) {
       };
       break;
 
+    case 'itemList':
+    case 'blogList':
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": data.items.map((item, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "url": `https://jeechallenger.vercel.app/blog/${item.slug}`,
+          "name": item.title,
+          "description": item.excerpt,
+          "datePublished": item.date
+        }))
+      };
+      break;
+
     default:
       return null;
   }

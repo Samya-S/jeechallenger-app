@@ -37,7 +37,8 @@ export const metadata = {
 };
 
 export default function BlogPage() {
-  const articles = getAllArticles();
+  // Only get metadata, not full content, for better performance
+  const articles = getAllArticles(false);
   return (
     <>
       {/* Structured Data for SEO */}

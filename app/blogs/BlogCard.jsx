@@ -2,15 +2,18 @@
 
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
+import { memo, useCallback } from 'react';
 
-export default function BlogCard({ post, featured = false }) {
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+// Memoize date formatting to avoid recalculation
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+function BlogCard({ post, featured = false }) {
 
   if (featured) {
     return (
@@ -98,3 +101,6 @@ export default function BlogCard({ post, featured = false }) {
     </Link>
   );
 }
+
+// Memo the component to prevent unnecessary re-renders
+export default memo(BlogCard);
