@@ -116,21 +116,16 @@ export const getMarkdownComponents = () => ({
       </blockquote>
     );
   },
-  code: ({ inline, children, className }) => {
+  code: ({ children, className }) => {
     // Skip styling for KaTeX-generated code elements
     if (className?.includes('katex')) {
       return <code className={className}>{children}</code>;
     }
-    
-    if (inline) {
-      return (
-        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-blue-600 dark:text-blue-400">
-          {children}
-        </code>
-      );
-    }
+
+    // react-markdown@10 no longer provides a reliable `inline` prop.
+    // Keep `code` styling inline by default; fenced blocks are already wrapped by `pre`.
     return (
-      <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-sm font-mono overflow-x-auto border border-gray-200 dark:border-gray-700">
+      <code className={`bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-blue-600 dark:text-blue-400 ${className || ''}`}>
         {children}
       </code>
     );
