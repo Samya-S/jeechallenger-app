@@ -1,7 +1,7 @@
 import "./globals.css";
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { ThemeProvider } from '@/lib/theme-context';
+import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
 // import SplashCursor from "@/components/utils/SplashCursor";
 

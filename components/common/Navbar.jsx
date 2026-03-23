@@ -6,7 +6,7 @@ import Styles from "./Navbar.module.css";
 import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/utils/ThemeToggle";
-import { useTheme } from "@/lib/theme-context";
+import { useTheme } from "next-themes";
 
 export default function NavBar() {
   const [showMobileNav, setShowMobileNav] = useState(false);
