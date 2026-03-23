@@ -4,7 +4,7 @@ import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardT
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-[20px]">
+    <footer className="bg-gray-50 dark:bg-gray-900 backdrop-blur-[20px]">
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
