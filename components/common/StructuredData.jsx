@@ -1,6 +1,8 @@
 // Structured Data Component for SEO
 // Generates JSON-LD schema for Google Rich Results
 
+import Script from 'next/script';
+
 export default function StructuredData({ type, data }) {
   let schema = {};
 
@@ -163,10 +165,15 @@ export default function StructuredData({ type, data }) {
   // Remove undefined fields
   schema = JSON.parse(JSON.stringify(schema));
 
+  const schemaJson = JSON.stringify(schema);
+  const scriptId = `structured-data-${type}`;
+
   return (
-    <script
+    <Script
+      id={scriptId}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      // strategy="afterInteractive"
+      dangerouslySetInnerHTML={{ __html: schemaJson }}
     />
   );
 }
