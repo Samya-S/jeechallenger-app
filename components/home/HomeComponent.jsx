@@ -3,7 +3,6 @@ import Styles from "./Home.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
 import Hero from "./Hero";
 
 // Lazy load heavy components for better performance
@@ -18,20 +17,6 @@ const YouTubeEmbed = dynamic(
 );
 
 const HomeComponent = () => {
-  const marqueeRef = useRef(null);
-
-  const handleMouseOver = () => {
-    if (marqueeRef.current) {
-      marqueeRef.current.stop();
-    }
-  };
-
-  const handleMouseOut = () => {
-    if (marqueeRef.current) {
-      marqueeRef.current.start();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
       <Hero />
@@ -733,15 +718,13 @@ const HomeComponent = () => {
             </ol>
           </div>
 
-          <marquee
-            ref={marqueeRef}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
-            scrollamount={15}
-            className="text-2xl pb-4 text-blue-600 dark:text-blue-400 font-semibold"
-          >
-            🎉 Join our community of contributors! Your materials can help thousands of JEE aspirants 👇
-          </marquee>
+          <div className="relative overflow-hidden pb-4">
+            <p className="contributorMarquee text-2xl text-blue-600 dark:text-blue-400 font-semibold whitespace-nowrap">
+              <span className="inline-block pr-10">
+                🎉 Join our community of contributors! Your materials can help thousands of JEE aspirants 👇
+              </span>
+            </p>
+          </div>
 
           <div className="text-center">
             <Link
@@ -816,6 +799,27 @@ const HomeComponent = () => {
         gradientColors="from-blue-600 to-purple-600"
         hoverColors="hover:from-blue-700 hover:to-purple-700"
       />
+
+      <style jsx>{`
+        .contributorMarquee {
+          display: inline-flex;
+          min-width: max-content;
+          animation: contributorMarqueeScroll 12s linear infinite;
+        }
+
+        .contributorMarquee:hover {
+          animation-play-state: paused;
+        }
+
+        @keyframes contributorMarqueeScroll {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 };
