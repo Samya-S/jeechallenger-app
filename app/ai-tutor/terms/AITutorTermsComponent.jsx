@@ -100,7 +100,7 @@ const AITutorTermsComponent = () => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">7. Disclaimers</h3>
                     <div className="space-y-2">
                       <p className="text-gray-600 dark:text-gray-400">
-                        • The service is provided "as is" without warranties of any kind.
+                        • The service is provided &ldquo;as is&rdquo; without warranties of any kind.
                       </p>
                       <p className="text-gray-600 dark:text-gray-400">
                         • We do not guarantee the accuracy, completeness, or usefulness of any information provided.

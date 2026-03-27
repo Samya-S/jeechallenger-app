@@ -25,10 +25,10 @@ const PYQandMoreSection = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                Previous Years' Questions
+                Previous Years&lsquo; Questions
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Chapter-wise solved previous years' JEE papers with detailed solutions
+                Chapter-wise solved previous years&lsquo; JEE papers with detailed solutions
               </p>
               <div className="mt-auto">
                 <Link href="/materials/chapterwise-solved-pyqs" aria-label="View Chapter wise solved previous years' JEE papers">
@@ -52,7 +52,7 @@ const PYQandMoreSection = () => {
                 More from UNACADEMY
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                India's largest learning platform with expert educators and comprehensive courses
+                India&lsquo;s largest learning platform with expert educators and comprehensive courses
               </p>
               <div className="mt-auto">
                 <Link href="/more-platforms/unacademy" aria-label="Visit Unacademy for India's largest learning platform">

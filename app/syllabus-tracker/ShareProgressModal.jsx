@@ -16,6 +16,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
     if (isOpen && !generatedImage) {
       generateImage();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only need to run when modal opens
   }, [isOpen]);
 
   // Calculate subject-wise progress

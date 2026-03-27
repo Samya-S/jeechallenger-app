@@ -91,7 +91,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
             
             <div className={`bg-gradient-to-r ${currentTheme.background} rounded-xl p-4 mb-6 w-fit mx-auto`}>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                <strong className={currentTheme.textColor}>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If you're not subscribed, please join our channel first.
+                <strong className={currentTheme.textColor}>Please note:</strong> These links will only work if you are a subscriber of our official Telegram channel. If you&lsquo;re not subscribed, please join our channel first.
               </p>
             </div>
           </div>

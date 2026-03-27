@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { FaUser, FaChalkboardTeacher, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 // import SubscriptionStatusWidget from "@/components/AiTutorComponents/SubscriptionStatusWidget";
@@ -15,6 +16,8 @@ const fetchUserProfile = async (token) => {
   if (!res.ok) throw new Error('Failed to fetch user profile');
   return res.json();
 };
+
+const profileImageLoader = ({ src }) => src;
 
 const AITutorProfileComponent = () => {
   const [user, setUser] = useState(null);
@@ -99,9 +102,13 @@ const AITutorProfileComponent = () => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
               <div className="flex items-center space-x-4">
                 {user.picture ? (
-                  <img
+                  <Image
                     src={user.picture}
                     alt={user.name}
+                    width={80}
+                    height={80}
+                    loader={profileImageLoader}
+                    unoptimized
                     className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover shadow-lg"
                   />
                 ) : (

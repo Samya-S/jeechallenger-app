@@ -24,7 +24,7 @@ const UnacademyComponent = () => {
               Unacademy Platform
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Access Unacademy's official app and website for comprehensive JEE preparation
+              Access Unacademy&lsquo;s official app and website for comprehensive JEE preparation
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -105,7 +105,7 @@ const UnacademyComponent = () => {
               YouTube Channels
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Access Unacademy's official YouTube channels for JEE preparation
+              Access Unacademy&lsquo;s official YouTube channels for JEE preparation
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -275,10 +275,12 @@ const UnacademyComponent = () => {
           <div className="p-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="relative w-full max-w-2xl mx-auto mb-8" style={{ aspectRatio: '16/9' }}>
-                <img
+                <Image
                   src="/images/Unacademy-subscription.gif"
                   alt="Unacademy Plus Subscription Plans for JEE Main and Advanced Preparation"
-                  className="w-full h-full rounded-lg object-contain"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="rounded-lg object-contain"
                   loading="lazy"
                 />
               </div>

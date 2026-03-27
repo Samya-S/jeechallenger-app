@@ -155,46 +155,45 @@ function SplashCursor({
       return status === gl.FRAMEBUFFER_COMPLETE;
     }
 
-    class Material {
-      constructor(vertexShader, fragmentShaderSource) {
-        this.vertexShader = vertexShader;
-        this.fragmentShaderSource = fragmentShaderSource;
-        this.programs = [];
-        this.activeProgram = null;
-        this.uniforms = [];
-      }
-      setKeywords(keywords) {
-        let hash = 0;
-        for (let i = 0; i < keywords.length; i++) hash += hashCode(keywords[i]);
-        let program = this.programs[hash];
-        if (program == null) {
-          let fragmentShader = compileShader(
-            gl.FRAGMENT_SHADER,
-            this.fragmentShaderSource,
-            keywords
-          );
-          program = createProgram(this.vertexShader, fragmentShader);
-          this.programs[hash] = program;
-        }
-        if (program === this.activeProgram) return;
-        this.uniforms = getUniforms(program);
-        this.activeProgram = program;
-      }
-      bind() {
-        gl.useProgram(this.activeProgram);
-      }
+    function Material(vertexShader, fragmentShaderSource) {
+      this.vertexShader = vertexShader;
+      this.fragmentShaderSource = fragmentShaderSource;
+      this.programs = [];
+      this.activeProgram = null;
+      this.uniforms = [];
     }
 
-    class Program {
-      constructor(vertexShader, fragmentShader) {
-        this.uniforms = {};
-        this.program = createProgram(vertexShader, fragmentShader);
-        this.uniforms = getUniforms(this.program);
+    Material.prototype.setKeywords = function (keywords) {
+      let hash = 0;
+      for (let i = 0; i < keywords.length; i++) hash += hashCode(keywords[i]);
+      let program = this.programs[hash];
+      if (program == null) {
+        let fragmentShader = compileShader(
+          gl.FRAGMENT_SHADER,
+          this.fragmentShaderSource,
+          keywords
+        );
+        program = createProgram(this.vertexShader, fragmentShader);
+        this.programs[hash] = program;
       }
-      bind() {
-        gl.useProgram(this.program);
-      }
+      if (program === this.activeProgram) return;
+      this.uniforms = getUniforms(program);
+      this.activeProgram = program;
+    };
+
+    Material.prototype.bind = function () {
+      gl.useProgram(this.activeProgram);
+    };
+
+    function Program(vertexShader, fragmentShader) {
+      this.uniforms = {};
+      this.program = createProgram(vertexShader, fragmentShader);
+      this.uniforms = getUniforms(this.program);
     }
+
+    Program.prototype.bind = function () {
+      gl.useProgram(this.program);
+    };
 
     function createProgram(vertexShader, fragmentShader) {
       let program = gl.createProgram();
@@ -1172,7 +1171,6 @@ function SplashCursor({
     });
 
     updateFrame();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     SIM_RESOLUTION,
     DYE_RESOLUTION,

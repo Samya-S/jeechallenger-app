@@ -24,7 +24,7 @@ const PhysicsWallahComponent = () => {
               Physics Wallah Platform
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Access Physics Wallah's comprehensive JEE preparation resources across multiple platforms
+              Access Physics Wallah&lsquo;s comprehensive JEE preparation resources across multiple platforms
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-teal-500 mx-auto mt-6 rounded-full"></div>
           </div>

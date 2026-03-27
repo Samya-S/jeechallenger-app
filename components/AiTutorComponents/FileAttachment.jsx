@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { FaFile, FaImage, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileAudio, FaFileAlt, FaDownload, FaEye, FaTimes } from "react-icons/fa";
 import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
 
 const FileAttachment = ({ file, onRemove, showRemove = false }) => {
+  const previewImageLoader = ({ src }) => src;
   const [showPreview, setShowPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -193,9 +195,13 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
             >
               <FaTimes className="text-2xl" />
             </button>
-            <img
+            <Image
               src={previewUrl}
               alt={file.original_filename}
+              width={1200}
+              height={900}
+              loader={previewImageLoader}
+              unoptimized
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
             />
           </div>

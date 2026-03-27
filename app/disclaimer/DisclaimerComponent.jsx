@@ -11,7 +11,7 @@ const DisclaimerComponent = () => {
 							Legal Disclaimer
 						</h1>
 						<p className="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
-							Important legal information about JEE Challenger's operations, affiliations, and responsible use
+							Important legal information about JEE Challenger&lsquo;s operations, affiliations, and responsible use
 						</p>
 					</div>
 				</div>
@@ -75,13 +75,13 @@ const DisclaimerComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											The name <strong>"JEE Challenger"</strong> is used solely to <strong>describe the purpose and function of this platform</strong> — a resource designed to support JEE (Joint Entrance Examination) aspirants in their preparation journey.
+											The name <strong>&quot;JEE Challenger&quot;</strong> is used solely to <strong>describe the purpose and function of this platform</strong> — a resource designed to support JEE (Joint Entrance Examination) aspirants in their preparation journey.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											We <strong>do not claim any trademark rights</strong> over the terms "JEE," "Challenger," or any combination thereof. The name is purely <strong>descriptive</strong> and does not function as a source identifier or commercial brand. It describes what the platform offers rather than indicating any official status or commercial origin.
+											We <strong>do not claim any trademark rights</strong> over the terms &quot;JEE,&quot; &quot;Challenger,&quot; or any combination thereof. The name is purely <strong>descriptive</strong> and does not function as a source identifier or commercial brand. It describes what the platform offers rather than indicating any official status or commercial origin.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-											The term "JEE" is widely recognized in the educational sector as referring to the Joint Entrance Examination and is used here in its common, descriptive sense as understood in the public domain.
+											The term &quot;JEE&quot; is widely recognized in the educational sector as referring to the Joint Entrance Examination and is used here in its common, descriptive sense as understood in the public domain.
 										</p>
 									</div>
 								</div>
@@ -300,7 +300,7 @@ const DisclaimerComponent = () => {
 											Transparency Commitment
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-											We are committed to complete transparency in all monetization activities. Any sponsored content, affiliate links, or paid promotions will be clearly disclosed. Our primary mission is providing valuable educational resources to JEE aspirants; monetization serves solely to sustain the platform's operations and development.
+											We are committed to complete transparency in all monetization activities. Any sponsored content, affiliate links, or paid promotions will be clearly disclosed. Our primary mission is providing valuable educational resources to JEE aspirants; monetization serves solely to sustain the platform&lsquo;s operations and development.
 										</p>
 									</div>
 								</div>
@@ -357,7 +357,7 @@ const DisclaimerComponent = () => {
 									</li>
 									<li className="flex items-start">
 										<span className="text-blue-600 dark:text-blue-400 mr-2">✓</span>
-										<span>You understand the platform's limitations and will not hold the developers liable for any outcomes</span>
+										<span>You understand the platform&lsquo;s limitations and will not hold the developers liable for any outcomes</span>
 									</li>
 								</ul>
 							</div>

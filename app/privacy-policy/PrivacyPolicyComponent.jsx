@@ -87,7 +87,7 @@ const PrivacyPolicyComponent = () => {
 											Google DoubleClick DART Cookie
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Google serves as a third-party vendor on our site and uses cookies, known as <strong>DART cookies</strong>, to serve advertisements based on users' visits to our site and other websites. Users may opt out of DART cookies by visiting the Google ad and content network Privacy Policy at:
+											Google serves as a third-party vendor on our site and uses cookies, known as <strong>DART cookies</strong>, to serve advertisements based on users&lsquo; visits to our site and other websites. Users may opt out of DART cookies by visiting the Google ad and content network Privacy Policy at:
 										</p>
 										<div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 my-4">
 											<a
@@ -116,7 +116,7 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Certain features utilize your browser's <strong>Local Storage</strong> to save your preferences, progress, and personalized settings. This data is stored <strong>locally on your device only</strong> and is <strong>NOT transmitted to or stored on our servers</strong>.
+											Certain features utilize your browser&lsquo;s <strong>Local Storage</strong> to save your preferences, progress, and personalized settings. This data is stored <strong>locally on your device only</strong> and is <strong>NOT transmitted to or stored on our servers</strong>.
 										</p>
 										<div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 my-4">
 											<h4 className="font-bold text-green-800 dark:text-green-300 mb-2">
@@ -173,10 +173,10 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											JEE Challenger's Privacy Policy does not apply to third-party advertisers or external websites. We advise you to consult the respective privacy policies of these third-party services for detailed information about their practices and opt-out instructions.
+											JEE Challenger&lsquo;s Privacy Policy does not apply to third-party advertisers or external websites. We advise you to consult the respective privacy policies of these third-party services for detailed information about their practices and opt-out instructions.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-											You can disable cookies through your browser settings. For detailed information about cookie management in specific browsers, please refer to your browser's official documentation or help resources.
+											You can disable cookies through your browser settings. For detailed information about cookie management in specific browsers, please refer to your browser&lsquo;s official documentation or help resources.
 										</p>
 									</div>
 								</div>
@@ -307,7 +307,7 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											We may update this Privacy Policy periodically to reflect changes in our practices or for operational, legal, or regulatory reasons. Material changes will be indicated by updating the "Last Updated" date at the top of this policy.
+											We may update this Privacy Policy periodically to reflect changes in our practices or for operational, legal, or regulatory reasons. Material changes will be indicated by updating the &quot;Last Updated&quot; date at the top of this policy.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
 											Continued use of the site following posted changes constitutes your acceptance of the updated Privacy Policy. We encourage you to review this page regularly to stay informed about how we protect your information.

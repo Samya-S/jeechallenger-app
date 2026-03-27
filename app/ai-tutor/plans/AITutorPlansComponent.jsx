@@ -121,9 +121,6 @@ const AITutorPlansComponent = () => {
           setUser(null);
           setSubscriptionPlanId(null);
         });
-    } else {
-      setUser(null);
-      setSubscriptionPlanId(null);
     }
   }, []);
 

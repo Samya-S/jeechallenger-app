@@ -13,7 +13,7 @@ const NotFoundPage = () => {
             Page Not Found
           </h2>
           <p className="text-xl md:text-2xl text-red-100 mb-8">
-            Oops! The page you're looking for doesn't exist.
+            Oops! The page you&lsquo;re looking for doesn&lsquo;t exist.
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-red-400 to-orange-400 mx-auto rounded-full"></div>
         </div>
@@ -31,12 +31,12 @@ const NotFoundPage = () => {
               </div>
               
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Don't Worry!
+                Don&lsquo;t Worry!
               </h3>
               
               <p className="text-gray-600 dark:text-gray-400 mb-8">
-                The page you're looking for might have been moved, deleted, or you entered the wrong URL. 
-                Let's get you back on track to your JEE preparation journey!
+                The page you&lsquo;re looking for might have been moved, deleted, or you entered the wrong URL. 
+                Let&lsquo;s get you back on track to your JEE preparation journey!
               </p>
 
               <div className="space-y-4">

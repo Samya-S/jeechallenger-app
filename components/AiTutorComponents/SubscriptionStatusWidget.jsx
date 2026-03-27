@@ -14,22 +14,23 @@ const fetchUserSubscription = async (token) => {
 };
 
 const SubscriptionStatusWidget = () => {
+  const [token] = useState(() =>
+    typeof window !== "undefined" ? localStorage.getItem("ai-tutor-token") : null
+  );
   const [subscription, setSubscription] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(() => !!token);
+  const [error, setError] = useState(() => (token ? "" : "Not logged in"));
 
   useEffect(() => {
-    const token = localStorage.getItem("ai-tutor-token");
     if (!token) {
-      setError("Not logged in");
-      setLoading(false);
       return;
     }
+
     fetchUserSubscription(token)
       .then(setSubscription)
       .catch(() => setError("Could not load subscription info."))
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   if (loading) {
     return <div className="text-center py-4">Loading subscription...</div>;

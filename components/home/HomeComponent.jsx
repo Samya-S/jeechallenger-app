@@ -183,7 +183,7 @@ const HomeComponent = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Physics</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
-                  "Physics is an attempt conceptually to grasp reality as something that is considered to be independent of its being observed. In this sense one speaks of physical reality."
+                  &ldquo;Physics is an attempt conceptually to grasp reality as something that is considered to be independent of its being observed. In this sense one speaks of physical reality.&rdquo;
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- Albert Einstein</p>
                 <div className="mt-auto">
@@ -216,7 +216,7 @@ const HomeComponent = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Chemistry</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
-                  "Chemists do not usually stutter. It would be very awkward if they did, seeing that they have at times to get out such words as methylethylamylophenylium."
+                  &ldquo;Chemists do not usually stutter. It would be very awkward if they did, seeing that they have at times to get out such words as methylethylamylophenylium.&rdquo;
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- William Crookes</p>
                 <div className="mt-auto">
@@ -249,7 +249,7 @@ const HomeComponent = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Mathematics</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm italic flex-grow">
-                  "A man is like a fraction whose numerator is what he is and whose denominator is what he thinks of himself. The larger the denominator, the smaller the fraction."
+                  &ldquo;A man is like a fraction whose numerator is what he is and whose denominator is what he thinks of himself. The larger the denominator, the smaller the fraction.&rdquo;
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- Leo Tolstoy</p>
                 <div className="mt-auto">
@@ -496,7 +496,7 @@ const HomeComponent = () => {
                     />
                   </div>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
-                    Get chapter-wise solved previous 43 years' JEE papers published by Arihant and Disha publication
+                    Get chapter-wise solved previous 43 years&lsquo; JEE papers published by Arihant and Disha publication
                   </p>
                   <Link href="/materials/chapterwise-solved-pyqs" aria-label="View Chapter wise solved previous years' JEE papers" className="mt-auto">
                     <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -562,7 +562,7 @@ const HomeComponent = () => {
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Unacademy</h4>
                   <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm flex-grow">
-                    India's Largest Learning Platform. Coaching by Top Educators.
+                    India&lsquo;s Largest Learning Platform. Coaching by Top Educators.
                   </p>
                   <Link href="/more-platforms/unacademy" aria-label="Visit Unacademy for India's largest learning platform" className="mt-auto">
                     <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
@@ -697,11 +697,11 @@ const HomeComponent = () => {
             <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 text-left w-fit mx-auto">
               <li className="flex items-start">
                 <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">1</span>
-                Click the "Upload Files" button below
+                Click the &ldquo;Upload Files&rdquo; button below
               </li>
               <li className="flex items-start">
                 <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">2</span>
-                You'll be redirected to our Google Drive folder
+                You&lsquo;ll be redirected to our Google Drive folder
               </li>
               <li className="flex items-start">
                 <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0">3</span>
@@ -758,7 +758,7 @@ const HomeComponent = () => {
               ISI Aspirant?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Planning to pursue Mathematics and Statistics at the Indian Statistical Institute? We've got you covered!
+              Planning to pursue Mathematics and Statistics at the Indian Statistical Institute? We&lsquo;ve got you covered!
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>

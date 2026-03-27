@@ -1,20 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Share2, Link2, Check } from 'lucide-react';
 import { FaXTwitter, FaFacebook, FaLinkedin, FaWhatsapp, FaInstagram } from 'react-icons/fa6';
 
 export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inline = false }) {
   const [copied, setCopied] = useState(false);
   const [instagramMessage, setInstagramMessage] = useState('');
-  const [shareUrl, setShareUrl] = useState(shareUrlProp || '');
-
-  // Get shareUrl from window.location if not provided
-  useEffect(() => {
-    if (!shareUrlProp && typeof window !== 'undefined') {
-      setShareUrl(window.location.href);
-    }
-  }, [shareUrlProp]);
+  const shareUrl = shareUrlProp || (typeof window !== 'undefined' ? window.location.href : '');
 
   const handleWebShare = async () => {
     if (navigator.share) {

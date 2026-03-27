@@ -14,6 +14,31 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 
+const MarkdownTable = ({ children }) => {
+  const tableRef = useRef(null);
+
+  useEffect(() => {
+    const ref = tableRef.current;
+    if (!ref) return undefined;
+
+    const onWheel = (e) => {
+      if (e.deltaY !== 0) {
+        ref.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    };
+
+    ref.addEventListener('wheel', onWheel, { passive: false });
+    return () => ref.removeEventListener('wheel', onWheel);
+  }, []);
+
+  return (
+    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4">
+      <table className="min-w-full border border-gray-300 dark:border-gray-700 whitespace-nowrap">{children}</table>
+    </div>
+  );
+};
+
 // Component to render AI responses with markdown and math support
 const AIResponseRenderer = ({ content }) => {
   return (
@@ -44,26 +69,7 @@ const AIResponseRenderer = ({ content }) => {
           ),
           pre: ({children}) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
           blockquote: ({children}) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
-          table: ({children}) => {
-            const tableRef = useRef(null);
-            useEffect(() => {
-              const ref = tableRef.current;
-              if (!ref) return;
-              const onWheel = (e) => {
-                if (e.deltaY !== 0) {
-                  ref.scrollLeft += e.deltaY;
-                  e.preventDefault();
-                }
-              };
-              ref.addEventListener('wheel', onWheel, { passive: false });
-              return () => ref.removeEventListener('wheel', onWheel);
-            }, []);
-            return (
-              <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4">
-                <table className="min-w-full border border-gray-300 dark:border-gray-700 whitespace-nowrap">{children}</table>
-              </div>
-            );
-          },
+          table: ({children}) => <MarkdownTable>{children}</MarkdownTable>,
           thead: ({children}) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
           tbody: ({children}) => <tbody>{children}</tbody>,
           tr: ({children}) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
@@ -120,6 +126,7 @@ const AITutorComponent = () => {
   // Load user and messages from backend on mount
   useEffect(() => {
     loadUserAndMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Note: Messages are now stored on the backend, no need for localStorage
@@ -630,7 +637,7 @@ const AITutorComponent = () => {
                     </li>
                   </ul>
                   <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    Just type your question below and I'll help you excel in your JEE journey!
+                    Just type your question below and I&lsquo;ll help you excel in your JEE journey!
                   </p>
                   <div className="mt-4 sm:mt-6 space-y-3">
                     <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
@@ -829,7 +836,7 @@ const AITutorComponent = () => {
               </div>
 
               <p className="text-gray-700 dark:text-gray-300 mb-6">
-                We couldn't clear your chat history at this time. Please try again later or contact support if the problem persists.
+                We couldn&lsquo;t clear your chat history at this time. Please try again later or contact support if the problem persists.
               </p>
 
               <div className="flex justify-center">

@@ -142,7 +142,7 @@ const AITutorPrivacyComponent = () => {
                   </section>
 
                   <section>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">8. Children's Privacy</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">8. Children&lsquo;s Privacy</h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
                     </p>

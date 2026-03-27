@@ -72,6 +72,7 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFiles(e.dataTransfer.files);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {

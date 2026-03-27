@@ -24,7 +24,7 @@ const ApniKakshaComponent = () => {
               Apni Kaksha Platform
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Access Apni Kaksha's comprehensive JEE preparation resources across multiple platforms
+              Access Apni Kaksha&lsquo;s comprehensive JEE preparation resources across multiple platforms
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>

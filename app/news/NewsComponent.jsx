@@ -88,7 +88,7 @@ export default function NewsComponent({ articles, error }) {
                 <div className="space-y-2">
                   <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">No News Available</h2>
                   <p className="text-gray-600 dark:text-gray-300">
-                    We couldn't find any news articles at the moment. Please check back later for updates.
+                    We couldn&lsquo;t find any news articles at the moment. Please check back later for updates.
                   </p>
                 </div>
               </div>

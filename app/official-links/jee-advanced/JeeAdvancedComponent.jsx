@@ -138,7 +138,7 @@ const JeeAdvancedComponent = () => {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                  Previous Years' JEE Advanced Reports
+                  Previous Years&lsquo; JEE Advanced Reports
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Link to official website

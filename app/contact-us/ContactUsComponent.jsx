@@ -57,7 +57,7 @@ const ContactUsComponent = () => {
             Get in Touch
           </h1>
           <p className="text-xl md:text-2xl text-blue-100 mb-6">
-            Have questions, suggestions, or feedback? We'd love to hear from you!
+            Have questions, suggestions, or feedback? We&lsquo;d love to hear from you!
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto rounded-full"></div>
         </div>
@@ -78,7 +78,7 @@ const ContactUsComponent = () => {
                   Send us a Message
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
-                  We'll get back to you as soon as possible
+                  We&lsquo;ll get back to you as soon as possible
                 </p>
               </div>
 

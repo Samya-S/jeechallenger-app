@@ -1,5 +1,6 @@
 "use client";
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 // Dynamic imports for better performance and code splitting
 const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
@@ -31,7 +32,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Chapter-wise Solved PYQs
             </h1>
             <p className="text-xl md:text-2xl font-medium max-w-3xl mx-auto drop-shadow-md animate-fade-in-delay">
-              Master JEE preparation with comprehensive chapter-wise solved previous years' questions from top publications
+              Master JEE preparation with comprehensive chapter-wise solved previous years&lsquo; questions from top publications
             </p>
           </div>
         </div>
@@ -46,7 +47,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Arihant Publications
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-              41 Years' Comprehensive Collection
+              41 Years&lsquo; Comprehensive Collection
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -160,7 +161,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Disha Publications
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-              41 Years' Comprehensive Collection
+              41 Years&lsquo; Comprehensive Collection
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -274,7 +275,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Get More from Telegram
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
-              Access chapter-wise solved previous 43 years' JEE papers published by Arihant and Disha from our telegram channel
+              Access chapter-wise solved previous 43 years&lsquo; JEE papers published by Arihant and Disha from our telegram channel
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto rounded-full"></div>
           </div>
@@ -283,9 +284,11 @@ const ChapterWiseSolvedPYQsComponent = () => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-2xl">
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
                 <div className="flex items-center gap-4">
-                  <img
+                  <Image
                     src="/images/jcicon.jpg"
                     alt="JEE Challenger"
+                    width={64}
+                    height={64}
                     className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-700 shadow-lg"
                   />
                   <div className="text-center md:text-left">
@@ -346,7 +349,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               JEE Main Papers
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-              Chapter-wise solved previous 20 years' JEE Main papers
+              Chapter-wise solved previous 20 years&lsquo; JEE Main papers
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -437,7 +440,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Wiley Publications
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-              22 Years' Collection (1998-2019)
+              22 Years&lsquo; Collection (1998-2019)
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -489,7 +492,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
               Disha Advanced
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-              15 Years' Collection (2006-2020)
+              15 Years&lsquo; Collection (2006-2020)
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto mt-6 rounded-full"></div>
           </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { syllabusData } from './syllabusData';
 import {
   getProgressData,
@@ -19,32 +19,21 @@ import ShareProgressModal from './ShareProgressModal';
  * SyllabusTrackerComponent - Main component for JEE Syllabus Tracker
  */
 const SyllabusTrackerComponent = () => {
-  const [progressData, setProgressData] = useState({});
+  const [progressData, setProgressData] = useState(() => getProgressData());
   const [expandedSubjects, setExpandedSubjects] = useState({
     physics: false,
     chemistry: false,
     mathematics: false
   });
-  const [overallStats, setOverallStats] = useState({
-    percentage: 0,
-    completedTasks: 0,
-    totalTasks: 0
-  });
+  const [overallStats, setOverallStats] = useState(() => calculateOverallProgress(syllabusData));
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Load progress data on mount
-  useEffect(() => {
-    const data = getProgressData();
-    setProgressData(data);
-    updateOverallStats();
-  }, []);
-
   // Update overall statistics
-  const updateOverallStats = () => {
+  function updateOverallStats() {
     const stats = calculateOverallProgress(syllabusData);
     setOverallStats(stats);
-  };
+  }
 
   // Handle checkbox toggle
   const handleToggle = (subject, chapterId, taskType, completed) => {

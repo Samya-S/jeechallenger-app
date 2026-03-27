@@ -1,5 +1,6 @@
 import TelegramPost from '@/components/utils/TelegramPost';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import Image from 'next/image';
 
 const MoreMaterialsComponent = () => {
   return (
@@ -137,7 +138,7 @@ const MoreMaterialsComponent = () => {
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Couldn't find what you're searching for?
+              Couldn&lsquo;t find what you&lsquo;re searching for?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
               Some materials are not directly published on the website due to copyright issues. If you are searching for something like that, you may get it from our telegram channel.
@@ -147,9 +148,11 @@ const MoreMaterialsComponent = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-2xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
-              <img
+              <Image
                 src="/images/jcicon.jpg"
                 alt="JEE Challenger Telegram Channel Icon"
+                width={64}
+                height={64}
                 className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-700 shadow-lg"
               />
               <div className="text-center md:text-left">

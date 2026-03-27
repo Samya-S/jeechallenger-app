@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { FaHome, FaChalkboardTeacher, FaChevronDown, FaTrash, FaSignOutAlt, FaUser, FaComments } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
 
 const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSignIn }) => {
+  const profileImageLoader = ({ src }) => src;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
@@ -57,6 +59,7 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
     }
 
     return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Close dropdown on outside click
@@ -137,9 +140,13 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
                 aria-label="User menu"
               >
                 {user.picture ? (
-                  <img
+                  <Image
                     src={user.picture}
                     alt={user.name}
+                    width={36}
+                    height={36}
+                    loader={profileImageLoader}
+                    unoptimized
                     className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
                       }`}
                   />
