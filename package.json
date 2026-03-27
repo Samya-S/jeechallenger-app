@@ -9,9 +9,6 @@
     "start": "next start",
     "lint": "eslint ."
   },
-  "overrides": {
-    "minimatch": ">=10.2.1"
-  },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
     "@react-oauth/google": "^0.12.2",
