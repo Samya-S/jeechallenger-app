@@ -12,9 +12,11 @@ export default function NavBar() {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [dropdownState, setDropdownState] = useState({});
   const [isScrolled, setIsScrolled] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { theme, resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -265,7 +267,8 @@ export default function NavBar() {
                 className={Styles.mobileThemeToggleContainer}
                 onClick={() => {
                   // Toggle theme directly using the useTheme hook
-                  setTheme(theme === 'dark' ? 'light' : 'dark');
+                  const current = resolvedTheme ?? theme;
+                  setTheme(current === 'dark' ? 'light' : 'dark');
                 }}
               >
                 <div 
@@ -279,7 +282,11 @@ export default function NavBar() {
                 </div>
                 <div className={Styles.mobileThemeToggleContent}>
                   <span className={Styles.mobileThemeToggleLabel}>
-                    {theme === 'dark' ? 'Change to Light Mode' : 'Change to Dark Mode'}
+                    {mounted
+                      ? ((resolvedTheme ?? theme) === 'dark'
+                        ? 'Change to Light Mode'
+                        : 'Change to Dark Mode')
+                      : 'Change Theme'}
                   </span>
                 </div>
               </div>
