@@ -1,10 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoogleLogin } from '@react-oauth/google';
 
 const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [buttonWidth, setButtonWidth] = useState(320);
+  const buttonContainerRef = useRef(null);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (!buttonContainerRef.current) return;
+      const measuredWidth = Math.floor(buttonContainerRef.current.clientWidth);
+      if (measuredWidth > 0) {
+        setButtonWidth(measuredWidth);
+      }
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    if (buttonContainerRef.current) {
+      resizeObserver.observe(buttonContainerRef.current);
+    }
+
+    window.addEventListener('resize', updateWidth);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
 
   const handleSuccess = async (credentialResponse) => {
     setIsLoading(true);
@@ -52,7 +77,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
           <span>Signing in...</span>
         </div>
       ) : (
-        <div className="w-full flex justify-center">
+        <div ref={buttonContainerRef} className="w-full flex justify-center">
           <GoogleLogin
             onSuccess={handleSuccess}
             onError={handleError}
@@ -61,7 +86,7 @@ const SimpleGoogleAuth = ({ onLoginSuccess, onLoginError }) => {
             size="large"
             text="continue_with"
             shape="rectangular"
-            width="100%"
+            width={buttonWidth}
           />
         </div>
       )}
