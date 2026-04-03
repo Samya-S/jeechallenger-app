@@ -91,8 +91,8 @@ export default function RootLayout({ children }) {
           strategy="lazyOnload"
           crossOrigin="anonymous"
         />
+        <GoogleAnalytics gaId="G-6YPF169T9S" />
       </body>
-      <GoogleAnalytics gaId="G-6YPF169T9S" />
     </html>
   );
 }
