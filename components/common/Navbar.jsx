@@ -279,7 +279,7 @@ export default function NavBar() {
                   <ThemeToggle />
                 </div>
                 <div className={Styles.mobileThemeToggleContent}>
-                  <span className={Styles.mobileThemeToggleLabel}>
+                  <span className={Styles.mobileThemeToggleLabel} suppressHydrationWarning>
                     {(resolvedTheme ?? theme)
                       ? ((resolvedTheme ?? theme) === 'dark'
                         ? 'Change to Light Mode'
