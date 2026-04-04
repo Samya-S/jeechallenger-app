@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useSyncExternalStore } from 'react';
 import { syllabusData } from './syllabusData';
 import {
-  getProgressData,
+  subscribeProgressData,
+  getProgressStorageSnapshot,
   updateChapterProgress,
   calculateSubjectProgress,
   calculateOverallProgress,
@@ -15,31 +16,41 @@ import SubjectCard from './SubjectCard';
 import { ChapterList } from './ChapterRow';
 import ShareProgressModal from './ShareProgressModal';
 
+function useProgressDataFromStorage() {
+  const snapshot = useSyncExternalStore(
+    subscribeProgressData,
+    getProgressStorageSnapshot,
+    () => '{}'
+  );
+  return useMemo(() => {
+    try {
+      return JSON.parse(snapshot);
+    } catch {
+      return {};
+    }
+  }, [snapshot]);
+}
+
 /**
  * SyllabusTrackerComponent - Main component for JEE Syllabus Tracker
  */
 const SyllabusTrackerComponent = () => {
-  const [progressData, setProgressData] = useState(() => getProgressData());
+  const progressData = useProgressDataFromStorage();
+  const overallStats = useMemo(
+    () => calculateOverallProgress(syllabusData, progressData),
+    [progressData]
+  );
   const [expandedSubjects, setExpandedSubjects] = useState({
     physics: false,
     chemistry: false,
     mathematics: false
   });
-  const [overallStats, setOverallStats] = useState(() => calculateOverallProgress(syllabusData));
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Update overall statistics
-  function updateOverallStats() {
-    const stats = calculateOverallProgress(syllabusData);
-    setOverallStats(stats);
-  }
-
   // Handle checkbox toggle
   const handleToggle = (subject, chapterId, taskType, completed) => {
-    const updatedData = updateChapterProgress(subject, chapterId, taskType, completed);
-    setProgressData(updatedData);
-    updateOverallStats();
+    updateChapterProgress(subject, chapterId, taskType, completed);
   };
 
   // Toggle subject expansion
@@ -53,8 +64,6 @@ const SyllabusTrackerComponent = () => {
   // Handle reset all progress
   const handleResetAll = () => {
     resetAllProgress();
-    setProgressData({});
-    updateOverallStats();
     setShowResetConfirm(false);
   };
 
@@ -80,9 +89,6 @@ const SyllabusTrackerComponent = () => {
       reader.onload = (e) => {
         const success = importProgress(e.target.result);
         if (success) {
-          const data = getProgressData();
-          setProgressData(data);
-          updateOverallStats();
           alert('Progress imported successfully!');
         } else {
           alert('Failed to import progress. Please check the file format.');
@@ -231,7 +237,7 @@ const SyllabusTrackerComponent = () => {
         {/* Subject Cards */}
         <div className="space-y-6">
           {Object.entries(syllabusData).map(([subject, subjectData]) => {
-            const stats = calculateSubjectProgress(subject, subjectData.chapters);
+            const stats = calculateSubjectProgress(subject, subjectData.chapters, progressData);
             const subjectProgressData = progressData[subject] || {};
 
             return (

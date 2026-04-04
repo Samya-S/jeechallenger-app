@@ -2,6 +2,39 @@
 
 const STORAGE_KEY = 'jee_syllabus_progress';
 
+const progressListeners = new Set();
+
+function notifyProgressListeners() {
+  progressListeners.forEach((fn) => fn());
+}
+
+/**
+ * Subscribe to progress changes (same tab + other tabs via storage event).
+ * Used with useSyncExternalStore for hydration-safe reads.
+ */
+export function subscribeProgressData(onStoreChange) {
+  if (typeof window === 'undefined') return () => {};
+
+  const onStorage = (e) => {
+    if (e.key === STORAGE_KEY || e.key === null) onStoreChange();
+  };
+  window.addEventListener('storage', onStorage);
+  progressListeners.add(onStoreChange);
+  return () => {
+    window.removeEventListener('storage', onStorage);
+    progressListeners.delete(onStoreChange);
+  };
+}
+
+/** Raw localStorage snapshot string for useSyncExternalStore getSnapshot */
+export function getProgressStorageSnapshot() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) ?? '{}';
+  } catch {
+    return '{}';
+  }
+}
+
 /**
  * Get progress data from localStorage
  * @returns {Object} Progress data object
@@ -27,6 +60,7 @@ export const saveProgressData = (data) => {
   
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    notifyProgressListeners();
   } catch (error) {
     console.error('Error saving progress data:', error);
   }
@@ -86,8 +120,7 @@ export const getChapterProgress = (subject, chapterId) => {
  * @param {Array} chapters - Array of chapters
  * @returns {Object} Progress statistics
  */
-export const calculateSubjectProgress = (subject, chapters) => {
-  const progressData = getProgressData();
+export const calculateSubjectProgress = (subject, chapters, progressData = getProgressData()) => {
   const subjectData = progressData[subject] || {};
   
   let totalTasks = chapters.length * 3; // 3 tasks per chapter (theory, pyqs, revision)
@@ -143,12 +176,12 @@ export const calculateSubjectProgress = (subject, chapters) => {
  * @param {Object} syllabusData - Complete syllabus data
  * @returns {Object} Overall progress statistics
  */
-export const calculateOverallProgress = (syllabusData) => {
+export const calculateOverallProgress = (syllabusData, progressData = getProgressData()) => {
   let totalTasks = 0;
   let completedTasks = 0;
   
   Object.keys(syllabusData).forEach(subject => {
-    const stats = calculateSubjectProgress(subject, syllabusData[subject].chapters);
+    const stats = calculateSubjectProgress(subject, syllabusData[subject].chapters, progressData);
     totalTasks += stats.totalTasks;
     completedTasks += stats.completedTasks;
   });
@@ -170,6 +203,7 @@ export const resetAllProgress = () => {
   
   try {
     localStorage.removeItem(STORAGE_KEY);
+    notifyProgressListeners();
   } catch (error) {
     console.error('Error resetting progress data:', error);
   }
