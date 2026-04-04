@@ -144,7 +144,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center text-gray-600 dark:text-gray-400">
-          <p className="text-base">
+          <p className="text-base" suppressHydrationWarning>
             Copyright © 2020-{new Date().getFullYear()}{" "}
             <span className="font-medium">JEE Challenger</span>
           </p>

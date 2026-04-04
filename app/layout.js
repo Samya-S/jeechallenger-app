@@ -62,9 +62,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preload critical assets */}
+        {/* Preload critical assets (@font-face in globals.css; Next/Image uses /_next/image for local files, so do not preload raw /images paths) */}
         <link rel="preload" href="/fonts/Jost-VariableFont_wght.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
-        <link rel="preload" href="/images/home.webp" as="image" fetchPriority="high" />
         
         {/* Prefetch DNS for third-party resources */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
