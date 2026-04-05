@@ -146,7 +146,7 @@ const DisclaimerComponent = () => {
 											DMCA & Copyright Takedown
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
-											If you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <a href="/contact-us" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</a>.
+											If you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <a href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</a>.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
 											We take intellectual property rights seriously and will promptly investigate and remove any infringing content upon proper notification.

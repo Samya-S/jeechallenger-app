@@ -195,7 +195,7 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											When you contact us via our <Link href="/contact-us" className="text-blue-600 dark:text-blue-400 hover:underline">website forms</Link> or email, we collect your name and email address solely to respond to your inquiry. We <strong>do not sell, trade, rent, or share</strong> your personal information with third parties.
+											When you contact us via our <Link href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">website forms</Link> or email, we collect your name and email address solely to respond to your inquiry. We <strong>do not sell, trade, rent, or share</strong> your personal information with third parties.
 										</p>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
