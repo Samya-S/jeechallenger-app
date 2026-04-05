@@ -136,7 +136,7 @@ const AITutorTermsComponent = () => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">11. Contact Information</h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       If you have any questions about these Terms of Service, please contact us via{" "}
-                      <Link href="/contact-us" className="text-blue-600 hover:underline">
+                      <Link href="/contact-us" target="_blank" className="text-blue-600 hover:underline">
                         our contact form
                       </Link>{" "}
                       or email us at{" "}
