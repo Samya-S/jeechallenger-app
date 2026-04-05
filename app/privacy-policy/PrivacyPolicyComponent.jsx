@@ -343,7 +343,7 @@ const PrivacyPolicyComponent = () => {
 									Questions About This Policy?
 								</h3>
 								<p className="text-gray-700 dark:text-gray-300 mb-4">
-									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <Link href="/contact-us" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</Link>.
+									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <Link href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</Link>.
 								</p>
 							</div>
 						</div>
