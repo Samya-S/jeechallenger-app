@@ -118,3 +118,14 @@ To add a new article to the blog:
 - `readTime`: Estimated reading time (e.g., "4 min read")
 - `keywords`: SEO keywords (comma-separated string)
 - `hasMath`: Boolean flag for LaTeX/KaTeX support (optional, default: false)
+
+## `readTime` Consistency Rule
+
+To keep all blog cards and article metadata consistent, calculate `readTime` with one shared rule:
+
+- Count article body words (exclude frontmatter)
+- Use `readTime = ceil(wordCount / 180)`
+- Store as `"<N> min read"` (for example, `"5 min read"`)
+- Always round up to the next whole minute
+
+This 180 WPM baseline matches dense exam-prep content better than generic web-reading assumptions.
