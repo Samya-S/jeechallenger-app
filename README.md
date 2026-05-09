@@ -243,7 +243,7 @@ This version includes `PHP`. The code is available at `v1.1 branch` of the repos
 
 ### jeechallenger v1.0
 
-This version is made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at `v1.0 branch` of the repository [Samya-S/jeechallenger](https://github.com/Samya-S/jeechallenger) (archived).
+This version is made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at `v1.0 branch` of the repository [Samya-S/jeechallenger](https://github.com/Samya-S/jeechallenger) (archived) and at [Samya-S/jeechallenger-v1.0](https://github.com/Samya-S/jeechallenger-v1.0) (archived).
 
 ## Contributing
 
