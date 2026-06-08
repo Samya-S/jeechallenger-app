@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeSlug from 'rehype-slug';
 import 'katex/dist/katex.min.css';
 import { ArrowLeft } from 'lucide-react';
 
@@ -33,7 +34,7 @@ export default function BlogPostComponent({ post }) {
 
   // Configure plugins based on frontmatter setting (same as AI tutor)
   const remarkPlugins = hasMath ? [remarkGfm, remarkMath] : [remarkGfm];
-  const rehypePlugins = hasMath ? [rehypeKatex] : [];
+  const rehypePlugins = hasMath ? [rehypeSlug, rehypeKatex] : [rehypeSlug];
 
   return (
     <>

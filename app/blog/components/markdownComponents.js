@@ -10,20 +10,22 @@ export const getMarkdownComponents = () => ({
       </h1>
     );
   },
-  h2: ({ children }) => {
+  h2: ({ id, children }) => {
     const text = children?.toString() || '';
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    // Use passed id first, fallback to manual creation
+    const generatedId = id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     return (
-      <h2 id={id} className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-14 mb-6 pb-4 border-b-2 border-blue-200 dark:border-blue-800 scroll-mt-24 tracking-tight">
+      <h2 id={generatedId} className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-14 mb-6 pb-4 border-b-2 border-blue-200 dark:border-blue-800 scroll-mt-24 tracking-tight">
         {children}
       </h2>
     );
   },
-  h3: ({ children }) => {
+  h3: ({ id, children }) => {
     const text = children?.toString() || '';
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    // Use passed id first, fallback to manual creation
+    const generatedId = id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     return (
-      <h3 id={id} className="text-2xl md:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-10 mb-4 scroll-mt-24">
+      <h3 id={generatedId} className="text-2xl md:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-10 mb-4 scroll-mt-24">
         {children}
       </h3>
     );
