@@ -16,14 +16,21 @@ export function useActiveHeading(tableOfContents) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isClicking.current) return; // 3. Ignore updates during manual scroll
+        if (isClicking.current) return; // Ignore updates during manual scroll
 
         entries.forEach((entry) => {
           visibleHeadings.current.set(entry.target.id, entry.isIntersecting);
         });
 
         for (const heading of tableOfContents) {
-          if (visibleHeadings.current.get(heading.id)) {
+          const isVisible = visibleHeadings.current.get(heading.id);
+          
+          // EXTRA SAFETY: If it's not visible, verify it hasn't just scrolled off the top
+          const element = document.getElementById(heading.id);
+          const rect = element?.getBoundingClientRect();
+          const isAboveViewport = rect ? rect.top < 0 : false;
+
+          if (isVisible && !isAboveViewport) {
             setActiveHeading(heading.id);
             break; 
           }
@@ -37,12 +44,7 @@ export function useActiveHeading(tableOfContents) {
       if (element) observer.observe(element);
     });
 
-    return () => {
-      tableOfContents.forEach((heading) => {
-        const element = document.getElementById(heading.id);
-        if (element) observer.unobserve(element);
-      });
-    };
+    return () => observer.disconnect();
   }, [tableOfContents]);
 
   // Auto-scroll TOC to keep active section visible (desktop sidebar only)
