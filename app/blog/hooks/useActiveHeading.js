@@ -1,52 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export function useActiveHeading(tableOfContents) {
   const [activeHeading, setActiveHeading] = useState('');
+  const visibleHeadings = useRef(new Map());
+  const isClicking = useRef(false);
 
-  // Track active heading based on scroll position
+  const handleClick = (id) => {
+    setActiveHeading(id);
+    isClicking.current = true;
+    setTimeout(() => { isClicking.current = false; }, 800); // Lock for 800ms
+  };
+
   useEffect(() => {
     if (tableOfContents.length === 0) return;
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 150; // Offset for fixed header
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isClicking.current) return; // 3. Ignore updates during manual scroll
 
-      // Find the current section based on scroll position
-      let currentHeading = tableOfContents[0]?.id || '';
+        entries.forEach((entry) => {
+          visibleHeadings.current.set(entry.target.id, entry.isIntersecting);
+        });
 
-      for (const heading of tableOfContents) {
-        const element = document.getElementById(heading.id);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          if (scrollPosition >= offsetTop) {
-            currentHeading = heading.id;
-          } else {
-            break;
+        for (const heading of tableOfContents) {
+          if (visibleHeadings.current.get(heading.id)) {
+            setActiveHeading(heading.id);
+            break; 
           }
         }
-      }
+      },
+      { rootMargin: "-150px 0px -50% 0px", threshold: 0 }
+    );
 
-      setActiveHeading(currentHeading);
-    };
+    tableOfContents.forEach((heading) => {
+      const element = document.getElementById(heading.id);
+      if (element) observer.observe(element);
+    });
 
-    // Set initial active heading
-    handleScroll();
-
-    // Add scroll listener with throttling
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      tableOfContents.forEach((heading) => {
+        const element = document.getElementById(heading.id);
+        if (element) observer.unobserve(element);
+      });
     };
   }, [tableOfContents]);
 
@@ -54,19 +49,25 @@ export function useActiveHeading(tableOfContents) {
   useEffect(() => {
     if (!activeHeading) return;
 
-    // Only target links within the desktop sidebar TOC
-    const desktopToc = document.getElementById('desktop-toc');
-    if (!desktopToc) return;
+    // Use requestAnimationFrame to defer sidebar scroll until 
+    // the browser has started processing the main page scroll
+    const syncSidebar = () => {
+      const desktopToc = document.getElementById('desktop-toc');
+      if (!desktopToc) return;
 
-    const activeTocLink = desktopToc.querySelector(`a[href="#${activeHeading}"]`);
-    if (activeTocLink) {
-      activeTocLink.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'nearest'
-      });
-    }
+      const activeTocLink = desktopToc.querySelector(`a[href="#${activeHeading}"]`);
+      if (activeTocLink) {
+        activeTocLink.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      }
+    };
+
+    const frameId = requestAnimationFrame(syncSidebar);
+    return () => cancelAnimationFrame(frameId);
   }, [activeHeading]);
 
-  return activeHeading;
+  return { activeHeading, handleClick };
 }

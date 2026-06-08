@@ -2,7 +2,7 @@
 
 import { Menu, X, ChevronRight } from 'lucide-react';
 
-export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC }) {
+export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC, handleClick }) {
   if (tableOfContents.length === 0) return null;
 
   return (
@@ -27,7 +27,13 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC 
               <a
                 key={index}
                 href={`#${heading.id}`}
-                onClick={() => setShowTOC(false)}
+                onClick={(e) => {
+                  e.preventDefault(); // Stop default jump
+                  handleClick(heading.id); // Trigger the "lock" in useActiveHeading
+                  window.history.pushState(null, '', `#${heading.id}`);
+                  document.getElementById(heading.id)?.scrollIntoView({ behavior: 'smooth' });
+                  setShowTOC(false); // Close menu
+                }}
                 className={`block py-2 px-3 -mx-3 text-sm transition-all rounded-lg ${
                   heading.level === 3 ? 'pl-7' : ''
                 } ${
@@ -46,7 +52,7 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC 
   );
 }
 
-export function DesktopTOC({ tableOfContents, activeHeading }) {
+export function DesktopTOC({ tableOfContents, activeHeading, handleClick }) {
   if (tableOfContents.length === 0) return null;
 
   return (
@@ -64,6 +70,12 @@ export function DesktopTOC({ tableOfContents, activeHeading }) {
               <a
                 key={index}
                 href={`#${heading.id}`}
+                onClick={(e) => {
+                  e.preventDefault(); // Stop default jump
+                  handleClick(heading.id); // Trigger the "lock" in useActiveHeading
+                  window.history.pushState(null, '', `#${heading.id}`);
+                  document.getElementById(heading.id)?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className={`block py-2 px-3 -mx-3 text-sm transition-all rounded-lg ${
                   heading.level === 3 ? 'pl-7' : ''
                 } ${
@@ -87,7 +99,8 @@ export default function TableOfContents({
   tableOfContents, 
   activeHeading, 
   showTOC, 
-  setShowTOC 
+  setShowTOC,
+  handleClick
 }) {
   if (tableOfContents.length === 0) return null;
 
@@ -98,10 +111,12 @@ export default function TableOfContents({
         activeHeading={activeHeading}
         showTOC={showTOC}
         setShowTOC={setShowTOC}
+        handleClick={handleClick}
       />
       <DesktopTOC 
         tableOfContents={tableOfContents}
         activeHeading={activeHeading}
+        handleClick={handleClick}
       />
     </>
   );

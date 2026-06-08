@@ -17,7 +17,7 @@ export default function BlogPostClient({ content, children }) {
   // Custom hooks
   const tableOfContents = useTableOfContents(content);
   const readingProgress = useReadingProgress();
-  const activeHeading = useActiveHeading(tableOfContents);
+  const { activeHeading, handleClick } = useActiveHeading(tableOfContents);
 
   return (
     <>
@@ -34,6 +34,7 @@ export default function BlogPostClient({ content, children }) {
                 activeHeading={activeHeading}
                 showTOC={showTOC}
                 setShowTOC={setShowTOC}
+                handleClick={handleClick}
               />
 
               {/* Server-rendered content */}
@@ -44,6 +45,7 @@ export default function BlogPostClient({ content, children }) {
             <DesktopTOC 
               tableOfContents={tableOfContents}
               activeHeading={activeHeading}
+              handleClick={handleClick}
             />
           </div>
         </div>
