@@ -1,6 +1,6 @@
 import ChapterWiseSolvedPYQsComponent from './ChapterWiseSolvedPYQsComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { pyqFAQs } from '@/lib/faq-data'
+import { pyqFAQs } from '@/data/faq-data'
 
 export const metadata = {
   title: "Chapter-wise Solved JEE PYQs - Last 43 Years | Free Download PDFs",

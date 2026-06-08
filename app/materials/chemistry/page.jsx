@@ -1,6 +1,6 @@
 import ChemistryComponent from './ChemistryComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { chemistryFAQs } from '@/lib/faq-data'
+import { chemistryFAQs } from '@/data/faq-data'
 
 export const metadata = {
   title: "JEE Chemistry Study Materials - Free Books, Notes & Tricks | Download PDFs",

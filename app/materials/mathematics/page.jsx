@@ -1,6 +1,6 @@
 import MathematicsComponent from './MathematicsComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { mathematicsFAQs } from '@/lib/faq-data'
+import { mathematicsFAQs } from '@/data/faq-data'
 
 export const metadata = {
   title: "JEE Mathematics Study Materials - Free Books, Notes & PYQs | Download PDFs",

@@ -1,6 +1,6 @@
 import PhysicsComponent from './PhysicsComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { physicsFAQs } from '@/lib/faq-data'
+import { physicsFAQs } from '@/data/faq-data'
 
 export const metadata = {
   title: "JEE Physics Study Materials - Free Books, Notes & Solutions | Download PDFs",

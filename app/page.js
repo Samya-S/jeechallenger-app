@@ -1,6 +1,6 @@
 import HomeComponent from "@/components/home/HomeComponent";
 import StructuredData from "@/components/common/StructuredData";
-import { homepageFAQs } from "@/lib/faq-data";
+import { homepageFAQs } from "@/data/faq-data";
 
 export default function Home() {
   return (

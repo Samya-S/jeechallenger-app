@@ -1,6 +1,6 @@
 import NewsComponent from './NewsComponent';
 import StructuredData from '@/components/common/StructuredData';
-import { newsFAQs } from '@/lib/faq-data';
+import { newsFAQs } from '@/data/faq-data';
 import { fetchNews } from '@/lib/news-actions';
 
 export const metadata = {

@@ -1,6 +1,6 @@
 import AITutorComponent from "./AITutorComponent";
 import StructuredData from '@/components/common/StructuredData';
-import { aiTutorFAQs } from '@/lib/faq-data';
+import { aiTutorFAQs } from '@/data/faq-data';
 
 export const metadata = {
   title: "Free AI Tutor for JEE - 24/7 Doubt Solving & Step-by-Step Solutions",

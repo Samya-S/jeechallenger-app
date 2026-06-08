@@ -1,6 +1,6 @@
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
 import StructuredData from '@/components/common/StructuredData';
-import { syllabusTrackerFAQs } from '@/lib/faq-data';
+import { syllabusTrackerFAQs } from '@/data/faq-data';
 
 export const metadata = {
   title: 'Free JEE Syllabus Tracker - Track Your Progress | All 88 Chapters',
