@@ -48,7 +48,7 @@ export default async function BlogPage() {
   // Attach the views to the articles array
   const articlesWithViews = articles.map(article => ({
     ...article,
-    views: viewsMap[article.slug] || 0
+    views: viewsMap[article.slug]
   }));
 
   return (

@@ -41,12 +41,16 @@ export async function getBatchViewCounts(slugs) {
     // Map the results back to their slugs
     const viewsMap = {};
     slugs.forEach((slug, index) => {
-      viewsMap[slug] = viewsArray[index] || 0;
+      // Only set the value if it exists (is not null)
+      if (viewsArray[index] !== null) {
+        viewsMap[slug] = Number(viewsArray[index]);
+      }
     });
     
     return viewsMap;
   } catch (error) {
     console.error('Failed to fetch batch views:', error);
+    // Returning an empty object ensures all views will be undefined
     return {};
   }
 }
