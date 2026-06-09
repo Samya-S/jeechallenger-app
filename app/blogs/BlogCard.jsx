@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, Tag, Eye } from 'lucide-react';
 import { memo, useCallback } from 'react';
 
 // Memoize date formatting to avoid recalculation
@@ -21,15 +21,23 @@ function BlogCard({ post, featured = false }) {
         className="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 p-1 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
       >
         <div className="relative h-full rounded-xl bg-white dark:bg-gray-900 p-8 md:p-10 text-left space-y-4">
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-4 text-sm flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-medium rounded-lg">
               <Tag size={14} />
               {post.category}
             </span>
-            <span className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
-              <Clock size={14} />
-              {post.readTime}
-            </span>
+            <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
+              {post.views !== undefined && (
+                <span className="flex items-center gap-1.5">
+                  <Eye size={14} />
+                  {post.views.toLocaleString()} {post.views === 1 ? 'view' : 'views'}
+                </span>
+              )}
+              <span className="flex items-center gap-1.5">
+                <Clock size={14} />
+                {post.readTime}
+              </span>
+            </div>
           </div>
 
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -60,15 +68,23 @@ function BlogCard({ post, featured = false }) {
       className="group block h-full rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
     >
       <div className="p-6 h-full flex flex-col text-left">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-lg">
             <Tag size={14} />
             {post.category}
           </span>
-          <span className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-            <Clock size={14} />
-            {post.readTime}
-          </span>
+          <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+            {post.views !== undefined && (
+              <span className="flex items-center gap-1.5">
+                <Eye size={14} />
+                {post.views.toLocaleString()}
+              </span>
+            )}
+            <span className="flex items-center gap-1.5">
+              <Clock size={14} />
+              {post.readTime}
+            </span>
+          </div>
         </div>
 
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">

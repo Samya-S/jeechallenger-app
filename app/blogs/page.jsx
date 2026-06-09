@@ -1,3 +1,4 @@
+import { getBatchViewCounts } from '@/server/views-actions';
 import { getAllArticles } from '../../lib/articles';
 import BlogListingComponent from './BlogListingComponent';
 import StructuredData from '@/components/common/StructuredData';
@@ -36,9 +37,20 @@ export const metadata = {
   },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
   // Only get metadata, not full content, for better performance
   const articles = getAllArticles(false);
+
+  // Get all slugs
+  const slugs = articles.map(article => article.slug);  
+  // Fetch all views in one command
+  const viewsMap = await getBatchViewCounts(slugs);  
+  // Attach the views to the articles array
+  const articlesWithViews = articles.map(article => ({
+    ...article,
+    views: viewsMap[article.slug] || 0
+  }));
+
   return (
     <>
       {/* Structured Data for SEO */}
@@ -60,7 +72,7 @@ export default function BlogPage() {
         }} 
       />
       
-      <BlogListingComponent articles={articles} />
+      <BlogListingComponent articles={articlesWithViews} />
     </>
   );
 }

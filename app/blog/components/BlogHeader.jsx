@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, User } from 'lucide-react';
 import ShareButtons from './ShareButtons';
+import ViewCounter from './ViewCounter';
 
 export default function BlogHeader({ post, shareTitle }) {
   const formatDate = (dateString) => {
@@ -50,6 +51,8 @@ export default function BlogHeader({ post, shareTitle }) {
               <Calendar size={18} />
               <time dateTime={post.date}>{formatDate(post.date)}</time>
             </div>
+
+            {post.slug && <ViewCounter slug={post.slug} />}
           </div>
 
           {/* Mobile Share Button - Inline with date */}
