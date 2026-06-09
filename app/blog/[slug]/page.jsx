@@ -40,21 +40,12 @@ export async function generateMetadata({ params }) {
       publishedTime: post.date,
       authors: [post.author || 'JEE Challenger Team'],
       tags: post.category ? [post.category] : [],
-      images: [
-        {
-          url: '/images/og-blog.png',
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
       locale: 'en_IN',
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: ['/images/og-blog.png'],
     },
   };
 }
