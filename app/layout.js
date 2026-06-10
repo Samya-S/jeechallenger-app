@@ -8,8 +8,8 @@ import { getMetadataBase } from '@/lib/site-url';
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 const homeOg = ogImageMeta({
-  title: 'Complete JEE Preparation Platform',
-  subtitle: 'Study materials, AI Tutor, PYQs & more for JEE Main & Advanced',
+  title: 'JEE Challenger',
+  subtitle: 'Complete JEE Preparation Platform with Study materials, AI Tutor, PYQs & more for JEE Main & Advanced',
   theme: 'home',
   alt: 'JEE Challenger - Your JEE Preparation Partner',
 });
