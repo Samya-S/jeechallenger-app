@@ -2,6 +2,14 @@ import NewsComponent from './NewsComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { newsFAQs } from '@/data/faq-data';
 import { fetchNews } from '@/lib/news-actions';
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Latest JEE News',
+  subtitle: 'Exam dates, results & important updates for aspirants',
+  theme: 'news',
+  alt: 'Latest JEE News and Updates',
+});
 
 export const metadata = {
   title: 'Latest JEE News - Exam Dates, Results & Important Updates',
@@ -18,14 +26,7 @@ export const metadata = {
     description: 'Stay updated with the latest news and information for JEE aspirants',
     url: '/news',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Latest JEE News and Updates',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -33,7 +34,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Latest JEE News - JEE Challenger',
     description: 'Stay updated with the latest news and information for JEE aspirants',
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

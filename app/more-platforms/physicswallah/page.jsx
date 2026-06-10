@@ -1,4 +1,12 @@
 import PhysicsWallahComponent from './PhysicsWallahComponent'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Physics Wallah',
+  subtitle: 'Free physics lectures for JEE & NEET aspirants',
+  theme: 'physics',
+  alt: 'Physics Wallah - Free JEE and NEET Preparation',
+})
 
 export const metadata = {
   title: "Physics Wallah | JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",
     url: '/more-platforms/physicswallah',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/physicswallah.png',
-        width: 1200,
-        height: 630,
-        alt: 'Physics Wallah - Free JEE and NEET Preparation',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Physics Wallah - Free JEE Preparation | JEE Challenger',
     description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",
-    images: ['/images/physicswallah.png'],
+    images: pageOg.twitterImages,
   },
 }
 

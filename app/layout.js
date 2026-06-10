@@ -3,7 +3,16 @@ import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
+import { ogImageMeta } from '@/lib/og-metadata';
+import { getMetadataBase } from '@/lib/site-url';
 // import SplashCursor from "@/components/utils/SplashCursor";
+
+const homeOg = ogImageMeta({
+  title: 'Complete JEE Preparation Platform',
+  subtitle: 'Study materials, AI Tutor, PYQs & more for JEE Main & Advanced',
+  theme: 'home',
+  alt: 'JEE Challenger - Your JEE Preparation Partner',
+});
 
 export const metadata = {
   title: "JEE Challenger - Free JEE Preparation Platform | Study Materials, AI Tutor & PYQs",
@@ -12,7 +21,7 @@ export const metadata = {
   authors: [{ name: "JEE Challenger" }],
   creator: "JEE Challenger",
   publisher: "JEE Challenger",
-  metadataBase: new URL('https://jeechallenger.vercel.app'),
+  metadataBase: getMetadataBase(),
   alternates: {
     canonical: '/',
   },
@@ -23,22 +32,13 @@ export const metadata = {
     title: "JEE Challenger - Complete JEE Preparation Platform",
     description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials. Get free access to Physics, Chemistry, and Mathematics resources.",
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        secureUrl: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Challenger - Your JEE Preparation Partner',
-        type: 'image/jpeg',
-      }
-    ],
+    images: homeOg.images,
   },
   twitter: {
     card: 'summary_large_image',
     title: "JEE Challenger - Complete JEE Preparation Platform",
     description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials.",
-    images: ['/images/jcicon.jpg'],
+    images: homeOg.twitterImages,
     creator: '@JEEChallenger',
     site: '@JEEChallenger',
   },

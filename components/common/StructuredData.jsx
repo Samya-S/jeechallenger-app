@@ -2,8 +2,10 @@
 // Generates JSON-LD schema for Google Rich Results
 
 import Script from 'next/script';
+import { getSiteUrl } from '@/lib/site-url';
 
 export default function StructuredData({ type, data }) {
+  const siteUrl = getSiteUrl();
   let schema = {};
 
   switch (type) {
@@ -12,14 +14,14 @@ export default function StructuredData({ type, data }) {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "JEE Challenger",
-        "url": "https://jeechallenger.vercel.app",
-        "logo": "https://jeechallenger.vercel.app/images/jcicon.jpg",
+        "url": siteUrl,
+        "logo": `${siteUrl}/images/jcicon.jpg`,
         "description": "Free JEE Preparation Platform with 5000+ study materials, AI-powered tutor, and previous year questions for JEE Main and Advanced",
         "foundingDate": "2020",
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "Student Support",
-          "url": "https://jeechallenger.vercel.app/contact-us"
+          "url": `${siteUrl}/contact-us`
         },
         "sameAs": [
           "https://t.me/jeechallenger"
@@ -32,13 +34,13 @@ export default function StructuredData({ type, data }) {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "JEE Challenger",
-        "url": "https://jeechallenger.vercel.app",
+        "url": siteUrl,
         "description": "Complete JEE preparation platform with free study materials, AI tutor, and syllabus tracker",
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://jeechallenger.vercel.app?q={search_term_string}"
+            "urlTemplate": `${siteUrl}?q={search_term_string}`
           },
           "query-input": "required name=search_term_string"
         }
@@ -53,7 +55,7 @@ export default function StructuredData({ type, data }) {
           "@type": "ListItem",
           "position": index + 1,
           "name": item.name,
-          "item": `https://jeechallenger.vercel.app${item.path}`
+          "item": `${siteUrl}${item.path}`
         }))
       };
       break;
@@ -136,7 +138,7 @@ export default function StructuredData({ type, data }) {
           "name": "JEE Challenger",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://jeechallenger.vercel.app/images/jcicon.jpg"
+            "url": `${siteUrl}/images/jcicon.jpg`
           }
         }
       };
@@ -150,7 +152,7 @@ export default function StructuredData({ type, data }) {
         "itemListElement": data.items.map((item, index) => ({
           "@type": "ListItem",
           "position": index + 1,
-          "url": `https://jeechallenger.vercel.app/blog/${item.slug}`,
+          "url": `${siteUrl}/blog/${item.slug}`,
           "name": item.title,
           "description": item.excerpt,
           "datePublished": item.date

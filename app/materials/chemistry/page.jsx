@@ -1,6 +1,14 @@
 import ChemistryComponent from './ChemistryComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { chemistryFAQs } from '@/data/faq-data'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Chemistry Study Materials',
+  subtitle: 'Books, notes & resources for JEE Main & Advanced',
+  theme: 'chemistry',
+  alt: 'Chemistry Study Materials for JEE',
+})
 
 export const metadata = {
   title: "JEE Chemistry Study Materials - Free Books, Notes & Tricks | Download PDFs",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "Chemistry study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
     url: '/materials/chemistry',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/chemistry.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Chemistry Study Materials for JEE',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Chemistry Study Materials - JEE Challenger",
     description: "Chemistry study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
-    images: ['/images/chemistry.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

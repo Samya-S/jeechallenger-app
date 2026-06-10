@@ -1,4 +1,12 @@
 import DisclaimerComponent from './DisclaimerComponent'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Disclaimer',
+  subtitle: 'Important legal information about JEE Challenger',
+  theme: 'legal',
+  alt: 'JEE Challenger Disclaimer',
+})
 
 export const metadata = {
   title: "Disclaimer | JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
     url: '/disclaimer',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Challenger Disclaimer',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Disclaimer - JEE Challenger",
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 }
 

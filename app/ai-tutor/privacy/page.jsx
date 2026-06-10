@@ -1,4 +1,12 @@
 import AITutorPrivacyComponent from "./AITutorPrivacyComponent";
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Privacy Policy - AI Tutor',
+  subtitle: 'How we handle your personal information',
+  theme: 'legal',
+  alt: 'AI Tutor Privacy Policy',
+});
 
 export const metadata = {
   title: "Privacy Policy - AI Tutor - JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Privacy Policy for JEE Challenger AI Tutor. Learn how we collect, use, and protect your personal information.",
     url: '/ai-tutor/privacy',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Tutor Privacy Policy',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Privacy Policy - AI Tutor | JEE Challenger',
     description: "Privacy Policy for JEE Challenger AI Tutor. Learn how we collect, use, and protect your personal information.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

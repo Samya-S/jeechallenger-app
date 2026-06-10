@@ -1,6 +1,14 @@
 import ChapterWiseSolvedPYQsComponent from './ChapterWiseSolvedPYQsComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { pyqFAQs } from '@/data/faq-data'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Chapter-wise Solved PYQs',
+  subtitle: '43 years of solved previous year questions for JEE',
+  theme: 'pyqs',
+  alt: 'Chapter-wise Solved Previous Year Questions',
+})
 
 export const metadata = {
   title: "Chapter-wise Solved JEE PYQs - Last 43 Years | Free Download PDFs",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "Chapter-wise solved previous years' questions for JEE Main and JEE Advanced.",
     url: '/materials/chapterwise-solved-pyqs',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/pyqs.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Chapter-wise Solved Previous Year Questions',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Chapter-wise Solved PYQs - JEE Challenger",
     description: "Chapter-wise solved previous years' questions for JEE Main and JEE Advanced.",
-    images: ['/images/pyqs.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

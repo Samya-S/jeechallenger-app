@@ -1,4 +1,12 @@
 import ContactUsComponent from './ContactUsComponent'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Contact Us',
+  subtitle: 'Queries, feedback, and suggestions welcome',
+  theme: 'brand',
+  alt: 'Contact JEE Challenger',
+})
 
 export const metadata = {
   title: "Contact Us | JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",
     url: '/contact-us',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Contact JEE Challenger',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Contact Us - JEE Challenger",
     description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

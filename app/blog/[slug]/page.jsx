@@ -2,6 +2,7 @@ import { getArticleBySlug, getAllArticles } from '../../../lib/articles';
 import BlogPostComponent from '../BlogPostComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { notFound } from 'next/navigation';
+import { buildAbsoluteOgImageUrl, ogImageMeta } from '@/lib/og-metadata';
 
 export async function generateStaticParams() {
   const articles = getAllArticles();
@@ -19,6 +20,14 @@ export async function generateMetadata({ params }) {
       title: 'Article Not Found | JEE Challenger',
     };
   }
+
+  const pageOg = ogImageMeta({
+    title: post.title,
+    subtitle: post.excerpt,
+    theme: 'blog',
+    badge: 'JEE Challenger Blog',
+    alt: post.title,
+  });
 
   return {
     title: `${post.title} | JEE Challenger`,
@@ -41,11 +50,13 @@ export async function generateMetadata({ params }) {
       authors: [post.author || 'JEE Challenger Team'],
       tags: post.category ? [post.category] : [],
       locale: 'en_IN',
+      images: pageOg.images,
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
+      images: pageOg.twitterImages,
     },
   };
 }
@@ -67,7 +78,12 @@ export default async function BlogPost({ params }) {
         data={{
           title: post.title,
           description: post.excerpt,
-          image: '/images/og-blog.png',
+          image: buildAbsoluteOgImageUrl({
+            title: post.title,
+            subtitle: post.excerpt,
+            theme: 'blog',
+            badge: 'JEE Challenger Blog',
+          }),
           publishedAt: post.date,
           source: post.author || 'JEE Challenger Team'
         }} 

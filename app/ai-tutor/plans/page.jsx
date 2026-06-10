@@ -1,5 +1,13 @@
 import { notFound } from "next/navigation";
+import { ogImageMeta } from '@/lib/og-metadata';
 // import AITutorPlansComponent from "./AITutorPlansComponent";
+
+const pageOg = ogImageMeta({
+  title: 'Subscription Plans - AI Tutor',
+  subtitle: 'Pricing, limits, and features for AI Tutor',
+  theme: 'ai-tutor',
+  alt: 'AI Tutor Subscription Plans',
+});
 
 export const metadata = {
   title: "Subscription Plans - AI Tutor - JEE Challenger",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "View all available subscription plans for the AI Tutor on JEE Challenger, including pricing, limits, and features.",
     url: '/ai-tutor/plans',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Tutor Subscription Plans',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Subscription Plans - AI Tutor | JEE Challenger',
     description: "View all available subscription plans for the AI Tutor on JEE Challenger, including pricing, limits, and features.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

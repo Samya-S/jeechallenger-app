@@ -1,6 +1,14 @@
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { syllabusTrackerFAQs } from '@/data/faq-data';
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Syllabus Tracker',
+  subtitle: 'Track Theory, PYQs & Revision across all 88 chapters',
+  theme: 'syllabus',
+  alt: 'JEE Syllabus Tracker - Track Your Preparation Progress',
+});
 
 export const metadata = {
   title: 'Free JEE Syllabus Tracker - Track Your Progress | All 88 Chapters',
@@ -17,14 +25,7 @@ export const metadata = {
     description: 'Track your JEE preparation progress across Physics, Chemistry, and Mathematics. Mark chapters as complete for Theory, PYQs, and Revision.',
     url: '/syllabus-tracker',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Syllabus Tracker - Track Your Preparation Progress',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Syllabus Tracker - JEE Challenger',
     description: 'Track your JEE preparation progress across Physics, Chemistry, and Mathematics. Mark chapters as complete for Theory, PYQs, and Revision.',
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

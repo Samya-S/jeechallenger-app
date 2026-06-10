@@ -1,4 +1,12 @@
 import MoreMaterialsComponent from './MoreMaterialsComponent'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'More Study Materials',
+  subtitle: 'NCERT PDFs, books, notes & additional JEE resources',
+  theme: 'materials',
+  alt: 'More Study Materials for JEE',
+})
 
 export const metadata = {
   title: "More Study Materials | JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
     url: '/materials/more-study-materials',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/ncertpdfs.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'More Study Materials for JEE',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'More Study Materials - JEE Challenger',
     description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
-    images: ['/images/ncertpdfs.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

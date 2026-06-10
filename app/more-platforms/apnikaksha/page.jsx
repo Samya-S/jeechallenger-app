@@ -1,4 +1,12 @@
 import ApniKakshaComponent from './ApniKakshaComponent'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Apni Kaksha',
+  subtitle: 'Free high-quality educational content on YouTube',
+  theme: 'platform',
+  alt: 'Apni Kaksha - Free Educational YouTube Channel',
+})
 
 export const metadata = {
   title: 'Apni Kaksha | JEE Challenger',
@@ -15,14 +23,7 @@ export const metadata = {
     description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',
     url: '/more-platforms/apnikaksha',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/apnikaksha.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Apni Kaksha - Free Educational YouTube Channel',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Apni Kaksha - Free JEE YouTube Channel | JEE Challenger',
     description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',
-    images: ['/images/apnikaksha.jpg'],
+    images: pageOg.twitterImages,
   },
 }
 

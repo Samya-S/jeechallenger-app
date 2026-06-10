@@ -1,5 +1,13 @@
 import JeeAdvancedComponent from './JeeAdvancedComponent'
 import StructuredData from '@/components/common/StructuredData'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'JEE Advanced Official Links & PYQs',
+  subtitle: 'Official papers, solutions & resources from IITs',
+  theme: 'jee-advanced',
+  alt: 'JEE Advanced Official Links and Previous Year Papers',
+})
 
 export const metadata = {
   title: 'JEE Advanced Official Papers - Download Solutions & Question Papers',
@@ -16,14 +24,7 @@ export const metadata = {
     description: 'Official links for JEE Advanced and previous year question papers.',
     url: '/official-links/jee-advanced',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Advanced Official Links and Previous Year Papers',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -31,7 +32,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'JEE Advanced Official Links & PYQs - JEE Challenger',
     description: 'Official links for JEE Advanced and previous year question papers.',
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 }
 

@@ -2,6 +2,15 @@ import { getBatchViewCounts } from '@/server/views-actions';
 import { getAllArticles } from '../../lib/articles';
 import BlogListingComponent from './BlogListingComponent';
 import StructuredData from '@/components/common/StructuredData';
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'JEE Preparation Tips & Strategy',
+  subtitle: 'Expert advice to crack JEE Main & Advanced',
+  theme: 'blog',
+  badge: 'JEE Challenger Blog',
+  alt: 'JEE Preparation Tips and Strategy Blogs',
+});
 
 export const metadata = {
   title: 'JEE Preparation Tips & Strategy Blogs | JEE Challenger',
@@ -18,14 +27,7 @@ export const metadata = {
     description: 'Expert tips, strategies, and advice for JEE Main and Advanced preparation. Learn from proven methods to crack JEE with better scores.',
     url: '/blogs',
     siteName: 'JEE Challenger',
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Preparation Tips and Strategy Blogs',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -33,7 +35,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'JEE Preparation Tips & Strategy Blogs | JEE Challenger',
     description: 'Expert tips, strategies, and advice for JEE Main and Advanced preparation.',
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

@@ -1,4 +1,12 @@
 import AITutorProfileComponent from "./AITutorProfileComponent";
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Profile - AI Tutor',
+  subtitle: 'Manage your settings and preferences',
+  theme: 'ai-tutor',
+  alt: 'AI Tutor Profile Settings',
+});
 
 export const metadata = {
   title: "Profile - AI Tutor - JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Manage your AI Tutor profile, settings, and preferences for personalized JEE preparation.",
     url: '/ai-tutor/profile',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Tutor Profile Settings',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Profile - AI Tutor | JEE Challenger',
     description: "Manage your AI Tutor profile, settings, and preferences for personalized JEE preparation.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

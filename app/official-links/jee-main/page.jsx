@@ -1,5 +1,13 @@
 import JeeMainComponent from './JeeMainComponent'
 import StructuredData from '@/components/common/StructuredData'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'JEE Main Official Links & PYQs',
+  subtitle: 'Official papers, answer keys & notifications from NTA',
+  theme: 'jee-main',
+  alt: 'JEE Main Official Links and Previous Year Papers',
+})
 
 export const metadata = {
   title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
@@ -16,14 +24,7 @@ export const metadata = {
     description: 'Official links for JEE Main and previous year question papers.',
     url: '/official-links/jee-main',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Main Official Links and Previous Year Papers',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -31,7 +32,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'JEE Main Official Links & PYQs - JEE Challenger',
     description: 'Official links for JEE Main and previous year question papers.',
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 }
 

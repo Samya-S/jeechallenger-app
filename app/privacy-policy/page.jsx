@@ -1,4 +1,12 @@
 import PrivacyPolicyComponent from "./PrivacyPolicyComponent";
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Privacy Policy',
+  subtitle: 'How we collect, use, and protect your information',
+  theme: 'legal',
+  alt: 'JEE Challenger Privacy Policy',
+});
 
 export const metadata = {
   title: "Privacy Policy | JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
     url: '/privacy-policy',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'JEE Challenger Privacy Policy',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Privacy Policy - JEE Challenger",
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

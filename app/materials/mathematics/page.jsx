@@ -1,6 +1,14 @@
 import MathematicsComponent from './MathematicsComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { mathematicsFAQs } from '@/data/faq-data'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Mathematics Study Materials',
+  subtitle: 'Books, notes & resources for JEE Main & Advanced',
+  theme: 'mathematics',
+  alt: 'Mathematics Study Materials for JEE',
+})
 
 export const metadata = {
   title: "JEE Mathematics Study Materials - Free Books, Notes & PYQs | Download PDFs",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "Mathematics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
     url: '/materials/mathematics',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/maths.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Mathematics Study Materials for JEE',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Mathematics Study Materials - JEE Challenger",
     description: "Mathematics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
-    images: ['/images/maths.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

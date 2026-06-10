@@ -1,4 +1,12 @@
 import AITutorTermsComponent from "./AITutorTermsComponent";
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'Terms of Service - AI Tutor',
+  subtitle: 'Terms and conditions for using the AI Tutor',
+  theme: 'legal',
+  alt: 'AI Tutor Terms of Service',
+});
 
 export const metadata = {
   title: "Terms of Service - AI Tutor - JEE Challenger",
@@ -15,14 +23,7 @@ export const metadata = {
     description: "Terms of Service for JEE Challenger AI Tutor. Read our terms and conditions for using the AI Tutor service.",
     url: '/ai-tutor/terms',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Tutor Terms of Service',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -30,7 +31,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Terms of Service - AI Tutor | JEE Challenger',
     description: "Terms of Service for JEE Challenger AI Tutor. Read our terms and conditions for using the AI Tutor service.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

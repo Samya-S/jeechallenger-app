@@ -1,6 +1,14 @@
 import AITutorComponent from "./AITutorComponent";
 import StructuredData from '@/components/common/StructuredData';
 import { aiTutorFAQs } from '@/data/faq-data';
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: 'AI Tutor',
+  subtitle: '24/7 doubt solving with step-by-step JEE solutions',
+  theme: 'ai-tutor',
+  alt: 'AI Tutor - Your Personal JEE Preparation Assistant',
+});
 
 export const metadata = {
   title: "Free AI Tutor for JEE - 24/7 Doubt Solving & Step-by-Step Solutions",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "Get personalized JEE preparation help from our AI tutor. Ask questions about physics, chemistry, mathematics, and more.",
     url: '/ai-tutor',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/jcicon.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Tutor - Your Personal JEE Preparation Assistant',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "AI Tutor - JEE Challenger",
     description: "Get personalized JEE preparation help from our AI tutor. Ask questions about physics, chemistry, mathematics, and more.",
-    images: ['/images/jcicon.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

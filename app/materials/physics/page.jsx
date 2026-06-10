@@ -1,6 +1,14 @@
 import PhysicsComponent from './PhysicsComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { physicsFAQs } from '@/data/faq-data'
+import { ogImageMeta } from '@/lib/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Physics Study Materials',
+  subtitle: 'Books, notes & resources for JEE Main & Advanced',
+  theme: 'physics',
+  alt: 'Physics Study Materials for JEE',
+})
 
 export const metadata = {
   title: "JEE Physics Study Materials - Free Books, Notes & Solutions | Download PDFs",
@@ -17,14 +25,7 @@ export const metadata = {
     description: "Physics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
     url: '/materials/physics',
     siteName: "JEE Challenger",
-    images: [
-      {
-        url: '/images/physics.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Physics Study Materials for JEE',
-      }
-    ],
+    images: pageOg.images,
     locale: 'en_IN',
     type: 'website',
   },
@@ -32,7 +33,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "Physics Study Materials - JEE Challenger",
     description: "Physics study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
-    images: ['/images/physics.jpg'],
+    images: pageOg.twitterImages,
   },
 };
 

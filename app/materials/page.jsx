@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import { BookOpen, FileText, Calculator, Atom, FlaskConical, TrendingUp } from 'lucide-react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
+import { ogImageMeta } from '@/lib/og-metadata';
+
+const pageOg = ogImageMeta({
+	title: 'Free JEE Study Materials & Resources',
+	subtitle: 'Physics, Chemistry & Mathematics — free PDFs, notes, and PYQs',
+	theme: 'materials',
+	alt: 'JEE Study Materials for Physics, Chemistry, and Mathematics',
+});
 
 export const metadata = {
 	title: 'Free JEE Study Materials & Resources | JEE Challenger',
@@ -17,14 +25,7 @@ export const metadata = {
 		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. Free PDFs, notes, and previous year questions for JEE Main & Advanced.',
 		url: '/materials',
 		siteName: 'JEE Challenger',
-		images: [
-			{
-				url: '/images/jee-materials.jpg',
-				width: 1200,
-				height: 630,
-				alt: 'JEE Study Materials for Physics, Chemistry, and Mathematics',
-			}
-		],
+		images: pageOg.images,
 		locale: 'en_IN',
 		type: 'website',
 	},
@@ -32,7 +33,7 @@ export const metadata = {
 		card: 'summary_large_image',
 		title: 'Free JEE Study Materials & Resources | JEE Challenger',
 		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. Free PDFs, notes, and previous year questions.',
-		images: ['/images/jee-materials.jpg'],
+		images: pageOg.twitterImages,
 	},
 };
 
