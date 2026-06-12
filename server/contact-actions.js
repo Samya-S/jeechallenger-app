@@ -1,4 +1,5 @@
 "use server";
+import { getSiteUrl } from '@/lib/site-url';
 import nodemailer from 'nodemailer';
 
 export const submitContactUsForm = async (formData) => {
@@ -35,7 +36,7 @@ export const submitContactUsForm = async (formData) => {
           </p>
           <hr style="border: 1px solid #ddd;">
           <p style="color: #888; font-size: 12px;">
-            This email was sent from your website's Contact Us form on <a href="https://jeechallenger.vercel.app" style="color: #007bff;">JEE Challenger</a>.
+            This email was sent from your website's Contact Us form on <a href="${getSiteUrl()}" style="color: #007bff;">JEE Challenger</a>.
           </p>
         </div>
       `,
@@ -87,7 +88,7 @@ export const submitFeedbackForm = async (formData) => {
           </p>
           <hr style="border: 1px solid #ddd;">
           <p style="color: #888; font-size: 12px;">
-            This email was sent from your website's Feedback Modal on <a href="https://jeechallenger.vercel.app" style="color: #007bff;">JEE Challenger</a>.
+            This email was sent from your website's Feedback Modal on <a href="${getSiteUrl()}" style="color: #007bff;">JEE Challenger</a>.
           </p>
         </div>
       `,

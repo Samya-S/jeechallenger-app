@@ -1,6 +1,8 @@
+import { getSiteUrl } from "@/lib/site-url";
+
 // RSS Feed for JEE Challenger
 export async function GET() {
-  const siteUrl = 'https://jeechallenger.vercel.app';
+  const siteUrl = getSiteUrl();
   const currentDate = new Date().toUTCString();
   
   const rss = `<?xml version="1.0" encoding="UTF-8"?>

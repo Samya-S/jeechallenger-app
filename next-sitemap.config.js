@@ -1,6 +1,8 @@
+const { getSiteUrl } = require('./lib/site-url');
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://jeechallenger.vercel.app",
+  siteUrl: getSiteUrl(),
   generateRobotsTxt: true,
   changefreq: "daily",
   priority: 0.7,
@@ -9,7 +11,7 @@ module.exports = {
   robotsTxtOptions: {
     policies: [{ userAgent: "*", allow: "/" }],
     additionalSitemaps: [
-      'https://jeechallenger.vercel.app/image-sitemap.xml',
+      `${getSiteUrl()}/image-sitemap.xml`,
     ],
   },
 };

@@ -1,4 +1,5 @@
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import { getSiteUrl } from '@/lib/site-url';
 import Link from "next/link";
 
 const PrivacyPolicyComponent = () => {
@@ -31,7 +32,7 @@ const PrivacyPolicyComponent = () => {
 						{/* Introduction */}
 						<div className="prose dark:prose-invert max-w-none text-left">
 							<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-								At <strong>JEE Challenger</strong>, accessible at <a href="https://jeechallenger.vercel.app" className="text-blue-600 dark:text-blue-400 hover:underline">jeechallenger.vercel.app</a>, protecting your privacy is a priority. This Privacy Policy describes the types of information collected and recorded by JEE Challenger and how we use, protect, and manage that information.
+								At <strong>JEE Challenger</strong>, accessible at <a href={getSiteUrl()} className="text-blue-600 dark:text-blue-400 hover:underline">{getSiteUrl()}</a>, protecting your privacy is a priority. This Privacy Policy describes the types of information collected and recorded by JEE Challenger and how we use, protect, and manage that information.
 							</p>
 							<p className="text-gray-700 dark:text-gray-300 leading-relaxed mt-4">
 								If you have questions or need additional information about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.

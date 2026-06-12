@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
+import { getSiteUrl } from '@/lib/site-url';
 
 /**
  * ShareProgressModal - Modal component for generating and sharing progress report
@@ -10,14 +11,6 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
   const reportRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
-
-  // Generate image when modal opens
-  useEffect(() => {
-    if (isOpen && !generatedImage) {
-      generateImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only need to run when modal opens
-  }, [isOpen]);
 
   // Calculate subject-wise progress
   const getSubjectProgress = () => {
@@ -86,6 +79,14 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
     }
   };
 
+  // Generate image when modal opens
+  useEffect(() => {
+    if (isOpen && !generatedImage) {
+      generateImage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only need to run when modal opens
+  }, [isOpen]);
+
   // Share image
   const handleShare = async () => {
     if (!generatedImage) return;
@@ -101,7 +102,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
         await navigator.share({
           files: [file],
           title: 'My JEE Syllabus Progress',
-          text: `I've completed ${overallStats.percentage}% of my JEE syllabus! 🎯\n\nTrack your progress at https://jeechallenger.vercel.app/syllabus-tracker`
+          text: `I've completed ${overallStats.percentage}% of my JEE syllabus! 🎯\n\nTrack your progress at ${getSiteUrl()}/syllabus-tracker`
         });
       } else {
         // Fallback: Download the image
@@ -398,7 +399,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
                   color: '#374151',
                   lineHeight: '1.3'
                 }}>
-                  Track your progress at <span style={{ fontWeight: '800', color: '#2563EB' }}>jeechallenger.vercel.app</span>
+                  Track your progress at <span style={{ fontWeight: '800', color: '#2563EB' }}>{getSiteUrl()}/syllabus-tracker</span>
                 </p>
               </div>
             </div>
