@@ -131,6 +131,15 @@ const nextConfig = {
       }
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog',
+        destination: '/blogs',
+        permanent: true, // Sets a 301 redirect (SEO friendly)
+      },
+    ];
+  },
 };
 
 // Add webpack optimizations only for production builds (not in dev with Turbopack)
