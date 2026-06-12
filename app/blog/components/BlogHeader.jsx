@@ -15,13 +15,13 @@ export default function BlogHeader({ post, shareTitle }) {
   return (
     <>
       {/* Back Button */}
-      <Link 
+      {/* <Link 
         href="/blogs" 
         className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:gap-3 transition-all mb-8 font-medium"
       >
         <ArrowLeft size={18} />
         Back to All Articles
-      </Link>
+      </Link> */}
 
       {/* Article Header */}
       <header className="mb-10">

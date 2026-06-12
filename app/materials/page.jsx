@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BookOpen, FileText, Calculator, Atom, FlaskConical, TrendingUp } from 'lucide-react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { ogImageMeta } from '@/lib/og-metadata';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const pageOg = ogImageMeta({
 	title: 'Free JEE Study Materials & Resources',
@@ -41,8 +42,15 @@ export default function MaterialsPage() {
 	return (
 		<div>
 			{/* Hero Section */}
-			<section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
+			<section className="pb-16 pt-4 px-4 sm:px-6 lg:px-8 content-auto">
 				<div className="max-w-7xl mx-auto">
+          <Breadcrumbs
+            crumbs={[
+              { label: 'Study Materials', href: '/materials' }
+            ]}
+            className="pb-12"
+          />
+          
 					<div className="text-center mb-12">
 						<h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
 							JEE Study Materials & Resources

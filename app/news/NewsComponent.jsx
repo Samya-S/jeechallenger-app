@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import NewsCard from './NewsCard';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
   ssr: false
@@ -55,7 +56,14 @@ export default function NewsComponent({ articles, error }) {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Latest JEE News', href: '/news' }
+          ]}
+          className="pb-12"
+        />
+        
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Latest JEE News

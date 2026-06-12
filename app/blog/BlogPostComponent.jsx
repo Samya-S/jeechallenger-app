@@ -12,6 +12,7 @@ import BlogPostClient from './BlogPostClient';
 import BlogHeader from './components/BlogHeader';
 import BlogCTA from './components/BlogCTA';
 import { getMarkdownComponents } from './components/markdownComponents';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 export default function BlogPostComponent({ post }) {
   if (!post) {
@@ -39,6 +40,14 @@ export default function BlogPostComponent({ post }) {
   return (
     <>
       <BlogPostClient content={post.content}>
+        <Breadcrumbs 
+          crumbs={[
+            { label: 'Blogs', href: '/blogs' },
+            { label: post.title, href: `/blog/${post.slug}` }
+          ]} 
+          className="mb-8"
+        />
+
         <BlogHeader
           post={post}
           shareTitle={post.title}

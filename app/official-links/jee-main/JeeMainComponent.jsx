@@ -20,6 +20,7 @@ const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopBu
 });
 import JeeMain2020papers from './JeeMain2020papers';
 import JeeMain2022papers from './JeeMain2022papers';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const JeeMainComponent = () => {
   const [show2020, setShow2020] = useState(false);
@@ -38,7 +39,15 @@ const JeeMainComponent = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 dark:from-emerald-900 dark:to-teal-900 py-20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 dark:from-emerald-900 dark:to-teal-900 pb-20 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Official Links', href: '/official-links' },
+            { label: 'JEE Main', href: '/official-links/jee-main' },
+          ]} 
+          hasBanner={true}
+          className="pb-12"
+        />
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">

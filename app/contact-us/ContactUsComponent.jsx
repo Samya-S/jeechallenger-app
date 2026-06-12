@@ -2,6 +2,7 @@
 import { submitContactUsForm } from "@/server/contact-actions";
 import { useState } from "react";
 import dynamic from 'next/dynamic';
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 
 const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
   ssr: false
@@ -51,7 +52,15 @@ const ContactUsComponent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white pb-16 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: "Contact Us", href: "/contact-us" }
+          ]} 
+          hasBanner={true}
+          className="pb-12"
+        />
+
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Get in Touch

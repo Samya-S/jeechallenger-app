@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
@@ -25,7 +26,15 @@ const ChapterWiseSolvedPYQsComponent = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-900 dark:to-red-900 py-20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-900 dark:to-red-900 pb-20 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Study Materials', href: '/materials' },
+            { label: 'Chapter-wise Solved PYQs', href: '/materials/chapterwise-solved-pyqs' },
+          ]} 
+          hasBanner={true}
+          className="pb-12"
+        />
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">

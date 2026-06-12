@@ -32,6 +32,16 @@
     }
   }
 
+  /* Chrome, Safari, and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  /* IE, Edge, and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
   }

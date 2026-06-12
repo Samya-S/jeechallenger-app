@@ -1,11 +1,20 @@
 import TelegramPost from '@/components/utils/TelegramPost';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const JeeAdvancedComponent = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-yellow-700 to-orange-700 dark:from-yellow-900 dark:to-orange-900 py-20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-yellow-700 to-orange-700 dark:from-yellow-900 dark:to-orange-900 pb-20 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Official Links', href: '/official-links' },
+            { label: 'JEE Advanced', href: '/official-links/jee-advanced' },
+          ]} 
+          hasBanner={true}
+          className="pb-12"
+        />
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">

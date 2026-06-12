@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, Filter, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import BlogCard from './BlogCard';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const ScrollToTopButton = dynamic(() => import('../../components/utils/ScrollToTopButton'), {
   ssr: false
@@ -58,6 +59,13 @@ export default function BlogListingComponent({ articles }) {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-900 dark:via-blue-800 dark:to-cyan-900">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Blogs', href: '/blogs' },
+          ]} 
+          hasBanner={true}
+          className="pt-4"
+        />
         <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]"></div>
         <div className="container mx-auto px-4 py-16 md:py-24 max-w-6xl relative">
           <div className="text-center space-y-6">

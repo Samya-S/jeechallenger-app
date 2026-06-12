@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const PhysicsWallahComponent = () => {
   return (
@@ -18,7 +19,15 @@ const PhysicsWallahComponent = () => {
       {/* Content Section */}
       <div className="max-w-7xl mx-auto">
         {/* Platform Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="pb-16 pt-4 px-4 sm:px-6 lg:px-8">
+          <Breadcrumbs
+            crumbs={[
+              { label: 'More Platforms' },
+              { label: 'Physics Wallah', href: '/more-platforms/physicswallah' }
+            ]}
+            className="pb-12"
+          />
+
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Physics Wallah Platform

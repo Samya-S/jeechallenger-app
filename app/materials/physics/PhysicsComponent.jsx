@@ -3,12 +3,21 @@ import CategorySection from '../CategorySection';
 import PYQandMoreSection from '../PYQandMoreSection';
 import TelegramPost from '@/components/utils/TelegramPost';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const PhysicsComponent = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 py-20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 pb-20 pt-4">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Study Materials', href: '/materials' },
+            { label: 'Physics', href: '/materials/physics' },
+          ]} 
+          hasBanner={true}
+          className="pb-12"
+        />
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">

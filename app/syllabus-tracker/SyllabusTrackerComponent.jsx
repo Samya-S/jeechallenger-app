@@ -15,6 +15,7 @@ import {
 import SubjectCard from './SubjectCard';
 import { ChapterList } from './ChapterRow';
 import ShareProgressModal from './ShareProgressModal';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 function useProgressDataFromStorage() {
   const snapshot = useSyncExternalStore(
@@ -99,8 +100,15 @@ const SyllabusTrackerComponent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-8 pt-4 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'JEE Syllabus Tracker', href: '/syllabus-tracker' }
+          ]}
+          className="pb-12"
+        />
+
         {/* Header Section */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 px-2">
