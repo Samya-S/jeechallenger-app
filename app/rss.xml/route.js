@@ -82,7 +82,7 @@ export async function GET() {
   // ---------------------------------------------------------
   // 2. FETCH DYNAMIC BLOG ARTICLES
   // ---------------------------------------------------------
-  const articles = getAllArticles(false);
+  const articles = await getAllArticles(false);
   const dynamicItems = articles.map((article) => {
     const articleUrl = `${siteUrl}/blog/${article.slug}`;
     return `<item>

@@ -67,10 +67,10 @@ Your content here...
 import { getAllArticles } from '@/lib/articles';
 
 // Get all articles with content (default)
-const articles = getAllArticles();
+const articles = await getAllArticles();
 
 // Get all articles without content (for listing pages, better performance)
-const articles = getAllArticles(false);
+const articles = await getAllArticles(false);
 ```
 
 ### Get single article:
@@ -84,14 +84,14 @@ const article = getArticleBySlug('article-slug');
 ```javascript
 import { getArticlesByCategory } from '@/lib/articles';
 
-const categoryArticles = getArticlesByCategory('Category');
+const categoryArticles = await getArticlesByCategory('Category');
 ```
 
 ### Get all categories:
 ```javascript
 import { getAllCategories } from '@/lib/articles';
 
-const categories = getAllCategories();
+const categories = await getAllCategories();
 ```
 
 ## Creating New Articles

@@ -124,7 +124,7 @@ export async function GET() {
     }));
 
     // 6. Auto-fetch Dynamic Blog Posts
-    const articles = getAllArticles(false);
+    const articles = await getAllArticles(false);
     const blogPages = articles.map((article) => {
         return {
             loc: `${siteUrl}/blog/${article.slug}`,
