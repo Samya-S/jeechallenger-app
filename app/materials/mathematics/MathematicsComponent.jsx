@@ -6,7 +6,7 @@ import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
 const MathematicsComponent = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+    <div>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 dark:from-purple-900 dark:to-pink-900 py-20">
         <div className="flex items-center justify-center">

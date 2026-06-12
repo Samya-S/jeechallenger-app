@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
         {/* RSS Feed */}
         <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ConditionalLayout>
             {children}

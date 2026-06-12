@@ -3,7 +3,7 @@ import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 
 const UnacademyComponent = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+    <div>
       {/* Banner Image - Kept Intact */}
       <Image
         className="w-full"

@@ -23,7 +23,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
   const joinTgAlertMsg = "This link will only work if you are a subscriber of our official telegram channel. If so, please proceed.\n\nOr else, please join our telegram channel before proceeding.";
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+    <div>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-900 dark:to-red-900 py-20">
         <div className="flex items-center justify-center">

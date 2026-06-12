@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const MoreMaterialsComponent = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+    <div>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 py-20">
         <div className="flex items-center justify-center">

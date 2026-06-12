@@ -39,7 +39,7 @@ export const metadata = {
 
 export default function MaterialsPage() {
 	return (
-		<div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+		<div>
 			{/* Hero Section */}
 			<section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
 				<div className="max-w-7xl mx-auto">
