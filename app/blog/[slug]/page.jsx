@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { buildAbsoluteOgImageUrl, ogImageMeta } from '@/lib/og-metadata';
 
 export async function generateStaticParams() {
-  const articles = getAllArticles();
+  const articles = await getAllArticles();
   return articles.map((article) => ({
     slug: article.slug,
   }));

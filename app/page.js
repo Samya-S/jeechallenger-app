@@ -1,8 +1,11 @@
 import HomeComponent from "@/components/home/HomeComponent";
 import StructuredData from "@/components/common/StructuredData";
 import { homepageFAQs } from "@/data/faq-data";
+import { getAllArticles } from "@/lib/articles";
 
-export default function Home() {
+export default async function Home() {
+  const latestArticles = (await getAllArticles(false)).slice(0, 3);
+
   return (
     <>
       {/* Structured Data for SEO */}
@@ -18,7 +21,7 @@ export default function Home() {
         }} 
       />
       
-      <HomeComponent />
+      <HomeComponent latestArticles={latestArticles} />
     </>
   );
 }

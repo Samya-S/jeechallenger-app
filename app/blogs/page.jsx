@@ -41,17 +41,7 @@ export const metadata = {
 
 export default async function BlogPage() {
   // Only get metadata, not full content, for better performance
-  const articles = getAllArticles(false);
-
-  // Get all slugs
-  const slugs = articles.map(article => article.slug);  
-  // Fetch all views in one command
-  const viewsMap = await getBatchViewCounts(slugs);  
-  // Attach the views to the articles array
-  const articlesWithViews = articles.map(article => ({
-    ...article,
-    views: viewsMap[article.slug]
-  }));
+  const articles = await getAllArticles(false);
 
   return (
     <>
@@ -74,7 +64,7 @@ export default async function BlogPage() {
         }} 
       />
       
-      <BlogListingComponent articles={articlesWithViews} />
+      <BlogListingComponent articles={articles} />
     </>
   );
 }

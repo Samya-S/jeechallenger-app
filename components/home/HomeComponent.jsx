@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Hero from "./Hero";
+import BlogCard from "@/app/blogs/BlogCard";
 
 // Lazy load heavy components for better performance
 const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
@@ -16,7 +17,7 @@ const YouTubeEmbed = dynamic(
   { ssr: false }
 );
 
-const HomeComponent = () => {
+const HomeComponent = ({ latestArticles }) => {
   return (
     <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
       <Hero />
@@ -640,6 +641,40 @@ const HomeComponent = () => {
           </div>
         </div>
       </section>
+
+      {/* Latest Blogs Section */}
+      {latestArticles && latestArticles.length > 0 && (
+        <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Latest Articles & Tips
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Stay updated with our newest JEE preparation strategies, insights, and study guides.
+              </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {latestArticles.map((article) => (
+                <BlogCard key={article.slug} post={article} />
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link href="/blogs" aria-label="View all blog articles">
+                <button className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-700 hover:via-blue-600 hover:to-cyan-600 dark:from-blue-700 dark:via-blue-600 dark:to-cyan-600 dark:hover:from-blue-800 dark:hover:via-blue-700 dark:hover:to-cyan-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center mx-auto group">
+                  View All Articles
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contribute to JEE Challenger Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 content-auto">
