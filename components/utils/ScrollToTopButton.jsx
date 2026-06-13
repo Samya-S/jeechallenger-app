@@ -16,11 +16,10 @@ const ScrollToTopButton = ({ gradientColors, hoverColors }) => {
 
   return (
     <div 
-      className="fixed bottom-6 right-6 z-50 transition-opacity duration-300"
+      className="fixed bottom-6 right-6 z-30 transition-opacity duration-300"
       style={{ 
         opacity: showScrollButton ? 1 : 0,
         pointerEvents: showScrollButton ? 'auto' : 'none',
-        transform: 'translateZ(0)' // Force GPU acceleration
       }}
     >
       <button 
