@@ -42,7 +42,7 @@ const JeeMainComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 dark:from-emerald-900 dark:to-teal-900 pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Official Links', href: '/official-links' },
+            { label: 'Official Links' },
             { label: 'JEE Main', href: '/official-links/jee-main' },
           ]} 
           hasBanner={true}
