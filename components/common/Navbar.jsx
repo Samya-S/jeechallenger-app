@@ -67,6 +67,22 @@ export default function NavBar() {
     }
   };
 
+  // Add this new useEffect to lock body scroll when menu is open
+  useEffect(() => {
+    if (showMobileNav) {
+      // Lock scroll and prevent address bar from shifting
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore scroll when closed
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup function in case component unmounts while menu is open
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showMobileNav]);
+
   return (
     <nav 
       className={`${Styles.navbar} ${isScrolled ? Styles.navbarScrolled : ''}`} 
