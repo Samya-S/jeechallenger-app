@@ -3,17 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { FaHome, FaChalkboardTeacher, FaChevronDown, FaTrash, FaSignOutAlt, FaUser, FaComments } from "react-icons/fa";
+import { FaHome, FaChalkboardTeacher, FaChevronDown, FaSignOutAlt, FaUser, FaComments, FaBars, FaTimes } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
+import AITutorThemeToggle from "@/components/AiTutorComponents/AITutorThemeToggle";
 
-const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSignIn }) => {
+const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, sidebarOpen }) => {
   const profileImageLoader = ({ src }) => src;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname();
   const isProfilePage = pathname === '/ai-tutor/profile';
-  const isChatPage = pathname === '/ai-tutor';
+  const isChatPage = pathname === '/ai-tutor' || pathname.startsWith('/ai-tutor/chat/');
 
   // Handle scroll detection for the messages container
   useEffect(() => {
@@ -82,8 +83,19 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
     <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-2 lg:py-2.5' : 'py-2.5 sm:py-3 lg:py-4'
       }`}>
       <div className="relative flex items-center justify-between">
-        {/* Left - Home Button */}
-        <div className="flex items-center flex-shrink-0 z-10">
+        {/* Left - Home & Sidebar Toggle */}
+        <div className="flex items-center gap-2 flex-shrink-0 z-10">
+          {isChatPage && onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className={`lg:hidden flex items-center justify-center bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${
+                isScrolled ? 'w-8 h-8' : 'w-9 h-9'
+              }`}
+              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+            >
+              {sidebarOpen ? <FaTimes className="text-sm" /> : <FaBars className="text-sm" />}
+            </button>
+          )}
           <Link
             href="/"
             className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 sm:px-3 lg:px-3.5 py-1 sm:py-1.5 lg:py-1.5' : 'px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2'
@@ -117,8 +129,9 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
           </div>
         </Link>
 
-        {/* Right - User Info Dropdown or Sign In Button */}
+        {/* Right - Theme toggle, user menu */}
         <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 flex-shrink-0 z-10">
+          <AITutorThemeToggle compact={isScrolled} />
           {showSignIn ? (
             <button
               onClick={onSignIn}
@@ -188,17 +201,6 @@ const AITutorNavbar = ({ user, onClearChat, onLogout, messages, showSignIn, onSi
                         </div>
                         <span className="font-medium">Profile</span>
                       </Link>
-                    )}
-                    {messages && messages.length > 0 && (
-                      <button
-                        onClick={() => { setDropdownOpen(false); onClearChat(); }}
-                        className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                      >
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                          <FaTrash className="text-red-500 group-hover:text-red-600 text-xs sm:text-sm" />
-                        </div>
-                        <span className="font-medium">Clear Chat</span>
-                      </button>
                     )}
                     <div className="border-t border-gray-100 dark:border-gray-700 my-0.5 sm:my-1"></div>
                     <button

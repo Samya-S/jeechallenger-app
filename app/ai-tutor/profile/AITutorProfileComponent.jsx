@@ -89,9 +89,7 @@ const AITutorProfileComponent = () => {
         {/* Header */}
         <AITutorNavbar
           user={user}
-          onClearChat={() => { }}
           onLogout={handleLogout}
-          messages={[]}
         />
 
         {/* Profile Content */}

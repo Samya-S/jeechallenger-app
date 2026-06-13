@@ -68,7 +68,7 @@ export default function AITutorPage() {
         }} 
       />
       
-      <AITutorComponent />
+      {/* Chat UI is rendered from layout; structured data only here */}
     </>
   );
 } 

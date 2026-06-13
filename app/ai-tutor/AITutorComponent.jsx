@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaTrash, FaPaperclip } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip } from "react-icons/fa";
 import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
+import ChatSidebar from "@/components/AiTutorComponents/ChatSidebar";
 import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
 import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
 import { authenticatedFetch, clearAuthData } from "@/lib/auth-utils";
@@ -83,13 +85,35 @@ const AIResponseRenderer = ({ content }) => {
   );
 };
 
-const AITutorComponent = () => {
+const parseApiError = async (response, defaultMessage) => {
+  if (response.status === 429) {
+    return "You've reached your daily limit for AI chat messages. Please try again tomorrow or upgrade your plan for higher limits.";
+  }
+  try {
+    const errorData = await response.text();
+    try {
+      const jsonError = JSON.parse(errorData);
+      return jsonError.detail || jsonError.message || defaultMessage;
+    } catch {
+      return errorData || defaultMessage;
+    }
+  } catch {
+    return defaultMessage;
+  }
+};
+
+const AITutorComponent = ({ chatId: urlChatId = null }) => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
+  const [chats, setChats] = useState([]);
+  const [activeChatId, setActiveChatId] = useState(urlChatId);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showClearError, setShowClearError] = useState(false);
+  const [isLoadingChats, setIsLoadingChats] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [authError, setAuthError] = useState("");
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -97,6 +121,7 @@ const AITutorComponent = () => {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const lastLoadedChatIdRef = useRef(null);
 
   // Add CSS to constrain KaTeX elements
   useEffect(() => {
@@ -123,135 +148,171 @@ const AITutorComponent = () => {
     };
   }, []);
 
-  // Load user and messages from backend on mount
+  // Load user and chat list on mount
   useEffect(() => {
-    loadUserAndMessages();
+    loadUserAndChatList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Note: Messages are now stored on the backend, no need for localStorage
-  const loadUserAndMessages = async () => {
+  // Sync active chat and messages with URL
+  useEffect(() => {
+    if (!user) return;
+
+    const token = localStorage.getItem('ai-tutor-token');
+    if (!token) return;
+
+    if (!urlChatId) {
+      setActiveChatId(null);
+      setMessages([]);
+      setAttachedFiles([]);
+      lastLoadedChatIdRef.current = null;
+      return;
+    }
+
+    setActiveChatId(urlChatId);
+
+    if (lastLoadedChatIdRef.current === urlChatId) return;
+
+    lastLoadedChatIdRef.current = urlChatId;
+    loadChatMessages(urlChatId, token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlChatId, user]);
+
+  const resolveAttachedFiles = async (attachedFileRefs, token) => {
+    if (!attachedFileRefs || attachedFileRefs.length === 0) return [];
+
+    const firstFile = attachedFileRefs[0];
+    if (typeof firstFile !== 'string') return attachedFileRefs;
+
+    try {
+      const listResponse = await authenticatedFetch(API_ENDPOINTS.FILES.LIST, {
+        headers: { Authorization: `Bearer ${token}` },
+      }, handleLogout);
+
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        return attachedFileRefs.map((fileId) => {
+          const fileData = listData?.find((file) => file.id === fileId);
+          return fileData || {
+            id: fileId,
+            original_filename: `File ${fileId}`,
+            file_size: 0,
+            mime_type: 'application/octet-stream',
+            file_type: 'other',
+          };
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching file list:', error);
+    }
+
+    return attachedFileRefs.map((fileId) => ({
+      id: fileId,
+      original_filename: `File ${fileId}`,
+      file_size: 0,
+      mime_type: 'application/octet-stream',
+      file_type: 'other',
+    }));
+  };
+
+  const convertApiMessagesToUi = async (apiMessages, token) => {
+    const chronological = [...apiMessages].reverse();
+    const pairs = await Promise.all(
+      chronological.map(async (msg) => {
+        const attachedFiles = await resolveAttachedFiles(msg.attached_files, token);
+        const timestamp = new Date(msg.timestamp);
+
+        return [
+          {
+            id: `user_${msg.id}`,
+            text: msg.message,
+            sender: "user",
+            timestamp,
+            isError: false,
+            attachedFiles,
+          },
+          {
+            id: `ai_${msg.id}`,
+            text: msg.response,
+            sender: "ai",
+            timestamp,
+            isError: false,
+          },
+        ];
+      })
+    );
+    return pairs.flat();
+  };
+
+  const loadChats = async (token) => {
+    setIsLoadingChats(true);
+    try {
+      const response = await authenticatedFetch(`${API_ENDPOINTS.CHATS.LIST}?limit=50`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }, handleLogout);
+
+      if (response.ok) {
+        const data = await response.json();
+        setChats(data.chats || []);
+        return data.chats || [];
+      }
+    } catch (error) {
+      console.error('Error loading chats:', error);
+    } finally {
+      setIsLoadingChats(false);
+    }
+    return [];
+  };
+
+  const loadChatMessages = async (chatId, token) => {
+    setIsLoadingMessages(true);
+    try {
+      const response = await authenticatedFetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }, handleLogout);
+
+      if (response.status === 404) {
+        lastLoadedChatIdRef.current = null;
+        router.replace('/ai-tutor');
+        return;
+      }
+
+      if (response.ok) {
+        const data = await response.json();
+        const uiMessages = await convertApiMessagesToUi(data.messages || [], token);
+        setMessages(uiMessages);
+      } else {
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      setMessages([]);
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const loadUserAndChatList = async () => {
     const token = localStorage.getItem('ai-tutor-token');
 
-    if (token) {
-      try {
-        // Get current user profile from backend
-        const userResponse = await authenticatedFetch(API_ENDPOINTS.AUTH.ME, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }, handleLogout);
+    if (!token) return;
 
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          setUser(userData);
+    try {
+      const userResponse = await authenticatedFetch(API_ENDPOINTS.AUTH.ME, {
+        headers: { Authorization: `Bearer ${token}` },
+      }, handleLogout);
 
-          // Load chat history from backend
-          const historyResponse = await authenticatedFetch(API_ENDPOINTS.CHAT.HISTORY, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          }, handleLogout);
-
-          if (historyResponse.ok) {
-            const historyData = await historyResponse.json();
-
-            // Convert backend format to frontend format
-            const messagesWithDates = await Promise.all(historyData.messages.map(async msg => {
-              // Fetch file details if attached_files exist
-              let attachedFiles = [];
-              if (msg.attached_files && msg.attached_files.length > 0) {
-                try {
-                  // Check if attached_files contains file objects or just IDs
-                  const firstFile = msg.attached_files[0];
-
-                  if (typeof firstFile === 'string') {
-                    // If it's just file IDs, try to get file metadata from the list endpoint
-                    try {
-                      const listResponse = await authenticatedFetch(API_ENDPOINTS.FILES.LIST, {
-                        headers: {
-                          'Authorization': `Bearer ${token}`
-                        }
-                      }, handleLogout);
-
-                      if (listResponse.ok) {
-                        const listData = await listResponse.json();
-                        // Find files that match the attached file IDs
-                        attachedFiles = msg.attached_files.map(fileId => {
-                          const fileData = listData?.find(file => file.id === fileId);
-                          return fileData || {
-                            id: fileId,
-                            original_filename: `File ${fileId}`,
-                            file_size: 0,
-                            mime_type: 'application/octet-stream',
-                            file_type: 'other'
-                          };
-                        });
-                      } else {
-                        // Fallback to basic file objects
-                        attachedFiles = msg.attached_files.map(fileId => ({
-                          id: fileId,
-                          original_filename: `File ${fileId}`,
-                          file_size: 0,
-                          mime_type: 'application/octet-stream',
-                          file_type: 'other'
-                        }));
-                      }
-                    } catch (error) {
-                      console.error('Error fetching file list:', error);
-                      // Fallback to basic file objects
-                      attachedFiles = msg.attached_files.map(fileId => ({
-                        id: fileId,
-                        original_filename: `File ${fileId}`,
-                        file_size: 0,
-                        mime_type: 'application/octet-stream',
-                        file_type: 'other'
-                      }));
-                    }
-                  } else {
-                    // If it's already file objects, use them directly
-                    attachedFiles = msg.attached_files;
-                  }
-                } catch (error) {
-                  console.error('Error fetching file details:', error);
-                }
-              }
-
-              // Create user message
-              const userMessage = {
-                id: `user_${msg.id}`,
-                text: msg.message,
-                sender: "user",
-                timestamp: new Date(msg.timestamp + 'Z'), // Ensure UTC interpretation
-                isError: false,
-                attachedFiles: attachedFiles
-              };
-
-              // Create AI message
-              const aiMessage = {
-                id: `ai_${msg.id}`,
-                text: msg.response,
-                sender: "ai",
-                timestamp: new Date(msg.timestamp + 'Z'), // Ensure UTC interpretation
-                isError: false
-              };
-
-              return [userMessage, aiMessage];
-            }));
-
-            // Flatten the array of message pairs
-            const flattenedMessages = messagesWithDates.flat();
-            setMessages(flattenedMessages);
-          }
-        } else {
-          // Token is invalid, clear storage
-          clearAuthData();
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        // Clear invalid data
+      if (!userResponse.ok) {
         clearAuthData();
+        return;
       }
+
+      const userData = await userResponse.json();
+      setUser(userData);
+      await loadChats(token);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      clearAuthData();
     }
   };
 
@@ -316,62 +377,84 @@ const AITutorComponent = () => {
       id: Date.now(),
       text: inputMessage.trim(),
       sender: "user",
-      timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
-      attachedFiles: attachedFiles.length > 0 ? attachedFiles : undefined
+      timestamp: new Date(),
+      attachedFiles: attachedFiles.length > 0 ? attachedFiles : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
+    setSidebarOpen(false);
+
+    const token = localStorage.getItem('ai-tutor-token');
+    const fileIds = attachedFiles.map((file) => file.id);
 
     try {
-      const token = localStorage.getItem('ai-tutor-token');
-      const response = await authenticatedFetch(API_ENDPOINTS.CHAT.SEND, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          message: userMessage.text,
-          file_ids: attachedFiles.map(file => file.id),
-        }),
-      }, handleLogout);
+      let response;
+      let data;
 
-      if (!response.ok) {
-        let errorMessage = "Failed to get response from AI";
-        
-        if (response.status === 429) {
-          errorMessage = "You've reached your daily limit for AI chat messages. Please try again tomorrow or upgrade your plan for higher limits.";
-        } else {
-          try {
-            const errorData = await response.text();
-            try {
-              const jsonError = JSON.parse(errorData);
-              errorMessage = jsonError.detail || jsonError.message || errorMessage;
-            } catch {
-              errorMessage = errorData || errorMessage;
-            }
-          } catch {
-            // Use default error message
-          }
-        }
-        
-        throw new Error(errorMessage);
+      if (!activeChatId) {
+        response = await authenticatedFetch(API_ENDPOINTS.CHATS.CREATE, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            message: userMessage.text,
+            file_ids: fileIds.length > 0 ? fileIds : undefined,
+          }),
+        }, handleLogout);
+      } else {
+        response = await authenticatedFetch(API_ENDPOINTS.CHATS.MESSAGES(activeChatId), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            message: userMessage.text,
+            file_ids: fileIds.length > 0 ? fileIds : null,
+          }),
+        }, handleLogout);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(await parseApiError(response, "Failed to get response from AI"));
+      }
+
+      data = await response.json();
+
+      if (!activeChatId && data.chat_id) {
+        lastLoadedChatIdRef.current = data.chat_id;
+        setActiveChatId(data.chat_id);
+        setChats((prev) => [
+          {
+            id: data.chat_id,
+            title: data.chat_title || "New Chat",
+            updated_at: new Date().toISOString(),
+          },
+          ...prev.filter((c) => c.id !== data.chat_id),
+        ]);
+        router.replace(`/ai-tutor/chat/${data.chat_id}`);
+      } else if (activeChatId) {
+        setChats((prev) =>
+          prev.map((c) =>
+            c.id === activeChatId
+              ? { ...c, updated_at: new Date().toISOString() }
+              : c
+          ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+        );
+      }
 
       const aiMessage = {
-        id: `ai_${Date.now()}`,
+        id: `ai_${data.message_id || Date.now()}`,
         text: data.response,
         sender: "ai",
-        timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
+        timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-
-      // Clear attached files after sending
       setAttachedFiles([]);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -389,7 +472,7 @@ const AITutorComponent = () => {
         id: Date.now() + 1,
         text: displayMessage,
         sender: "ai",
-        timestamp: new Date(new Date().toISOString()), // Ensure consistent UTC handling
+        timestamp: new Date(),
         isError: true,
       };
 
@@ -406,73 +489,77 @@ const AITutorComponent = () => {
     }
   };
 
-  const clearChat = () => {
-    setShowClearConfirm(true);
+  const handleNewChat = () => {
+    setSidebarOpen(false);
+    router.push('/ai-tutor');
+    inputRef.current?.focus();
   };
 
-  const confirmClearChat = async () => {
-    const token = localStorage.getItem('ai-tutor-token');
+  const handleSelectChat = (chatId) => {
+    setSidebarOpen(false);
+    if (chatId === activeChatId) return;
+    router.push(`/ai-tutor/chat/${chatId}`);
+  };
 
-    try {
-      // First, collect all file IDs from messages
-      const fileIds = [];
-      messages.forEach(message => {
-        if (message.attachedFiles && message.attachedFiles.length > 0) {
-          message.attachedFiles.forEach(file => {
-            if (file.id && !fileIds.includes(file.id)) {
-              fileIds.push(file.id);
-            }
-          });
-        }
-      });
-
-      // Delete all files first
-      if (fileIds.length > 0) {
-        const deletePromises = fileIds.map(fileId =>
-          authenticatedFetch(API_ENDPOINTS.FILES.DELETE(fileId), {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          }, handleLogout)
-        );
-
-        await Promise.all(deletePromises);
-      }
-
-      // Then clear chat history
-      const response = await authenticatedFetch(API_ENDPOINTS.CHAT.HISTORY, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }, handleLogout);
-
-      if (response.ok) {
-        setMessages([]);
-        setShowClearConfirm(false);
-      } else {
-        console.error('Failed to clear chat history');
-        setShowClearError(true);
-      }
-    } catch (error) {
-      console.error('Error clearing chat history:', error);
-      setShowClearError(true);
+  const handleToggleSidebar = () => {
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches) {
+      setSidebarOpen((open) => !open);
+    } else {
+      setSidebarCollapsed((collapsed) => !collapsed);
     }
   };
 
-  const cancelClearChat = () => {
-    setShowClearConfirm(false);
+  const handleDeleteChat = async (chatId) => {
+    const token = localStorage.getItem('ai-tutor-token');
+    if (!token) return;
+
+    try {
+      const response = await authenticatedFetch(API_ENDPOINTS.CHATS.DELETE(chatId), {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }, handleLogout);
+
+      if (response.ok) {
+        setChats((prev) => prev.filter((c) => c.id !== chatId));
+
+        if (activeChatId === chatId) {
+          lastLoadedChatIdRef.current = null;
+          router.push('/ai-tutor');
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+    }
   };
 
-  const closeClearError = () => {
-    setShowClearError(false);
+  const handleRenameChat = async (chatId, title) => {
+    const token = localStorage.getItem('ai-tutor-token');
+    if (!token) return;
+
+    try {
+      const response = await authenticatedFetch(API_ENDPOINTS.CHATS.UPDATE(chatId), {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title }),
+      }, handleLogout);
+
+      if (response.ok) {
+        setChats((prev) =>
+          prev.map((c) => (c.id === chatId ? { ...c, title } : c))
+        );
+      }
+    } catch (error) {
+      console.error('Error renaming chat:', error);
+    }
   };
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     setAuthError("");
-    loadUserAndMessages();
+    loadUserAndChatList();
   };
 
   const handleLoginError = (errorMessage) => {
@@ -480,22 +567,24 @@ const AITutorComponent = () => {
   };
 
   const handleLogout = () => {
-    // Clear Google OAuth session
     googleLogout();
 
-    // Reset all states to initial values
     setUser(null);
+    setChats([]);
+    setActiveChatId(null);
     setMessages([]);
     setInputMessage("");
     setIsLoading(false);
-    setShowClearConfirm(false);
-    setShowClearError(false);
+    setIsLoadingChats(false);
+    setIsLoadingMessages(false);
+    setSidebarOpen(false);
+    setSidebarCollapsed(false);
     setAuthError("");
     setAttachedFiles([]);
     setIsUploading(false);
     setUploadError("");
 
-    // Clear all auth-related data from localStorage
+    lastLoadedChatIdRef.current = null;
     clearAuthData();
   };
 
@@ -588,18 +677,39 @@ const AITutorComponent = () => {
   return (
     <div className="h-screen bg-gray-50 dark:bg-black overflow-hidden">
       <div className="w-full h-full flex flex-col">
-        {/* Header */}
         <AITutorNavbar
           user={user}
-          onClearChat={clearChat}
           onLogout={handleLogout}
-          messages={messages}
+          onToggleSidebar={handleToggleSidebar}
+          sidebarOpen={sidebarOpen}
+          sidebarCollapsed={sidebarCollapsed}
         />
 
+        <div className="flex flex-1 min-h-0 relative">
+          <ChatSidebar
+            chats={chats}
+            activeChatId={activeChatId}
+            isLoadingChats={isLoadingChats}
+            isOpen={sidebarOpen}
+            isCollapsed={sidebarCollapsed}
+            onClose={() => setSidebarOpen(false)}
+            onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+            onNewChat={handleNewChat}
+            onSelectChat={handleSelectChat}
+            onDeleteChat={handleDeleteChat}
+            onRenameChat={handleRenameChat}
+          />
+
+          <div className="flex-1 flex flex-col min-w-0 min-h-0">
         {/* Messages Container */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
           <div className="max-w-4xl mx-auto">
-            {Object.keys(messageGroups).length === 0 ? (
+            {isLoadingMessages ? (
+              <div className="flex items-center justify-center py-16">
+                <FaSpinner className="animate-spin text-blue-500 mr-2" />
+                <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
+              </div>
+            ) : Object.keys(messageGroups).length === 0 ? (
               <div className="text-center py-8 sm:py-16">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
                   <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
@@ -777,80 +887,6 @@ const AITutorComponent = () => {
           </div>
         </div>
 
-        {/* Custom Clear Chat Confirmation Modal */}
-        {showClearConfirm && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-3 mb-4 text-left">
-                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                  <FaTrash className="text-red-600 dark:text-red-400 text-lg" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Clear Chat History
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    This action cannot be undone
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-gray-700 dark:text-gray-300 mb-6">
-                Are you sure you want to clear all chat messages? This will permanently delete your conversation history.
-              </p>
-
-              <div className="flex space-x-3">
-                <button
-                  onClick={cancelClearChat}
-                  className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200 font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmClearChat}
-                  className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 font-medium"
-                >
-                  Clear Chat
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Clear Chat Error Modal */}
-        {showClearError && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-3 mb-4 text-left">
-                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                  <FaTrash className="text-red-600 dark:text-red-400 text-lg" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Failed to Clear Chat
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Something went wrong
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-gray-700 dark:text-gray-300 mb-6">
-                We couldn&lsquo;t clear your chat history at this time. Please try again later or contact support if the problem persists.
-              </p>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={closeClearError}
-                  className="px-6 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 font-medium"
-                >
-                  OK
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Input Area */}
         <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg">
           <div className="max-w-4xl mx-auto">
@@ -952,6 +988,8 @@ const AITutorComponent = () => {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
               Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
             </p>
+          </div>
+        </div>
           </div>
         </div>
       </div>

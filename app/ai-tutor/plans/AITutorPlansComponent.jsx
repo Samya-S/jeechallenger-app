@@ -155,8 +155,6 @@ const AITutorPlansComponent = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-black overflow-hidden">
       <AITutorNavbar
         user={user}
-        messages={[]}
-        onClearChat={() => { }}
         onLogout={handleLogout}
         showSignIn={!user}
         onSignIn={handleSignIn}

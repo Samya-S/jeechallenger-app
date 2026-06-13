@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { FaHome, FaChalkboardTeacher } from "react-icons/fa";
 import SimpleGoogleAuth from "./auth/SimpleGoogleAuth";
+import AITutorThemeToggleStandalone from "./AITutorThemeToggleStandalone";
 
 const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
   return (
     <div className="h-screen bg-gray-50 dark:bg-black flex items-center justify-center px-4">
+      <AITutorThemeToggleStandalone />
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
