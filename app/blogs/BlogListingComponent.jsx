@@ -59,14 +59,22 @@ export default function BlogListingComponent({ articles }) {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-900 dark:via-blue-800 dark:to-cyan-900">
+        <div 
+          className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 40' stroke='rgba(255,255,255,0.2)' stroke-width='1' fill='none'/%3E%3Cpath d='M40 40L40 0' stroke='rgba(255,255,255,0.2)' stroke-width='1' fill='none'/%3E%3C/svg%3E")`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+
         <Breadcrumbs
           crumbs={[
             { label: 'Blogs', href: '/blogs' },
           ]} 
           hasBanner={true}
-          className="pt-4"
+          className="pt-4 z-10"
         />
-        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]"></div>
+        
         <div className="container mx-auto px-4 py-16 md:py-24 max-w-6xl relative">
           <div className="text-center space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium border border-white/20">
