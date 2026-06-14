@@ -7,7 +7,10 @@ import {
   flip,
   shift,
   offset,
-  FloatingPortal
+  FloatingPortal,
+  useClick,
+  useDismiss,
+  useInteractions,
 } from "@floating-ui/react";
 import {
   FaPlus,
@@ -34,10 +37,24 @@ const formatRelativeDate = (isoString) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const ChatRow = ({ chat, activeChatId, isEditing, onSelectChat, onDeleteChat, startRename, editingId, editTitle, setEditTitle, handleRenameKeyDown, confirmRename, cancelRename, editInputRef }) => {
+// --- ChatRow Component ---
+const ChatRow = ({
+  chat,
+  activeChatId,
+  isEditing,
+  onSelectChat,
+  onDeleteChat,
+  startRename,
+  editTitle,
+  setEditTitle,
+  handleRenameKeyDown,
+  confirmRename,
+  cancelRename,
+  editInputRef
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
     open: isMenuOpen,
     onOpenChange: setIsMenuOpen,
     middleware: [
@@ -50,6 +67,10 @@ const ChatRow = ({ chat, activeChatId, isEditing, onSelectChat, onDeleteChat, st
     whileElementsMounted: autoUpdate,
     placement: "bottom-end",
   });
+
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss]);
 
   const isActive = chat.id === activeChatId;
 
@@ -77,12 +98,18 @@ const ChatRow = ({ chat, activeChatId, isEditing, onSelectChat, onDeleteChat, st
             <FaComments className={`flex-shrink-0 text-sm ${isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400"}`} />
             <div className="flex-1 truncate">
               <p className="text-sm truncate font-medium text-gray-700 dark:text-gray-300">{chat.title}</p>
+              <p className="text-[10px] text-gray-400">{formatRelativeDate(chat.updated_at)}</p>
             </div>
 
             <button
               ref={refs.setReference}
-              onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }}
-              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              {...getReferenceProps({
+                onClick(event) {
+                  event.stopPropagation();
+                  setIsMenuOpen(!isMenuOpen);
+                },
+              })}
+              className={`p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-opacity ${isMenuOpen ? "opacity-100" : "opacity-100 lg:opacity-0 lg:group-hover:opacity-100"}`}
             >
               <FaEllipsisV className="text-xs" />
             </button>
@@ -93,10 +120,10 @@ const ChatRow = ({ chat, activeChatId, isEditing, onSelectChat, onDeleteChat, st
                   /* eslint-disable-next-line react-hooks/refs */
                   ref={refs.setFloating}
                   style={floatingStyles}
+                  {...getFloatingProps()}
                   className="w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl p-1 z-[10000]"
-                  onClick={(e) => e.stopPropagation()}
                 >
-                  <button onClick={(e) => { setIsMenuOpen(false); startRename(chat, e); }} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2">
+                  <button onClick={(e) => { startRename(chat, e); setIsMenuOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2">
                     <FaPen className="text-[10px]" /> Rename
                   </button>
                   <button onClick={(e) => { e.stopPropagation(); onDeleteChat(chat.id); setIsMenuOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
@@ -112,6 +139,7 @@ const ChatRow = ({ chat, activeChatId, isEditing, onSelectChat, onDeleteChat, st
   );
 };
 
+// --- ChatSidebar Component ---
 const ChatSidebar = ({
   chats,
   activeChatId,
@@ -126,10 +154,7 @@ const ChatSidebar = ({
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
-  const [openMenuId, setOpenMenuId] = useState(null);
-
   const editInputRef = useRef(null);
-  const menuRef = useRef(null);
 
   useEffect(() => {
     if (editingId && editInputRef.current) {
@@ -138,22 +163,10 @@ const ChatSidebar = ({
     }
   }, [editingId]);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setOpenMenuId(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const startRename = (chat, e) => {
     e.stopPropagation();
     setEditingId(chat.id);
     setEditTitle(chat.title);
-    setOpenMenuId(null);
   };
 
   const cancelRename = (e) => {
@@ -185,8 +198,7 @@ const ChatSidebar = ({
       {/* 1. Mobile Background Overlay */}
       <div
         onClick={onToggle}
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[9990] lg:hidden transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[9990] lg:hidden transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         aria-hidden="true"
       />
 
@@ -239,14 +251,13 @@ const ChatSidebar = ({
                     isEditing={editingId === chat.id}
                     onSelectChat={onSelectChat}
                     onDeleteChat={onDeleteChat}
-                    startRename={(chat, e) => { setEditingId(chat.id); setEditTitle(chat.title); }}
-                    editingId={editingId}
+                    startRename={startRename}
                     editTitle={editTitle}
                     setEditTitle={setEditTitle}
                     editInputRef={editInputRef}
-                    cancelRename={() => { setEditingId(null); setEditTitle(""); }}
-                    confirmRename={async (id, e) => { await onRenameChat(id, editTitle); setEditingId(null); }}
-                    handleRenameKeyDown={(id, e) => { if (e.key === 'Enter') onRenameChat(id, editTitle); }}
+                    cancelRename={cancelRename}
+                    confirmRename={confirmRename}
+                    handleRenameKeyDown={handleRenameKeyDown}
                   />
                 ))}
               </ul>
