@@ -917,10 +917,10 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="flex items-start space-x-3 max-w-[70%]">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
                         <FaChalkboardTeacher className="text-white text-sm" />
                       </div>
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl flex flex-col items-start">
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] flex flex-col items-start">
                         <div className="flex items-center space-x-2">
                           <FaSpinner className="text-blue-500 animate-spin" />
                           <span className="text-sm text-gray-500 dark:text-gray-400">
