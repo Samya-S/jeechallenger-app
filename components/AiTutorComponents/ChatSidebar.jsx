@@ -11,6 +11,7 @@ import {
   FaSpinner,
   FaChevronLeft,
   FaChevronRight,
+  FaEllipsisV,
 } from "react-icons/fa";
 
 const formatRelativeDate = (isoString) => {
@@ -39,7 +40,10 @@ const ChatSidebar = ({
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  
   const editInputRef = useRef(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (editingId && editInputRef.current) {
@@ -48,10 +52,22 @@ const ChatSidebar = ({
     }
   }, [editingId]);
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const startRename = (chat, e) => {
     e.stopPropagation();
     setEditingId(chat.id);
     setEditTitle(chat.title);
+    setOpenMenuId(null);
   };
 
   const cancelRename = (e) => {
@@ -92,7 +108,6 @@ const ChatSidebar = ({
       {/* 2. Unified Sidebar Container */}
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-[#0e1117] border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
-          /* Responsive Widths and Positioning */
           ${isOpen ? "w-72 sm:w-80 translate-x-0" : "w-0 -translate-x-full lg:w-14 lg:translate-x-0"}
         `}
       >
@@ -134,9 +149,10 @@ const ChatSidebar = ({
                 {chats.map((chat) => {
                   const isActive = chat.id === activeChatId;
                   const isEditing = editingId === chat.id;
+                  const isMenuOpen = openMenuId === chat.id;
 
                   return (
-                    <li key={chat.id}>
+                    <li key={chat.id} className="relative">
                       <div
                         onClick={() => !isEditing && onSelectChat(chat.id)}
                         className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer ${
@@ -167,10 +183,40 @@ const ChatSidebar = ({
                               <p className="text-sm truncate font-medium text-gray-700 dark:text-gray-300">{chat.title}</p>
                               <p className="text-[10px] text-gray-400">{formatRelativeDate(chat.updated_at)}</p>
                             </div>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button onClick={(e) => startRename(chat, e)} className="p-1.5 hover:text-blue-600 text-gray-400 transition-colors"><FaPen className="text-xs" /></button>
-                              <button onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(chat.id); }} className="p-1.5 hover:text-red-600 text-gray-400 transition-colors"><FaTrash className="text-xs" /></button>
+                            
+                            {/* Kebab Menu Trigger */}
+                            <div 
+                               className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
+                               onClick={(e) => e.stopPropagation()}
+                            >
+                                <button 
+                                  onClick={() => setOpenMenuId(isMenuOpen ? null : chat.id)}
+                                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                >
+                                    <FaEllipsisV className="text-xs" />
+                                </button>
                             </div>
+
+                            {/* Dropdown Menu */}
+                            {isMenuOpen && (
+                                <div 
+                                    ref={menuRef}
+                                    className="absolute right-0 top-12 w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-[10000] p-1 overflow-hidden"
+                                >
+                                    <button 
+                                        onClick={(e) => startRename(chat, e)}
+                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                    >
+                                        <FaPen className="text-[10px]" /> Rename
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(chat.id); setOpenMenuId(null); }}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                    >
+                                        <FaTrash className="text-[10px]" /> Delete
+                                    </button>
+                                </div>
+                            )}
                           </>
                         )}
                       </div>
@@ -182,7 +228,7 @@ const ChatSidebar = ({
           </div>
         </div>
 
-        {/* 4. Desktop Collapsed Rail (Visible ONLY on desktop when closed) */}
+        {/* 4. Desktop Collapsed Rail */}
         {!isOpen && (
           <div className="hidden lg:flex flex-col items-center py-3 gap-3">
              <button onClick={onToggle} className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"><FaChevronRight /></button>
