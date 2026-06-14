@@ -821,7 +821,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                             >
                               {/* Avatar */}
                               <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === "user"
+                                className={`hidden md:flex w-8 h-8 rounded-full items-center justify-center flex-shrink-0 ${message.sender === "user"
                                   ? "bg-blue-500"
                                   : "bg-gradient-to-r from-blue-500 to-purple-600"
                                   }`}
