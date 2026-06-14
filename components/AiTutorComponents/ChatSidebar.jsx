@@ -78,7 +78,7 @@ const ChatRow = ({
     <li className="relative">
       <div
         onClick={() => !isEditing && onSelectChat(chat.id)}
-        className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer ${isActive ? "bg-white dark:bg-gray-800/90 shadow-sm" : "hover:bg-white/80 dark:hover:bg-gray-800/60"}`}
+        className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer ${isActive ? "bg-white dark:bg-gray-700/90 shadow-sm" : "hover:bg-white/80 dark:hover:bg-gray-700/60"}`}
       >
         {isEditing ? (
           <div className="flex items-center gap-1 w-full" onClick={(e) => e.stopPropagation()}>
@@ -204,7 +204,7 @@ const ChatSidebar = ({
 
       {/* 2. Unified Sidebar Container */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
+        className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
           ${isOpen ? "w-72 sm:w-80 translate-x-0" : "w-0 -translate-x-full lg:w-14 lg:translate-x-0"}
         `}
       >
@@ -218,7 +218,7 @@ const ChatSidebar = ({
             </span>
             <button
               onClick={onToggle}
-              className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               <FaChevronLeft className="text-sm" />
             </button>
@@ -250,7 +250,7 @@ const ChatSidebar = ({
                     activeChatId={activeChatId}
                     isEditing={editingId === chat.id}
                     onSelectChat={onSelectChat}
-                    onDeleteChat={onDeleteChat}
+                    onDeleteChat={(id) => setDeleteConfirmId(id)}
                     startRename={startRename}
                     editTitle={editTitle}
                     setEditTitle={setEditTitle}
@@ -268,7 +268,7 @@ const ChatSidebar = ({
         {/* 4. Desktop Collapsed Rail */}
         {!isOpen && (
           <div className="hidden lg:flex flex-col items-center py-3 gap-3">
-            <button onClick={onToggle} className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"><FaChevronRight /></button>
+            <button onClick={onToggle} className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"><FaChevronRight /></button>
             <button onClick={onNewChat} className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white shadow-md"><FaPlus /></button>
             <div className="w-6 border-t border-gray-200 dark:border-gray-800" />
             <div className="flex flex-col items-center gap-2 py-1">
