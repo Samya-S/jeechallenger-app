@@ -125,6 +125,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   // Automatically open the sidebar if the user is on a desktop
   useEffect(() => {
     if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSidebarOpen(true);
     }
   }, []);
@@ -156,6 +157,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
   // Load user and chat list on mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     loadUserAndChatList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,6 +170,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (!token) return;
 
     if (!urlChatId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveChatId(null);
       setMessages([]);
       setAttachedFiles([]);
@@ -180,6 +183,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (lastLoadedChatIdRef.current === urlChatId) return;
 
     lastLoadedChatIdRef.current = urlChatId;
+    // eslint-disable-next-line react-hooks/immutability
     loadChatMessages(urlChatId, token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlChatId, user]);
@@ -380,7 +384,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (!inputMessage.trim() || isLoading || !user) return;
 
     const userMessage = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       text: inputMessage.trim(),
       sender: "user",
       timestamp: new Date(),
@@ -454,7 +458,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
 
       const aiMessage = {
-        id: `ai_${data.message_id || Date.now()}`,
+        id: `ai_${data.message_id || crypto.randomUUID()}`,
         text: data.response,
         sender: "ai",
         timestamp: new Date(),
@@ -475,7 +479,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
 
       const errorMessage = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         text: displayMessage,
         sender: "ai",
         timestamp: new Date(),
