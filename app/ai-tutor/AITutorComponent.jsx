@@ -836,11 +836,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                               <div className="flex flex-col max-w-full min-w-0">
                                 {/* Message Bubble */}
                                 <div
-                                  className={`px-5 py-4 rounded-2xl shadow-sm ${message.sender === "user"
-                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                                  className={`px-5 py-4 shadow-sm min-w-0 overflow-hidden rounded-2xl ${message.sender === "user"
+                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-[2px]"
                                     : message.isError
-                                      ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800"
-                                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md"
+                                      ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-tl-[2px]"
+                                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md rounded-tl-[2px]"
                                     }`}
                                 >
                                   {message.sender === "ai" ? (
