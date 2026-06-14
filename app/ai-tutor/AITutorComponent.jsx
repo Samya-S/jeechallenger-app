@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo } from "react-icons/fa";
+import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle } from "react-icons/fa";
 import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
@@ -117,6 +117,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [abortController, setAbortController] = useState(null);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -399,6 +400,9 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     const token = localStorage.getItem('ai-tutor-token');
     const fileIds = attachedFiles.map((file) => file.id);
 
+    const controller = new AbortController();
+    setAbortController(controller);
+
     try {
       let response;
       let data;
@@ -414,6 +418,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
             message: userMessage.text,
             file_ids: fileIds.length > 0 ? fileIds : undefined,
           }),
+          signal: controller.signal,
         }, handleLogout);
       } else {
         response = await authenticatedFetch(API_ENDPOINTS.CHATS.MESSAGES(activeChatId), {
@@ -426,6 +431,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
             message: userMessage.text,
             file_ids: fileIds.length > 0 ? fileIds : null,
           }),
+          signal: controller.signal,
         }, handleLogout);
       }
 
@@ -467,6 +473,20 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       setMessages((prev) => [...prev, aiMessage]);
       setAttachedFiles([]);
     } catch (error) {
+      // Intercept the intentional abort
+      if (error.name === 'AbortError' || error === 'User stopped generation') {
+        const stopMessage = {
+          id: crypto.randomUUID(),
+          text: "Generation stopped.",
+          sender: "ai",
+          timestamp: new Date(),
+          isError: true, // This makes it red
+          failedText: userMessage.text, // This triggers our new Retry button!
+        };
+        setMessages((prev) => [...prev, stopMessage]);
+        return;
+      }
+
       console.error("Error sending message:", error);
 
       let displayMessage = "Sorry, I'm having trouble connecting right now. Please try again in a moment.";
@@ -899,7 +919,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                       <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                         <FaChalkboardTeacher className="text-white text-sm" />
                       </div>
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl">
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl flex flex-col items-start">
                         <div className="flex items-center space-x-2">
                           <FaSpinner className="text-blue-500 animate-spin" />
                           <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -1010,18 +1030,29 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                     accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
                   />
 
-                  {/* Send Button - Right side */}
-                  <button
-                    onClick={sendMessage}
-                    disabled={!inputMessage.trim() || isLoading || isUploading}
-                    className={`flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 ${inputMessage.trim() && !isLoading && !isUploading
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                      }`}
-                    aria-label="Send message"
-                  >
-                    <FaPaperPlane className="text-base -ml-[1px]" />
-                  </button>
+                  {/* Send / Stop Button - Right side */}
+                  {isLoading ? (
+                    <button
+                      onClick={() => abortController?.abort("User stopped generation")}
+                      className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400"
+                      title="Stop generating"
+                      aria-label="Stop generating"
+                    >
+                      <FaStopCircle className="text-lg" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={sendMessage}
+                      disabled={!inputMessage.trim() || isUploading}
+                      className={`flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 ${inputMessage.trim() && !isUploading
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        }`}
+                      aria-label="Send message"
+                    >
+                      <FaPaperPlane className="text-base -ml-[1px]" />
+                    </button>
+                  )}
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
                   Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
