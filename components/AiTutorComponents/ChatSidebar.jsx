@@ -186,12 +186,12 @@ const ChatSidebar = ({
                             
                             {/* Kebab Menu Trigger */}
                             <div 
-                               className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
-                               onClick={(e) => e.stopPropagation()}
+                                className={`transition-opacity ${isMenuOpen ? "opacity-100" : "opacity-100 lg:opacity-0 lg:group-hover:opacity-100"}`}
+                                onClick={(e) => e.stopPropagation()}
                             >
                                 <button 
-                                  onClick={() => setOpenMenuId(isMenuOpen ? null : chat.id)}
-                                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                    onClick={() => setOpenMenuId(isMenuOpen ? null : chat.id)}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                                 >
                                     <FaEllipsisV className="text-xs" />
                                 </button>
