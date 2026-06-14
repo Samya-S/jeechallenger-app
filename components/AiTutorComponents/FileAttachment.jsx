@@ -128,8 +128,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
   return (
     <>
-      <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-        <div className="w-10 h-10 flex items-center justify-center">
+      <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 min-w-0">
+        <div className="w-10 h-10 flex items-center justify-center shrink-0">
           {getFileIcon(getFileType(file.mime_type, file.original_filename))}
         </div>
         <div className="flex-1 min-w-0">
@@ -147,7 +147,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
            )}
            */}
         </div>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1 shrink-0">
           {file.file_type === 'image' && (
             <button
               onClick={handlePreview}

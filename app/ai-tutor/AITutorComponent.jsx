@@ -811,7 +811,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                                 )}
                               </div>
 
-                              <div className="flex flex-col max-w-full">
+                              <div className="flex flex-col max-w-full min-w-0">
                                 {/* Message Bubble */}
                                 <div
                                   className={`px-5 py-4 rounded-2xl shadow-sm ${message.sender === "user"
