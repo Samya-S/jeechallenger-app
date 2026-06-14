@@ -15,6 +15,7 @@ import 'katex/dist/katex.min.css';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const MarkdownTable = ({ children }) => {
   const tableRef = useRef(null);
@@ -992,20 +993,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                       </div>
                     )}
 
-                    <textarea
+                    <TextareaAutosize
                       ref={inputRef}
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
+                      onKeyDown={handleKeyPress}
+                      minRows={1}
+                      maxRows={5}
                       className="w-full py-1 px-1 resize-none bg-transparent border-none p-0 focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-hidden relative z-10"
-                      rows="1"
-                      style={{
-                        maxHeight: "120px",
-                      }}
-                      onInput={(e) => {
-                        e.target.style.height = "auto";
-                        e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-                      }}
                       onPaste={e => {
                         if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
                           e.preventDefault();
