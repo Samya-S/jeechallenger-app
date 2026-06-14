@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip } from "react-icons/fa";
+import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo } from "react-icons/fa";
 import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
@@ -484,6 +484,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         sender: "ai",
         timestamp: new Date(),
         isError: true,
+        failedText: userMessage.text,
       };
 
       setMessages((prev) => [...prev, errorMessage]);
@@ -822,7 +823,31 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                                     }`}
                                 >
                                   {message.sender === "ai" ? (
-                                    <AIResponseRenderer content={message.text} />
+                                    message.isError ? (
+                                      <div className="flex flex-col items-start">
+                                        <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
+                                          {message.text}
+                                        </p>
+                                        {message.failedText && (
+                                          <button
+                                            onClick={() => {
+                                              // 1. Remove this error message from the chat
+                                              setMessages(prev => prev.filter(m => m.id !== message.id));
+                                              // 2. Put their text back into the input box
+                                              setInputMessage(message.failedText);
+                                              // 3. Focus the input so they can instantly hit enter again
+                                              inputRef.current?.focus();
+                                            }}
+                                            className="mt-3 flex items-center space-x-2 text-sm font-medium bg-red-50 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-200 px-3 py-1.5 rounded-lg transition-colors border border-red-200 dark:border-red-700"
+                                          >
+                                            <FaRedo className="text-xs" />
+                                            <span>Retry Message</span>
+                                          </button>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <AIResponseRenderer content={message.text} />
+                                    )
                                   ) : (
                                     <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
                                       {message.text}
