@@ -45,38 +45,38 @@ const MarkdownTable = ({ children }) => {
 const AIResponseRenderer = ({ content }) => {
   return (
     <div className="text-base leading-relaxed">
-      <ReactMarkdown 
+      <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
-          h1: ({children}) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
-          h2: ({children}) => <h2 className="text-base font-bold mb-2">{children}</h2>,
-          h3: ({children}) => <h3 className="text-sm font-bold mb-2">{children}</h3>,
-          ul: ({children}) => <ul className="list-disc mb-2 space-y-1 ml-4">{children}</ul>,
-          ol: ({children}) => <ol className="list-decimal mb-2 space-y-1 ml-4">{children}</ol>,
-          li: ({children}) => <li className="mb-1 leading-relaxed">{children}</li>,
-          a: ({href, children}) => (
-            <a 
-              href={href} 
-              target="_blank" 
+          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+          h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-sm font-bold mb-2">{children}</h3>,
+          ul: ({ children }) => <ul className="list-disc mb-2 space-y-1 ml-4">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal mb-2 space-y-1 ml-4">{children}</ol>,
+          li: ({ children }) => <li className="mb-1 leading-relaxed">{children}</li>,
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
             >
               {children}
             </a>
           ),
-          code: ({children}) => (
+          code: ({ children }) => (
             <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
           ),
-          pre: ({children}) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
-          blockquote: ({children}) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
-          table: ({children}) => <MarkdownTable>{children}</MarkdownTable>,
-          thead: ({children}) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
-          tbody: ({children}) => <tbody>{children}</tbody>,
-          tr: ({children}) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
-          th: ({children}) => <th className="px-3 py-2 text-left font-semibold border border-gray-300 dark:border-gray-700">{children}</th>,
-          td: ({children}) => <td className="px-3 py-2 border border-gray-300 dark:border-gray-700">{children}</td>,
+          pre: ({ children }) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
+          blockquote: ({ children }) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
+          table: ({ children }) => <MarkdownTable>{children}</MarkdownTable>,
+          thead: ({ children }) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
+          tbody: ({ children }) => <tbody>{children}</tbody>,
+          tr: ({ children }) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
+          th: ({ children }) => <th className="px-3 py-2 text-left font-semibold border border-gray-300 dark:border-gray-700">{children}</th>,
+          td: ({ children }) => <td className="px-3 py-2 border border-gray-300 dark:border-gray-700">{children}</td>,
         }}
       >
         {content}
@@ -113,7 +113,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [authError, setAuthError] = useState("");
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -122,6 +121,13 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
+
+  // Automatically open the sidebar if the user is on a desktop
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      setSidebarOpen(true);
+    }
+  }, []);
 
   // Add CSS to constrain KaTeX elements
   useEffect(() => {
@@ -142,7 +148,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -384,7 +390,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
-    setSidebarOpen(false);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
 
     const token = localStorage.getItem('ai-tutor-token');
     const fileIds = attachedFiles.map((file) => file.id);
@@ -490,23 +496,19 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleNewChat = () => {
-    setSidebarOpen(false);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
     router.push('/ai-tutor');
     inputRef.current?.focus();
   };
 
   const handleSelectChat = (chatId) => {
-    setSidebarOpen(false);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
     if (chatId === activeChatId) return;
     router.push(`/ai-tutor/chat/${chatId}`);
   };
 
   const handleToggleSidebar = () => {
-    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches) {
-      setSidebarOpen((open) => !open);
-    } else {
-      setSidebarCollapsed((collapsed) => !collapsed);
-    }
+    setSidebarOpen((prev) => !prev);
   };
 
   const handleDeleteChat = async (chatId) => {
@@ -628,10 +630,10 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
       }, handleLogout);
-      
+
       if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        
+
         if (response.status === 429) {
           errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
         } else if (response.status === 413) {
@@ -649,7 +651,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
             }
           } catch { }
         }
-        
+
         throw new Error(errorMessage);
       }
       const data = await response.json();
@@ -682,18 +684,15 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           onLogout={handleLogout}
           onToggleSidebar={handleToggleSidebar}
           sidebarOpen={sidebarOpen}
-          sidebarCollapsed={sidebarCollapsed}
         />
 
-        <div className="flex flex-1 min-h-0 relative">
+        <div className="flex flex-1 min-h-0">
           <ChatSidebar
             chats={chats}
             activeChatId={activeChatId}
             isLoadingChats={isLoadingChats}
             isOpen={sidebarOpen}
-            isCollapsed={sidebarCollapsed}
-            onClose={() => setSidebarOpen(false)}
-            onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+            onToggle={handleToggleSidebar}
             onNewChat={handleNewChat}
             onSelectChat={handleSelectChat}
             onDeleteChat={handleDeleteChat}
@@ -701,295 +700,294 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           />
 
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
-        {/* Messages Container */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
-          <div className="max-w-4xl mx-auto">
-            {isLoadingMessages ? (
-              <div className="flex items-center justify-center py-16">
-                <FaSpinner className="animate-spin text-blue-500 mr-2" />
-                <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
-              </div>
-            ) : Object.keys(messageGroups).length === 0 ? (
-              <div className="text-center py-8 sm:py-16">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
-                  <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
-                </div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-                  Welcome to JEE Challenger AI Tutor!
-                </h1>
-                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
-                  Your personalized JEE preparation assistant
-                </p>
-                <div className="max-w-2xl mx-auto space-y-4 text-left bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-                  <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold">
-                    What I can help you with:
-                  </p>
-                  <ul className="text-gray-600 dark:text-gray-300 text-sm space-y-2 ml-4">
-                    <li className="flex items-center space-x-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      <span>Physics, Chemistry, and Mathematics concepts</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      <span>JEE Main and Advanced preparation strategies</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      <span>Study material recommendations</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      <span>Problem-solving techniques</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      <span>Exam tips and time management</span>
-                    </li>
-                  </ul>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    Just type your question below and I&lsquo;ll help you excel in your JEE journey!
-                  </p>
-                  <div className="mt-4 sm:mt-6 space-y-3">
-                    <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
-                      Try asking:
+            {/* Messages Container */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+              <div className="max-w-4xl mx-auto">
+                {isLoadingMessages ? (
+                  <div className="flex items-center justify-center py-16">
+                    <FaSpinner className="animate-spin text-blue-500 mr-2" />
+                    <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
+                  </div>
+                ) : Object.keys(messageGroups).length === 0 ? (
+                  <div className="text-center py-8 sm:py-16">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
+                      <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                      Welcome to JEE Challenger AI Tutor!
+                    </h1>
+                    <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
+                      Your personalized JEE preparation assistant
                     </p>
-                    <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                      {[
-                        "What are the important topics for JEE Physics?",
-                        "How to solve integration problems?",
-                        "Best books for JEE Chemistry",
-                        "Time management tips for JEE"
-                      ].map((suggestion, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setInputMessage(suggestion)}
-                          className="text-xs sm:text-sm bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 border border-blue-200 dark:border-blue-800"
-                        >
-                          {suggestion}
-                        </button>
+                    <div className="max-w-2xl mx-auto space-y-4 text-left bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+                      <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold">
+                        What I can help you with:
+                      </p>
+                      <ul className="text-gray-600 dark:text-gray-300 text-sm space-y-2 ml-4">
+                        <li className="flex items-center space-x-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span>Physics, Chemistry, and Mathematics concepts</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span>JEE Main and Advanced preparation strategies</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span>Study material recommendations</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span>Problem-solving techniques</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span>Exam tips and time management</span>
+                        </li>
+                      </ul>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        Just type your question below and I&lsquo;ll help you excel in your JEE journey!
+                      </p>
+                      <div className="mt-4 sm:mt-6 space-y-3">
+                        <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
+                          Try asking:
+                        </p>
+                        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                          {[
+                            "What are the important topics for JEE Physics?",
+                            "How to solve integration problems?",
+                            "Best books for JEE Chemistry",
+                            "Time management tips for JEE"
+                          ].map((suggestion, index) => (
+                            <button
+                              key={index}
+                              onClick={() => setInputMessage(suggestion)}
+                              className="text-xs sm:text-sm bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 border border-blue-200 dark:border-blue-800"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  sortedGroupEntries.map(([date, dateMessages]) => (
+                    <div key={date}>
+                      {/* Date Separator */}
+                      <div className="flex items-center justify-center my-8">
+                        <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                            {date}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Messages for this date */}
+                      <div className="space-y-4">
+                        {dateMessages.map((message) => (
+                          <div
+                            key={message.id}
+                            className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                          >
+                            <div
+                              className={`flex items-start space-x-3 max-w-[80%] ${message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
+                            >
+                              {/* Avatar */}
+                              <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === "user"
+                                  ? "bg-blue-500"
+                                  : "bg-gradient-to-r from-blue-500 to-purple-600"
+                                  }`}
+                              >
+                                {message.sender === "user" ? (
+                                  <FaUser className="text-white text-sm" />
+                                ) : (
+                                  <FaChalkboardTeacher className="text-white text-sm" />
+                                )}
+                              </div>
+
+                              <div className="flex flex-col max-w-full">
+                                {/* Message Bubble */}
+                                <div
+                                  className={`px-5 py-4 rounded-2xl shadow-sm ${message.sender === "user"
+                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                                    : message.isError
+                                      ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800"
+                                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md"
+                                    }`}
+                                >
+                                  {message.sender === "ai" ? (
+                                    <AIResponseRenderer content={message.text} />
+                                  ) : (
+                                    <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
+                                      {message.text}
+                                    </p>
+                                  )}
+
+                                  {/* Display attached files in user messages */}
+                                  {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
+                                    <div className="mt-3 space-y-2">
+                                      {/* <p className="text-xs opacity-80">Attached files:</p> */}
+                                      {message.attachedFiles.map((file) => (
+                                        <FileAttachment
+                                          key={file.id}
+                                          file={file}
+                                          showRemove={false}
+                                        />
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                                {/* Timestamp */}
+                                <p
+                                  className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
+                                    ? "text-blue-500 dark:text-blue-400 text-right"
+                                    : message.isError
+                                      ? "text-red-600 dark:text-red-400"
+                                      : "text-gray-500 dark:text-gray-400"
+                                    }`}
+                                >
+                                  {message.timestamp.toLocaleTimeString("en-US", {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                )}
+
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="flex items-start space-x-3 max-w-[70%]">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <FaChalkboardTeacher className="text-white text-sm" />
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl">
+                        <div className="flex items-center space-x-2">
+                          <FaSpinner className="text-blue-500 animate-spin" />
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                            AI is thinking...
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+
+            {/* Input Area */}
+            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg">
+              <div className="max-w-4xl mx-auto">
+                {/* Attached Files Display */}
+                {attachedFiles.length > 0 && (
+                  <div className="mb-3 space-y-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      Attached files ({attachedFiles.length}):
+                    </p>
+                    <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+                      {attachedFiles.map((file) => (
+                        <FileAttachment
+                          key={file.id}
+                          file={file}
+                          onRemove={removeAttachedFile}
+                          showRemove={true}
+                        />
                       ))}
                     </div>
                   </div>
+                )}
+
+                {/* Uploading animation above textarea */}
+                {isUploading && (
+                  <div className="flex items-center justify-center mb-1">
+                    <FaSpinner className="animate-spin text-blue-600 mr-2 text-sm" />
+                    <span className="text-blue-700 dark:text-blue-300 text-sm">Uploading file(s)...</span>
+                  </div>
+                )}
+                {uploadError && (
+                  <div className="mb-1 p-1.5 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs text-center">
+                    {uploadError}
+                  </div>
+                )}
+
+                <div className="relative">
+                  <textarea
+                    ref={inputRef}
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask me anything about JEE preparation..."
+                    className="w-full px-14 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
+                    rows="1"
+                    style={{
+                      minHeight: "40px",
+                      maxHeight: "100px",
+                    }}
+                    onInput={(e) => {
+                      e.target.style.height = "auto";
+                      e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+                    }}
+                    onPaste={e => {
+                      if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+                        e.preventDefault();
+                        handleDirectFileUpload(e.clipboardData.files);
+                      }
+                    }}
+                  />
+
+                  {/* Hidden file input for direct upload */}
+                  <input
+                    type="file"
+                    multiple
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={e => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleDirectFileUpload(e.target.files);
+                        e.target.value = null;
+                      }
+                    }}
+                    accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
+                  />
+                  {/* File Upload Button - Left side */}
+                  <button
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    disabled={isLoading || isUploading}
+                    className="absolute left-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                    title="Attach files"
+                    aria-label="Attach files"
+                  >
+                    <FaPaperclip className="text-lg" />
+                  </button>
+                  {/* Send Button - Right side */}
+                  <button
+                    onClick={sendMessage}
+                    disabled={!inputMessage.trim() || isLoading || isUploading}
+                    className={`absolute right-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${inputMessage.trim() && !isLoading && !isUploading
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      }`}
+                    aria-label="Send message"
+                  >
+                    <FaPaperPlane className="text-base -ml-[1px]" />
+                  </button>
                 </div>
-              </div>
-            ) : (
-              sortedGroupEntries.map(([date, dateMessages]) => (
-                <div key={date}>
-                  {/* Date Separator */}
-                  <div className="flex items-center justify-center my-8">
-                    <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {date}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Messages for this date */}
-                  <div className="space-y-4">
-                    {dateMessages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`flex items-start space-x-3 max-w-[80%] ${message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
-                        >
-                          {/* Avatar */}
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === "user"
-                              ? "bg-blue-500"
-                              : "bg-gradient-to-r from-blue-500 to-purple-600"
-                              }`}
-                          >
-                            {message.sender === "user" ? (
-                              <FaUser className="text-white text-sm" />
-                            ) : (
-                              <FaChalkboardTeacher className="text-white text-sm" />
-                            )}
-                          </div>
-
-                          <div className="flex flex-col max-w-full">
-                            {/* Message Bubble */}
-                            <div
-                              className={`px-5 py-4 rounded-2xl shadow-sm ${message.sender === "user"
-                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                                : message.isError
-                                  ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800"
-                                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md"
-                                }`}
-                            >
-                              {message.sender === "ai" ? (
-                                <AIResponseRenderer content={message.text} />
-                              ) : (
-                                <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                  {message.text}
-                                </p>
-                              )}
-
-                              {/* Display attached files in user messages */}
-                              {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
-                                <div className="mt-3 space-y-2">
-                                  {/* <p className="text-xs opacity-80">Attached files:</p> */}
-                                  {message.attachedFiles.map((file) => (
-                                    <FileAttachment
-                                      key={file.id}
-                                      file={file}
-                                      showRemove={false}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            {/* Timestamp */}
-                            <p
-                              className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
-                                ? "text-blue-500 dark:text-blue-400 text-right"
-                                : message.isError
-                                  ? "text-red-600 dark:text-red-400"
-                                  : "text-gray-500 dark:text-gray-400"
-                                }`}
-                            >
-                              {message.timestamp.toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "2-digit",
-                                hour12: true,
-                              })}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
-
-            {/* Loading indicator */}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="flex items-start space-x-3 max-w-[70%]">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <FaChalkboardTeacher className="text-white text-sm" />
-                  </div>
-                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl">
-                    <div className="flex items-center space-x-2">
-                      <FaSpinner className="text-blue-500 animate-spin" />
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        AI is thinking...
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-
-        {/* Input Area */}
-        <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg">
-          <div className="max-w-4xl mx-auto">
-            {/* Attached Files Display */}
-            {attachedFiles.length > 0 && (
-              <div className="mb-3 space-y-1">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  Attached files ({attachedFiles.length}):
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+                  Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
                 </p>
-                <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
-                  {attachedFiles.map((file) => (
-                    <FileAttachment
-                      key={file.id}
-                      file={file}
-                      onRemove={removeAttachedFile}
-                      showRemove={true}
-                    />
-                  ))}
-                </div>
               </div>
-            )}
-
-            {/* Uploading animation above textarea */}
-            {isUploading && (
-              <div className="flex items-center justify-center mb-1">
-                <FaSpinner className="animate-spin text-blue-600 mr-2 text-sm" />
-                <span className="text-blue-700 dark:text-blue-300 text-sm">Uploading file(s)...</span>
-              </div>
-            )}
-            {uploadError && (
-              <div className="mb-1 p-1.5 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs text-center">
-                {uploadError}
-              </div>
-            )}
-
-            <div className="relative">
-              <textarea
-                ref={inputRef}
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about JEE preparation..."
-                className="w-full px-14 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
-                rows="1"
-                style={{
-                  minHeight: "40px",
-                  maxHeight: "100px",
-                }}
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-                }}
-                onPaste={e => {
-                  if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
-                    e.preventDefault();
-                    handleDirectFileUpload(e.clipboardData.files);
-                  }
-                }}
-              />
-
-              {/* Hidden file input for direct upload */}
-              <input
-                type="file"
-                multiple
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={e => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    handleDirectFileUpload(e.target.files);
-                    e.target.value = null;
-                  }
-                }}
-                accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
-              />
-              {/* File Upload Button - Left side */}
-              <button
-                onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                disabled={isLoading || isUploading}
-                className="absolute left-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
-                title="Attach files"
-                aria-label="Attach files"
-              >
-                <FaPaperclip className="text-lg" />
-              </button>
-              {/* Send Button - Right side */}
-              <button
-                onClick={sendMessage}
-                disabled={!inputMessage.trim() || isLoading || isUploading}
-                className={`absolute right-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${
-                  inputMessage.trim() && !isLoading && !isUploading
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                }`}
-                aria-label="Send message"
-              >
-                <FaPaperPlane className="text-base -ml-[1px]" />
-              </button>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
-              Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
-            </p>
-          </div>
-        </div>
           </div>
         </div>
       </div>
