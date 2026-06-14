@@ -795,7 +795,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                             className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                           >
                             <div
-                              className={`flex items-start space-x-3 max-w-[80%] ${message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
+                              className={`flex items-start space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
                             >
                               {/* Avatar */}
                               <div
