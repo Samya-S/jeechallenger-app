@@ -204,7 +204,7 @@ const ChatSidebar = ({
 
       {/* 2. Unified Sidebar Container */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-[#0e1117] border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
+        className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
           ${isOpen ? "w-72 sm:w-80 translate-x-0" : "w-0 -translate-x-full lg:w-14 lg:translate-x-0"}
         `}
       >
