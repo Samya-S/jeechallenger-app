@@ -19,14 +19,9 @@ const formatRelativeDate = (isoString) => {
   const now = new Date();
   const diffMs = now - date;
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-  }
+  if (diffDays === 0) return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
   if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) {
-    return date.toLocaleDateString("en-US", { weekday: "short" });
-  }
+  if (diffDays < 7) return date.toLocaleDateString("en-US", { weekday: "short" });
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
@@ -34,8 +29,8 @@ const ChatSidebar = ({
   chats,
   activeChatId,
   isLoadingChats,
-  isOpen, // Single unified variable
-  onToggle, // Single unified toggle
+  isOpen,
+  onToggle,
   onNewChat,
   onSelectChat,
   onDeleteChat,
@@ -85,239 +80,133 @@ const ChatSidebar = ({
 
   return (
     <>
-      {/* 1. Mobile Background Overlay (Only visible on mobile when open) */}
+      {/* 1. Mobile Background Overlay */}
       <div
         onClick={onToggle}
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[9990] lg:hidden transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[9990] lg:hidden transition-opacity duration-300 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden="true"
       />
 
-      {/* 2. Desktop Collapsed Rail (Visible ONLY on desktop when isOpen is FALSE) */}
-      {!isOpen && (
-        <aside className="hidden lg:flex flex-col items-center w-14 flex-shrink-0 h-full bg-gray-100 dark:bg-[#0e1117] border-r border-gray-200 dark:border-gray-800 py-3 gap-3">
-          <button
-            onClick={onToggle}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800"
-          >
-            <FaChevronRight className="text-sm" />
-          </button>
-          <button
-            onClick={onNewChat}
-            className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-colors"
-          >
-            <FaPlus className="text-sm" />
-          </button>
-          <div className="w-6 border-t border-gray-200 dark:border-gray-800" />
-          <div className="flex-1 overflow-y-auto flex flex-col items-center gap-2 py-1 scrollbar-thin">
-            {chats.slice(0, 8).map((chat) => (
-              <button
-                key={chat.id}
-                onClick={() => onSelectChat(chat.id)}
-                title={chat.title}
-                className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
-                  chat.id === activeChatId
-                    ? "bg-blue-600/20 text-blue-600 dark:text-blue-400"
-                    : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800"
-                }`}
-              >
-                <FaComments className="text-xs" />
-              </button>
-            ))}
-          </div>
-        </aside>
-      )}
-
-      {/* 3. Main Sidebar Panel */}
+      {/* 2. Unified Sidebar Container */}
       <aside
-        style={{ transform: isOpen ? "translateX(0%)" : "translateX(-100%)" }}
-        className={`flex flex-col h-full flex-shrink-0 bg-gray-100 dark:bg-[#0e1117] border-r border-gray-200 dark:border-gray-800 transition-transform duration-300 ease-in-out w-72 sm:w-80 fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto ${
-          !isOpen ? "lg:hidden" : ""
-        }`}
+        className={`fixed lg:static inset-y-0 left-0 z-[9999] lg:z-auto h-full bg-gray-100 dark:bg-[#0e1117] border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
+          /* Responsive Widths and Positioning */
+          ${isOpen ? "w-72 sm:w-80 translate-x-0" : "w-0 -translate-x-full lg:w-14 lg:translate-x-0"}
+        `}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-800">
-          <span className="text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            Conversations
-          </span>
-          <div className="flex items-center gap-2">
+        {/* 3. Main Sidebar Panel */}
+        <div className={`flex flex-col h-full overflow-hidden transition-opacity duration-300 ${!isOpen ? "opacity-0 hidden" : "opacity-100 flex"}`}>
+          
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
+            <span className="text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap">
+              Conversations
+            </span>
             <button
               onClick={onToggle}
-              className="hidden lg:flex w-8 h-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
             >
               <FaChevronLeft className="text-sm" />
             </button>
+          </div>
+
+          {/* New Chat Button */}
+          <div className="px-3 py-3 shrink-0">
             <button
-              onClick={onToggle}
-              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 active:scale-95 transition-all"
+              onClick={onNewChat}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-md active:scale-[0.98]"
             >
-              <FaTimes className="text-sm" />
+              <FaPlus className="text-sm" />
+              <span>New Chat</span>
             </button>
           </div>
-        </div>
 
-        {/* New Chat Button */}
-        <div className="px-3 py-3">
-          <button
-            onClick={onNewChat}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-md active:scale-[0.98]"
-          >
-            <FaPlus className="text-sm" />
-            <span>New Chat</span>
-          </button>
-        </div>
-
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
-          {isLoadingChats ? (
-            <div className="flex items-center justify-center py-12 text-gray-400 dark:text-gray-500">
-              <FaSpinner className="animate-spin mr-2 text-blue-500" />
-              <span className="text-sm">Loading chats...</span>
-            </div>
-          ) : chats.length === 0 ? (
-            <div className="px-2 py-8 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <FaComments className="text-blue-500 dark:text-blue-400" />
+          {/* Chat List */}
+          <div className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin">
+            {isLoadingChats ? (
+              <div className="flex items-center justify-center py-12 text-gray-400">
+                <FaSpinner className="animate-spin mr-2 text-blue-500" />
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                No conversations yet
-              </p>
-            </div>
-          ) : (
-            <ul className="space-y-2 mt-2">
-              {chats.map((chat) => {
-                const isActive = chat.id === activeChatId;
-                const isEditing = editingId === chat.id;
+            ) : (
+              <ul className="space-y-2 mt-2">
+                {chats.map((chat) => {
+                  const isActive = chat.id === activeChatId;
+                  const isEditing = editingId === chat.id;
 
-                return (
-                  <li key={chat.id}>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => !isEditing && onSelectChat(chat.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !isEditing) onSelectChat(chat.id);
-                      }}
-                      className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer transition-[box-shadow,ring-color] duration-150 ${
-                        isActive
-                          ? "bg-white dark:bg-gray-800/90 shadow-sm ring-1 ring-blue-500/25 dark:ring-blue-400/20"
-                          : "hover:bg-white/80 dark:hover:bg-gray-800/60"
-                      }`}
-                    >
-                      {/* Active indicator bar */}
-                      {isActive && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
-                      )}
-
-                      <FaComments
-                        className={`flex-shrink-0 text-sm ml-0.5 ${
-                          isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500"
+                  return (
+                    <li key={chat.id}>
+                      <div
+                        onClick={() => !isEditing && onSelectChat(chat.id)}
+                        className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer ${
+                          isActive
+                            ? "bg-white dark:bg-gray-800/90 shadow-sm"
+                            : "hover:bg-white/80 dark:hover:bg-gray-800/60"
                         }`}
-                      />
-
-                      <div className="flex-1 min-w-0">
+                      >
                         {isEditing ? (
-                          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-1 w-full" onClick={(e) => e.stopPropagation()}>
                             <input
                               ref={editInputRef}
                               value={editTitle}
                               onChange={(e) => setEditTitle(e.target.value)}
                               onKeyDown={(e) => handleRenameKeyDown(chat.id, e)}
-                              className="flex-1 min-w-0 text-sm px-2 py-1 rounded-lg border border-blue-400/50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                              maxLength={100}
+                              className="flex-1 w-full text-sm px-2 py-1 rounded bg-white dark:bg-gray-900 border border-blue-500 outline-none text-gray-900 dark:text-gray-100"
                             />
-                            <button
-                              onClick={(e) => confirmRename(chat.id, e)}
-                              className="p-1.5 rounded-md text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
-                            >
-                              <FaCheck className="text-xs" />
-                            </button>
-                            <button
-                              onClick={cancelRename}
-                              className="p-1.5 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                              <FaTimes className="text-xs" />
-                            </button>
+                            <button onClick={(e) => confirmRename(chat.id, e)} className="text-green-600 p-1"><FaCheck className="text-xs" /></button>
+                            <button onClick={cancelRename} className="text-gray-400 p-1"><FaTimes className="text-xs" /></button>
                           </div>
                         ) : (
                           <>
-                            <p
-                              className={`text-sm font-medium truncate leading-snug ${
-                                isActive ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"
-                              }`}
-                            >
-                              {chat.title}
-                            </p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                              {formatRelativeDate(chat.updated_at)}
-                            </p>
+                            {isActive && (
+                              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
+                            )}
+                            <FaComments className={`flex-shrink-0 text-sm ${isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400"}`} />
+                            <div className="flex-1 truncate">
+                              <p className="text-sm truncate font-medium text-gray-700 dark:text-gray-300">{chat.title}</p>
+                              <p className="text-[10px] text-gray-400">{formatRelativeDate(chat.updated_at)}</p>
+                            </div>
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button onClick={(e) => startRename(chat, e)} className="p-1.5 hover:text-blue-600 text-gray-400 transition-colors"><FaPen className="text-xs" /></button>
+                              <button onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(chat.id); }} className="p-1.5 hover:text-red-600 text-gray-400 transition-colors"><FaTrash className="text-xs" /></button>
+                            </div>
                           </>
                         )}
                       </div>
-
-                      {!isEditing && (
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity flex-shrink-0">
-                          <button
-                            onClick={(e) => startRename(chat, e)}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                            aria-label="Rename chat"
-                          >
-                            <FaPen className="text-xs" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleteConfirmId(chat.id);
-                            }}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                            aria-label="Delete chat"
-                          >
-                            <FaTrash className="text-xs" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
         </div>
+
+        {/* 4. Desktop Collapsed Rail (Visible ONLY on desktop when closed) */}
+        {!isOpen && (
+          <div className="hidden lg:flex flex-col items-center py-3 gap-3">
+             <button onClick={onToggle} className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"><FaChevronRight /></button>
+             <button onClick={onNewChat} className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white shadow-md"><FaPlus /></button>
+             <div className="w-6 border-t border-gray-200 dark:border-gray-800" />
+             <div className="flex flex-col items-center gap-2 py-1">
+                {chats.slice(0, 8).map((chat) => (
+                  <button key={chat.id} onClick={() => onSelectChat(chat.id)} className={`w-9 h-9 flex items-center justify-center rounded-lg ${chat.id === activeChatId ? "bg-blue-600/20 text-blue-600" : "text-gray-400"}`}>
+                    <FaComments className="text-xs" />
+                  </button>
+                ))}
+             </div>
+          </div>
+        )}
       </aside>
 
-      {/* Delete Confirmation Modal */}
+      {/* 5. Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="fixed inset-0 bg-black/60 z-[10000] flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-sm mx-4 shadow-2xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                <FaTrash className="text-red-600 dark:text-red-400" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Delete Chat?</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">This cannot be undone</p>
-              </div>
-            </div>
-            <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">
-              Are you sure you want to delete this conversation and all its messages?
-            </p>
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-sm mx-4">
+            <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Delete Chat?</h2>
             <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors font-medium text-sm"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={async () => {
-                  await onDeleteChat(deleteConfirmId);
-                  setDeleteConfirmId(null);
-                }}
-                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium text-sm"
-              >
-                Delete
-              </button>
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">Cancel</button>
+              <button onClick={async () => { await onDeleteChat(deleteConfirmId); setDeleteConfirmId(null); }} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg">Delete</button>
             </div>
           </div>
         </div>
