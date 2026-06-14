@@ -925,30 +925,50 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                   </div>
                 )}
 
-                <div className="relative">
-                  <textarea
-                    ref={inputRef}
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything about JEE preparation..."
-                    className="w-full px-14 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm overflow-hidden"
-                    rows="1"
-                    style={{
-                      minHeight: "40px",
-                      maxHeight: "100px",
-                    }}
-                    onInput={(e) => {
-                      e.target.style.height = "auto";
-                      e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-                    }}
-                    onPaste={e => {
-                      if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
-                        e.preventDefault();
-                        handleDirectFileUpload(e.clipboardData.files);
-                      }
-                    }}
-                  />
+                <div className="w-full flex items-center border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all p-2">
+
+                  {/* File Upload Button - Left side */}
+                  <button
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    disabled={isLoading || isUploading}
+                    className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 z-20"
+                    title="Attach files"
+                    aria-label="Attach files"
+                  >
+                    <FaPaperclip className="text-lg" />
+                  </button>
+
+                  {/* Textarea Wrapper - Center */}
+                  <div className="relative flex-1 flex items-center mx-3 min-h-[24px]">
+
+                    {!inputMessage && (
+                      <div className="absolute left-1 right-1 block text-gray-500 dark:text-gray-400 pointer-events-none truncate select-none z-0">
+                        Ask me anything about JEE preparation...
+                      </div>
+                    )}
+
+                    <textarea
+                      ref={inputRef}
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="w-full py-1 px-1 resize-none bg-transparent border-none p-0 focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-hidden relative z-10"
+                      rows="1"
+                      style={{
+                        maxHeight: "120px",
+                      }}
+                      onInput={(e) => {
+                        e.target.style.height = "auto";
+                        e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+                      }}
+                      onPaste={e => {
+                        if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+                          e.preventDefault();
+                          handleDirectFileUpload(e.clipboardData.files);
+                        }
+                      }}
+                    />
+                  </div>
 
                   {/* Hidden file input for direct upload */}
                   <input
@@ -964,23 +984,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                     }}
                     accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
                   />
-                  {/* File Upload Button - Left side */}
-                  <button
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    disabled={isLoading || isUploading}
-                    className="absolute left-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
-                    title="Attach files"
-                    aria-label="Attach files"
-                  >
-                    <FaPaperclip className="text-lg" />
-                  </button>
+
                   {/* Send Button - Right side */}
                   <button
                     onClick={sendMessage}
                     disabled={!inputMessage.trim() || isLoading || isUploading}
-                    className={`absolute right-2.5 bottom-[17px] h-8 w-8 p-1.5 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm ${inputMessage.trim() && !isLoading && !isUploading
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                    className={`flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 ${inputMessage.trim() && !isLoading && !isUploading
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                       }`}
                     aria-label="Send message"
                   >
