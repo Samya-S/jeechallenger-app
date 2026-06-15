@@ -339,20 +339,29 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     }
   };
 
-  // Auto-scroll to bottom when new messages are added
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // Scroll to last user message without animation so it sits at top of viewport
+  const scrollToLastUserMessage = () => {
+    const lastUserMsg = [...messages].reverse().find(m => m.sender === "user");
+    if (lastUserMsg) {
+      const element = document.getElementById(`message-${lastUserMsg.id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "auto", block: "start" });
+        return;
+      }
+    }
+    // Fallback if no user message is found
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToLastUserMessage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
 
 
   // Group messages by date
@@ -825,7 +834,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                         {dateMessages.map((message) => (
                           <div
                             key={message.id}
-                            className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                            id={`message-${message.id}`}
+                            className={`flex scroll-mt-8 sm:scroll-mt-12 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                           >
                             <div
                               className={`flex items-start md:space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse md:space-x-reverse" : ""}`}
@@ -1072,4 +1082,4 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   );
 };
 
-export default AITutorComponent; 
+export default AITutorComponent;
