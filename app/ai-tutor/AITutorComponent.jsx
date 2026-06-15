@@ -1000,7 +1000,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                       onKeyDown={handleKeyPress}
                       minRows={1}
                       maxRows={5}
-                      className="w-full py-1 px-1 resize-none bg-transparent border-none p-0 focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-hidden relative z-10"
+                      className="w-full py-1 px-1 resize-none bg-transparent border-none p-0 focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-y-scroll scrollbar-hide relative z-10"
                       onPaste={e => {
                         if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
                           e.preventDefault();
