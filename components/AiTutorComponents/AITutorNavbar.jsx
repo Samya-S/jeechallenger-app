@@ -52,8 +52,8 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
             className="flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2"
             title="Go to Home"
           >
-            <FaHome className="transition-all duration-300 text-sm sm:text-sm" />
-            <span className="font-medium transition-all duration-300 hidden xs:inline text-sm sm:text-sm">Return</span>
+            <FaHome className="transition-all duration-300 text-sm" />
+            <span className="font-medium transition-all duration-300 hidden xs:inline text-sm">Return</span>
           </Link>
         </div>
 
@@ -67,7 +67,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
               <span className="hidden sm:inline">JEE Challenger AI Tutor</span>
               <span className="inline sm:hidden">AI Tutor</span>
             </h1>
-            <p className="text-blue-100 transition-all duration-300 whitespace-nowrap hidden md:block text-xs sm:text-sm">
+            <p className="text-blue-100 transition-all duration-300 whitespace-nowrap hidden md:block text-sm">
               Your personalized JEE preparation assistant
             </p>
           </div>
@@ -95,12 +95,13 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
                 />
               ) : (
                 <div className="rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9">
-                  <FaUser className="text-white transition-all duration-300 text-sm sm:text-sm" />
+                  <FaUser className="text-white transition-all duration-300 text-sm" />
                 </div>
               )}
-              <span className="font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] text-sm sm:text-sm">{user.name}</span>
-              <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline text-sm sm:text-sm ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] text-sm">{user.name}</span>
+              <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline text-sm ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
+
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
                 {/* Menu Items */}
@@ -109,10 +110,10 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
                     <Link
                       href="/ai-tutor"
                       onClick={() => setDropdownOpen(false)}
-                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
                     >
                       <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                        <FaComments className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
+                        <FaComments className="text-blue-500 group-hover:text-blue-600 text-sm" />
                       </div>
                       <span className="font-medium">Chat</span>
                     </Link>
@@ -120,10 +121,10 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
                     <Link
                       href="/ai-tutor/profile"
                       onClick={() => setDropdownOpen(false)}
-                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
                     >
                       <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                        <FaUser className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
+                        <FaUser className="text-blue-500 group-hover:text-blue-600 text-sm" />
                       </div>
                       <span className="font-medium">Profile</span>
                     </Link>
@@ -131,10 +132,10 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
                   <div className="border-t border-gray-100 dark:border-gray-700 my-0.5 sm:my-1"></div>
                   <button
                     onClick={() => { setDropdownOpen(false); onLogout(); }}
-                    className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                    className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
                   >
                     <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                      <FaSignOutAlt className="text-red-500 group-hover:text-red-600 text-xs sm:text-sm" />
+                      <FaSignOutAlt className="text-red-500 group-hover:text-red-600 text-sm" />
                     </div>
                     <span className="font-medium">Sign Out</span>
                   </button>
