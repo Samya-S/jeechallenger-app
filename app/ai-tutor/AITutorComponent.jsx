@@ -728,7 +728,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
             {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
               <div className="max-w-4xl mx-auto">
                 {isLoadingMessages ? (
                   <div className="flex items-center justify-center py-16">
@@ -946,7 +946,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                     <p className="text-xs text-gray-600 dark:text-gray-400">
                       Attached files ({attachedFiles.length}):
                     </p>
-                    <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+                    <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
                       {attachedFiles.map((file) => (
                         <FileAttachment
                           key={file.id}
