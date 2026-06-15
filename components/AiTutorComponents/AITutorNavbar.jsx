@@ -80,17 +80,15 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
     };
   }, [dropdownOpen]);
   return (
-    <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-2 lg:py-2.5' : 'py-2.5 sm:py-3 lg:py-4'
-      }`}>
+    <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-2 lg:py-2.5' : 'py-2.5 sm:py-3 lg:py-4'}`}>
       <div className="relative flex items-center justify-between">
         {/* Left - Home & Sidebar Toggle */}
         <div className="flex items-center gap-2 flex-shrink-0 z-10">
           {isChatPage && onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className={`lg:hidden flex items-center justify-center bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${
-                isScrolled ? 'w-8 h-8' : 'w-9 h-9'
-              }`}
+              className={`lg:hidden flex items-center justify-center bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'w-8 h-8' : 'w-9 h-9'
+                }`}
               aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             >
               {sidebarOpen ? <FaTimes className="text-sm" /> : <FaBars className="text-sm" />}
@@ -98,32 +96,25 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
           )}
           <Link
             href="/"
-            className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 sm:px-3 lg:px-3.5 py-1 sm:py-1.5 lg:py-1.5' : 'px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2'
-              }`}
+            className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white ${isScrolled ? 'px-2.5 sm:px-3 lg:px-3.5 py-1 sm:py-1.5 lg:py-1.5' : 'px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2'}`}
             title="Go to Home"
           >
-            <FaHome className={`transition-all duration-300 ${isScrolled ? 'text-sm sm:text-sm' : 'text-sm sm:text-sm'
-              }`} />
-            <span className={`font-medium transition-all duration-300 hidden xs:inline ${isScrolled ? 'text-sm sm:text-sm' : 'text-sm sm:text-sm'
-              }`}>Return</span>
+            <FaHome className={`transition-all duration-300 ${isScrolled ? 'text-sm sm:text-sm' : 'text-sm sm:text-sm'}`} />
+            <span className={`font-medium transition-all duration-300 hidden xs:inline ${isScrolled ? 'text-sm sm:text-sm' : 'text-sm sm:text-sm'}`}>Return</span>
           </Link>
         </div>
 
         {/* Center - Title (Absolutely centered) */}
         <Link href="/ai-tutor" className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2 sm:space-x-2 lg:space-x-4">
-          <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isScrolled ? 'w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10' : 'w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12'
-            }`}>
-            <FaChalkboardTeacher className={`text-white transition-all duration-300 ${isScrolled ? 'text-sm sm:text-md lg:text-lg' : 'text-base sm:text-lg lg:text-xl'
-              }`} />
+          <div className={`bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isScrolled ? 'w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10' : 'w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12'}`}>
+            <FaChalkboardTeacher className={`text-white transition-all duration-300 ${isScrolled ? 'text-sm sm:text-md lg:text-lg' : 'text-base sm:text-lg lg:text-xl'}`} />
           </div>
           <div className="text-left">
-            <h1 className={`font-bold transition-all duration-300 whitespace-nowrap ${isScrolled ? 'text-base sm:text-lg lg:text-xl' : 'text-lg sm:text-xl lg:text-2xl'
-              }`}>
+            <h1 className={`font-bold transition-all duration-300 whitespace-nowrap ${isScrolled ? 'text-base sm:text-lg lg:text-xl' : 'text-lg sm:text-xl lg:text-2xl'}`}>
               <span className="hidden sm:inline">JEE Challenger AI Tutor</span>
               <span className="inline sm:hidden">AI Tutor</span>
             </h1>
-            <p className={`text-blue-100 transition-all duration-300 whitespace-nowrap hidden md:block ${isScrolled ? 'text-xs opacity-0 h-0 overflow-hidden' : 'text-xs sm:text-sm'
-              }`}>
+            <p className={`text-blue-100 transition-all duration-300 whitespace-nowrap hidden md:block ${isScrolled ? 'text-xs opacity-0 h-0 overflow-hidden' : 'text-xs sm:text-sm'}`}>
               Your personalized JEE preparation assistant
             </p>
           </div>
@@ -135,8 +126,7 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
           {showSignIn ? (
             <button
               onClick={onSignIn}
-              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap ${isScrolled ? 'px-3 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-1.5 text-sm sm:text-sm' : 'px-4 sm:px-4 lg:px-5 py-1.5 sm:py-1.5 lg:py-2 text-sm sm:text-sm'
-                }`}
+              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap ${isScrolled ? 'px-3 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-1.5 text-sm sm:text-sm' : 'px-4 sm:px-4 lg:px-5 py-1.5 sm:py-1.5 lg:py-2 text-sm sm:text-sm'}`}
             >
               <span className="hidden xs:inline">Sign In</span>
               <span className="inline xs:hidden">
@@ -147,8 +137,7 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((open) => !open)}
-                className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'
-                  }`}
+                className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'}`}
                 title="User menu"
                 aria-label="User menu"
               >
@@ -160,20 +149,15 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
                     height={36}
                     loader={profileImageLoader}
                     unoptimized
-                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
-                      }`}
+                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}
                   />
                 ) : (
-                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'
-                    }`}>
-                    <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'
-                      }`} />
+                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}>
+                    <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`} />
                   </div>
                 )}
-                <span className={`font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'
-                  }`}>{user.name}</span>
-                <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'
-                  } ${dropdownOpen ? 'rotate-180' : ''}`} />
+                <span className={`font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`}>{user.name}</span>
+                <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'} ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
