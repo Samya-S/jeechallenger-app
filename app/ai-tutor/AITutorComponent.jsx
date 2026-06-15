@@ -517,6 +517,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      if (isLoading || isUploading || !inputMessage.trim()) return;
       sendMessage();
     }
   };
