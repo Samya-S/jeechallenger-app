@@ -236,7 +236,7 @@ const ChatSidebar = ({
           </div>
 
           {/* Chat List */}
-          <div className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin">
+          <div className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
             {isLoadingChats ? (
               <div className="flex items-center justify-center py-12 text-gray-400">
                 <FaSpinner className="animate-spin mr-2 text-blue-500" />
