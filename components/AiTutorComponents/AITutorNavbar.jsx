@@ -12,6 +12,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
+
   const pathname = usePathname();
   const isProfilePage = pathname === '/ai-tutor/profile';
   const isChatPage = pathname === '/ai-tutor' || pathname.startsWith('/ai-tutor/chat/');
@@ -79,6 +80,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownOpen]);
+
   return (
     <div className={`bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 ${isScrolled ? 'py-1.5 sm:py-2 lg:py-2.5' : 'py-2.5 sm:py-3 lg:py-4'}`}>
       <div className="relative flex items-center justify-between">
@@ -126,7 +128,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen((open) => !open)}
-              className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'}`}
+              className={`flex items-center sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-1 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-1.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'}`}
               title="User menu"
               aria-label="User menu"
             >
