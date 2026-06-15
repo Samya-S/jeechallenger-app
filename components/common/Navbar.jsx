@@ -104,7 +104,6 @@ export default function NavBar() {
               <li key={index} className={Styles.li} role="none">
                 <Link 
                   href={item.url}
-                  {...(item.url === '/ai-tutor' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   role="menuitem"
                   aria-label={`Go to ${item.title} page`}
                 >
@@ -213,7 +212,6 @@ export default function NavBar() {
                   <li key={index} role="none">
                     <Link 
                       href={item.url}
-                      {...(item.url === '/ai-tutor' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       onClick={closeMobileNav}
                       role="menuitem"
                       aria-label={`Go to ${item.title} page`}
