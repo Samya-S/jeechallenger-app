@@ -704,7 +704,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   return (
-    <div className="h-[100dvh] bg-gray-50 dark:bg-black overflow-hidden">
+    <div className="h-screen bg-gray-50 dark:bg-black overflow-hidden">
       <div className="w-full h-full flex flex-col">
         <AITutorNavbar
           user={user}
