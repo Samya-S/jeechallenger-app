@@ -7,7 +7,7 @@ import { FaHome, FaChalkboardTeacher, FaChevronDown, FaSignOutAlt, FaUser, FaCom
 import { useRef, useEffect, useState } from "react";
 import AITutorThemeToggle from "@/components/AiTutorComponents/AITutorThemeToggle";
 
-const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, sidebarOpen }) => {
+const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
   const profileImageLoader = ({ src }) => src;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -123,84 +123,72 @@ const AITutorNavbar = ({ user, onLogout, showSignIn, onSignIn, onToggleSidebar, 
         {/* Right - Theme toggle, user menu */}
         <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 flex-shrink-0 z-10">
           <AITutorThemeToggle compact={isScrolled} />
-          {showSignIn ? (
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={onSignIn}
-              className={`bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 whitespace-nowrap ${isScrolled ? 'px-3 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-1.5 text-sm sm:text-sm' : 'px-4 sm:px-4 lg:px-5 py-1.5 sm:py-1.5 lg:py-2 text-sm sm:text-sm'}`}
+              onClick={() => setDropdownOpen((open) => !open)}
+              className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'}`}
+              title="User menu"
+              aria-label="User menu"
             >
-              <span className="hidden xs:inline">Sign In</span>
-              <span className="inline xs:hidden">
-                <FaUser className="text-sm" />
-              </span>
-            </button>
-          ) : (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setDropdownOpen((open) => !open)}
-                className={`flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${isScrolled ? 'px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 lg:py-1.5' : 'px-2.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2'}`}
-                title="User menu"
-                aria-label="User menu"
-              >
-                {user.picture ? (
-                  <Image
-                    src={user.picture}
-                    alt={user.name}
-                    width={36}
-                    height={36}
-                    loader={profileImageLoader}
-                    unoptimized
-                    className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}
-                  />
-                ) : (
-                  <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}>
-                    <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`} />
-                  </div>
-                )}
-                <span className={`font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`}>{user.name}</span>
-                <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'} ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
-                  {/* Menu Items */}
-                  <div className="py-1 sm:py-2">
-                    {isProfilePage ? (
-                      <Link
-                        href="/ai-tutor"
-                        onClick={() => setDropdownOpen(false)}
-                        className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                      >
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                          <FaComments className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
-                        </div>
-                        <span className="font-medium">Chat</span>
-                      </Link>
-                    ) : (
-                      <Link
-                        href="/ai-tutor/profile"
-                        onClick={() => setDropdownOpen(false)}
-                        className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                      >
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                          <FaUser className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
-                        </div>
-                        <span className="font-medium">Profile</span>
-                      </Link>
-                    )}
-                    <div className="border-t border-gray-100 dark:border-gray-700 my-0.5 sm:my-1"></div>
-                    <button
-                      onClick={() => { setDropdownOpen(false); onLogout(); }}
-                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                    >
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                        <FaSignOutAlt className="text-red-500 group-hover:text-red-600 text-xs sm:text-sm" />
-                      </div>
-                      <span className="font-medium">Sign Out</span>
-                    </button>
-                  </div>
+              {user.picture ? (
+                <Image
+                  src={user.picture}
+                  alt={user.name}
+                  width={36}
+                  height={36}
+                  loader={profileImageLoader}
+                  unoptimized
+                  className={`rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}
+                />
+              ) : (
+                <div className={`rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isScrolled ? 'w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8' : 'w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9'}`}>
+                  <FaUser className={`text-white transition-all duration-300 ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`} />
                 </div>
               )}
-            </div>
-          )}
+              <span className={`font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'}`}>{user.name}</span>
+              <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline ${isScrolled ? 'text-xs' : 'text-sm sm:text-sm'} ${dropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
+                {/* Menu Items */}
+                <div className="py-1 sm:py-2">
+                  {isProfilePage ? (
+                    <Link
+                      href="/ai-tutor"
+                      onClick={() => setDropdownOpen(false)}
+                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                    >
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
+                        <FaComments className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
+                      </div>
+                      <span className="font-medium">Chat</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/ai-tutor/profile"
+                      onClick={() => setDropdownOpen(false)}
+                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                    >
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
+                        <FaUser className="text-blue-500 group-hover:text-blue-600 text-xs sm:text-sm" />
+                      </div>
+                      <span className="font-medium">Profile</span>
+                    </Link>
+                  )}
+                  <div className="border-t border-gray-100 dark:border-gray-700 my-0.5 sm:my-1"></div>
+                  <button
+                    onClick={() => { setDropdownOpen(false); onLogout(); }}
+                    className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
+                  >
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
+                      <FaSignOutAlt className="text-red-500 group-hover:text-red-600 text-xs sm:text-sm" />
+                    </div>
+                    <span className="font-medium">Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
