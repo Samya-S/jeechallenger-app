@@ -817,7 +817,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                             className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                           >
                             <div
-                              className={`flex items-start space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
+                              className={`flex items-start md:space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse md:space-x-reverse" : ""}`}
                             >
                               {/* Avatar */}
                               <div
@@ -916,7 +916,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                 {/* Loading indicator */}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="flex items-start space-x-3 max-w-[70%]">
+                    <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
                       <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
                         <FaChalkboardTeacher className="text-white text-sm" />
                       </div>
