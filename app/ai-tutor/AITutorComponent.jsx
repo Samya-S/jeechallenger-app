@@ -913,7 +913,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                   ))
                 )}
 
-                {/* Loading indicator */}
+                {/* Loading indicator - AI is thinking... */}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
