@@ -7,7 +7,7 @@ import AITutorThemeToggleStandalone from "./AITutorThemeToggleStandalone";
 
 const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
   return (
-    <div className="h-screen bg-gray-50 dark:bg-black flex items-center justify-center px-4">
+    <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center px-4">
       <AITutorThemeToggleStandalone />
       <div className="max-w-md w-full">
         {/* Header */}
