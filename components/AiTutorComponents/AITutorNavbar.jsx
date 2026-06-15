@@ -124,7 +124,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
 
         {/* Right - Theme toggle, user menu */}
         <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 flex-shrink-0 z-10">
-          <AITutorThemeToggle compact={isScrolled} />
+          <AITutorThemeToggle />
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen((open) => !open)}
