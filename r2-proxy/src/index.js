@@ -63,7 +63,8 @@ const r2ProxyWorker = {
 
       // Try to serve API from cache first!
       const apiCacheKey = new Request(url.toString(), request);
-      let apiResponse = await cache.match(apiCacheKey);
+      let apiResponse = null;
+      try { apiResponse = await cache.match(apiCacheKey); } catch (e) { /* Bypass */ }
       if (apiResponse) return apiResponse;
 
       try {
@@ -78,7 +79,7 @@ const r2ProxyWorker = {
           },
         });
         
-        ctx.waitUntil(cache.put(apiCacheKey, apiResponse.clone()));
+        try { ctx.waitUntil(cache.put(apiCacheKey, apiResponse.clone())); } catch (e) { /* Bypass */ }
         return apiResponse;
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
@@ -100,7 +101,8 @@ const r2ProxyWorker = {
     cacheUrl.search = ""; // Sanitize: Ignore query params for cache key
     const fileCacheKey = new Request(cacheUrl.toString(), request);
 
-    let fileResponse = await cache.match(fileCacheKey);
+    let fileResponse = null;
+    try { fileResponse = await cache.match(fileCacheKey); } catch (e) { /* Bypass */ }
     if (fileResponse) return fileResponse;
 
     // ==========================================
@@ -127,7 +129,7 @@ const r2ProxyWorker = {
       });
 
       // Save to cache in the background
-      ctx.waitUntil(cache.put(fileCacheKey, fileResponse.clone()));
+      try { ctx.waitUntil(cache.put(fileCacheKey, fileResponse.clone())); } catch (e) { /* Bypass */ }
 
       return fileResponse;
     } catch (e) {
