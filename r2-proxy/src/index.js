@@ -1,3 +1,29 @@
+// Helper to decode hex signature
+function hexToBuffer(hex) {
+  return new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+}
+
+async function verifySignature(request, env) {
+  const url = new URL(request.url);
+  const signature = url.searchParams.get("sig");
+  const expires = url.searchParams.get("exp");
+  const secret = env.SECRET_KEY;
+
+  if (!signature || !expires) return false;
+
+  // 1. Check Expiry
+  if (Date.now() / 1000 > parseInt(expires)) return false;
+
+  // 2. Verify Signature
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
+  );
+  
+  const data = `${url.pathname.slice(1)}:${expires}`;
+  return await crypto.subtle.verify("HMAC", key, hexToBuffer(signature), encoder.encode(data));
+}
+
 const r2ProxyWorker = {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -51,6 +77,11 @@ const r2ProxyWorker = {
     if (!key) {
       // Changed to 200 so you can verify the worker is alive by just visiting the root URL
       return new Response("JEE Challenger PYQS Proxy Live", { status: 200, headers: corsHeaders });
+    }
+
+    const isAuthorized = await verifySignature(request, env);
+    if (!isAuthorized) {
+      return new Response("Unauthorized", { status: 403 });
     }
 
     try {
