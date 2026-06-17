@@ -48,13 +48,13 @@ const r2ProxyWorker = {
     // ==========================================
     // 1. List Papers API Endpoints (Cached for 1 hour to protect R2)
     // ==========================================
-    if (url.pathname.startsWith('/api/')) {
+    if (url.pathname.toLowerCase().startsWith('/api/')) {
       
-      // Strict Routing: Only allow exact matches (with or without a trailing slash)
+      // Strict Routing: Case-insensitive exact matches (with or without a trailing slash)
       let prefix = "";
-      if (url.pathname === '/api/jee-main' || url.pathname === '/api/jee-main/') {
+      if (url.pathname.toLowerCase() === '/api/jee-main' || url.pathname.toLowerCase() === '/api/jee-main/') {
         prefix = 'jee-main/data/';
-      } else if (url.pathname === '/api/jee-advanced' || url.pathname === '/api/jee-advanced/') {
+      } else if (url.pathname.toLowerCase() === '/api/jee-advanced' || url.pathname.toLowerCase() === '/api/jee-advanced/') {
         prefix = 'jee-advanced/data/';
       } else {
         // Kill any garbage API requests immediately
