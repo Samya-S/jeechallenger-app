@@ -95,7 +95,7 @@ const r2ProxyWorker = {
     // ==========================================
     const isAuthorized = await verifySignature(request, env);
     if (!isAuthorized) {
-        return new Response("Unauthorized", { status: 403 });
+        return new Response("Unauthorized", { status: 403, headers: corsHeaders });
     }
 
     // ==========================================
