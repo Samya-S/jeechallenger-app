@@ -26,7 +26,7 @@ async function verifySignature(request, env) {
 }
 
 const r2ProxyWorker = {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // Crucial: CORS Headers so Next.js can fetch the API without browser errors
@@ -42,7 +42,7 @@ const r2ProxyWorker = {
     }
 
     // ==========================================
-    // 1. List Papers
+    // 1. List Papers API Endpoints (Public)
     // ==========================================
 
     if (url.pathname === '/api/jee-main') {
@@ -70,19 +70,32 @@ const r2ProxyWorker = {
     }
 
     // ==========================================
-    // 2. Fetch Files & Images
+    // 2. Auth Gate (Check before cache)
     // ==========================================
+    const isAuthorized = await verifySignature(request, env);
+    if (!isAuthorized) {
+        return new Response("Unauthorized", { status: 403 });
+    }
 
+    // ==========================================
+    // 3. Cache Logic
+    // ==========================================
+    const cacheUrl = new URL(request.url);
+    cacheUrl.search = ""; // Sanitize: Ignore query params for cache key
+    const cacheKey = new Request(cacheUrl.toString(), request);
+    const cache = caches.default;
+
+    let response = await cache.match(cacheKey);
+    if (response) return response;
+
+    // ==========================================
+    // 4. Fetch from R2 (if Cache Miss)
+    // ==========================================
     const key = url.pathname.slice(1); // Removes the leading '/'
 
     if (!key) {
-      // Changed to 200 so you can verify the worker is alive by just visiting the root URL
+      // To verify the worker is alive by just visiting the root URL
       return new Response("JEE Challenger PYQS Proxy Live", { status: 200, headers: corsHeaders });
-    }
-
-    const isAuthorized = await verifySignature(request, env);
-    if (!isAuthorized) {
-      return new Response("Unauthorized", { status: 403 });
     }
 
     try {
@@ -96,13 +109,18 @@ const r2ProxyWorker = {
       const contentType = object.httpMetadata.contentType ||
         (key.endsWith('.json') ? 'application/json' : 'image/png');
 
-      return new Response(object.body, {
+      response = new Response(object.body, {
         headers: {
           ...corsHeaders, // Inject CORS into image/json responses too
           'Content-Type': contentType,
           'Cache-Control': 'public, max-age=31536000, immutable',
         },
       });
+
+      // Save to cache in the background
+      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+      return response;
     } catch (e) {
       return new Response("Error fetching object", { status: 500, headers: corsHeaders });
     }
