@@ -9,6 +9,7 @@ async function verifySignature(request, env) {
   const expires = url.searchParams.get("exp");
   const secret = env.SECRET_KEY;
 
+  if (!secret) return false; // Fail safe if key isn't set
   if (!signature || !expires) return false;
 
   // 1. Check Expiry
