@@ -62,7 +62,11 @@ const r2ProxyWorker = {
       }
 
       // Try to serve API from cache first!
-      const apiCacheKey = new Request(url.toString(), request);
+      // Force the cache key to use the lowercase path to prevent duplicate cache entries
+      const cacheUrlForApi = new URL(request.url);
+      cacheUrlForApi.pathname = url.pathname.toLowerCase(); 
+      const apiCacheKey = new Request(cacheUrlForApi.toString(), request);
+
       let apiResponse = null;
       try { apiResponse = await cache.match(apiCacheKey); } catch (e) { /* Bypass */ }
       if (apiResponse) return apiResponse;
