@@ -1,0 +1,7 @@
+name = "jeechallenger-pyqs-proxy"
+main = "src/index.js"
+compatibility_date = "2026-06-17"
+
+[[r2_buckets]]
+binding = "PYQS"
+bucket_name = "jeechallenger-pyqs"

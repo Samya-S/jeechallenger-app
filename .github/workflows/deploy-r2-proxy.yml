@@ -1,0 +1,23 @@
+name: Deploy R2 Proxy Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'r2-proxy/**' # This ensures it ONLY deploys when you edit the proxy code
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: 'r2-proxy'
+          wranglerVersion: '4'
