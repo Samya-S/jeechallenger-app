@@ -41,36 +41,52 @@ const r2ProxyWorker = {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // ==========================================
-    // 1. List Papers API Endpoints (Public)
-    // ==========================================
+    if (url.pathname === '/' || url.pathname === '') {
+      return new Response("JEE Challenger PYQS Proxy Live", { status: 200, headers: corsHeaders });
+    }
 
-    if (url.pathname === '/api/jee-main') {
+    // ==========================================
+    // 1. List Papers API Endpoints (Cached for 1 hour to protect R2)
+    // ==========================================
+    if (url.pathname.startsWith('/api/')) {
+      
+      // Strict Routing: Only allow exact matches (with or without a trailing slash)
+      let prefix = "";
+      if (url.pathname === '/api/jee-main' || url.pathname === '/api/jee-main/') {
+        prefix = 'jee-main/data/';
+      } else if (url.pathname === '/api/jee-advanced' || url.pathname === '/api/jee-advanced/') {
+        prefix = 'jee-advanced/data/';
+      } else {
+        // Kill any garbage API requests immediately
+        return new Response("API Route Not Found", { status: 404, headers: corsHeaders });
+      }
+
+      // Try to serve API from cache first!
+      const apiCacheKey = new Request(url.toString(), request);
+      let apiResponse = await cache.match(apiCacheKey);
+      if (apiResponse) return apiResponse;
+
       try {
-        const listed = await env.PYQS.list({ prefix: 'jee-main/data/' });
+        const listed = await env.PYQS.list({ prefix });
         const papers = listed.objects.map(obj => obj.key);
-        return new Response(JSON.stringify({ papers }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        
+        apiResponse = new Response(JSON.stringify({ papers }), {
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=3600' // Cache this list for 1 hour
+          },
         });
+        
+        ctx.waitUntil(cache.put(apiCacheKey, apiResponse.clone()));
+        return apiResponse;
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
       }
     }
 
-    if (url.pathname === '/api/jee-advanced') {
-      try {
-        const listed = await env.PYQS.list({ prefix: 'jee-advanced/data/' });
-        const papers = listed.objects.map(obj => obj.key);
-        return new Response(JSON.stringify({ papers }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (e) {
-        return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
-      }
-    }
-
     // ==========================================
-    // 2. Auth Gate (Check before cache)
+    // 2. Auth Gate for Files (Check before cache)
     // ==========================================
     const isAuthorized = await verifySignature(request, env);
     if (!isAuthorized) {
@@ -78,25 +94,19 @@ const r2ProxyWorker = {
     }
 
     // ==========================================
-    // 3. Cache Logic
+    // 3. Cache Logic for Files
     // ==========================================
     const cacheUrl = new URL(request.url);
     cacheUrl.search = ""; // Sanitize: Ignore query params for cache key
-    const cacheKey = new Request(cacheUrl.toString(), request);
-    const cache = caches.default;
+    const fileCacheKey = new Request(cacheUrl.toString(), request);
 
-    let response = await cache.match(cacheKey);
-    if (response) return response;
+    let fileResponse = await cache.match(fileCacheKey);
+    if (fileResponse) return fileResponse;
 
     // ==========================================
     // 4. Fetch from R2 (if Cache Miss)
     // ==========================================
     const key = url.pathname.slice(1); // Removes the leading '/'
-
-    if (!key) {
-      // To verify the worker is alive by just visiting the root URL
-      return new Response("JEE Challenger PYQS Proxy Live", { status: 200, headers: corsHeaders });
-    }
 
     try {
       const object = await env.PYQS.get(key);
@@ -105,22 +115,21 @@ const r2ProxyWorker = {
         return new Response("Object Not Found", { status: 404, headers: corsHeaders });
       }
 
-      // Automatically determine Content-Type (Your original logic perfectly preserved)
       const contentType = object.httpMetadata.contentType ||
         (key.endsWith('.json') ? 'application/json' : 'image/png');
 
-      response = new Response(object.body, {
+      fileResponse = new Response(object.body, {
         headers: {
-          ...corsHeaders, // Inject CORS into image/json responses too
+          ...corsHeaders, 
           'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': 'public, max-age=31536000, immutable', // Cache files for 1 year
         },
       });
 
       // Save to cache in the background
-      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+      ctx.waitUntil(cache.put(fileCacheKey, fileResponse.clone()));
 
-      return response;
+      return fileResponse;
     } catch (e) {
       return new Response("Error fetching object", { status: 500, headers: corsHeaders });
     }
