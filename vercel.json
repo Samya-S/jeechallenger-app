@@ -65,7 +65,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://jee-challenger-ai.vercel.app/:path*"
+      "destination": "https://ai-api.jeechallenger.com/:path*"
     }
   ]
 }
