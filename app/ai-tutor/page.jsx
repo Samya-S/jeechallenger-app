@@ -1,4 +1,3 @@
-import AITutorComponent from "./AITutorComponent";
 import StructuredData from '@/components/common/StructuredData';
 import { aiTutorFAQs } from '@/data/faq-data';
 import { ogImageMeta } from '@/lib/og-metadata';
