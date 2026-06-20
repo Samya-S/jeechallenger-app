@@ -31,6 +31,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.subscription_plan_id = user.subscription_plan_id || null;
+        token.created_at = user.created_at || null;
       }
       return token;
     },
@@ -40,6 +41,7 @@ export const authOptions = {
       if (session.user) {
         session.user.id = token.id;
         session.user.subscription_plan_id = token.subscription_plan_id;
+        session.user.created_at = token.created_at;
       }
       return session;
     }
