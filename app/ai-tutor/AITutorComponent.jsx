@@ -617,7 +617,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setIsLoading(false);
     setIsLoadingChats(false);
     setIsLoadingMessages(false);
-    setSidebarOpen(false);
+    // setSidebarOpen(false);
     setAuthError("");
     setAttachedFiles([]);
     setIsUploading(false);
