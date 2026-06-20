@@ -1,0 +1,85 @@
+import { getToken } from "next-auth/jwt";
+import jwt from "jsonwebtoken";
+
+export async function processRequest(req, { params }) {
+  // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  
+  if (!token) {
+    return new Response(JSON.stringify({ detail: "Unauthorized" }), { status: 401 });
+  }
+
+  // 2. RE-SIGN THE TOKEN
+  // We take the object from NextAuth and sign it into a string
+  // Python's jwt.decode uses HS256, so we must use the same here.
+  const signedToken = jwt.sign(token, process.env.NEXTAUTH_SECRET, { algorithm: 'HS256' });
+
+  // 3. Extract the exact path the frontend is trying to reach (e.g., "chats" or "files/upload")
+  const resolvedParams = await params;
+  const pathParams = resolvedParams.path || [];
+  const apiPath = pathParams.join('/');
+  
+  // 4. Build the URL to your Python backend
+  const targetUrl = process.env.NODE_ENV === 'production' || true
+    ? `https://ai-api.jeechallenger.com/${apiPath}`
+    : `http://localhost:8000/${apiPath}`;
+
+  // 5. Extract query parameters from the original request
+  const url = new URL(req.url);
+  const targetUrlWithQuery = `${targetUrl}${url.search}`;
+
+  // 6. Prepare the headers, injecting the secure JWT so Python can read it
+  const headers = new Headers();
+  
+  // We explicitly copy the content type if it exists (crucial for file uploads vs JSON)
+  const contentType = req.headers.get('content-type');
+  if (contentType) {
+    headers.set('content-type', contentType);
+  }
+  
+  // Inject the signed token
+  headers.set('Authorization', `Bearer ${signedToken}`);
+
+  // 7. Forward the request to Python
+  try {
+    const fetchOptions = {
+      method: req.method,
+      headers: headers,
+    };
+
+    // Only attach body for POST/PUT/PATCH requests
+    if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
+      // For file uploads (FormData) we pass the raw body stream
+      if (contentType && contentType.includes('multipart/form-data')) {
+        fetchOptions.body = req.body;
+        // Let fetch automatically handle the multipart boundary headers
+        headers.delete('content-type'); 
+      } else {
+        // For standard JSON requests
+        fetchOptions.body = await req.text();
+      }
+    }
+
+    const response = await fetch(targetUrlWithQuery, fetchOptions);
+    
+    // 8. Send the Python response directly back to the frontend
+    const responseBody = await response.arrayBuffer();
+    return new Response(responseBody, {
+      status: response.status,
+      headers: {
+        'Content-Type': response.headers.get('content-type') || 'application/json',
+      }
+    });
+
+  } catch (error) {
+    console.error("Proxy Error:", error);
+    return new Response(JSON.stringify({ detail: "Backend connection failed" }), { status: 500 });
+  }
+}
+
+// Export standard Next.js route handlers
+export const GET = processRequest;
+export const POST = processRequest;
+export const PUT = processRequest;
+export const PATCH = processRequest;
+export const DELETE = processRequest;

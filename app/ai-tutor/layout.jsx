@@ -1,6 +1,6 @@
 'use client';
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { SessionProvider } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import AITutorComponent from './AITutorComponent';
 
@@ -10,13 +10,13 @@ export default function AITutorLayout({ children }) {
   const isMainChatUI = pathname === '/ai-tutor' || Boolean(chatIdMatch);
 
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+    <SessionProvider>
       {isMainChatUI ? (
         <AITutorComponent chatId={chatIdMatch?.[1] ?? null} />
       ) : (
         children
       )}
       {isMainChatUI && children}
-    </GoogleOAuthProvider>
+    </SessionProvider>
   );
 }

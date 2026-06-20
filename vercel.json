@@ -61,11 +61,5 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://ai-api.jeechallenger.com/:path*"
-    }
   ]
 }

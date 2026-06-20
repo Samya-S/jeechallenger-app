@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle } from "react-icons/fa";
-import { googleLogout } from '@react-oauth/google';
 import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 import ChatSidebar from "@/components/AiTutorComponents/ChatSidebar";
 import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
 import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
-import { authenticatedFetch, clearAuthData } from "@/lib/auth-utils";
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import remarkMath from 'remark-math';
@@ -105,7 +104,9 @@ const parseApiError = async (response, defaultMessage) => {
 
 const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+  
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(urlChatId);
   const [messages, setMessages] = useState([]);
@@ -119,10 +120,30 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [abortController, setAbortController] = useState(null);
+  
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
+  
+  // --- START OF REACTIVE URL CLEANUP ---
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    
+    if (errorParam) {
+      // Set the beautiful UI error message
+      if (errorParam === 'Callback' || errorParam === 'AccessDenied') {
+        setAuthError('Authentication was cancelled or failed. Please try again.');
+      } else {
+        setAuthError('An error occurred during login. Please try again.');
+      }
+      
+      // Use Next.js router to securely wipe the URL parameters
+      router.replace('/ai-tutor', { scroll: false });
+    }
+  }, [searchParams, router]);
+  // --- END OF REACTIVE URL CLEANUP ---
+
 
   // Automatically open the sidebar if the user is on a desktop
   useEffect(() => {
@@ -168,19 +189,18 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     };
   }, []);
 
-  // Load user and chat list on mount
+  // Load chat list once authenticated
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/immutability
-    loadUserAndChatList();
+    if (status === "authenticated") {
+      // eslint-disable-next-line react-hooks/immutability
+      loadChats();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   // Sync active chat and messages with URL
   useEffect(() => {
-    if (!user) return;
-
-    const token = localStorage.getItem('ai-tutor-token');
-    if (!token) return;
+    if (status !== "authenticated") return;
 
     if (!urlChatId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -196,21 +216,24 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (lastLoadedChatIdRef.current === urlChatId) return;
 
     lastLoadedChatIdRef.current = urlChatId;
-    // eslint-disable-next-line react-hooks/immutability
-    loadChatMessages(urlChatId, token);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlChatId, user]);
 
-  const resolveAttachedFiles = async (attachedFileRefs, token) => {
+    // eslint-disable-next-line react-hooks/immutability
+    loadChatMessages(urlChatId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlChatId, status]);
+
+  // Note: We use credentials 'include' so Next.js rewrites forward our cookies automatically
+  const resolveAttachedFiles = async (attachedFileRefs) => {
     if (!attachedFileRefs || attachedFileRefs.length === 0) return [];
 
     const firstFile = attachedFileRefs[0];
     if (typeof firstFile !== 'string') return attachedFileRefs;
 
     try {
-      const listResponse = await authenticatedFetch(API_ENDPOINTS.FILES.LIST, {
-        headers: { Authorization: `Bearer ${token}` },
-      }, handleLogout);
+      const listResponse = await fetch(API_ENDPOINTS.FILES.LIST, {
+        credentials: 'include' 
+      });
 
       if (listResponse.ok) {
         const listData = await listResponse.json();
@@ -238,11 +261,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     }));
   };
 
-  const convertApiMessagesToUi = async (apiMessages, token) => {
+  const convertApiMessagesToUi = async (apiMessages) => {
     const chronological = [...apiMessages].reverse();
     const pairs = await Promise.all(
       chronological.map(async (msg) => {
-        const attachedFiles = await resolveAttachedFiles(msg.attached_files, token);
+        const attachedFiles = await resolveAttachedFiles(msg.attached_files);
         const timestamp = new Date(msg.timestamp);
 
         return [
@@ -267,17 +290,19 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     return pairs.flat();
   };
 
-  const loadChats = async (token) => {
+  const loadChats = async () => {
     setIsLoadingChats(true);
     try {
-      const response = await authenticatedFetch(`${API_ENDPOINTS.CHATS.LIST}?limit=50`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }, handleLogout);
+      const response = await fetch(`${API_ENDPOINTS.CHATS.LIST}?limit=50`, {
+        credentials: 'include'
+      });
 
       if (response.ok) {
         const data = await response.json();
         setChats(data.chats || []);
         return data.chats || [];
+      } else if (response.status === 401) {
+        handleLogout();
       }
     } catch (error) {
       console.error('Error loading chats:', error);
@@ -287,12 +312,12 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     return [];
   };
 
-  const loadChatMessages = async (chatId, token) => {
+  const loadChatMessages = async (chatId) => {
     setIsLoadingMessages(true);
     try {
-      const response = await authenticatedFetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }, handleLogout);
+      const response = await fetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
+         credentials: 'include'
+      });
 
       if (response.status === 404) {
         lastLoadedChatIdRef.current = null;
@@ -302,8 +327,10 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const uiMessages = await convertApiMessagesToUi(data.messages || [], token);
+        const uiMessages = await convertApiMessagesToUi(data.messages || []);
         setMessages(uiMessages);
+      } else if (response.status === 401) {
+          handleLogout();
       } else {
         setMessages([]);
       }
@@ -312,30 +339,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       setMessages([]);
     } finally {
       setIsLoadingMessages(false);
-    }
-  };
-
-  const loadUserAndChatList = async () => {
-    const token = localStorage.getItem('ai-tutor-token');
-
-    if (!token) return;
-
-    try {
-      const userResponse = await authenticatedFetch(API_ENDPOINTS.AUTH.ME, {
-        headers: { Authorization: `Bearer ${token}` },
-      }, handleLogout);
-
-      if (!userResponse.ok) {
-        clearAuthData();
-        return;
-      }
-
-      const userData = await userResponse.json();
-      setUser(userData);
-      await loadChats(token);
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      clearAuthData();
     }
   };
 
@@ -403,7 +406,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const sendMessage = async () => {
-    if (!inputMessage.trim() || isLoading || !user) return;
+    if (!inputMessage.trim() || isLoading || status !== "authenticated") return;
 
     const userMessage = {
       id: crypto.randomUUID(),
@@ -418,9 +421,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setIsLoading(true);
     if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
 
-    const token = localStorage.getItem('ai-tutor-token');
     const fileIds = attachedFiles.map((file) => file.id);
-
     const controller = new AbortController();
     setAbortController(controller);
 
@@ -429,31 +430,32 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       let data;
 
       if (!activeChatId) {
-        response = await authenticatedFetch(API_ENDPOINTS.CHATS.CREATE, {
+        response = await fetch(API_ENDPOINTS.CHATS.CREATE, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: userMessage.text,
             file_ids: fileIds.length > 0 ? fileIds : undefined,
           }),
           signal: controller.signal,
-        }, handleLogout);
+        });
       } else {
-        response = await authenticatedFetch(API_ENDPOINTS.CHATS.MESSAGES(activeChatId), {
+        response = await fetch(API_ENDPOINTS.CHATS.MESSAGES(activeChatId), {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: userMessage.text,
             file_ids: fileIds.length > 0 ? fileIds : null,
           }),
           signal: controller.signal,
-        }, handleLogout);
+        });
+      }
+
+      if (response.status === 401) {
+          handleLogout();
+          return;
       }
 
       if (!response.ok) {
@@ -501,8 +503,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           text: "Generation stopped.",
           sender: "ai",
           timestamp: new Date(),
-          isError: true, // This makes it red
-          failedText: userMessage.text, // This triggers our new Retry button!
+          isError: true, 
+          failedText: userMessage.text, 
         };
         setMessages((prev) => [...prev, stopMessage]);
         return;
@@ -559,14 +561,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleDeleteChat = async (chatId) => {
-    const token = localStorage.getItem('ai-tutor-token');
-    if (!token) return;
-
     try {
-      const response = await authenticatedFetch(API_ENDPOINTS.CHATS.DELETE(chatId), {
+      const response = await fetch(API_ENDPOINTS.CHATS.DELETE(chatId), {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      }, handleLogout);
+        credentials: 'include',
+      });
 
       if (response.ok) {
         setChats((prev) => prev.filter((c) => c.id !== chatId));
@@ -575,6 +574,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           lastLoadedChatIdRef.current = null;
           router.push('/ai-tutor');
         }
+      } else if (response.status === 401) {
+          handleLogout();
       }
     } catch (error) {
       console.error('Error deleting chat:', error);
@@ -582,43 +583,31 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleRenameChat = async (chatId, title) => {
-    const token = localStorage.getItem('ai-tutor-token');
-    if (!token) return;
-
     try {
-      const response = await authenticatedFetch(API_ENDPOINTS.CHATS.UPDATE(chatId), {
+      const response = await fetch(API_ENDPOINTS.CHATS.UPDATE(chatId), {
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),
-      }, handleLogout);
+      });
 
       if (response.ok) {
         setChats((prev) =>
           prev.map((c) => (c.id === chatId ? { ...c, title } : c))
         );
+      } else if (response.status === 401) {
+          handleLogout();
       }
     } catch (error) {
       console.error('Error renaming chat:', error);
     }
   };
 
-  const handleLoginSuccess = (userData) => {
-    setUser(userData);
-    setAuthError("");
-    loadUserAndChatList();
-  };
-
   const handleLoginError = (errorMessage) => {
     setAuthError(errorMessage);
   };
 
-  const handleLogout = () => {
-    googleLogout();
-
-    setUser(null);
+  const handleLogout = async () => {
     setChats([]);
     setActiveChatId(null);
     setMessages([]);
@@ -633,7 +622,9 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setUploadError("");
 
     lastLoadedChatIdRef.current = null;
-    clearAuthData();
+    
+    // Trigger NextAuth signout
+    await signOut({ callbackUrl: '/ai-tutor' });
   };
 
   const messageGroups = groupMessagesByDate(messages);
@@ -645,37 +636,44 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     return earliestA - earliestB;
   });
 
+  // Show loading state while NextAuth determines session status
+  if (status === "loading") {
+    return (
+      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
+        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
+      </div>
+    );
+  }
+
   // Show login screen if user is not authenticated
-  if (!user) {
+  if (status === "unauthenticated" || !session?.user) {
     return (
       <AITutorLogin
-        onLoginSuccess={handleLoginSuccess}
         onLoginError={handleLoginError}
         authError={authError}
       />
     );
   }
 
-  // Direct file upload handler
   const handleDirectFileUpload = async (files) => {
     setUploadError("");
     setIsUploading(true);
-    const token = localStorage.getItem('ai-tutor-token');
-    if (!token) {
-      handleLogout();
-      setIsUploading(false);
-      return;
-    }
     const formData = new FormData();
     Array.from(files).forEach((file) => {
       formData.append('files', file);
     });
+    
     try {
-      const response = await authenticatedFetch(API_ENDPOINTS.FILES.UPLOAD, {
+      const response = await fetch(API_ENDPOINTS.FILES.UPLOAD, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
         body: formData
-      }, handleLogout);
+      });
+
+      if (response.status === 401) {
+          handleLogout();
+          return;
+      }
 
       if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -726,7 +724,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black overflow-hidden">
       <div className="w-full h-full flex flex-col">
         <AITutorNavbar
-          user={user}
+          user={session.user}
           onLogout={handleLogout}
           onToggleSidebar={handleToggleSidebar}
           sidebarOpen={sidebarOpen}

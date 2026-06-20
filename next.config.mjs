@@ -118,19 +118,6 @@ const nextConfig = {
       },
     ];
   },
-  async rewrites() {
-    // Conditional destination based on environment
-    const destination = process.env.NODE_ENV === 'production' || true
-      ? 'https://ai-api.jeechallenger.com/:path*'
-      : 'http://localhost:8000/:path*';
-    
-    return [
-      {
-        source: '/api/:path*',
-        destination: destination,
-      }
-    ];
-  },
   async redirects() {
     return [
       {

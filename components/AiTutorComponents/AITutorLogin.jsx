@@ -5,7 +5,7 @@ import { FaHome, FaChalkboardTeacher } from "react-icons/fa";
 import SimpleGoogleAuth from "./auth/SimpleGoogleAuth";
 import AITutorThemeToggleStandalone from "./AITutorThemeToggleStandalone";
 
-const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
+const AITutorLogin = ({ onLoginError, authError }) => {
   return (
     <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center px-4">
       <AITutorThemeToggleStandalone />
@@ -36,7 +36,6 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
 
             {/* Google Login Button */}
             <SimpleGoogleAuth
-              onLoginSuccess={onLoginSuccess}
               onLoginError={onLoginError}
             />
 
@@ -101,4 +100,4 @@ const AITutorLogin = ({ onLoginSuccess, onLoginError, authError }) => {
   );
 };
 
-export default AITutorLogin; 
+export default AITutorLogin;
