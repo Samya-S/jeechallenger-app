@@ -608,20 +608,20 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleLogout = async () => {
-    setChats([]);
-    setActiveChatId(null);
-    setMessages([]);
-    setInputMessage("");
-    setIsLoading(false);
-    setIsLoadingChats(false);
-    setIsLoadingMessages(false);
-    // setSidebarOpen(false);
-    setAuthError("");
-    setAttachedFiles([]);
-    setIsUploading(false);
-    setUploadError("");
+    // setChats([]);
+    // setActiveChatId(null);
+    // setMessages([]);
+    // setInputMessage("");
+    // setIsLoading(false);
+    // setIsLoadingChats(false);
+    // setIsLoadingMessages(false);
+    // // setSidebarOpen(false);
+    // setAuthError("");
+    // setAttachedFiles([]);
+    // setIsUploading(false);
+    // setUploadError("");
 
-    lastLoadedChatIdRef.current = null;
+    // lastLoadedChatIdRef.current = null;
     
     // Trigger NextAuth signout
     await signOut({ callbackUrl: '/ai-tutor' });
