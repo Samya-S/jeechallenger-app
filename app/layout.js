@@ -1,4 +1,5 @@
 import "./globals.css";
+import NextAuthProvider from '@/components/common/NextAuthProvider';
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from 'next-themes';
@@ -64,25 +65,27 @@ export default function RootLayout({ children }) {
       <head>
         {/* Preload critical assets (@font-face in globals.css; Next/Image uses /_next/image for local files, so do not preload raw /images paths) */}
         <link rel="preload" href="/fonts/Jost/Jost-VariableFont_wght.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
-        
+
         {/* Prefetch DNS for third-party resources */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        
+
         {/* <meta name="google-site-verification" content="dhTZDOYU3j0wTAQ4ttTfL9hupgGzAAOVHVJofDPIaKQ" /> */}
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
         {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" /> */}
-        
+
         {/* RSS Feed */}
         <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
       <body className="antialiased min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ConditionalLayout>
-            {children}
-          </ConditionalLayout>
-          {/* <SplashCursor /> */}
-        </ThemeProvider>
+        <NextAuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+            {/* <SplashCursor /> */}
+          </ThemeProvider>
+        </NextAuthProvider>
 
         {/* Lazy load Google AdSense only when needed */}
         <Script

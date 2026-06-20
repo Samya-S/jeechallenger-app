@@ -1,6 +1,5 @@
 'use client';
 
-import { SessionProvider } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import AITutorComponent from './AITutorComponent';
 import { Suspense } from 'react';
@@ -12,7 +11,7 @@ export default function AITutorLayout({ children }) {
   const isMainChatUI = pathname === '/ai-tutor' || Boolean(chatIdMatch);
 
   return (
-    <SessionProvider>
+    <>
       {isMainChatUI ? (
         <Suspense fallback={
           <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
@@ -25,6 +24,6 @@ export default function AITutorLayout({ children }) {
         children
       )}
       {isMainChatUI && children}
-    </SessionProvider>
+    </>
   );
 }
