@@ -83,9 +83,9 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
               title="User menu"
               aria-label="User menu"
             >
-              {user.picture ? (
+              {user.image ? (
                 <Image
-                  src={user.picture}
+                  src={user.image}
                   alt={user.name}
                   width={36}
                   height={36}
