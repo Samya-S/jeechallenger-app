@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaUser, FaChalkboardTeacher, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
@@ -20,6 +21,7 @@ const fetchUserProfile = async (token) => {
 const profileImageLoader = ({ src }) => src;
 
 const AITutorProfileComponent = () => {
+  const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,27 +34,24 @@ const AITutorProfileComponent = () => {
   // };
 
   useEffect(() => {
-    const token = localStorage.getItem('ai-tutor-token');
-    if (!token) {
+    // Wait for NextAuth to finish loading
+    if (status === "loading") return;
+
+    // Redirect if unauthenticated
+    if (status === "unauthenticated") {
       router.push('/ai-tutor');
       return;
     }
 
-    fetchUserProfile(token)
-      .then(setUser)
-      .catch((error) => {
-        console.error('Error fetching user profile:', error);
-        setError("Failed to load profile");
-        router.push('/ai-tutor');
-      })
-      .finally(() => setLoading(false));
-  }, [router]);
+    // Use session user data instead of fetching from localStorage
+    if (status === "authenticated") {
+      setUser(session.user);
+      setLoading(false);
+    }
+  }, [status, session, router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('ai-tutor-user');
-    localStorage.removeItem('ai-tutor-messages');
-    localStorage.removeItem('ai-tutor-token');
-    router.push('/ai-tutor');
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/ai-tutor' });
   };
 
   if (loading) {
@@ -77,10 +76,6 @@ const AITutorProfileComponent = () => {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null; // Will redirect to login
   }
 
   return (
