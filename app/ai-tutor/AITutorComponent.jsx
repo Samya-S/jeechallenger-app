@@ -294,8 +294,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setIsLoadingChats(true);
     try {
       const response = await fetch(`${API_ENDPOINTS.CHATS.LIST}?limit=50`, {
-        credentials: 'include',
-        cache: 'no-store',
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -317,8 +316,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setIsLoadingMessages(true);
     try {
       const response = await fetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
-         credentials: 'include',
-         cache: 'no-store',
+         credentials: 'include'
       });
 
       if (response.status === 404) {
