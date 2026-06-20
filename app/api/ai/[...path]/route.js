@@ -1,6 +1,8 @@
 import { getToken } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
 
+export const dynamic = 'force-dynamic';
+
 export async function processRequest(req, { params }) {
   // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -45,6 +47,7 @@ export async function processRequest(req, { params }) {
     const fetchOptions = {
       method: req.method,
       headers: headers,
+      cache: 'no-store',
     };
 
     // Only attach body for POST/PUT/PATCH requests
