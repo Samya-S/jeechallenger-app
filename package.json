@@ -13,8 +13,8 @@
     "@auth/mongodb-adapter": "^3.11.2",
     "@floating-ui/react": "^0.27.19",
     "@next/third-parties": "^16.1.6",
-    "@react-oauth/google": "^0.12.2",
     "@upstash/redis": "^1.38.0",
+    "autoprefixer": "^10.4.0",
     "gray-matter": "^4.0.3",
     "html-to-image": "^1.11.13",
     "jsonwebtoken": "^9.0.3",
@@ -26,6 +26,7 @@
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.6",
     "nodemailer": "^8.0.4",
+    "postcss": "^8.5.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.4.0",
@@ -36,9 +37,7 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "tailwind-scrollbar": "^3.0.5",
-    "tailwindcss": "^3.4.1",
-    "postcss": "^8.5.10",
-    "autoprefixer": "^10.4.0"
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
