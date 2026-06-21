@@ -5,8 +5,8 @@ import jwt from "jsonwebtoken";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Force Vercel to wait up to 5 min before timing out
-export const maxDuration = 300;
+// Force Vercel to wait up to 60 seconds before timing out
+export const maxDuration = 60;
 
 export async function processRequest(req, { params }) {
   // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
