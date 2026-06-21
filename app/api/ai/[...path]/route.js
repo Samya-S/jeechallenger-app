@@ -1,6 +1,10 @@
 import { getToken } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
 
+// Force the route to always be evaluated dynamically (disables route caching)
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function processRequest(req, { params }) {
   // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -44,7 +48,8 @@ export async function processRequest(req, { params }) {
   try {
     const fetchOptions = {
       method: req.method,
-      headers: headers,
+      headers: headers,      
+      cache: 'no-store', // to ensure fetch ALWAYS hits your Python backend
     };
 
     // Only attach body for POST/PUT/PATCH requests
