@@ -73,6 +73,11 @@ export async function processRequest(req, { params }) {
       status: response.status,
       headers: {
         'Content-Type': response.headers.get('content-type') || 'application/json',
+
+        // Instruct Vercel's Edge Network AND the browser to never cache this response
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       }
     });
 
