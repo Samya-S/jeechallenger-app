@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@teispace/next-themes";
 import { FaSun, FaMoon } from "react-icons/fa";
 
 const AITutorThemeToggle = () => {

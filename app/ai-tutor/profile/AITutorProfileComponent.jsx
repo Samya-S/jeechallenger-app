@@ -8,7 +8,7 @@ import Image from "next/image";
 import { FaUser, FaChalkboardTeacher, FaCog, FaHistory, FaBookmark, FaChartLine, FaCreditCard, FaShieldAlt, FaBell, FaPalette, FaTrash } from "react-icons/fa";
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 // import SubscriptionStatusWidget from "@/components/AiTutorComponents/SubscriptionStatusWidget";
-import { useTheme } from "next-themes";
+import { useTheme } from "@teispace/next-themes";
 
 const fetchUserProfile = async (token) => {
   const res = await fetch('/api/auth/me', {

@@ -116,7 +116,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **UI Library**: React 19
 - **Styling**: Tailwind CSS with custom animations
 - **Icons**: Lucide React & React Icons
-- **Theme Management**: next-themes
+- **Theme Management**: @teispace/next-themes
 - **Markdown Rendering**: React Markdown with remark-gfm for GitHub Flavored Markdown
 - **Math Rendering**: KaTeX with rehype-katex for mathematical expressions
 - **Content Management**: gray-matter for MDX frontmatter parsing
