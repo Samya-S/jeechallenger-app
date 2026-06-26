@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export const authOptions = {
   // Connect to your new decoupled Auth database
@@ -25,23 +26,78 @@ export const authOptions = {
   },
   
   callbacks: {
-    // 1. When a JWT is created or updated, inject the database IDs into the payload
-    async jwt({ token, user }) {
-      // 'user' is only populated on initial sign in/creation
+    // 1. When a JWT is created or updated, inject the database IDs and dynamic limits into the payload
+    async jwt({ token, user, trigger }) {
+      const client = await clientPromise;
+      const db = client.db();
+
+      // 'user' is only populated on initial sign-in/creation
       if (user) {
+        let planId = user.subscription_plan_id;
+        let plan = null;
+
+        // If it's a new user or they have no plan, default to "Starter"
+        if (!planId) {
+          plan = await db.collection("subscription_plans").findOne({ name: "Starter" });
+          
+          if (plan) {
+            planId = plan._id;
+            // Persist the default plan to the user in the database
+            await db.collection("users").updateOne(
+              { _id: new ObjectId(user.id) },
+              { $set: { subscription_plan_id: new ObjectId(planId) } }
+            );
+          }
+        } else {
+          // Fetch the existing plan
+          const queryId = typeof planId === 'string' ? new ObjectId(planId) : planId;
+          plan = await db.collection("subscription_plans").findOne({ _id: queryId });
+        }
+
         token.id = user.id;
-        token.subscription_plan_id = user.subscription_plan_id || null;
-        token.created_at = user.created_at || null;
+        token.subscription_plan_id = planId ? planId.toString() : null;
+        token.created_at = user.created_at || new Date().toISOString();
+
+        // Dynamically bake all plan fields (except the internal _id) into the token limits
+        if (plan) {
+          const { _id, ...dynamicLimits } = plan;
+          token.limits = dynamicLimits;
+        } else {
+          token.limits = {}; 
+        }
       }
+
+      // Handle session updates (e.g., frontend calls update() after a successful Stripe payment)
+      // This ensures the JWT gets the upgraded limits immediately without requiring a logout
+      if (trigger === "update") {
+        const updatedUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
+        
+        if (updatedUser && updatedUser.subscription_plan_id) {
+          const planQueryId = typeof updatedUser.subscription_plan_id === 'string' 
+            ? new ObjectId(updatedUser.subscription_plan_id) 
+            : updatedUser.subscription_plan_id;
+            
+          const updatedPlan = await db.collection("subscription_plans").findOne({ _id: planQueryId });
+          
+          if (updatedPlan) {
+            token.subscription_plan_id = updatedUser.subscription_plan_id.toString();
+            const { _id, ...dynamicLimits } = updatedPlan;
+            token.limits = dynamicLimits;
+          }
+        }
+      }
+
       return token;
     },
     
-    // 2. Expose those IDs to frontend hooks (like useSession) if needed
+    // 2. Expose those IDs and limits to frontend hooks (like useSession)
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
         session.user.subscription_plan_id = token.subscription_plan_id;
         session.user.created_at = token.created_at;
+        // Make constraints accessible to the client for UI rendering (e.g., showing usage bars)
+        session.user.limits = token.limits;
       }
       return session;
     }
