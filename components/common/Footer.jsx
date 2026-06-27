@@ -170,7 +170,7 @@ const Footer = () => {
           {/* Source Code Link */}
           <div className="flex justify-center mt-4">
             <Link 
-              href="https://github.com/Samya-S/jeechallenger-2.0" 
+              href="https://github.com/Samya-S/jeechallenger-app" 
               target="_blank"
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors inline-flex items-center gap-1.5 text-sm"
             >

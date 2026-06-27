@@ -5,11 +5,11 @@
 <h1 align="center" style="font-family: 'Jost', sans-serif;">JEE Challenger</h1>
 
 <p align="center">
-  <a href="https://github.com/Samya-S/jeechallenger-2.0/releases">
-    <img src="https://img.shields.io/github/package-json/v/Samya-S/jeechallenger-2.0" alt="Version">
+  <a href="https://github.com/Samya-S/jeechallenger-app/releases">
+    <img src="https://img.shields.io/github/package-json/v/Samya-S/jeechallenger-app" alt="Version">
   </a>
-  <a href="https://github.com/Samya-S/jeechallenger-2.0/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Samya-S/jeechallenger-2.0" alt="License">
+  <a href="https://github.com/Samya-S/jeechallenger-app/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Samya-S/jeechallenger-app" alt="License">
   </a>
 </p>
  
@@ -142,8 +142,8 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Samya-S/jeechallenger-2.0.git
-cd jeechallenger-2.0
+git clone https://github.com/Samya-S/jeechallenger-app.git
+cd jeechallenger-app
 ```
 
 2. Install dependencies:
@@ -189,7 +189,7 @@ npm start
 ## Project Structure
 
 ```
-jeechallenger-2.0/
+jeechallenger-app/
 ├── app/                        # Next.js App Router pages
 │   ├── ai-tutor/               # AI Tutor functionality
 │   ├── syllabus-tracker/       # Progress tracking system
