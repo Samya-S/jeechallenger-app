@@ -26,7 +26,7 @@ export const authOptions = {
   },
   
   callbacks: {
-    // 1. When a JWT is created or updated, inject the database IDs and dynamic limits into the payload
+    // 1. When a JWT is created or updated, inject the database IDs and dynamic services into the payload
     async jwt({ token, user, trigger }) {
       const client = await clientPromise;
       const db = client.db();
@@ -57,18 +57,13 @@ export const authOptions = {
         token.id = user.id;
         token.subscription_plan_id = planId ? planId.toString() : null;
         token.created_at = user.created_at || new Date().toISOString();
+        token.plan_name = plan ? plan.name : "Starter";
 
-        // Dynamically bake all plan fields (except the internal _id) into the token limits
-        if (plan) {
-          const { _id, ...dynamicLimits } = plan;
-          token.limits = dynamicLimits;
-        } else {
-          token.limits = {}; 
-        }
+        // Grab the entire "services" object. This makes it future-proof for new microservices!
+        token.services = plan && plan.services ? plan.services : {};
       }
 
       // Handle session updates (e.g., frontend calls update() after a successful Stripe payment)
-      // This ensures the JWT gets the upgraded limits immediately without requiring a logout
       if (trigger === "update") {
         const updatedUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
         
@@ -81,8 +76,8 @@ export const authOptions = {
           
           if (updatedPlan) {
             token.subscription_plan_id = updatedUser.subscription_plan_id.toString();
-            const { _id, ...dynamicLimits } = updatedPlan;
-            token.limits = dynamicLimits;
+            token.plan_name = updatedPlan.name;
+            token.services = updatedPlan.services || {};
           }
         }
       }
@@ -90,14 +85,15 @@ export const authOptions = {
       return token;
     },
     
-    // 2. Expose those IDs and limits to frontend hooks (like useSession)
+    // 2. Expose those IDs and services to frontend hooks (like useSession)
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
         session.user.subscription_plan_id = token.subscription_plan_id;
         session.user.created_at = token.created_at;
-        // Make constraints accessible to the client for UI rendering (e.g., showing usage bars)
-        session.user.limits = token.limits;
+        session.user.plan_name = token.plan_name;
+        // Expose the services object so the frontend knows what features to unlock
+        session.user.services = token.services;
       }
       return session;
     }
