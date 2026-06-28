@@ -21,8 +21,6 @@ const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopBu
 });
 
 const ChapterWiseSolvedPYQsComponent = () => {
-  const joinTgAlertMsg = "This link will only work if you are a subscriber of our official telegram channel. If so, please proceed.\n\nOr else, please join our telegram channel before proceeding.";
-
   return (
     <div>
       {/* Hero Section */}
@@ -312,11 +310,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                   href="https://t.me/c/1655397860/180"
                   target="_blank"
                   rel="noreferrer"
-                  onClick={(e) => {
-                    if (!confirm(joinTgAlertMsg)) {
-                      e.preventDefault();
-                    }
-                  }}
                 >
                   <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                     <span className="flex items-center justify-center">
@@ -331,11 +324,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                   href="https://t.me/c/1655397860/211"
                   target="_blank"
                   rel="noreferrer"
-                  onClick={(e) => {
-                    if (!confirm(joinTgAlertMsg)) {
-                      e.preventDefault();
-                    }
-                  }}
                 >
                   <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                     <span className="flex items-center justify-center">
@@ -383,11 +371,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                     href="https://t.me/c/1655397860/372"
                     target="_blank"
                     rel="noreferrer"
-                    onClick={(e) => {
-                      if (!confirm(joinTgAlertMsg)) {
-                        e.preventDefault();
-                      }
-                    }}
                   >
                     <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
@@ -421,11 +404,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                     href="https://t.me/c/1655397860/377"
                     target="_blank"
                     rel="noreferrer"
-                    onClick={(e) => {
-                      if (!confirm(joinTgAlertMsg)) {
-                        e.preventDefault();
-                      }
-                    }}
                   >
                     <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
@@ -473,11 +451,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                     href="https://t.me/c/1655397860/351"
                     target="_blank"
                     rel="noreferrer"
-                    onClick={(e) => {
-                      if (!confirm(joinTgAlertMsg)) {
-                        e.preventDefault();
-                      }
-                    }}
                   >
                     <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
@@ -525,11 +498,6 @@ const ChapterWiseSolvedPYQsComponent = () => {
                     href="https://t.me/c/1655397860/398"
                     target="_blank"
                     rel="noreferrer"
-                    onClick={(e) => {
-                      if (!confirm(joinTgAlertMsg)) {
-                        e.preventDefault();
-                      }
-                    }}
                   >
                     <button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">

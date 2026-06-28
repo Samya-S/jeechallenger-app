@@ -482,17 +482,7 @@ const JeeMain2022papers = () => {
                   <td>30 June 2022</td>
                   <td align="center">Shift 1 (9:00 AM – 12:00 PM)</td>
                   <td align="center" colSpan="3">
-                    <a
-                      href="https://t.me/c/1655397860/329"
-                      target="_blank"
-                      onClick={(e) => {
-                        if (!confirm(
-                          'This link will only work if you are a subscriber of our official telegram channel. If so, please proceed. \n\nOr else, please join our telegram channel before proceeding.'
-                        )) e.preventDefault();
-                      }}
-                    >
-                      <FaFilePdf className="inline mb-1" /> Official Paper with answer key
-                    </a>
+                    <a href="https://t.me/c/1655397860/329" target="_blank"><FaFilePdf className="inline mb-1" /> Official Paper with answer key</a>
                   </td>
                 </tr>
               </tbody>
