@@ -32,7 +32,7 @@ const PhysicsResources = [
   {
     category: 'Resnick-Halliday-Walker',
     items: [
-      { title: 'Resnick-Halliday-Walker', link: 'https://samya-s.github.io/jeechallenger/pdfs/Halliday_Resnick_Walker.pdf' },
+      { title: 'Resnick-Halliday-Walker', link: 'https://t.me/c/1655397860/49' },
     ],
   },
   {

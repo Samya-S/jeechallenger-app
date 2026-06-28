@@ -5,7 +5,7 @@ const ChemistryResources = [
       {
         title: "Wiley-Physical Chemistry",
         subtitle: "Vipul Mehta",
-        link: "https://drive.google.com/file/d/1845uuMfSjxPbmv_eEPzfYG_N4yJf7ye2/view?usp=sharing",
+        link: "https://t.me/c/1655397860/129",
       },
       {
         title: "O. P. Tandon - GRB Publication (Text)",
@@ -16,17 +16,17 @@ const ChemistryResources = [
       },
       {
         title: "Narendra Avasti - Balaji Publication (Problems)",
-        link: "https://samya-s.github.io/jeechallenger/pdfs/Problems in Physical Chemistry - N AVASTHI.pdf",
+        link: "https://t.me/c/1655397860/814",
       },
       {
         title: "Modern Approach to Chemical Calculations",
         subtitle: "R.C. Mukherjee",
-        link: "https://samya-s.github.io/jeechallenger/pdfs/Modern Approach to Chemical Calculations - R C Mukherjee.pdf",
+        link: "https://t.me/c/1655397860/140",
       },
       {
         title: "Solution to Modern Approach to Chemical Calculations",
         subtitle: "R.C. Mukherjee",
-        link: "https://drive.google.com/drive/folders/1vM13HXh0TY8g7dC2ikdKtNmsHaXHlMof?usp=sharing",
+        link: "https://t.me/c/1655397860/141",
       },
     ],
   },
@@ -44,12 +44,11 @@ const ChemistryResources = [
       {
         title: "J. D. Lee (Text)",
         subtitle: "(adapted by Sudarshan Guha)",
-        link: "https://drive.google.com/file/d/1w8ErH8Yc6uQmj0qfDE5mzvPjpXpOF_B6/view?usp=sharing",
+        link: "https://t.me/c/1655397860/130",
       },
       {
         title: "O. P. Tandon - GRB Publication (Text)",
         links: [
-          "https://drive.google.com/file/d/1klwJSsL8Byb4L07YqayammokidPE6gfF/view",
           "https://drive.google.com/file/d/1cdGzyjU-DWq1Dt33b3qV13qUPHQ4omqR/view?usp=sharing",
           "https://drive.google.com/file/d/1qSwm9Y1h4Bm2spB7GejoKkqMe7-BDaIU/view",
           "https://drive.google.com/file/d/1mI9GutpttYAcf1yPXiYZ8LrXdD5JijlN/view?usp=sharing",
@@ -57,15 +56,15 @@ const ChemistryResources = [
       },
       {
         title: "V. K. Jaiswal - Balaji Publication (Problems 1)",
-        link: "https://drive.google.com/file/d/11Jt8GVnP0iklCH20KMAT3UlYghCvk2Ms/view",
+        link: "https://t.me/c/1655397860/136",
       },
       {
         title: "V. K. Jaiswal - Balaji Publication (Problems 2)",
-        link: "https://drive.google.com/file/d/1YZ3DTOsGTzfoWt4CXep9rXWuQNkgV4Ot/view",
+        link: "https://t.me/c/1655397860/137",
       },
       {
         title: "Cengage Problems",
-        link: "https://drive.google.com/file/d/1-z6aOnKmb2_osXpst2VYAFcVJjYFkMC6/view",
+        link: "https://t.me/c/1655397860/542",
       },
       {
         title: "Adv. Inorganic Chemistry",
@@ -80,7 +79,7 @@ const ChemistryResources = [
       {
         title: "Solomon-Fryhle-Synder (Text)",
         subtitle: "Original Edition",
-        link: "https://samya-s.github.io/jeechallenger/pdfs/Solomon-Fryhle's ORGANIC CHEMISTRY.pdf",
+        link: "https://t.me/c/1655397860/143",
       },
       {
         title: "Solomon-Fryhle-Synder (Text)",

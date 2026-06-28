@@ -6,20 +6,20 @@ const MathematicsResources = [
       { title: "Integral Calculus", link: "https://drive.google.com/file/d/1KqF8qRd6zHkzSEwCbv68JeVEfTbpUtnU/view?usp=sharing" },
       { title: "Vector and 3D Geometry", link: "https://drive.google.com/file/d/1KmdNQ63Ede52t7G1sMIip3wAjMs0oYFH/view?usp=sharing" },
       { title: "Differential Calculus", link: "https://drive.google.com/file/d/1zqYVIVZ6FmAnMb1GVqvoooJWPajoV9eY/view?usp=sharing" },
-      { title: "Algebra", link: "https://samya-s.github.io/jeechallenger/pdfs/Arihant Algebra.pdf" },
-      { title: "Coordinate Geometry", link: "https://samya-s.github.io/jeechallenger/pdfs/Arihant Coordinate Geometry.pdf" },
-      { title: "Trigonometry", link: "https://samya-s.github.io/jeechallenger/pdfs/Arihant Trigonometry.pdf" },
-      { title: "Play with graphs", link: "https://samya-s.github.io/jeechallenger/pdfs/Play with graphs by Amit aggarwal - Arihant.pdf" },
+      { title: "Algebra", link: "https://t.me/c/1655397860/162" },
+      { title: "Coordinate Geometry", link: "https://t.me/c/1655397860/158" },
+      { title: "Trigonometry", link: "https://t.me/c/1655397860/157" },
+      { title: "Play with graphs", link: "https://t.me/c/1655397860/160" },
     ],
   },
   {
     category: "Cengage",
     items: [
-      { title: "Trigonometry", link: "https://samya-s.github.io/jeechallenger/pdfs/Cengage-Trigonmetry.pdf" },
-      { title: "Algebra", link: "https://samya-s.github.io/jeechallenger/pdfs/Algebra Cengage.pdf" },
-      { title: "Coordinate Geometry", link: "https://samya-s.github.io/jeechallenger/pdfs/Cordinate Geometry_Tewani_Cenage.pdf" },
-      { title: "Calculus", link: "https://samya-s.github.io/jeechallenger/pdfs/CENGAGE CALCULUS.pdf" },
-      { title: "Vector and 3D Geometry", link: "https://samya-s.github.io/jeechallenger/pdfs/Vectors & 3D Geometry_Tewani_Cenage.pdf" },
+      { title: "Trigonometry", link: "https://t.me/c/1655397860/168" },
+      { title: "Algebra", link: "https://t.me/c/1655397860/167" },
+      { title: "Coordinate Geometry", link: "https://t.me/c/1655397860/166" },
+      { title: "Calculus", link: "https://t.me/c/1655397860/165" },
+      { title: "Vector and 3D Geometry", link: "https://t.me/c/1655397860/169" },
     ],
   },
   {
@@ -38,8 +38,8 @@ const MathematicsResources = [
   {
     category: "Vikas Gupta and Pankaj Joshi (Balaji)",
     items: [
-      { title: "Advanced Problems in Mathematics for IIT JEE Main and Advanced", link: "https://samya-s.github.io/jeechallenger/pdfs/Advanced Problem in Mathematics By Vikas Gupta.pdf" },
-      { title: "Solution to Advanced Problems in Mathematics for IIT JEE", link: "https://samya-s.github.io/jeechallenger/pdfs/Solutions to Advance Problems in Mathematics By Vikas Gupta.pdf" },
+      { title: "Advanced Problems in Mathematics for IIT JEE Main and Advanced", link: "https://t.me/c/1655397860/173" },
+      { title: "Solution to Advanced Problems in Mathematics for IIT JEE", link: "https://t.me/c/1655397860/174" },
     ],
   },
 ];
