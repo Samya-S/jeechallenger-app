@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) => {
@@ -80,7 +81,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className={`bg-gradient-to-r ${themeGradient} p-3 rounded-full shadow-lg`}>
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
                 </svg>
               </div>
               <div>
@@ -88,10 +89,21 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                 <p className="text-gray-600 dark:text-gray-300">Official Telegram Channel</p>
               </div>
             </div>
-            
+
             <div className={`bg-gradient-to-r ${currentTheme.background} rounded-xl p-4 mb-6 w-fit mx-auto`}>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                <strong className={currentTheme.textColor}>Please note: </strong> These links will only work if you are a subscriber of our official Telegram channel. If you&lsquo;re not subscribed, please join our channel first.
+                <strong className={currentTheme.textColor}>Please note: </strong>
+                These links will only work if you are a subscriber of our official Telegram channel.
+                If you&lsquo;re not subscribed, please{" "}
+                <Link
+                  href="https://t.me/+oOnj4y_ZYqYyZjA1"
+                  target="_blank"
+                  className={`${currentTheme.textColor} font-semibold`}
+                  aria-label="Join our Telegram channel"
+                >
+                  join
+                </Link>
+                {" "}our channel first.
               </p>
             </div>
           </div>
