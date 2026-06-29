@@ -17,12 +17,14 @@ export function useTableOfContents(content) {
         const text = h2Match ? h2Match[1].trim() : h3Match[1].trim();
         const level = h2Match ? 2 : 3;
         
-        // Generate base slug
+        // MATCH THE PARSER'S EXACT LOGIC
         let id = text.toLowerCase()
           .trim()
-          .replace(/[^\w\s-]/g, '') // Remove punctuation like ( ) ? !
-          .replace(/[\s_-]+/g, '-') // Replace spaces with dashes
-          .replace(/^-+|-+$/g, ''); // Remove trailing/leading dashes
+          .replace(/[^\w\s-]/g, '') // 1. Removes '+', leaving two spaces intact ("Fact  Exception")
+          .replace(/\s/g, '-');     // 2. Converts EVERY space to a dash (two spaces = "--")
+        
+        // Remove trailing/leading dashes just in case a special char was at the very end
+        id = id.replace(/^-+|-+$/g, '');
         
         // Append counter if it's a duplicate (e.g., tier-2, tier-2-1)
         if (slugCounts[id] !== undefined) {
