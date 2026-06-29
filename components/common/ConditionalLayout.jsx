@@ -6,13 +6,14 @@ import Footer from "@/components/common/Footer";
 import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
 import FeedbackModal from "@/components/common/FeedbackModal";
+import TelegramGateProvider from '../utils/TelegramGateProvider';
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
   const isAITutorPage = pathname.startsWith('/ai-tutor');
 
   return (
-    <>
+    <TelegramGateProvider>
       {!isAITutorPage && <Navbar />}
       {/* {!isAITutorPage && <TelegramJoinFloat />} */}
       {isAITutorPage ? (
@@ -27,6 +28,6 @@ export default function ConditionalLayout({ children }) {
       {!isAITutorPage && <Footer />}
       {/* {!isAITutorPage && <AIAnnouncementModal />} */}
       {!isAITutorPage && <FeedbackModal />}
-    </>
+    </TelegramGateProvider>
   );
 } 
