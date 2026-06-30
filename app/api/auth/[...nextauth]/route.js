@@ -4,9 +4,42 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+// 1. Initialize the adapter
+const adapter = MongoDBAdapter(clientPromise);
+
+// 2. Override the createUser method
+const originalCreateUser = adapter.createUser;
+adapter.createUser = async (user) => {
+  // Call the original method first to create the base user
+  const newUser = await originalCreateUser(user);
+
+  // Perform your custom initialization
+  const client = await clientPromise;
+  const db = client.db();
+  
+  // Fetch default starter plan
+  const starterPlan = await db.collection("subscription_plans").findOne({ name: "Starter" });
+  
+  const initialData = {
+    created_at: new Date(),
+    last_login: new Date(),
+    subscription_plan_id: starterPlan ? starterPlan._id : null,
+    subscription_expiry: null,
+    subscription_start_date: new Date(),
+  };
+
+  // Update the newly created user with your required fields
+  await db.collection("users").updateOne(
+    { _id: new ObjectId(newUser.id) },
+    { $set: initialData }
+  );
+
+  return newUser;
+};
+
 export const authOptions = {
   // Connect to your new decoupled Auth database
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: adapter,
   
   providers: [
     GoogleProvider({
