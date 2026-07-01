@@ -57,19 +57,16 @@ export const authOptions = {
   },
   
   callbacks: {
-    // 1. When a JWT is created or updated, inject the database IDs and dynamic services into the payload
     async jwt({ token, user, trigger }) {
       const client = await clientPromise;
       const db = client.db();
 
-      // 'user' is only populated on initial sign-in/creation
+      // --- INITIAL SIGN IN ---
       if (user) {
         token.id = user.id;
         token.created_at = user.created_at ? user.created_at.toISOString() : new Date().toISOString();
         
         const planId = user.subscription_plan_id;
-
-        // Because of our createUser override, new users will already have a planId here
         if (planId) {
           const queryId = typeof planId === 'string' ? new ObjectId(planId) : planId;
           const plan = await db.collection("subscription_plans").findOne({ _id: queryId });
@@ -78,15 +75,24 @@ export const authOptions = {
           token.plan_name = plan ? plan.name : "Starter";
           token.services = plan && plan.services ? plan.services : {};
         } else {
-          // Absolute fallback if no plan exists in the DB at all
           token.subscription_plan_id = null;
           token.plan_name = "Starter";
           token.services = {};
         }
+      } 
+      // --- SUBSEQUENT REQUESTS (Verify user still exists) ---
+      else if (token?.id) {
+        const existingUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
+        
+        if (!existingUser) {
+          // User was deleted from the DB! Flag the token.
+          token.error = "UserDeleted";
+          return token; 
+        }
       }
 
-      // Handle session updates (e.g., frontend calls update() after a successful Stripe payment)
-      if (trigger === "update") {
+      // --- SESSION UPDATES (e.g., after Stripe payment) ---
+      if (trigger === "update" && token.id) {
         const updatedUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
         
         if (updatedUser && updatedUser.subscription_plan_id) {
@@ -107,14 +113,18 @@ export const authOptions = {
       return token;
     },
     
-    // 2. Expose those IDs and services to frontend hooks (like useSession)
     async session({ session, token }) {
+      // Pass the deletion error to the frontend
+      if (token.error === "UserDeleted") {
+        session.error = "UserDeleted";
+        return session;
+      }
+
       if (session.user) {
         session.user.id = token.id;
         session.user.subscription_plan_id = token.subscription_plan_id;
         session.user.created_at = token.created_at;
         session.user.plan_name = token.plan_name;
-        // Expose the services object so the frontend knows what features to unlock
         session.user.services = token.services;
       }
       return session;
