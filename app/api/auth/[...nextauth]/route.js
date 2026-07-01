@@ -4,42 +4,40 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// 1. Initialize the adapter
-const adapter = MongoDBAdapter(clientPromise);
+// 1. Initialize the default adapter
+const defaultAdapter = MongoDBAdapter(clientPromise);
 
-// 2. Override the createUser method
-const originalCreateUser = adapter.createUser;
-adapter.createUser = async (user) => {
-  // Call the original method first to create the base user
-  const newUser = await originalCreateUser(user);
+// 2. Create a custom adapter by spreading the default one
+const customAdapter = {
+  ...defaultAdapter,
+  createUser: async (user) => {
+    const client = await clientPromise;
+    const db = client.db();
+    
+    // Fetch default starter plan
+    const starterPlan = await db.collection("subscription_plans").findOne({ name: "Starter" });
+    
+    // Define the custom fields
+    const initialData = {
+      created_at: new Date(),
+      last_login: new Date(),
+      subscription_plan_id: starterPlan ? starterPlan._id : null,
+      subscription_expiry: null,
+      subscription_start_date: new Date(),
+    };
 
-  // Perform your custom initialization
-  const client = await clientPromise;
-  const db = client.db();
-  
-  // Fetch default starter plan
-  const starterPlan = await db.collection("subscription_plans").findOne({ name: "Starter" });
-  
-  const initialData = {
-    created_at: new Date(),
-    last_login: new Date(),
-    subscription_plan_id: starterPlan ? starterPlan._id : null,
-    subscription_expiry: null,
-    subscription_start_date: new Date(),
-  };
+    // Merge the NextAuth base user data with our custom fields BEFORE insertion
+    const userWithInitialData = { ...user, ...initialData };
 
-  // Update the newly created user with your required fields
-  await db.collection("users").updateOne(
-    { _id: new ObjectId(newUser.id) },
-    { $set: initialData }
-  );
-
-  return newUser;
+    // Let the default adapter handle the DB insertion with the merged data.
+    // It will do it in a single operation and return the fully populated user.
+    return await defaultAdapter.createUser(userWithInitialData);
+  },
 };
 
 export const authOptions = {
-  // Connect to your new decoupled Auth database
-  adapter: adapter,
+  // Connect to your newly structured custom adapter
+  adapter: customAdapter,
   
   providers: [
     GoogleProvider({
@@ -66,34 +64,25 @@ export const authOptions = {
 
       // 'user' is only populated on initial sign-in/creation
       if (user) {
-        let planId = user.subscription_plan_id;
-        let plan = null;
-
-        // If it's a new user or they have no plan, default to "Starter"
-        if (!planId) {
-          plan = await db.collection("subscription_plans").findOne({ name: "Starter" });
-          
-          if (plan) {
-            planId = plan._id;
-            // Persist the default plan to the user in the database
-            await db.collection("users").updateOne(
-              { _id: new ObjectId(user.id) },
-              { $set: { subscription_plan_id: new ObjectId(planId) } }
-            );
-          }
-        } else {
-          // Fetch the existing plan
-          const queryId = typeof planId === 'string' ? new ObjectId(planId) : planId;
-          plan = await db.collection("subscription_plans").findOne({ _id: queryId });
-        }
-
         token.id = user.id;
-        token.subscription_plan_id = planId ? planId.toString() : null;
-        token.created_at = user.created_at || new Date().toISOString();
-        token.plan_name = plan ? plan.name : "Starter";
+        token.created_at = user.created_at ? user.created_at.toISOString() : new Date().toISOString();
+        
+        const planId = user.subscription_plan_id;
 
-        // Grab the entire "services" object. This makes it future-proof for new microservices!
-        token.services = plan && plan.services ? plan.services : {};
+        // Because of our createUser override, new users will already have a planId here
+        if (planId) {
+          const queryId = typeof planId === 'string' ? new ObjectId(planId) : planId;
+          const plan = await db.collection("subscription_plans").findOne({ _id: queryId });
+          
+          token.subscription_plan_id = planId.toString();
+          token.plan_name = plan ? plan.name : "Starter";
+          token.services = plan && plan.services ? plan.services : {};
+        } else {
+          // Absolute fallback if no plan exists in the DB at all
+          token.subscription_plan_id = null;
+          token.plan_name = "Starter";
+          token.services = {};
+        }
       }
 
       // Handle session updates (e.g., frontend calls update() after a successful Stripe payment)
