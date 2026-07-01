@@ -130,6 +130,19 @@ export const authOptions = {
       return session;
     }
   },
+
+  events: {
+    async signIn({ user }) {
+      const client = await clientPromise;
+      const db = client.db();
+      
+      // Every time a user successfully signs in, update their last_login in the background
+      await db.collection("users").updateOne(
+        { _id: new ObjectId(user.id) },
+        { $set: { last_login: new Date() } }
+      );
+    }
+  },
   
   // Must perfectly match the NEXTAUTH_SECRET in your FastAPI .env config
   secret: process.env.NEXTAUTH_SECRET,
