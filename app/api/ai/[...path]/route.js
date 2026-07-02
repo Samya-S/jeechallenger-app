@@ -38,7 +38,7 @@ export async function processRequest(req, { params }) {
   // 6. Prepare the headers, injecting the secure JWT so Python can read it
   const headers = new Headers();
   
-  // We explicitly copy the content type if it exists (crucial for file uploads vs JSON)
+  // Keep the exact content-type from the browser, which includes the critical 'boundary=...' string
   const contentType = req.headers.get('content-type');
   if (contentType) {
     headers.set('content-type', contentType);
@@ -57,11 +57,13 @@ export async function processRequest(req, { params }) {
 
     // Only attach body for POST/PUT/PATCH requests
     if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-      // For file uploads (FormData) we pass the raw body stream
       if (contentType && contentType.includes('multipart/form-data')) {
+        // Forward the raw stream
         fetchOptions.body = req.body;
-        // Let fetch automatically handle the multipart boundary headers
-        headers.delete('content-type'); 
+        fetchOptions.duplex = 'half';
+        
+        // FIX: We do NOT delete the content-type header here. 
+        // FastAPI needs the original boundary string to parse the stream.
       } else {
         // For standard JSON requests
         fetchOptions.body = await req.text();
