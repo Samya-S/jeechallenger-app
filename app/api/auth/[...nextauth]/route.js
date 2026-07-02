@@ -60,11 +60,13 @@ export const authOptions = {
     async jwt({ token, user, trigger }) {
       const client = await clientPromise;
       const db = client.db();
+      const now = new Date();
+      const todayString = now.toISOString().split('T')[0]; // Yields "YYYY-MM-DD"
 
       // --- INITIAL SIGN IN ---
       if (user) {
         token.id = user.id;
-        token.created_at = user.created_at ? user.created_at.toISOString() : new Date().toISOString();
+        token.created_at = user.created_at ? user.created_at.toISOString() : now.toISOString();
         
         const planId = user.subscription_plan_id;
         if (planId) {
@@ -110,6 +112,40 @@ export const authOptions = {
         }
       }
 
+      // --- DAILY LOGIN TRACKER (The JWT Throttling Trick) ---
+      // This logic runs for both new logins and returning sessions on a new day.
+      // If the token's logged date doesn't match today, we hit the DB. Otherwise, we skip completely!
+      if (token.id && !token.error && token.last_logged_date !== todayString) {
+        
+        // Use Promise.all to run both DB updates concurrently in the background
+        await Promise.all([
+          // 1. Maintain the `last_login` timestamp dynamically
+          db.collection("users").updateOne(
+            { _id: new ObjectId(token.id) },
+            { $set: { last_login: now } }
+          ),
+          
+          // 2. Upsert the daily log to calculate returning users accurately
+          db.collection("login_logs").updateOne(
+            { 
+              user_id: new ObjectId(token.id), 
+              date: todayString 
+            },
+            { 
+              $setOnInsert: { 
+                user_id: new ObjectId(token.id), 
+                date: todayString, 
+                timestamp: now 
+              } 
+            },
+            { upsert: true }
+          )
+        ]).catch(err => console.error("Failed to update daily login tracker:", err));
+
+        // Stamp the token with today's date so it doesn't trigger the DB again today
+        token.last_logged_date = todayString;
+      }
+
       return token;
     },
     
@@ -136,7 +172,7 @@ export const authOptions = {
       const client = await clientPromise;
       const db = client.db();
       
-      // Every time a user successfully signs in, update their last_login in the background
+      // Every time a user successfully signs in explicitly, update their last_login in the background.
       await db.collection("users").updateOne(
         { _id: new ObjectId(user.id) },
         { $set: { last_login: new Date() } }
