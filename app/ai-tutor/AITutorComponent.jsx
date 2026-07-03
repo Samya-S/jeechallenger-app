@@ -87,7 +87,7 @@ const AIResponseRenderer = ({ content }) => {
 
 const parseApiError = async (response, defaultMessage) => {
   if (response.status === 429) {
-    return "You've reached your daily limit for AI chat messages. Please try again tomorrow or upgrade your plan for higher limits.";
+    return "You've reached your daily limit for AI chat messages. Please try again tomorrow.";
   }
   try {
     const errorData = await response.text();
@@ -693,11 +693,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           let errorMessage = `HTTP ${reqResponse.status}: ${reqResponse.statusText}`;
 
           if (reqResponse.status === 429) {
-            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow.";
           } else if (reqResponse.status === 413) {
-            errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+            errorMessage = "File size too large. Please choose a smaller file.";
           } else if (reqResponse.status === 400) {
-            errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+            errorMessage = "Unsupported file type.";
           } else {
             try {
               const errorData = await reqResponse.text();

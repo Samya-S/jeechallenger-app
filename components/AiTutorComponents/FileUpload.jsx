@@ -145,11 +145,11 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
           try {
             const errorData = await reqResponse.text();
             if (reqResponse.status === 429) {
-              errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+              errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow.";
             } else if (reqResponse.status === 413) {
-              errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+              errorMessage = "File size too large. Please choose a smaller file.";
             } else if (reqResponse.status === 400) {
-              errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+              errorMessage = "Unsupported file type.";
             } else {
               // Try to parse as JSON
               try {
