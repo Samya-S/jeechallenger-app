@@ -175,15 +175,21 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
       {/* Image Preview Modal */}
       {showPreview && previewUrl && (
-        <div className="fixed inset-0 !m-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="relative max-w-4xl max-h-[90vh] mx-4">
-            <button
-              onClick={closePreview}
-              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
-              aria-label="Close preview"
-            >
-              <FaTimes className="text-2xl" />
-            </button>
+        <div className="fixed inset-0 !m-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm" onClick={closePreview}>
+          {/* Close Button: Fixed to top right, stays on screen regardless of scroll */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent trigger closePreview from the parent
+              closePreview();
+            }}
+            className="fixed top-6 right-6 z-[60] text-white hover:text-gray-300 transition-colors p-2 bg-black/20 rounded-full"
+            aria-label="Close preview"
+          >
+            <FaTimes className="text-3xl" />
+          </button>
+
+          {/* Scrollable Container: Takes full viewport, allows scrolling */}
+          <div className="w-full h-full overflow-auto flex items-start justify-center p-4">
             <Image
               src={previewUrl}
               alt={file.original_filename}
@@ -191,7 +197,9 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
               height={900}
               loader={previewImageLoader}
               unoptimized
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // Stop propagation so clicking the image doesn't close it
+              // w-auto h-auto maintains aspect ratio while allowing internal scroll
+              className="m-auto w-auto h-auto object-contain rounded-lg shadow-2xl"
             />
           </div>
         </div>
