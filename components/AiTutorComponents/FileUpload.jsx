@@ -70,6 +70,7 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      // eslint-disable-next-line react-hooks/immutability
       handleFiles(e.dataTransfer.files);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,70 +121,97 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
       return;
     }
 
-    const formData = new FormData();
-    Array.from(files).forEach((file) => {
-      formData.append('files', file);
-    });
+    const compiledFiles = [];
 
     try {
-      console.log('Uploading to:', API_ENDPOINTS.FILES.UPLOAD);
-      const response = await fetch(API_ENDPOINTS.FILES.UPLOAD, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
+      // Loop sequentially or in parallel over each chosen asset to process split transaction states securely
+      for (const file of Array.from(files)) {
+        // Phase 1: Request upload url negotiation block
+        const reqResponse = await fetch(API_ENDPOINTS.FILES.REQUEST_UPLOAD, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
+        });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
-      if (!response.ok) {
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-
-        try {
-          const errorData = await response.text();
-          console.log('Error response body:', errorData);
-
-          if (response.status === 429) {
-            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
-          } else if (response.status === 413) {
-            errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
-          } else if (response.status === 400) {
-            errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
-          } else {
-            // Try to parse as JSON
-            try {
-              const jsonError = JSON.parse(errorData);
-              errorMessage = jsonError.detail || jsonError.message || errorMessage;
-            } catch (jsonError) {
-              // If not JSON, use the raw text
-              errorMessage = errorData || errorMessage;
+        if (!reqResponse.ok) {
+          let errorMessage = `HTTP ${reqResponse.status}: ${reqResponse.statusText}`;
+          try {
+            const errorData = await reqResponse.text();
+            if (reqResponse.status === 429) {
+              errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+            } else if (reqResponse.status === 413) {
+              errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+            } else if (reqResponse.status === 400) {
+              errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+            } else {
+              // Try to parse as JSON
+              try {
+                const jsonError = JSON.parse(errorData);
+                errorMessage = jsonError.detail || jsonError.message || errorMessage;
+              } catch (jsonError) {
+                // If not JSON, use the raw text
+                errorMessage = errorData || errorMessage;
+              }
             }
+          } catch (textError) {
+            console.error('Error reading response text:', textError);
           }
-        } catch (textError) {
-          console.error('Error reading response text:', textError);
+          throw new Error(errorMessage);
         }
 
-        throw new Error(errorMessage);
+        const reqData = await reqResponse.json();
+        const { presigned_url, file_path } = reqData;
+
+        // Phase 2: Direct Binary Stream Pipeline to Cloudflare R2 via HTTP PUT Method
+        const r2Response = await fetch(presigned_url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream'
+          },
+          body: file
+        });
+
+        if (!r2Response.ok) {
+          throw new Error(`Direct upload failed with status code: ${r2Response.status}`);
+        }
+
+        // Phase 3: Transaction confirmation commit block indexing back to MongoDB
+        const confirmResponse = await fetch(API_ENDPOINTS.FILES.CONFIRM_UPLOAD, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            file_path: file_path,
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
+        });
+
+        if (!confirmResponse.ok) {
+          throw new Error(`Failed to commit file upload state metadata token.`);
+        }
+
+        const confirmData = await confirmResponse.json();
+        if (confirmData.files && confirmData.files[0]) {
+          compiledFiles.push(confirmData.files[0]);
+        }
       }
 
-      const responseText = await response.text();
-      console.log('Success response body:', responseText);
-
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (jsonError) {
-        console.error('Error parsing JSON response:', jsonError);
-        throw new Error('Invalid JSON response from server');
-      }
-
-      setUploadedFiles(data.files || []);
+      setUploadedFiles(prev => [...prev, ...compiledFiles]);
 
       // Notify parent component about uploaded files
       if (onFilesUploaded) {
-        onFilesUploaded(data.files || []);
+        onFilesUploaded(compiledFiles);
       }
     } catch (error) {
       console.error('Upload error:', error);
@@ -380,4 +408,4 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
   );
 };
 
-export default FileUpload; 
+export default FileUpload;

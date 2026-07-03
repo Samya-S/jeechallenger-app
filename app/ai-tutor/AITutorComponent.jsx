@@ -133,6 +133,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (errorParam) {
       // Set the beautiful UI error message
       if (errorParam === 'Callback' || errorParam === 'AccessDenied') {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setAuthError('Authentication was cancelled or failed. Please try again.');
       } else {
         setAuthError('An error occurred during login. Please try again.');
@@ -494,6 +495,13 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+      setChats((prev) =>
+        prev.map((c) =>
+          c.id === activeChatId
+            ? { ...c, updated_at: new Date().toISOString() }
+            : c
+        ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+      );
       setAttachedFiles([]);
     } catch (error) {
       // Intercept the intentional abort
@@ -658,49 +666,95 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const handleDirectFileUpload = async (files) => {
     setUploadError("");
     setIsUploading(true);
-    const formData = new FormData();
-    Array.from(files).forEach((file) => {
-      formData.append('files', file);
-    });
+    
+    const compiledFiles = [];
     
     try {
-      const response = await fetch(API_ENDPOINTS.FILES.UPLOAD, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      });
+      // Loop sequentially or in parallel over each chosen asset to process split transaction states securely
+      for (const file of Array.from(files)) {
+        // Phase 1: Request upload url negotiation block
+        const reqResponse = await fetch(API_ENDPOINTS.FILES.REQUEST_UPLOAD, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
+        });
 
-      if (response.status === 401) {
-          handleLogout();
-          return;
-      }
-
-      if (!response.ok) {
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-
-        if (response.status === 429) {
-          errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
-        } else if (response.status === 413) {
-          errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
-        } else if (response.status === 400) {
-          errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
-        } else {
-          try {
-            const errorData = await response.text();
-            try {
-              const jsonError = JSON.parse(errorData);
-              errorMessage = jsonError.detail || jsonError.message || errorMessage;
-            } catch {
-              errorMessage = errorData || errorMessage;
-            }
-          } catch { }
+        if (reqResponse.status === 401) {
+            handleLogout();
+            return;
         }
 
-        throw new Error(errorMessage);
+        if (!reqResponse.ok) {
+          let errorMessage = `HTTP ${reqResponse.status}: ${reqResponse.statusText}`;
+
+          if (reqResponse.status === 429) {
+            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow or upgrade your plan for higher limits.";
+          } else if (reqResponse.status === 413) {
+            errorMessage = "File size too large. Please choose a smaller file or upgrade your plan for larger file uploads.";
+          } else if (reqResponse.status === 400) {
+            errorMessage = "Unsupported file type. Please check your plan's supported file types or upgrade for more options.";
+          } else {
+            try {
+              const errorData = await reqResponse.text();
+              try {
+                const jsonError = JSON.parse(errorData);
+                errorMessage = jsonError.detail || jsonError.message || errorMessage;
+              } catch {
+                errorMessage = errorData || errorMessage;
+              }
+            } catch { }
+          }
+
+          throw new Error(errorMessage);
+        }
+        
+        const reqData = await reqResponse.json();
+        const { presigned_url, file_path } = reqData;
+
+        // Phase 2: Direct Binary Stream Pipeline to Cloudflare R2 via HTTP PUT Method
+        const r2Response = await fetch(presigned_url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream'
+          },
+          body: file
+        });
+
+        if (!r2Response.ok) {
+          throw new Error(`Direct upload failed with status code: ${r2Response.status}`);
+        }
+
+        // Phase 3: Transaction confirmation commit block indexing back to MongoDB
+        const confirmResponse = await fetch(API_ENDPOINTS.FILES.CONFIRM_UPLOAD, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            file_path: file_path,
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
+        });
+
+        if (!confirmResponse.ok) {
+          throw new Error(`Failed to commit file upload state metadata token.`);
+        }
+
+        const confirmData = await confirmResponse.json();
+        if (confirmData.files && confirmData.files[0]) {
+          compiledFiles.push(confirmData.files[0]);
+        }
       }
-      const data = await response.json();
-      setAttachedFiles(prev => [...prev, ...(data.files || [])]);
+
+      setAttachedFiles(prev => [...prev, ...compiledFiles]);
     } catch (error) {
+      console.error(error)
       let displayError = 'Failed to upload files';
       if (typeof error.message === 'string' && (
         error.message.includes('limit') ||
