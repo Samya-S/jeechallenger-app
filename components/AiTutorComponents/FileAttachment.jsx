@@ -80,9 +80,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
         });
 
         if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          setPreviewUrl(url);
+          const data = await response.json();
+          setPreviewUrl(data.download_url);
           setShowPreview(true);
         }
       } catch (error) {
@@ -103,15 +102,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
       });
 
       if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.original_filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const data = await response.json();
+        window.open(data.download_url, '_blank');
       }
     } catch (error) {
       console.error('Error downloading file:', error);
@@ -120,10 +112,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
   const closePreview = () => {
     setShowPreview(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   return (
@@ -211,4 +200,4 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
   );
 };
 
-export default FileAttachment; 
+export default FileAttachment;
