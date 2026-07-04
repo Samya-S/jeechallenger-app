@@ -114,12 +114,12 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **Framework**: Next.js 16 with App Router
 - **UI Library**: React 19
-- **Styling**: Tailwind CSS with custom animations
+- **Styling**: Tailwind CSS with custom animations and `tailwind-scrollbar` for tailored component scrollbars
 - **Icons**: Lucide React & React Icons
 - **Theme Management**: @teispace/next-themes
 - **Floating UI**: @floating-ui/react for tooltips and popovers
-- **Markdown Rendering**: React Markdown with remark-gfm for GitHub Flavored Markdown
-- **Math Rendering**: KaTeX with rehype-katex for mathematical expressions
+- **Markdown Rendering**: React Markdown with `remark-gfm` for GitHub Flavored Markdown
+- **Math Rendering**: KaTeX with `rehype-katex` and `remark-math` for mathematical expression parsing and rendering
 - **Heading Anchors**: rehype-slug for blog table of contents
 - **Content Management**: gray-matter for MDX frontmatter parsing
 - **Image Export**: html-to-image for exporting the Syllabus Tracker
