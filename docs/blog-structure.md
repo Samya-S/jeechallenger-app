@@ -117,7 +117,7 @@ To add a new article to the blog:
 - `category`: Article category
 - `readTime`: Estimated reading time (e.g., "4 min read")
 - `keywords`: SEO keywords (comma-separated string)
-- `hasMath`: Boolean flag for LaTeX/KaTeX support (optional, default: false)
+- `hasMath`: Boolean flag for LaTeX/KaTeX support (Default: `false`). When set to `true`, the system hooks into `remark-math` along with KaTeX/rehype-katex plugins to successfully parse and safely transform mathematical blocks and equations into structured formulas.
 
 ## `readTime` Consistency Rule
 
