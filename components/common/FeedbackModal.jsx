@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { submitFeedbackForm } from '@/server/contact-actions';
+import Image from 'next/image';
 
 const FeedbackModal = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -40,12 +41,14 @@ const FeedbackModal = () => {
 				setFormData({ name: "", email: "", feedback: "" });
 				setIsSubmitted(true);
 				setIsError(false);
-
-				// Close modal after success
-				setTimeout(() => {
-					setIsOpen(false);
-					sessionStorage.setItem('hasSeenFeedbackModal', 'true');
-				}, 3000);
+				sessionStorage.setItem('hasSeenFeedbackModal', 'true');
+				
+				// Removed the auto-close timeout here so users have time to see the donation request
+				// // Close modal after success
+				// setTimeout(() => {
+				// 	setIsOpen(false);
+				// 	sessionStorage.setItem('hasSeenFeedbackModal', 'true');
+				// }, 3000);
 			} else {
 				setErrorMessage("Oops! Something went wrong. Please try again.");
 				setIsError(true);
@@ -92,29 +95,71 @@ const FeedbackModal = () => {
 
 				{/* Content - Scrollable */}
 				<div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-					<div className="text-center mb-6">
-						<div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-							</svg>
-						</div>
-						<h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
-							We Value Your Feedback! 💭
-						</h2>
-						<p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
-							Help us improve JEE Challenger by sharing your thoughts on our features and suggesting new ones!
-						</p>
-					</div>
-
-					{/* Success Message */}
-					{isSubmitted && (
-						<div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-							<p className="text-green-700 dark:text-green-300 flex items-center">
-								<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+					{!isSubmitted && (
+						<div className="text-center mb-6">
+							<div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+								<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
 								</svg>
-								{responseMessage}
+							</div>
+							<h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
+								We Value Your Feedback! 💭
+							</h2>
+							<p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
+								Help us improve JEE Challenger by sharing your thoughts on our features and suggesting new ones!
 							</p>
+						</div>
+					)}
+
+					{/* Success Message & Donation Request */}
+					{isSubmitted && (
+						<div className="flex flex-col items-center animate-fade-in">
+							<div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg w-full">
+								<p className="text-green-700 dark:text-green-300 flex items-center justify-center font-medium">
+									<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+										<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+									</svg>
+									{responseMessage}
+								</p>
+							</div>
+
+							<div className="text-center w-full bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+								<h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Keep JEE Challenger Running 🚀</h3>
+								<p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+									We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. If our platform has added value to your preparation journey, consider chipping in a small amount to keep the servers powered up!
+								</p>
+
+								<div className="flex flex-col items-center space-y-4 max-w-sm mx-auto">
+									{/* QR Code */}
+									<div className="bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+										<Image
+											src="/images/donation-qr.png"
+											alt="Support us with UPI"
+											className="w-40 h-40 object-cover"
+											width={1000}
+											height={1000}
+										/>
+									</div>
+									<p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase">Scan to pay with any UPI app</p>
+
+									<div className="flex items-center w-full my-2">
+										<hr className="flex-grow border-gray-200 dark:border-gray-700" />
+										<span className="px-3 text-xs text-gray-400 font-medium">OR</span>
+										<hr className="flex-grow border-gray-200 dark:border-gray-700" />
+									</div>
+
+									{/* UPI Button */}
+									<a
+										href="upi://pay?pa=samyasaha@upi&pn=JEE%20Challenger&cu=INR"
+										className="w-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+									>
+										<svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+										</svg>
+										Pay via UPI App
+									</a>
+								</div>
+							</div>
 						</div>
 					)}
 
