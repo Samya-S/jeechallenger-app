@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb } from "react-icons/fa";
+import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb, FaHeart } from "react-icons/fa";
 // import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
 
 const Footer = () => {
@@ -70,9 +70,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/contact-us" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
-                  <FaEnvelope className="text-sm" />
-                  Contact Us
+                <Link href="/donate" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaHeart className="text-sm" />
+                  Support Us
                 </Link>
               </li>
             </ul>
@@ -151,7 +151,7 @@ const Footer = () => {
           <p className="text-sm mt-2">All Rights Reserved</p>
           
           {/* Legal Links */}
-          <div className="flex justify-center gap-4 mt-4 text-sm">
+          <div className="flex justify-center gap-2 mt-4 text-sm">
             <Link 
               href="/disclaimer" 
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
@@ -164,6 +164,13 @@ const Footer = () => {
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
             >
               Privacy Policy
+            </Link>
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+            <Link 
+              href="/contact-us" 
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+            >
+              Contact Us
             </Link>
           </div>
           
