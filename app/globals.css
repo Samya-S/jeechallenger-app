@@ -328,3 +328,8 @@ main {
     height: 4rem;
   }
 }
+
+/* Blog markdown: remove extra bottom space inside blockquotes */
+blockquote > p:last-child {
+  margin-bottom: 0;
+}

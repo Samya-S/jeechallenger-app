@@ -163,6 +163,38 @@ export const getMarkdownComponents = () => ({
       </a>
     );
   },
+  table: ({ children }) => (
+    <div className="overflow-x-auto my-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <table className="w-full border-collapse text-sm md:text-base">
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children }) => (
+    <thead className="bg-blue-600 dark:bg-blue-700">
+      {children}
+    </thead>
+  ),
+  tbody: ({ children }) => (
+    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+      {children}
+    </tbody>
+  ),
+  tr: ({ children }) => (
+    <tr className="even:bg-gray-50 dark:even:bg-gray-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+      {children}
+    </tr>
+  ),
+  th: ({ children }) => (
+    <th className="px-4 py-3 text-left font-semibold text-white tracking-wide whitespace-nowrap border-r border-blue-500 dark:border-blue-600 last:border-r-0">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="px-4 py-3 text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 last:border-r-0 align-middle">
+      {children}
+    </td>
+  ),
   img: ({ src, alt }) => {
     // Handle both local and external images
     if (!src) return null;
