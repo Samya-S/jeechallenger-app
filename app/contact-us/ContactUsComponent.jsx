@@ -8,6 +8,10 @@ const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopBu
   ssr: false
 });
 
+const validateEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
 const ContactUsComponent = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -16,12 +20,18 @@ const ContactUsComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const isFormValid = 
+    formData.name.trim() !== "" && 
+    validateEmail(formData.email) && 
+    formData.message.trim() !== "";
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isFormValid) return;
     setIsLoading(true);
 
     try {
@@ -98,7 +108,7 @@ const ContactUsComponent = () => {
                   </label>
                   <input
                     id="name"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200"
                     name="name"
                     placeholder="What's your name? Let us know!"
                     value={formData.name}
@@ -113,7 +123,11 @@ const ContactUsComponent = () => {
                   </label>
                   <input
                     id="email"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${
+                      formData.email && !validateEmail(formData.email)
+                        ? "border-red-500 dark:border-red-500 focus:ring-red-500"
+                        : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                    }`}
                     type="email"
                     name="email"
                     placeholder="Your email, so we can reach out!"
@@ -121,6 +135,11 @@ const ContactUsComponent = () => {
                     onChange={handleChange}
                     required
                   />
+                  {formData.email && !validateEmail(formData.email) && (
+                    <p className="mt-1 text-xs text-red-500 dark:text-red-400 text-left">
+                      Please enter a valid email address.
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -129,7 +148,7 @@ const ContactUsComponent = () => {
                   </label>
                   <textarea
                     id="message"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 resize-none"
                     name="message"
                     placeholder="What's on your mind? We're all ears!"
                     value={formData.message}
@@ -141,8 +160,8 @@ const ContactUsComponent = () => {
 
                 <button 
                   type="submit" 
-                  disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  disabled={isLoading || !isFormValid}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:enabled:from-blue-700 hover:enabled:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:enabled:scale-105 shadow-md hover:enabled:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center">

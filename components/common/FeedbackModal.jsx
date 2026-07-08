@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { submitFeedbackForm } from '@/server/contact-actions';
 import Image from 'next/image';
 
+const validateEmail = (email) => {
+	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
 const FeedbackModal = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [formData, setFormData] = useState({ name: "", email: "", feedback: "" });
@@ -12,6 +16,11 @@ const FeedbackModal = () => {
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	const isFormValid = 
+		formData.name.trim() !== "" && 
+		validateEmail(formData.email) && 
+		formData.feedback.trim() !== "";
 
 	useEffect(() => {
 		// Check if modal has been shown in this session
@@ -31,6 +40,7 @@ const FeedbackModal = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (!isFormValid) return;
 		setIsLoading(true);
 
 		try {
@@ -177,14 +187,14 @@ const FeedbackModal = () => {
 
 					{/* Form */}
 					{!isSubmitted && (
-						<form onSubmit={handleSubmit} className="space-y-4">
+						<form onSubmit={handleSubmit} className="space-y-4 p-1.5">
 							<div>
 								<label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
 									Name <span className="text-red-500">*</span>
 								</label>
 								<input
 									id="name"
-									className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+									className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200"
 									name="name"
 									placeholder="Your name"
 									value={formData.name}
@@ -199,7 +209,11 @@ const FeedbackModal = () => {
 								</label>
 								<input
 									id="email"
-									className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+									className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${
+										formData.email && !validateEmail(formData.email)
+											? "border-red-500 dark:border-red-500 focus:ring-red-500"
+											: "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+									}`}
 									type="email"
 									name="email"
 									placeholder="Your email address"
@@ -207,6 +221,11 @@ const FeedbackModal = () => {
 									onChange={handleChange}
 									required
 								/>
+								{formData.email && !validateEmail(formData.email) && (
+									<p className="mt-1 text-xs text-red-500 dark:text-red-400 text-left">
+										Please enter a valid email address.
+									</p>
+								)}
 							</div>
 
 							<div>
@@ -215,7 +234,7 @@ const FeedbackModal = () => {
 								</label>
 								<textarea
 									id="feedback"
-									className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 resize-none"
+									className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 resize-none"
 									name="feedback"
 									placeholder="Tell us what you think about our features or suggest new ones you'd like to see..."
 									value={formData.feedback}
@@ -227,7 +246,7 @@ const FeedbackModal = () => {
 
 							<button
 								type="submit"
-								disabled={isLoading}
+								disabled={isLoading || !isFormValid}
 								className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:enabled:from-blue-700 hover:enabled:to-purple-700 hover:enabled:shadow-lg"
 							>
 								{isLoading ? (
