@@ -1,5 +1,6 @@
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import Link from 'next/link';
 
 const DisclaimerComponent = () => {
 	return (
@@ -33,7 +34,7 @@ const DisclaimerComponent = () => {
 
 						{/* Last Updated */}
 						<div className="text-sm text-gray-600 dark:text-gray-400 text-right pb-6 border-b border-gray-200 dark:border-gray-700">
-							Last Updated: February 2026
+							Last Updated: July 2026
 						</div>
 
 						{/* 1. No Affiliation Clause */}
@@ -155,7 +156,7 @@ const DisclaimerComponent = () => {
 											DMCA & Copyright Takedown
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
-											If you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <a href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</a>.
+											If you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
 											We take intellectual property rights seriously and will promptly investigate and remove any infringing content upon proper notification.
@@ -340,7 +341,7 @@ const DisclaimerComponent = () => {
 									Contact Information
 								</h3>
 								<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-									If you have any questions or concerns regarding this disclaimer, or if you believe any content on this platform violates your rights, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <a href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</a>.
+									If you have any questions or concerns regarding this disclaimer, or if you believe any content on this platform violates your rights, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
 								</p>
 							</div>
 						</div>
@@ -367,6 +368,10 @@ const DisclaimerComponent = () => {
 									<li className="flex items-start">
 										<span className="text-blue-600 dark:text-blue-400 mr-2">✓</span>
 										<span>You understand the platform&lsquo;s limitations and will not hold the developers liable for any outcomes</span>
+									</li>
+									<li className="flex items-start">
+										<span className="text-blue-600 dark:text-blue-400 mr-2">✓</span>
+										<span>You have also read and agreed to our <Link href="/privacy-policy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link> and <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</Link></span>
 									</li>
 								</ul>
 							</div>

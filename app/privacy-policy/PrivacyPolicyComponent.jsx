@@ -35,7 +35,7 @@ const PrivacyPolicyComponent = () => {
 
 						{/* Last Updated */}
 						<div className="text-sm text-gray-600 dark:text-gray-400 text-right pb-6 border-b border-gray-200 dark:border-gray-700">
-							Last Updated: February 2026
+							Last Updated: July 2026
 						</div>
 
 						{/* Introduction */}
@@ -205,7 +205,7 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											When you contact us via our <Link href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">website forms</Link> or email, we collect your name and email address solely to respond to your inquiry. We <strong>do not sell, trade, rent, or share</strong> your personal information with third parties.
+											When you contact us via email, we collect your name and email address solely to respond to your inquiry. We <strong>do not sell, trade, rent, or share</strong> your personal information with third parties.
 										</p>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
@@ -219,7 +219,7 @@ const PrivacyPolicyComponent = () => {
 							</div>
 						</div>
 
-						{/* 7. AI Tutor Service */}
+						{/* 7. Authenticated Services */}
 						<div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
 							<div className="flex flex-col items-center">
 								<div className="w-10 h-10 bg-cyan-600 text-white rounded-full flex items-center justify-center font-bold mb-4">
@@ -227,51 +227,33 @@ const PrivacyPolicyComponent = () => {
 								</div>
 								<div className="w-full">
 									<h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
-										AI Tutor Service
+										Authenticated Services
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Our <strong>AI Tutor</strong> feature is a <strong>separate authenticated service</strong> governed by its own comprehensive Terms of Service and Privacy Policy. This service collects and processes additional data including:
+											Certain features of JEE Challenger require you to sign in with a Google account. The current authenticated feature is the <strong>AI Tutor</strong>; additional authenticated services may be introduced in the future. All such services are covered by this Privacy Policy.
+										</p>
+										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+											When you sign in and use any authenticated feature, we collect and process the following additional data:
 										</p>
 										<ul className="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300 mb-4">
-											<li>Google account information (name, email, profile picture)</li>
-											<li>Chat conversation history</li>
-											<li>Uploaded files and attachments</li>
-											<li>Learning preferences and subscription status</li>
+											<li><strong>Google account information</strong> — your name, email address, and profile picture, used to identify your account and personalise your experience</li>
+											<li><strong>Interaction history</strong> — such as chat conversations and session data, stored to enable continuity across sessions</li>
+											<li><strong>Uploaded files and attachments</strong> — any files you choose to share within the service</li>
+											<li><strong>Usage and preference data</strong> — including learning preferences and feature usage patterns, used to improve the service</li>
 										</ul>
 										<div className="bg-cyan-50 dark:bg-cyan-900/20 border-l-4 border-cyan-500 p-4 my-4">
-											<h4 className="font-bold text-cyan-800 dark:text-cyan-300 mb-3 flex items-center gap-2">
-												<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-												</svg>
-												Separate Policies
+											<h4 className="font-bold text-cyan-800 dark:text-cyan-300 mb-2">
+												📌 One Policy for All Services
 											</h4>
-											<p className="text-cyan-800 dark:text-cyan-300 mb-3">
-												The AI Tutor service is governed by separate policies. Please review:
+											<p className="text-cyan-800 dark:text-cyan-300">
+												All authenticated features — current and future — are governed by this single Privacy Policy. Your use of any authenticated feature is also subject to our{' '}
+												<Link href="/terms-of-service" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Terms of Service</Link>.
 											</p>
-											<div className="space-y-2">
-												<div className="text-cyan-800 dark:text-cyan-300">
-													→ <Link
-														href="/ai-tutor/privacy"
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
-													>
-														AI Tutor Privacy Policy
-													</Link>
-												</div>
-												<div className="text-cyan-800 dark:text-cyan-300">
-													→ <Link
-														href="/ai-tutor/terms"
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
-													>
-														AI Tutor Terms of Service
-													</Link>
-												</div>
-											</div>
 										</div>
+										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+											We do not sell or share authenticated service data with third parties, except as required to operate the service (e.g., the underlying AI model provider) or as required by law. Data shared with AI model providers is used solely to generate responses and is not used to train their models on your personal data.
+										</p>
 									</div>
 								</div>
 							</div>
@@ -339,7 +321,7 @@ const PrivacyPolicyComponent = () => {
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-											By using our website, you consent to this Privacy Policy and agree to its terms. If you do not agree with this policy, please discontinue use of our website.
+											By using our website, you consent to this Privacy Policy and our <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">Terms of Service</Link>. If you do not agree with these policies, please discontinue use of our website.
 										</p>
 									</div>
 								</div>
@@ -352,8 +334,11 @@ const PrivacyPolicyComponent = () => {
 								<h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
 									Questions About This Policy?
 								</h3>
-								<p className="text-gray-700 dark:text-gray-300 mb-4">
-									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> or via our <Link href="/contact-us" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">contact page</Link>.
+								<p className="text-gray-700 dark:text-gray-300 mb-3">
+									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+								</p>
+								<p className="text-sm text-gray-600 dark:text-gray-400">
+									Also see: <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</Link> &bull; <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline">Disclaimer</Link>
 								</p>
 							</div>
 						</div>

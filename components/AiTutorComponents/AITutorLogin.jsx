@@ -67,7 +67,7 @@ const AITutorLogin = ({ onLoginError, authError }) => {
                 </li>
                 <li className="flex items-center space-x-2">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  <span>Premium features and study materials</span>
+                  <span>Personalised study features</span>
                 </li>
               </ul>
             </div>
@@ -78,11 +78,11 @@ const AITutorLogin = ({ onLoginError, authError }) => {
         <div className="text-center mt-6 space-y-4">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             By signing in, you agree to our{" "}
-            <Link href="/ai-tutor/terms" target="_blank" className="text-blue-600 hover:underline">
+            <Link href="/terms-of-service" target="_blank" className="text-blue-600 hover:underline">
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="/ai-tutor/privacy" target="_blank" className="text-blue-600 hover:underline">
+            <Link href="/privacy-policy" target="_blank" className="text-blue-600 hover:underline">
               Privacy Policy
             </Link>
           </p>

@@ -823,10 +823,11 @@ const HomeComponent = ({ latestArticles }) => {
         </div>
       </section>
 
-      {/* SEO links for AI Tutor pages - visually hidden but accessible to crawlers */}
+      {/* SEO links for legal pages - visually hidden but accessible to crawlers */}
       <div className="sr-only">
-        <Link href="/ai-tutor/privacy" target="_blank" rel="noopener noreferrer">AI Tutor Privacy Policy</Link>
-        <Link href="/ai-tutor/terms" target="_blank" rel="noopener noreferrer">AI Tutor Terms of Service</Link>
+        <Link href="/terms-of-service" target="_blank" rel="noopener noreferrer">Terms of Service</Link>
+        <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>
+        <Link href="/disclaimer" target="_blank" rel="noopener noreferrer">Disclaimer</Link>
       </div>
 
       {/* Floating Action Button */}

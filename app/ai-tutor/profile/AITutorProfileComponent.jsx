@@ -200,7 +200,7 @@ const AITutorProfileComponent = () => {
                   </h3>
                   <div className="space-y-3">
                     <Link
-                      href="/ai-tutor/privacy"
+                      href="/privacy-policy"
                       target="_blank"
                       className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                     >
@@ -211,7 +211,7 @@ const AITutorProfileComponent = () => {
                       <span className="text-sm text-blue-600 dark:text-blue-400">→</span>
                     </Link>
                     <Link
-                      href="/ai-tutor/terms"
+                      href="/terms-of-service"
                       target="_blank"
                       className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                     >

@@ -151,7 +151,7 @@ const Footer = () => {
           <p className="text-sm mt-2">All Rights Reserved</p>
           
           {/* Legal Links */}
-          <div className="flex justify-center gap-2 mt-4 text-sm">
+          <div className="flex justify-center gap-2 mt-4 text-sm flex-wrap">
             <Link 
               href="/disclaimer" 
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
@@ -164,6 +164,13 @@ const Footer = () => {
               className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
             >
               Privacy Policy
+            </Link>
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+            <Link 
+              href="/terms-of-service" 
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+            >
+              Terms of Service
             </Link>
             <span className="text-gray-400 dark:text-gray-600">•</span>
             <Link 
