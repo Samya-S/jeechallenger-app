@@ -74,6 +74,8 @@ export default function RootLayout({ children }) {
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
         {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" /> */}
 
+        <script src="https://quge5.com/88/tag.min.js" data-zone="259240" async data-cfasync="false"></script>
+
         {/* RSS Feed */}
         <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
