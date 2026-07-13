@@ -7,6 +7,7 @@ import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
 import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
 import FeedbackModal from "@/components/common/FeedbackModal";
 import TelegramGateProvider from '../utils/TelegramGateProvider';
+import AdBlockDetector from "@/components/common/AdBlockDetector";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export default function ConditionalLayout({ children }) {
       {!isAITutorPage && <Footer />}
       {/* {!isAITutorPage && <AIAnnouncementModal />} */}
       {!isAITutorPage && <FeedbackModal />}
+      <AdBlockDetector />
     </TelegramGateProvider>
   );
 } 
