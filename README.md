@@ -34,7 +34,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
-- **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, and reference books for Physics, Chemistry, and Mathematics
+- **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
 - **Chapter-wise PYQs**: Solved previous year questions organized by chapters
 - **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and filtering
@@ -55,6 +55,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **Interactive Formula Sheets**: Dynamic, chapter-wise formulas rendered with KaTeX for quick revision
 - **Universal Unit Converters**: High-precision, interactive tools to instantly convert complex derived units across Physics, Chemistry, and Mathematics
+- **Periodic Table Explorer**: Interactive periodic table featuring s/p/d/f block highlights (fully aligned with NCERT/JEE syllabus standards), properties trends heatmaps (electronegativity, ionization energy, atomic mass, melting point), STP state of matter filters, responsive mobile list views, and high-yield inorganic chemistry study notes.
 - **Physics Resources**: Complete study materials and reference books
 - **Chemistry Resources**: Comprehensive chemistry study guides
 - **Mathematics Resources**: Extensive math preparation materials
@@ -233,7 +234,8 @@ jeechallenger-app/
 │   │   ├── physics/            # Physics resources
 │   │   │   └── unit-converter/ # Physics unit converter tool
 │   │   ├── chemistry/          # Chemistry resources
-│   │   │   └── unit-converter/ # Chemistry unit converter tool
+│   │   │   ├── unit-converter/ # Chemistry unit converter tool
+│   │   │   └── periodic-table/ # Interactive Periodic Table explorer tool
 │   │   ├── mathematics/        # Mathematics resources
 │   │   │   └── unit-converter/ # Mathematics unit converter tool
 │   │   └── chapterwise-solved-pyqs/  # PYQs by chapter
@@ -250,11 +252,12 @@ jeechallenger-app/
 ├── data/                       # Content data
 │   ├── blog/                   # Blog articles
 │   │   └── articles/           # MDX article files
-│   └── materials/              # Formula and Unit Conversion data
+│   └── materials/              # Formula, Unit Conversion, and Periodic Table data
 │       ├── PhysicsFormulaData.js
 │       ├── ChemistryFormulaData.js
 │       ├── MathematicsFormulaData.js
-│       └── UnitConversionData.js
+│       ├── UnitConversionData.js
+│       └── PeriodicTableData.js
 ├── docs/                       # Documentation
 │   ├── blog-structure.md       # Blog system documentation
 │   └── color-system.md         # Design system colors
