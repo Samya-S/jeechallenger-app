@@ -1,0 +1,74 @@
+{
+    "$schema": "https://fundingjson.org/schema/v1.1.0.json",
+    "version": "v1.1.0",
+    "entity": {
+        "type": "individual",
+        "role": "maintainer",
+        "name": "Samya Saha",
+        "email": "samyasahaofficial@gmail.com",
+        "description": "I am a 5th-year BS-MS undergraduate in Statistics and Data Science at IIT Kharagpur. I am a full-stack developer (Next.js, C#, Python) currently exploring LLM architecture from scratch. I build open-source educational utilities like JEE Challenger to level the playing field for Indian students.",
+        "webpageUrl": {
+            "url": "https://samyasaha.vercel.app"
+        }
+    },
+    "projects": [
+        {
+            "guid": "jee-challenger",
+            "name": "JEE Challenger",
+            "description": "An independent, open-source EdTech utility for JEE Main/Advanced aspirants. Features include a custom Gemini-powered AI Doubt Tutor, a modular Syllabus Tracker, and an automated Python data pipeline for extracting and serving PYQs via an upcoming NTA-style CBT engine.",
+            "webpageUrl": {
+                "url": "https://www.jeechallenger.com"
+            },
+            "repositoryUrl": {
+                "url": "https://github.com/Samya-S/jeechallenger-app"
+            },
+            "licenses": [
+                "spdx:MIT"
+            ],
+            "tags": [
+                "education",
+                "edtech",
+                "nextjs",
+                "python",
+                "ai",
+                "test-prep"
+            ]
+        }
+    ],
+    "funding": {
+        "channels": [
+            {
+                "guid": "upi-transfer",
+                "type": "payment-provider",
+                "address": "",
+                "description": "Direct support via UPI or Bank Transfer. Please contact me directly via email or phone to receive exact payment details."
+            }
+        ],
+        "plans": [
+            {
+                "guid": "infra-ad-removal",
+                "status": "active",
+                "name": "Infrastructure & Ad-Removal Buffer",
+                "description": "Covers domain renewals, cloud databases, and Gemini API scaling costs so I can permanently remove display ads from the site, restoring a distraction-free learning environment.",
+                "amount": 25000,
+                "currency": "INR",
+                "frequency": "one-time",
+                "channels": [
+                    "upi-transfer"
+                ]
+            },
+            {
+                "guid": "cbt-pipeline-dev",
+                "status": "active",
+                "name": "CBT Pipeline & Feature Development",
+                "description": "Student maintainer stipend to support my time completing the open-source Python PYQ extraction pipelines and deploying the CBT backend mock engine after my placement season.",
+                "amount": 50000,
+                "currency": "INR",
+                "frequency": "one-time",
+                "channels": [
+                    "upi-transfer"
+                ]
+            }
+        ]
+    }
+}
