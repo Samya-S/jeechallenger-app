@@ -34,7 +34,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
-- **Study Materials**: Comprehensive resources for Physics, Chemistry, and Mathematics
+- **Study Materials**: Comprehensive resources including interactive Formula Sheets and reference books for Physics, Chemistry, and Mathematics
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
 - **Chapter-wise PYQs**: Solved previous year questions organized by chapters
 - **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and filtering
@@ -53,6 +53,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 📚 Study Resources
 
+- **Interactive Formula Sheets**: Dynamic, chapter-wise formulas rendered with KaTeX for quick revision
 - **Physics Resources**: Complete study materials and reference books
 - **Chemistry Resources**: Comprehensive chemistry study guides
 - **Mathematics Resources**: Extensive math preparation materials
@@ -240,10 +241,12 @@ jeechallenger-app/
 │   ├── AiTutorComponents/      # AI Tutor specific components
 │   ├── common/                 # Shared components
 │   ├── home/                   # Home page components
+│   ├── materials/              # Study materials components (Formula Sheets, KaTeX)
 │   └── utils/                  # Utility components
 ├── data/                       # Content data
-│   └── blog/                   # Blog articles
-│       └── articles/           # MDX article files
+│   ├── blog/                   # Blog articles
+│   │   └── articles/           # MDX article files
+│   └── materials/              # Formula and study material data
 ├── docs/                       # Documentation
 │   ├── blog-structure.md       # Blog system documentation
 │   └── color-system.md         # Design system colors

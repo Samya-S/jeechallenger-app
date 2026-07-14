@@ -1,6 +1,8 @@
 import ChemistryResources from './ChemistryResources';
 import CategorySection from '../CategorySection';
 import PYQandMoreSection from '../PYQandMoreSection';
+import FormulaSheets from '@/components/materials/FormulaSheets';
+import ChemistryFormulaData from '@/data/materials/ChemistryFormulaData';
 import TelegramPost from '@/components/utils/TelegramPost';
 import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
@@ -32,6 +34,9 @@ const ChemistryComponent = () => {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto">
+        {/* Formula Sheets */}
+        <FormulaSheets formulaData={ChemistryFormulaData} colorTheme="green" />
+
         {/* Resources Grid */}
         <div className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -54,6 +59,8 @@ const ChemistryComponent = () => {
             />
           ))}
         </div>
+
+
 
         {/* Additional Sections */}
         <PYQandMoreSection />
