@@ -1,8 +1,20 @@
 "use client";
-import React from "react";
+import { useEffect } from "react";
 import { X, Zap } from "lucide-react";
 
 export default function ElementDetailsModal({ selectedElement, setSelectedElement, CATEGORIES }) {
+  // Lock body scroll when modal is open (prevents address-bar layout shift on mobile)
+  useEffect(() => {
+    if (selectedElement) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedElement]);
+
   if (!selectedElement) return null;
 
   return (
