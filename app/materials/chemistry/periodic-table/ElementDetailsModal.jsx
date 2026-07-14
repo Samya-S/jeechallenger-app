@@ -6,7 +6,7 @@ export default function ElementDetailsModal({ selectedElement, setSelectedElemen
   if (!selectedElement) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
       onClick={() => setSelectedElement(null)}
       style={{
@@ -14,12 +14,12 @@ export default function ElementDetailsModal({ selectedElement, setSelectedElemen
       }}
     >
       {/* Modal Box */}
-      <div 
+      <div
         className="relative w-full max-w-3xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
         style={{
           animation: "modalZoomIn 140ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
-          maxHeight: "90vh"
+          maxHeight: "70vh"
         }}
       >
         {/* snap-open zoom keyframes */}
@@ -50,36 +50,37 @@ export default function ElementDetailsModal({ selectedElement, setSelectedElemen
         </button>
 
         {/* Left Column: Glowing Visual Card */}
-        <div 
-          className={`w-full md:w-64 p-8 flex flex-col justify-between items-center text-center text-white shrink-0 relative overflow-hidden bg-gradient-to-br ${
-            CATEGORIES[selectedElement.category]?.gradient || "from-gray-500 to-slate-700"
-          }`}
+        <div
+          className={`w-full md:w-64 pl-5 pr-16 py-5 md:p-8 flex flex-row md:flex-col justify-between items-center text-white shrink-0 relative overflow-hidden bg-gradient-to-br ${CATEGORIES[selectedElement.category]?.gradient || "from-gray-500 to-slate-700"
+            }`}
         >
           {/* Background decorative ring */}
           <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full border border-white/10 pointer-events-none" />
           <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full border border-white/5 pointer-events-none" />
 
-          {/* Atomic Number */}
-          <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center font-black text-sm tracking-tight border border-white/20">
-            {selectedElement.number}
+          {/* Left Block: Atomic Number */}
+          <div className="w-1/3 md:w-auto flex justify-start md:justify-center md:mb-6 shrink-0">
+            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center font-black text-sm tracking-tight border border-white/20">
+              {selectedElement.number}
+            </div>
           </div>
 
-          {/* Main symbol display */}
-          <div className="my-6">
-            <span className="text-6xl font-black tracking-tighter drop-shadow-md leading-none block">
+          {/* Middle Block: Symbol & Name */}
+          <div className="w-1/3 md:w-auto flex flex-col items-center justify-center text-center my-0 md:my-6">
+            <span className="text-4xl md:text-6xl font-black tracking-tighter drop-shadow-md leading-none block">
               {selectedElement.symbol}
             </span>
-            <span className="text-xl font-bold tracking-tight mt-2 block opacity-90">
+            <span className="text-[10px] md:text-xl font-bold tracking-tight mt-0.5 md:mt-2 block opacity-90 truncate max-w-[90px] md:max-w-none">
               {selectedElement.name}
             </span>
           </div>
 
-          {/* Block and State Pill indicators */}
-          <div className="flex flex-wrap gap-1.5 justify-center">
-            <span className="text-[10px] font-black uppercase tracking-wider bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm border border-white/10">
+          {/* Right Block: Block and State Pills */}
+          <div className="w-1/3 md:w-auto flex flex-col md:flex-row md:flex-wrap gap-1 md:gap-1.5 justify-center items-end md:items-center">
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-wider bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm border border-white/10 shrink-0">
               {selectedElement.block}-block
             </span>
-            <span className="text-[10px] font-black uppercase tracking-wider bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm border border-white/10 capitalize">
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-wider bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm border border-white/10 capitalize shrink-0">
               {selectedElement.state}
             </span>
           </div>
@@ -114,9 +115,9 @@ export default function ElementDetailsModal({ selectedElement, setSelectedElemen
             {/* Atomic Properties Grid */}
             <div className="flex flex-col gap-4">
               <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800 pb-2">Properties Scan</h3>
-              
+
               <div className="grid grid-cols-2 gap-4">
-                
+
                 <div className="bg-gray-50 dark:bg-gray-900/40 p-3 rounded-xl border border-gray-100 dark:border-gray-800/80 flex flex-col items-center justify-center text-center">
                   <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Atomic Mass</span>
                   <span className="text-xs font-black tracking-tight">{selectedElement.mass} u</span>
