@@ -296,7 +296,7 @@ export default function PeriodicTableExplorer() {
         </div>
 
         {/* Heatmap & Filter Toggles */}
-        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto justify-end">
+        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto justify-center md:justify-end">
           {/* Heatmap selection */}
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-green-500" />
