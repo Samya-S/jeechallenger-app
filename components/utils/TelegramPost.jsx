@@ -40,24 +40,44 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
   const currentTheme = themeConfig[themeGradient] || themeConfig['from-blue-600 to-purple-600'];
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-widget.js?22";
-    script.async = true;
-    script.setAttribute("data-telegram-post", url);
-    script.setAttribute("data-width", "100%");
-    script.setAttribute("data-dark", "1");
+    let isMounted = true;
+    let script = null;
 
-    script.onerror = () => {
-      setError(true); // Trigger error state if the script fails to load
-    };
-
-    const container = document.getElementById("telegram-widget-container");
-    if (container) {
-      container.appendChild(script);
+    if (!url) {
+      setError(true);
+      return;
     }
 
+    // Wait for the URL check to succeed before loading the widget
+    fetch(`https://t.me/${url}`, { mode: 'no-cors' })
+      .then(() => {
+        if (!isMounted) return;
+
+        script = document.createElement("script");
+        script.src = "https://telegram.org/js/telegram-widget.js?22";
+        script.async = true;
+        script.setAttribute("data-telegram-post", url);
+        script.setAttribute("data-width", "100%");
+        script.setAttribute("data-dark", "1");
+
+        script.onerror = () => {
+          if (isMounted) setError(true);
+        };
+
+        const container = document.getElementById("telegram-widget-container");
+        if (container) {
+          container.appendChild(script);
+        }
+      })
+      .catch(() => {
+        // If fetch fails (network unreachable), only show our custom error block
+        if (isMounted) setError(true);
+      });
+
     return () => {
-      if (container && container.contains(script)) {
+      isMounted = false;
+      const container = document.getElementById("telegram-widget-container");
+      if (container && script && container.contains(script)) {
         container.removeChild(script);
       }
     };
@@ -120,7 +140,14 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                   <h3 className="text-xl font-semibold text-red-800 dark:text-red-200">Unable to Load Post</h3>
                 </div>
                 <p className="text-red-700 dark:text-red-300">
-                  There was an issue loading the Telegram post. Please try refreshing the page or check your internet connection.
+                  There was an issue loading the Telegram post. Please try refreshing the page or{" "}
+                  <Link 
+                    href={`https://t.me/${url}`} 
+                    target="_blank" 
+                    className="underline hover:text-red-800 dark:hover:text-red-200"
+                  >
+                    view it directly on Telegram
+                  </Link>.
                 </p>
               </div>
             </div>
