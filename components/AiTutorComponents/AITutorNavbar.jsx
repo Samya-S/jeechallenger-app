@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { FaHome, FaChalkboardTeacher, FaChevronDown, FaSignOutAlt, FaUser, FaComments, FaBars, FaTimes } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
@@ -13,7 +13,12 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
   const dropdownRef = useRef(null);
 
   const pathname = usePathname();
-  const isProfilePage = pathname === '/ai-tutor/profile';
+  const searchParams = useSearchParams();
+  const currentSearchParams = searchParams.toString();
+  const fullCurrentPath = currentSearchParams ? `${pathname}?${currentSearchParams}` : pathname;
+  const encodedReturnUrl = encodeURIComponent(fullCurrentPath);
+
+  const isProfilePage = pathname === '/profile';
   const isChatPage = pathname === '/ai-tutor' || pathname.startsWith('/ai-tutor/chat/');
 
   // Close dropdown on outside click
@@ -119,7 +124,7 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
                     </Link>
                   ) : (
                     <Link
-                      href="/ai-tutor/profile"
+                      href={`/profile?returnUrl=${encodedReturnUrl}`}
                       onClick={() => setDropdownOpen(false)}
                       className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
                     >

@@ -640,7 +640,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     // lastLoadedChatIdRef.current = null;
 
     // Trigger NextAuth signout
-    await signOut({ callbackUrl: '/ai-tutor' });
+    await signOut({ callbackUrl: window.location.pathname + window.location.search });
   };
 
   const messageGroups = groupMessagesByDate(messages);

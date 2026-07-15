@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 import Styles from "./Navbar.module.css";
-import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher } from "react-icons/fa";
+import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher, FaUser, FaSignOutAlt } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/utils/ThemeToggle";
 import { useTheme } from "@teispace/next-themes";
@@ -13,6 +16,18 @@ export default function NavBar() {
   const [dropdownState, setDropdownState] = useState({});
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const profileImageLoader = ({ src }) => src;
+
+  const currentSearchParams = searchParams.toString();
+  const fullCurrentPath = currentSearchParams ? `${pathname}?${currentSearchParams}` : pathname;
+  const encodedReturnUrl = encodeURIComponent(fullCurrentPath);
+
+  const loginHref = pathname === '/login'
+    ? (currentSearchParams ? `/login?${currentSearchParams}` : '/login')
+    : `/login?returnUrl=${encodedReturnUrl}`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,9 +99,9 @@ export default function NavBar() {
   }, [showMobileNav]);
 
   return (
-    <nav 
-      className={`${Styles.navbar} ${isScrolled ? Styles.navbarScrolled : ''}`} 
-      role="navigation" 
+    <nav
+      className={`${Styles.navbar} ${isScrolled ? Styles.navbarScrolled : ''}`}
+      role="navigation"
       aria-label="Main navigation"
     >
       {/* Logo */}
@@ -102,7 +117,7 @@ export default function NavBar() {
           if (item.type === "link") {
             return (
               <li key={index} className={Styles.li} role="none">
-                <Link 
+                <Link
                   href={item.url}
                   role="menuitem"
                   aria-label={`Go to ${item.title} page`}
@@ -140,7 +155,7 @@ export default function NavBar() {
                 </button>
                 <div
                   className={Styles.columnsDropdownContent}
-                  style={{ 
+                  style={{
                     opacity: dropdownState[index] ? 1 : 0,
                     visibility: dropdownState[index] ? 'visible' : 'hidden',
                     transform: dropdownState[index] ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'
@@ -151,8 +166,8 @@ export default function NavBar() {
                   <ul>
                     {item.items.map((subitem, subindex) => (
                       <li key={subindex} className={Styles.columnsDropdownContentli} role="none">
-                        <Link 
-                          href={subitem.url} 
+                        <Link
+                          href={subitem.url}
                           role="menuitem"
                           aria-label={`Go to ${subitem.title} page`}
                         >
@@ -169,6 +184,86 @@ export default function NavBar() {
         })}
         <li className={Styles.li} role="none">
           <ThemeToggle />
+        </li>
+        {/* User Auth Section */}
+        <li className={Styles.li} role="none">
+          {status === "loading" ? (
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+          ) : status === "authenticated" ? (
+            <div
+              className={Styles.li}
+              role="none"
+              onMouseLeave={() => toggleDropdown('user')}
+            >
+              <button
+                className={Styles.columnsDropdown}
+                onMouseEnter={() => toggleDropdown('user')}
+                onClick={() => toggleDropdown('user')}
+                aria-expanded={dropdownState['user']}
+                style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                {session?.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || "User"}
+                    width={32}
+                    height={32}
+                    loader={profileImageLoader}
+                    unoptimized
+                    className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                    <FaUser className="text-blue-600 dark:text-blue-400" />
+                  </div>
+                )}
+                <span
+                  className={Styles.columnsDropdownArrow}
+                  style={{
+                    transform: dropdownState['user'] ? 'rotate(180deg)' : 'rotate(0deg)',
+                  }}
+                >
+                  <FaCaretDown />
+                </span>
+              </button>
+              <div
+                className={Styles.columnsDropdownContent}
+                style={{
+                  opacity: dropdownState['user'] ? 1 : 0,
+                  visibility: dropdownState['user'] ? 'visible' : 'hidden',
+                  transform: dropdownState['user'] ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)',
+                  right: 0,
+                  left: 'auto',
+                  minWidth: '150px'
+                }}
+              >
+                <ul>
+                  <li className={Styles.columnsDropdownContentli}>
+                    <Link href={`/profile${pathname === '/' ? '' : `?returnUrl=${encodedReturnUrl}`}`}>
+                      Profile
+                    </Link>
+                  </li>
+                  <li className={Styles.columnsDropdownContentli}>
+                    <button
+                      onClick={() => signOut({ callbackUrl: fullCurrentPath })}
+                      className={Styles.signOutDesktop}
+                    >
+                      <FaSignOutAlt />
+                      Sign Out
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href={loginHref}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+              style={{ display: 'inline-block' }}
+            >
+              Sign In
+            </Link>
+          )}
         </li>
       </ul>
 
@@ -210,7 +305,7 @@ export default function NavBar() {
               if (item.type === 'link') {
                 return (
                   <li key={index} role="none">
-                    <Link 
+                    <Link
                       href={item.url}
                       onClick={closeMobileNav}
                       role="menuitem"
@@ -257,8 +352,8 @@ export default function NavBar() {
                       <ul>
                         {item.items.map((subitem, subindex) => (
                           <li key={subindex} role="none">
-                            <Link 
-                              href={subitem.url} 
+                            <Link
+                              href={subitem.url}
                               onClick={closeMobileNav}
                               role="menuitem"
                               aria-label={`Go to ${subitem.title} page`}
@@ -274,8 +369,35 @@ export default function NavBar() {
               }
               return null;
             })}
+            {status === "loading" ? null : status === "authenticated" ? (
+              <>
+                <li role="none">
+                  <Link href={`/profile${pathname === '/' ? '' : `?returnUrl=${encodedReturnUrl}`}`} onClick={closeMobileNav} role="menuitem">
+                    <FaUser />
+                    Profile
+                  </Link>
+                </li>
+                <li role="none">
+                  <button
+                    onClick={() => { closeMobileNav(); signOut({ callbackUrl: fullCurrentPath }); }}
+                    role="menuitem"
+                    className={Styles.signOutMobile}
+                  >
+                    <FaSignOutAlt />
+                    Sign Out
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li role="none">
+                <Link href={loginHref} onClick={closeMobileNav} role="menuitem">
+                  <FaUser />
+                  Sign In
+                </Link>
+              </li>
+            )}
             <li className={Styles.mobileThemeToggle} role="none">
-              <div 
+              <div
                 className={Styles.mobileThemeToggleContainer}
                 onClick={() => {
                   // Toggle theme directly using the useTheme hook
@@ -283,7 +405,7 @@ export default function NavBar() {
                   setTheme(current === 'dark' ? 'light' : 'dark');
                 }}
               >
-                <div 
+                <div
                   className={Styles.mobileThemeToggleIcon}
                   onClick={(e) => {
                     // Prevent the icon click from bubbling up to avoid double toggle
