@@ -1,11 +1,59 @@
 "use client";
 
+import { usePathname } from 'next/navigation';
+import Script from 'next/script';
 import { useState, useEffect } from 'react';
+import { isAdExcluded } from '@/lib/ad-config';
 
-export default function AdBlockDetector() {
-  const [adBlockDetected, setAdBlockDetected] = useState(false);
+/**
+ * Handles injection of ad script tags (Monetag and Google AdSense)
+ */
+function AdScriptLoader({ pathname }) {
+  if (isAdExcluded(pathname)) {
+    return null;
+  }
+
+  return (
+    <>
+      {/* Monetag Smart Tag */}
+      <Script
+        id="monetag-smart-tag"
+        src="https://quge5.com/88/tag.min.js"
+        data-zone="259240"
+        strategy="afterInteractive"
+        data-cfasync="false"
+      />
+
+      {/* Google AdSense */}
+      <Script
+        id="google-adsense"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
+        strategy="lazyOnload"
+        crossOrigin="anonymous"
+      />
+    </>
+  );
+}
+
+/**
+ * Detects ad blockers and shows lock screen overlay if necessary
+ */
+function AdBlockDetector({ pathname }) {
+  // Cache the detection result across navigation in the same session.
+  // null = not checked, true = adblocker found, false = no adblocker.
+  const [adBlockStatus, setAdBlockStatus] = useState(null);
 
   useEffect(() => {
+    // If ads are excluded on this route, don't perform any check now.
+    if (isAdExcluded(pathname)) {
+      return;
+    }
+
+    // If we already completed the check for this session, don't repeat it.
+    if (adBlockStatus !== null) {
+      return;
+    }
+
     const checkAdBlocker = async () => {
       try {
         // Try fetching the ad script URLs that are crucial for the site
@@ -14,7 +62,7 @@ export default function AdBlockDetector() {
           fetch("https://quge5.com/88/tag.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" }),
           fetch("https://3nbf4.com/act/files/service-worker.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" })
         ]);
-        
+
         // Secondary check using a known adblock bait
         const bait = document.createElement("div");
         bait.className = "ad-banner ad-container ad-placement public-api-ad";
@@ -23,10 +71,12 @@ export default function AdBlockDetector() {
         bait.style.left = "-999px";
         bait.style.height = "10px";
         document.body.appendChild(bait);
-        
+
         setTimeout(() => {
           if (bait.offsetHeight === 0 || window.getComputedStyle(bait).display === 'none') {
-            setAdBlockDetected(true);
+            setAdBlockStatus(true);
+          } else {
+            setAdBlockStatus(false);
           }
           if (document.body.contains(bait)) {
             document.body.removeChild(bait);
@@ -35,32 +85,36 @@ export default function AdBlockDetector() {
 
       } catch (error) {
         // Fetch failed, meaning it was likely blocked by an ad blocker
-        setAdBlockDetected(true);
+        setAdBlockStatus(true);
       }
     };
 
     // Run the check after a short delay to ensure extensions have loaded
     const timer = setTimeout(checkAdBlocker, 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname, adBlockStatus]);
 
+  // Determine if we should show the block overlay
+  const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true;
+
+  // Manage body scroll lock
   useEffect(() => {
-    if (adBlockDetected) {
+    if (shouldBlock) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [adBlockDetected]);
+  }, [shouldBlock]);
 
-  if (!adBlockDetected) return null;
+  if (!shouldBlock) return null;
 
   return (
-    <div 
-      className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4" 
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4"
       style={{ zIndex: 2147483647 }}
     >
       <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full text-center shadow-2xl border border-gray-200 dark:border-gray-800">
@@ -75,7 +129,7 @@ export default function AdBlockDetector() {
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           We rely on ads to keep JEE Challenger free. Please disable your ad blocker or whitelist our site to continue using the platform.
         </p>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
         >
@@ -83,5 +137,39 @@ export default function AdBlockDetector() {
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Unified Ad Manager combining loading and block detection
+ */
+export default function AdManager() {
+  const pathname = usePathname();
+  const isExcluded = isAdExcluded(pathname);
+
+  // Monitor SPA transition from ad-enabled pages to ad-excluded pages.
+  // Monetag registers persistent click/mousedown listeners globally on the document/window.
+  // When navigating client-side, these listeners persist even when the script tag is unmounted.
+  // A hard reload on entering an excluded page is the cleanest way to wipe the window event queue.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const wasAdEnabled = sessionStorage.getItem('was_ad_enabled') === 'true';
+
+    if (isExcluded) {
+      if (wasAdEnabled) {
+        sessionStorage.setItem('was_ad_enabled', 'false');
+        window.location.reload();
+      }
+    } else {
+      sessionStorage.setItem('was_ad_enabled', 'true');
+    }
+  }, [pathname, isExcluded]);
+
+  return (
+    <>
+      <AdScriptLoader pathname={pathname} />
+      <AdBlockDetector pathname={pathname} />
+    </>
   );
 }

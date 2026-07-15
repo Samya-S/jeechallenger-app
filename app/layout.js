@@ -3,9 +3,9 @@ import NextAuthProvider from '@/components/common/NextAuthProvider';
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from '@/components/common/ThemeProvider';
-import Script from 'next/script';
 import { ogImageMeta } from '@/lib/og-metadata';
 import { getMetadataBase } from '@/lib/site-url';
+import AdManager from "@/components/common/AdManager";
 // import SplashCursor from "@/components/utils/SplashCursor";
 
 const homeOg = ogImageMeta({
@@ -74,8 +74,6 @@ export default function RootLayout({ children }) {
         <meta name="google-adsense-account" content="ca-pub-5566043353022333" />
         {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333" crossOrigin="anonymous" /> */}
 
-        <script src="https://quge5.com/88/tag.min.js" data-zone="259240" async data-cfasync="false"></script>
-
         {/* RSS Feed */}
         <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
@@ -89,12 +87,8 @@ export default function RootLayout({ children }) {
           </ThemeProvider>
         </NextAuthProvider>
 
-        {/* Lazy load Google AdSense only when needed */}
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
-          strategy="lazyOnload"
-          crossOrigin="anonymous"
-        />
+        {/* Manage ads loading and block detection conditionally based on route */}
+        <AdManager />
         <GoogleAnalytics gaId="G-6YPF169T9S" />
       </body>
     </html>
