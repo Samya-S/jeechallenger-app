@@ -9,15 +9,15 @@ const NavbarItems = [
     type: 'dropdown',
     items: [
       {
-        title: 'Physics PDFs',
+        title: 'Physics',
         url: '/materials/physics'
       },
       {
-        title: 'Chemistry PDFs',
+        title: 'Chemistry',
         url: '/materials/chemistry'
       },
       {
-        title: 'Mathematics PDFs',
+        title: 'Mathematics',
         url: '/materials/mathematics'
       },
       {
