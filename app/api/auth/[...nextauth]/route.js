@@ -52,8 +52,8 @@ export const authOptions = {
   },
 
   pages: {
-    signIn: '/ai-tutor',   // Send them here when they need to log in
-    error: '/ai-tutor',    // Send them back here if Google throws an error
+    signIn: '/login',
+    error: '/login',
   },
   
   callbacks: {

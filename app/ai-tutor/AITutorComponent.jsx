@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle } from "react-icons/fa";
-import AITutorLogin from "@/components/AiTutorComponents/AITutorLogin";
+
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 import ChatSidebar from "@/components/AiTutorComponents/ChatSidebar";
 import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
@@ -106,7 +106,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
-  
+
   const [chats, setChats] = useState([]);
   const [activeChatId, setActiveChatId] = useState(urlChatId);
   const [messages, setMessages] = useState([]);
@@ -120,16 +120,16 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [abortController, setAbortController] = useState(null);
-  
+
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
-  
+
   // --- START OF REACTIVE URL CLEANUP ---
   useEffect(() => {
     const errorParam = searchParams.get('error');
-    
+
     if (errorParam) {
       // Set the beautiful UI error message
       if (errorParam === 'Callback' || errorParam === 'AccessDenied') {
@@ -138,7 +138,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       } else {
         setAuthError('An error occurred during login. Please try again.');
       }
-      
+
       // Use Next.js router to securely wipe the URL parameters
       router.replace('/ai-tutor', { scroll: false });
     }
@@ -190,6 +190,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     };
   }, []);
 
+  // Redirect to centralized login if unauthenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      const currentUrl = window.location.pathname + window.location.search;
+      router.push(`/login?returnUrl=${encodeURIComponent(currentUrl)}`);
+    }
+  }, [status, router]);
+
   // Load chat list once authenticated
   useEffect(() => {
     if (status === "authenticated") {
@@ -233,7 +241,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
     try {
       const listResponse = await fetch(API_ENDPOINTS.FILES.LIST, {
-        credentials: 'include' 
+        credentials: 'include'
       });
 
       if (listResponse.ok) {
@@ -317,7 +325,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setIsLoadingMessages(true);
     try {
       const response = await fetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
-         credentials: 'include'
+        credentials: 'include'
       });
 
       if (response.status === 404) {
@@ -331,7 +339,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         const uiMessages = await convertApiMessagesToUi(data.messages || []);
         setMessages(uiMessages);
       } else if (response.status === 401) {
-          handleLogout();
+        handleLogout();
       } else {
         setMessages([]);
       }
@@ -455,8 +463,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
 
       if (response.status === 401) {
-          handleLogout();
-          return;
+        handleLogout();
+        return;
       }
 
       if (!response.ok) {
@@ -511,8 +519,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           text: "Generation stopped.",
           sender: "ai",
           timestamp: new Date(),
-          isError: true, 
-          failedText: userMessage.text, 
+          isError: true,
+          failedText: userMessage.text,
         };
         setMessages((prev) => [...prev, stopMessage]);
         return;
@@ -583,7 +591,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           router.push('/ai-tutor');
         }
       } else if (response.status === 401) {
-          handleLogout();
+        handleLogout();
       }
     } catch (error) {
       console.error('Error deleting chat:', error);
@@ -604,7 +612,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           prev.map((c) => (c.id === chatId ? { ...c, title } : c))
         );
       } else if (response.status === 401) {
-          handleLogout();
+        handleLogout();
       }
     } catch (error) {
       console.error('Error renaming chat:', error);
@@ -630,7 +638,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     // setUploadError("");
 
     // lastLoadedChatIdRef.current = null;
-    
+
     // Trigger NextAuth signout
     await signOut({ callbackUrl: '/ai-tutor' });
   };
@@ -653,22 +661,21 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     );
   }
 
-  // Show login screen if user is not authenticated
+  // Show loading spinner while redirecting if unauthenticated
   if (status === "unauthenticated" || !session?.user) {
     return (
-      <AITutorLogin
-        onLoginError={handleLoginError}
-        authError={authError}
-      />
+      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
+        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
+      </div>
     );
   }
 
   const handleDirectFileUpload = async (files) => {
     setUploadError("");
     setIsUploading(true);
-    
+
     const compiledFiles = [];
-    
+
     try {
       // Loop sequentially or in parallel over each chosen asset to process split transaction states securely
       for (const file of Array.from(files)) {
@@ -685,8 +692,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         });
 
         if (reqResponse.status === 401) {
-            handleLogout();
-            return;
+          handleLogout();
+          return;
         }
 
         if (!reqResponse.ok) {
@@ -712,7 +719,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
           throw new Error(errorMessage);
         }
-        
+
         const reqData = await reqResponse.json();
         const { presigned_url, file_path } = reqData;
 
