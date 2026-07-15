@@ -153,20 +153,18 @@ export default function PeriodicTableExplorer() {
 
   // Check if placeholders should be lit based on active filters
   const isLanthanidePlaceholderLit = useMemo(() => {
-    if (!searchQuery && !activeCategory && !activeBlock) return true;
     for (let i = 57; i <= 71; i++) {
       if (filteredElementMap[i]) return true;
     }
     return false;
-  }, [filteredElementMap, searchQuery, activeCategory, activeBlock]);
+  }, [filteredElementMap]);
 
   const isActinidePlaceholderLit = useMemo(() => {
-    if (!searchQuery && !activeCategory && !activeBlock) return true;
     for (let i = 89; i <= 103; i++) {
       if (filteredElementMap[i]) return true;
     }
     return false;
-  }, [filteredElementMap, searchQuery, activeCategory, activeBlock]);
+  }, [filteredElementMap]);
 
   // Get Heatmap styling color
   const getElementStyle = (el) => {
