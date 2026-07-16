@@ -1,5 +1,5 @@
 import { getAllArticles } from '@/lib/articles';
-import { getSiteUrl } from '@/lib/site-url';
+import { getSiteUrl } from '@/config/site-url';
 import fs from 'fs';
 import path from 'path';
 

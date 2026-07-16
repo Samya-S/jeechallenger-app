@@ -1,4 +1,4 @@
-const { getSiteUrl } = require('./lib/site-url');
+const { getSiteUrl } = require('./config/site-url');
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {

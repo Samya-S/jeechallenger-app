@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { FaUpload, FaFile, FaImage, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileAudio, FaFileAlt, FaTimes, FaSpinner, FaCheck } from "react-icons/fa";
-import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
+import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 import { clearAuthData } from "@/lib/auth-utils";
 import { googleLogout } from '@react-oauth/google';
 

@@ -4,8 +4,8 @@ import PYQandMoreSection from '../PYQandMoreSection';
 import { BookOpen, Target, Sparkles, ChevronRight, Calculator, Table } from "lucide-react";
 import FormulaSheets from '@/components/materials/FormulaSheets';
 import ChemistryFormulaData from '@/data/materials/ChemistryFormulaData';
-import TelegramPost from '@/components/utils/TelegramPost';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import TelegramPost from '@/components/ui/TelegramPost';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Link from 'next/link';
 

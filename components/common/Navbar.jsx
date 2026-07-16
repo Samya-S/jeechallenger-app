@@ -8,7 +8,7 @@ import Image from "next/image";
 import Styles from "./Navbar.module.css";
 import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher, FaUser, FaSignOutAlt } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
-import ThemeToggle from "@/components/utils/ThemeToggle";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTheme } from "@teispace/next-themes";
 
 export default function NavBar() {

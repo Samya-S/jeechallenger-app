@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/components/common/Breadcrumbs';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Link from 'next/link';
 
 const DisclaimerComponent = () => {

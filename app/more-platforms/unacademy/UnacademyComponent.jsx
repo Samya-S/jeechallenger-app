@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const UnacademyComponent = () => {

@@ -4,9 +4,9 @@ import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { ogImageMeta } from '@/lib/og-metadata';
-import { getMetadataBase } from '@/lib/site-url';
+import { getMetadataBase } from '@/config/site-url';
 import AdManager from "@/components/common/AdManager";
-// import SplashCursor from "@/components/utils/SplashCursor";
+// import SplashCursor from "@/components/ui/SplashCursor";
 
 const homeOg = ogImageMeta({
   title: 'JEE Challenger',

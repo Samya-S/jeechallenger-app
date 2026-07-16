@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaFile, FaImage, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileAudio, FaFileAlt, FaDownload, FaEye, FaTimes } from "react-icons/fa";
-import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
+import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 
 const FileAttachment = ({ file, onRemove, showRemove = false }) => {
   const previewImageLoader = ({ src }) => src;

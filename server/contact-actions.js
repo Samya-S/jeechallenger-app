@@ -1,5 +1,5 @@
 "use server";
-import { getSiteUrl } from '@/lib/site-url';
+import { getSiteUrl } from '@/config/site-url';
 import nodemailer from 'nodemailer';
 
 export const submitContactUsForm = async (formData) => {

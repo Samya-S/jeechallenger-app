@@ -3,7 +3,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // Dynamic imports for better performance and code splitting
-const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
+const TelegramPost = dynamic(() => import('@/components/ui/TelegramPost'), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center py-8">
@@ -15,7 +15,7 @@ const TelegramPost = dynamic(() => import('@/components/utils/TelegramPost'), {
   )
 });
 
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {
   ssr: false
 });
 import JeeMain2020papers from './JeeMain2020papers';

@@ -7,7 +7,7 @@ import Hero from "./Hero";
 import BlogCard from "@/app/blogs/BlogCard";
 
 // Lazy load heavy components for better performance
-const ScrollToTopButton = dynamic(() => import('@/components/utils/ScrollToTopButton'), {
+const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {
   ssr: false,
   loading: () => null
 });

@@ -1,6 +1,6 @@
 import Breadcrumbs from '@/components/common/Breadcrumbs';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
-import { getSiteUrl } from '@/lib/site-url';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
+import { getSiteUrl } from '@/config/site-url';
 import Link from "next/link";
 
 const PrivacyPolicyComponent = () => {

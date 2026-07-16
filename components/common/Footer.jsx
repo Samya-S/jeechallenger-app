@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb, FaHeart } from "react-icons/fa";
-// import GoogleAdsUnit from "@/components/utils/GoogleAdsUnit";
+// import GoogleAdsUnit from "@/components/ui/GoogleAdsUnit";
 
 const Footer = () => {
   return (

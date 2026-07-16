@@ -1,7 +1,7 @@
 import NewsComponent from './NewsComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { newsFAQs } from '@/data/faq-data';
-import { fetchNews } from '@/lib/news-actions';
+import { fetchNews } from '@/server/news-actions';
 import { ogImageMeta } from '@/lib/og-metadata';
 
 const pageOg = ogImageMeta({

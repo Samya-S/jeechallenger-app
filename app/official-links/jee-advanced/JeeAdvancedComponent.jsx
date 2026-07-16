@@ -1,5 +1,5 @@
-import TelegramPost from '@/components/utils/TelegramPost';
-import ScrollToTopButton from '@/components/utils/ScrollToTopButton';
+import TelegramPost from '@/components/ui/TelegramPost';
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const JeeAdvancedComponent = () => {

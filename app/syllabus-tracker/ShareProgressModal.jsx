@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
-import { getSiteUrl } from '@/lib/site-url';
+import { getSiteUrl } from '@/config/site-url';
 
 /**
  * ShareProgressModal - Modal component for generating and sharing progress report

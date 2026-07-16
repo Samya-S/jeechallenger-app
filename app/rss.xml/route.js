@@ -1,4 +1,4 @@
-import { getSiteUrl } from "@/lib/site-url";
+import { getSiteUrl } from "@/config/site-url";
 import { getAllArticles } from "@/lib/articles";
 import fs from 'fs';
 import path from 'path';

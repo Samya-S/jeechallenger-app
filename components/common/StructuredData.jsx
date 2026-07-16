@@ -2,7 +2,7 @@
 // Generates JSON-LD schema for Google Rich Results
 
 import Script from 'next/script';
-import { getSiteUrl } from '@/lib/site-url';
+import { getSiteUrl } from '@/config/site-url';
 
 export default function StructuredData({ type, data }) {
   const siteUrl = getSiteUrl();

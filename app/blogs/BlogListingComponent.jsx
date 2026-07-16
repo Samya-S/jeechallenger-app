@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import BlogCard from './BlogCard';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
-const ScrollToTopButton = dynamic(() => import('../../components/utils/ScrollToTopButton'), {
+const ScrollToTopButton = dynamic(() => import('../../components/ui/ScrollToTopButton'), {
   ssr: false
 });
 

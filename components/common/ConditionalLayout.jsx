@@ -4,10 +4,10 @@ import { Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import TelegramJoinFloat from "@/components/utils/TelegramJoinFloat";
+import TelegramJoinFloat from "@/components/ui/TelegramJoinFloat";
 import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
 import FeedbackModal from "@/components/common/FeedbackModal";
-import TelegramGateProvider from '../utils/TelegramGateProvider';
+import TelegramGateProvider from '../providers/TelegramGateProvider';
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();

@@ -8,7 +8,7 @@ import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRe
 import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
 import ChatSidebar from "@/components/AiTutorComponents/ChatSidebar";
 import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
-import { API_ENDPOINTS } from "@/lib/api-endpoints-config";
+import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import remarkMath from 'remark-math';

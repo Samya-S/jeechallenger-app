@@ -1,7 +1,7 @@
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import UnitConverter from "@/components/common/UnitConverter";
 import RelatedConverters from "@/components/common/RelatedConverters";
-import ScrollToTopButton from "@/components/utils/ScrollToTopButton";
+import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { ogImageMeta } from '@/lib/og-metadata';
 
 const pageOg = ogImageMeta({

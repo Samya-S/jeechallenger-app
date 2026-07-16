@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
-import { isAdExcluded } from '@/lib/ad-config';
+import { isAdExcluded } from '@/config/ad-config';
 
 /**
  * Handles injection of ad script tags (Monetag and Google AdSense)
