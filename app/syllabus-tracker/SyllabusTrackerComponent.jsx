@@ -58,13 +58,13 @@ const SyllabusTrackerComponent = () => {
     () => calculateOverallProgress(syllabusData, progressData),
     [progressData]
   );
-  
+
   const [expandedSubjects, setExpandedSubjects] = useState({
     physics: false,
     chemistry: false,
     mathematics: false
   });
-  
+
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -74,7 +74,7 @@ const SyllabusTrackerComponent = () => {
   const [isInitializingSync, setIsInitializingSync] = useState(false);
   const isInitializingSyncRef = React.useRef(false);
   const [syncInitialized, setSyncInitialized] = useState(false);
-  
+
   // Conflict modal state
   const [showConflictModal, setShowConflictModal] = useState(false);
   const [conflictData, setConflictData] = useState({ local: null, cloud: null });
@@ -84,6 +84,7 @@ const SyllabusTrackerComponent = () => {
     if (isAuthenticated) {
       const storedPref = localStorage.getItem(`jee_syllabus_sync_enabled_${userId}`);
       if (storedPref !== null) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSyncEnabled(storedPref === 'true');
       } else {
         // Default to true on first login
@@ -113,21 +114,21 @@ const SyllabusTrackerComponent = () => {
 
     async function performInitialSync() {
       if (!isAuthenticated || !syncEnabled || syncInitialized || isInitializingSyncRef.current) return;
-      
+
       isInitializingSyncRef.current = true;
       setIsInitializingSync(true);
       setSyncStatus('syncing');
-      
+
       try {
         const response = await fetch('/api/syllabus-tracker/sync');
         if (!response.ok) throw new Error('Failed to fetch cloud progress');
-        
+
         const { progress: cloudProgress } = await response.json();
-        
+
         // Check local state. If empty, check anonymous data.
         let localData = progressData;
         let claimingAnonymous = false;
-        
+
         if (isEmptyProgress(localData)) {
           const anonData = getAnonymousProgressData();
           if (!isEmptyProgress(anonData)) {
@@ -147,6 +148,7 @@ const SyllabusTrackerComponent = () => {
         } else if (!isLocalEmpty && isCloudEmpty) {
           // Push to cloud
           saveProgressData(userId, localData);
+          // eslint-disable-next-line react-hooks/immutability
           await pushToCloud(localData);
           if (claimingAnonymous) deleteAnonymousProgressData();
           setSyncInitialized(true);
@@ -183,7 +185,7 @@ const SyllabusTrackerComponent = () => {
   const handleConflictResolve = async (resolution) => {
     setSyncStatus('syncing');
     setShowConflictModal(false);
-    
+
     try {
       let finalData;
       if (resolution === 'merge') {
@@ -196,11 +198,11 @@ const SyllabusTrackerComponent = () => {
 
       saveProgressData(userId, finalData);
       await pushToCloud(finalData);
-      
+
       if (conflictData.claimingAnonymous) {
         deleteAnonymousProgressData();
       }
-      
+
       setSyncInitialized(true);
     } catch (error) {
       console.error("Failed to resolve conflict", error);
@@ -221,7 +223,7 @@ const SyllabusTrackerComponent = () => {
   // Debounced Auto-sync on changes
   useEffect(() => {
     if (!isAuthenticated || !syncEnabled || !syncInitialized) return;
-    
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSyncStatus('syncing');
     const timer = setTimeout(() => {
       pushToCloud(progressData).catch(err => {
@@ -327,11 +329,11 @@ const SyllabusTrackerComponent = () => {
               </p>
             </div>
           </div>
-          
+
           {/* Cloud Sync Status Card */}
           <div className="max-w-2xl mx-auto mt-4">
             {!isAuthenticated ? (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/50 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/50 shadow-sm flex flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-100 dark:bg-blue-800 rounded-full p-2">
                     <Cloud className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -346,7 +348,7 @@ const SyllabusTrackerComponent = () => {
                 </Link>
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className={`rounded-full p-2 ${syncEnabled ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}>
                     {syncEnabled ? (
@@ -429,9 +431,9 @@ const SyllabusTrackerComponent = () => {
           </button>
         </div>
 
-        <SyncConflictModal 
-          isOpen={showConflictModal} 
-          onResolve={handleConflictResolve} 
+        <SyncConflictModal
+          isOpen={showConflictModal}
+          onResolve={handleConflictResolve}
         />
 
         {/* Share Progress Modal */}
