@@ -39,8 +39,18 @@ const PhysicsComponent = () => {
         {/* Formula Sheets */}
         <FormulaSheets formulaData={PhysicsFormulaData} colorTheme="blue" />
 
-        {/* Tools Banner */}
-        <div className="px-4 sm:px-6 lg:px-8 mt-8">
+        {/* Interactive Study Tools */}
+        <div className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Interactive Study Tools
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Calculate unit conversions and solve complex problems with premium interactive widgets designed for JEE prep.
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
+          </div>
+
           <Link 
             href="/materials/physics/unit-converter"
             className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 p-8 sm:p-10 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
