@@ -533,33 +533,6 @@ const SyllabusTrackerComponent = () => {
           </div>
         </div>
 
-        {/* Info Section */}
-        <div className="mt-6 sm:mt-8 max-w-3xl mx-auto">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-5 sm:p-6 border border-blue-200 dark:border-blue-800 shadow-md hover:shadow-lg">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center justify-center gap-2">
-              <span className="text-xl sm:text-2xl">📌</span>
-              How to Use This Tracker
-            </h3>
-            <ul className="max-w-fit mx-auto space-y-2 sm:space-y-3 text-gray-700 dark:text-gray-300">
-              <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
-                <span className="text-sm sm:text-base font-medium">Click on any subject card to expand and view all chapters</span>
-              </li>
-              <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
-                <span className="text-sm sm:text-base font-medium">Mark checkboxes for Theory, PYQs, and Revision as you complete them</span>
-              </li>
-              <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
-                <span className="text-sm sm:text-base font-medium">Your progress is automatically saved in your browser</span>
-              </li>
-              <li className="flex items-start gap-2 sm:gap-3 hover:translate-x-1">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-base sm:text-lg flex-shrink-0 -mt-0.5">✓</span>
-                <span className="text-sm sm:text-base font-medium">Export your progress to save a backup or transfer to another device</span>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
   );
