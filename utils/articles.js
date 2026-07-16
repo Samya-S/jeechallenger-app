@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { getBatchViewCounts } from '@/server/views-actions';
 
-const articlesDirectory = path.join(process.cwd(), 'data/blog/articles');
+const articlesDirectory = path.join(process.cwd(), 'data/blogs');
 
 /**
  * Get all article slugs

@@ -1,12 +1,12 @@
 # Blog Articles Structure
 
 ## Overview
-Blog articles are stored as individual MDX files in the `data/blog/articles/` directory. Each article is a self-contained file with YAML frontmatter for metadata and markdown content.
+Blog articles are stored as individual MDX files in the `data/blogs/` directory. Each article is a self-contained file with YAML frontmatter for metadata and markdown content.
 
 ## Structure
 
 ```
-data/blog/articles/
+data/blogs/
 ├── article-slug-1.mdx
 ├── article-slug-2.mdx
 ├── article-slug-3.mdx
@@ -98,14 +98,14 @@ const categories = await getAllCategories();
 
 To add a new article to the blog:
 
-1. Create an `.mdx` file in `data/blog/articles/` with a kebab-case name
+1. Create an `.mdx` file in `data/blogs/` with a kebab-case name
 2. Add YAML frontmatter with required metadata fields
 3. Write article content in Markdown below the frontmatter
 4. The filename automatically becomes the URL slug
 
 **Example:**
 ```bash
-# Create: data/blog/articles/my-new-article.mdx
+# Create: data/blogs/my-new-article.mdx
 # URL: /blog/my-new-article
 ```
 
