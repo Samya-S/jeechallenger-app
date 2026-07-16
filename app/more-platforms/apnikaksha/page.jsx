@@ -1,5 +1,5 @@
 import ApniKakshaComponent from './ApniKakshaComponent'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Apni Kaksha',

@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Filter, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import BlogCard from './BlogCard';
+import BlogCard from '@/components/ui/BlogCard';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const ScrollToTopButton = dynamic(() => import('../../components/ui/ScrollToTopButton'), {

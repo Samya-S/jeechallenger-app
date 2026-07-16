@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle } from "react-icons/fa";
 
-import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
-import ChatSidebar from "@/components/AiTutorComponents/ChatSidebar";
-import FileAttachment from "@/components/AiTutorComponents/FileAttachment";
+import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";
+import ChatSidebar from "@/app/ai-tutor/components/ChatSidebar";
+import FileAttachment from "@/app/ai-tutor/components/FileAttachment";
 import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';

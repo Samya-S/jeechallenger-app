@@ -1,7 +1,7 @@
 import ChemistryComponent from './ChemistryComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { chemistryFAQs } from '@/data/faq-data'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Chemistry Study Materials',

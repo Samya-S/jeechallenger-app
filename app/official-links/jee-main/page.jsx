@@ -1,6 +1,6 @@
 import JeeMainComponent from './JeeMainComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'JEE Main Official Links & PYQs',

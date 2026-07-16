@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Hero from "./Hero";
-import BlogCard from "@/app/blogs/BlogCard";
+import BlogCard from "@/components/ui/BlogCard";
 
 // Lazy load heavy components for better performance
 const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 // import AITutorPlansComponent from "./AITutorPlansComponent";
 
 const pageOg = ogImageMeta({

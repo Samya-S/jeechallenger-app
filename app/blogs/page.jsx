@@ -1,8 +1,8 @@
 import { getBatchViewCounts } from '@/server/views-actions';
-import { getAllArticles } from '../../lib/articles';
+import { getAllArticles } from '../../utils/articles';
 import BlogListingComponent from './BlogListingComponent';
 import StructuredData from '@/components/common/StructuredData';
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'JEE Preparation Tips & Strategy',

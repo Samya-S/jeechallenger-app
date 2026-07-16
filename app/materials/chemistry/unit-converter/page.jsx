@@ -2,7 +2,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import UnitConverter from "@/components/common/UnitConverter";
 import RelatedConverters from "@/components/common/RelatedConverters";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Chemistry Unit Converter',

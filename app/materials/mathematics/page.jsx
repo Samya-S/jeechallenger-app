@@ -1,7 +1,7 @@
 import MathematicsComponent from './MathematicsComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { mathematicsFAQs } from '@/data/faq-data'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Mathematics Study Materials',

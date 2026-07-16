@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BookOpen, FileText, Calculator, Atom, FlaskConical, TrendingUp } from 'lucide-react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const pageOg = ogImageMeta({

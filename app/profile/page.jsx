@@ -1,5 +1,5 @@
 import ProfileComponent from "./ProfileComponent";
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Profile - JEE Challenger',

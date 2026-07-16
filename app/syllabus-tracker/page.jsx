@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { syllabusTrackerFAQs } from '@/data/faq-data';
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Syllabus Tracker',

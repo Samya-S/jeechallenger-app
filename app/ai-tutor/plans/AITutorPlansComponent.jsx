@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AITutorNavbar from "@/components/AiTutorComponents/AITutorNavbar";
+import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";
 import { useRouter } from "next/navigation";
 
 const fetchPlans = async () => {

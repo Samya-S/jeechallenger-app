@@ -1,9 +1,9 @@
-import ChemistryResources from './ChemistryResources';
-import CategorySection from '../CategorySection';
-import PYQandMoreSection from '../PYQandMoreSection';
+import ChemistryResources from '@/data/materials/chemistry-resources';
+import CategorySection from '@/components/materials/CategorySection';
+import PYQandMoreSection from '@/components/materials/PYQandMoreSection';
 import { BookOpen, Target, Sparkles, ChevronRight, Calculator, Table } from "lucide-react";
 import FormulaSheets from '@/components/materials/FormulaSheets';
-import ChemistryFormulaData from '@/data/materials/ChemistryFormulaData';
+import ChemistryFormulaData from '@/data/materials/chemistry-formula-data';
 import TelegramPost from '@/components/ui/TelegramPost';
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';

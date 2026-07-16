@@ -1,5 +1,5 @@
 import { getToken } from "next-auth/jwt";
-import clientPromise from "@/lib/mongodb";
+import clientPromise from "@/utils/mongodb";
 import { ObjectId } from "mongodb";
 
 export const dynamic = 'force-dynamic';

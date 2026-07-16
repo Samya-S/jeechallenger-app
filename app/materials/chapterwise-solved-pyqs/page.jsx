@@ -1,7 +1,7 @@
 import ChapterWiseSolvedPYQsComponent from './ChapterWiseSolvedPYQsComponent'
 import StructuredData from '@/components/common/StructuredData'
 import { pyqFAQs } from '@/data/faq-data'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Chapter-wise Solved PYQs',

@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useSyncExternalStore, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { Cloud, CloudOff, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { syllabusData } from './syllabusData';
+import { syllabusData } from '@/data/syllabus-data';
 import {
   subscribeProgressData,
   getProgressStorageSnapshot,

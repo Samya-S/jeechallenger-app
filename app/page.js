@@ -1,7 +1,7 @@
-import HomeComponent from "@/components/home/HomeComponent";
+import HomeComponent from "@/app/HomeComponent";
 import StructuredData from "@/components/common/StructuredData";
 import { homepageFAQs } from "@/data/faq-data";
-import { getAllArticles } from "@/lib/articles";
+import { getAllArticles } from "@/utils/articles";
 
 export default async function Home() {
   const latestArticles = (await getAllArticles(false)).slice(0, 3);

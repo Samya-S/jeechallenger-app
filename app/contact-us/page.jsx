@@ -1,5 +1,5 @@
 import ContactUsComponent from './ContactUsComponent'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Contact Us',

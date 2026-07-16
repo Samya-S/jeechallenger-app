@@ -2,7 +2,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PeriodicTableExplorer from "@/app/materials/chemistry/periodic-table/PeriodicTableExplorer";
 import RelatedConverters from "@/components/common/RelatedConverters";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Periodic Table Explorer',

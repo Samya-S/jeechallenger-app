@@ -1,5 +1,5 @@
-import { createFallbackOgImageResponse, createOgImageResponse } from '@/lib/og-image';
-import { OG_PARAM_LIMITS, sanitizeOgText, unpackOgImageParams } from '@/lib/og-metadata';
+import { createFallbackOgImageResponse, createOgImageResponse } from '@/utils/og-image';
+import { OG_PARAM_LIMITS, sanitizeOgText, unpackOgImageParams } from '@/utils/og-metadata';
 import { normalizeOgTheme } from '@/config/og-themes';
 
 export const runtime = 'nodejs';

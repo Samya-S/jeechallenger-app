@@ -3,7 +3,7 @@ import LoginClient from "./LoginClient";
 import StructuredData from "@/components/common/StructuredData";
 import { FaSpinner } from "react-icons/fa";
 
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Sign In | JEE Challenger',

@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { FaHome, FaChalkboardTeacher, FaChevronDown, FaSignOutAlt, FaUser, FaComments, FaBars, FaTimes } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
-import AITutorThemeToggle from "@/components/AiTutorComponents/AITutorThemeToggle";
+import AITutorThemeToggle from "@/app/ai-tutor/components/AITutorThemeToggle";
 
 const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
   const profileImageLoader = ({ src }) => src;

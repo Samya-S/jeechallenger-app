@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import GoogleAuthButton from "@/components/auth/GoogleAuthButton";
+import GoogleAuthButton from "@/app/login/GoogleAuthButton";
 import { useState, useEffect } from "react";
 
 export default function LoginClient() {

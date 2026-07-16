@@ -1,5 +1,5 @@
 import DisclaimerComponent from './DisclaimerComponent'
-import { ogImageMeta } from '@/lib/og-metadata'
+import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Disclaimer',

@@ -2,7 +2,7 @@ import NewsComponent from './NewsComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { newsFAQs } from '@/data/faq-data';
 import { fetchNews } from '@/server/news-actions';
-import { ogImageMeta } from '@/lib/og-metadata';
+import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
   title: 'Latest JEE News',
