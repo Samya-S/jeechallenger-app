@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState, useMemo, useSyncExternalStore } from 'react';
+import React, { useState, useMemo, useSyncExternalStore, useEffect, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
+import { Cloud, CloudOff, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { syllabusData } from './syllabusData';
 import {
   subscribeProgressData,
@@ -10,17 +12,25 @@ import {
   calculateOverallProgress,
   resetAllProgress,
   exportProgress,
-  importProgress
+  importProgress,
+  saveProgressData,
+  getAnonymousProgressData,
+  deleteAnonymousProgressData
 } from './progressUtils';
+import { mergeProgress, isSameProgress, isEmptyProgress } from './syncUtils';
 import SubjectCard from './SubjectCard';
 import { ChapterList } from './ChapterRow';
 import ShareProgressModal from './ShareProgressModal';
+import SyncConflictModal from './SyncConflictModal';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
+import Link from 'next/link';
 
-function useProgressDataFromStorage() {
+import { usePathname, useSearchParams } from 'next/navigation';
+
+function useProgressDataFromStorage(userId) {
   const snapshot = useSyncExternalStore(
-    subscribeProgressData,
-    getProgressStorageSnapshot,
+    (onStoreChange) => subscribeProgressData(userId, onStoreChange),
+    () => getProgressStorageSnapshot(userId),
     () => '{}'
   );
   return useMemo(() => {
@@ -32,29 +42,202 @@ function useProgressDataFromStorage() {
   }, [snapshot]);
 }
 
-/**
- * SyllabusTrackerComponent - Main component for JEE Syllabus Tracker
- */
 const SyllabusTrackerComponent = () => {
-  const progressData = useProgressDataFromStorage();
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const userId = session?.user?.id;
+  const isAuthenticated = status === 'authenticated';
+
+  const currentSearchParams = searchParams ? searchParams.toString() : '';
+  const fullCurrentPath = currentSearchParams ? `${pathname}?${currentSearchParams}` : (pathname || '/syllabus-tracker');
+  const encodedReturnUrl = encodeURIComponent(fullCurrentPath);
+
+  const progressData = useProgressDataFromStorage(userId);
   const overallStats = useMemo(
     () => calculateOverallProgress(syllabusData, progressData),
     [progressData]
   );
+  
   const [expandedSubjects, setExpandedSubjects] = useState({
     physics: false,
     chemistry: false,
     mathematics: false
   });
+  
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Handle checkbox toggle
-  const handleToggle = (subject, chapterId, taskType, completed) => {
-    updateChapterProgress(subject, chapterId, taskType, completed);
+  // Sync state
+  const [syncEnabled, setSyncEnabled] = useState(false);
+  const [syncStatus, setSyncStatus] = useState('idle'); // 'idle', 'syncing', 'synced', 'error'
+  const [isInitializingSync, setIsInitializingSync] = useState(false);
+  const isInitializingSyncRef = React.useRef(false);
+  const [syncInitialized, setSyncInitialized] = useState(false);
+  
+  // Conflict modal state
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [conflictData, setConflictData] = useState({ local: null, cloud: null });
+
+  // Load sync preference
+  useEffect(() => {
+    if (isAuthenticated) {
+      const storedPref = localStorage.getItem(`jee_syllabus_sync_enabled_${userId}`);
+      if (storedPref !== null) {
+        setSyncEnabled(storedPref === 'true');
+      } else {
+        // Default to true on first login
+        setSyncEnabled(true);
+        localStorage.setItem(`jee_syllabus_sync_enabled_${userId}`, 'true');
+      }
+    }
+  }, [isAuthenticated, userId]);
+
+  // Handle toggling cloud sync
+  const handleToggleSync = () => {
+    const newVal = !syncEnabled;
+    setSyncEnabled(newVal);
+    if (isAuthenticated) {
+      localStorage.setItem(`jee_syllabus_sync_enabled_${userId}`, String(newVal));
+      if (!newVal) {
+        setSyncInitialized(false);
+        setSyncStatus('idle');
+        isInitializingSyncRef.current = false;
+      }
+    }
   };
 
-  // Toggle subject expansion
+  // Perform initial sync / migration
+  useEffect(() => {
+    let isMounted = true;
+
+    async function performInitialSync() {
+      if (!isAuthenticated || !syncEnabled || syncInitialized || isInitializingSyncRef.current) return;
+      
+      isInitializingSyncRef.current = true;
+      setIsInitializingSync(true);
+      setSyncStatus('syncing');
+      
+      try {
+        const response = await fetch('/api/syllabus-tracker/sync');
+        if (!response.ok) throw new Error('Failed to fetch cloud progress');
+        
+        const { progress: cloudProgress } = await response.json();
+        
+        // Check local state. If empty, check anonymous data.
+        let localData = progressData;
+        let claimingAnonymous = false;
+        
+        if (isEmptyProgress(localData)) {
+          const anonData = getAnonymousProgressData();
+          if (!isEmptyProgress(anonData)) {
+            localData = anonData;
+            claimingAnonymous = true;
+          }
+        }
+
+        const isLocalEmpty = isEmptyProgress(localData);
+        const isCloudEmpty = isEmptyProgress(cloudProgress);
+
+        if (isLocalEmpty && !isCloudEmpty) {
+          // Pull from cloud
+          saveProgressData(userId, cloudProgress);
+          setSyncInitialized(true);
+          setSyncStatus('synced');
+        } else if (!isLocalEmpty && isCloudEmpty) {
+          // Push to cloud
+          saveProgressData(userId, localData);
+          await pushToCloud(localData);
+          if (claimingAnonymous) deleteAnonymousProgressData();
+          setSyncInitialized(true);
+        } else if (!isLocalEmpty && !isCloudEmpty && !isSameProgress(localData, cloudProgress)) {
+          // Conflict!
+          setConflictData({ local: localData, cloud: cloudProgress, claimingAnonymous });
+          setShowConflictModal(true);
+          // Wait for user resolution to setSyncInitialized
+        } else {
+          // Same data or both empty
+          if (claimingAnonymous) {
+            saveProgressData(userId, localData);
+            deleteAnonymousProgressData();
+          }
+          setSyncInitialized(true);
+          setSyncStatus('synced');
+        }
+      } catch (error) {
+        console.error("Initial sync failed", error);
+        if (isMounted) {
+          setSyncStatus('error');
+          isInitializingSyncRef.current = false; // Allow retry
+        }
+      } finally {
+        if (isMounted) setIsInitializingSync(false);
+      }
+    }
+
+    performInitialSync();
+
+    return () => { isMounted = false; };
+  }, [isAuthenticated, syncEnabled, syncInitialized, userId, progressData]);
+
+  const handleConflictResolve = async (resolution) => {
+    setSyncStatus('syncing');
+    setShowConflictModal(false);
+    
+    try {
+      let finalData;
+      if (resolution === 'merge') {
+        finalData = mergeProgress(conflictData.local, conflictData.cloud);
+      } else if (resolution === 'local') {
+        finalData = conflictData.local;
+      } else if (resolution === 'cloud') {
+        finalData = conflictData.cloud;
+      }
+
+      saveProgressData(userId, finalData);
+      await pushToCloud(finalData);
+      
+      if (conflictData.claimingAnonymous) {
+        deleteAnonymousProgressData();
+      }
+      
+      setSyncInitialized(true);
+    } catch (error) {
+      console.error("Failed to resolve conflict", error);
+      setSyncStatus('error');
+    }
+  };
+
+  const pushToCloud = async (data) => {
+    const res = await fetch('/api/syllabus-tracker/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ progress: data })
+    });
+    if (!res.ok) throw new Error('Sync push failed');
+    setSyncStatus('synced');
+  };
+
+  // Debounced Auto-sync on changes
+  useEffect(() => {
+    if (!isAuthenticated || !syncEnabled || !syncInitialized) return;
+    
+    setSyncStatus('syncing');
+    const timer = setTimeout(() => {
+      pushToCloud(progressData).catch(err => {
+        console.error("Auto-sync failed", err);
+        setSyncStatus('error');
+      });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [progressData, isAuthenticated, syncEnabled, syncInitialized]);
+
+
+  const handleToggle = (subject, chapterId, taskType, completed) => {
+    updateChapterProgress(userId, subject, chapterId, taskType, completed);
+  };
+
   const toggleSubject = (subject) => {
     setExpandedSubjects(prev => ({
       ...prev,
@@ -62,33 +245,31 @@ const SyllabusTrackerComponent = () => {
     }));
   };
 
-  // Handle reset all progress
-  const handleResetAll = () => {
-    resetAllProgress();
+  const handleResetAll = async () => {
+    resetAllProgress(userId);
     setShowResetConfirm(false);
   };
 
-  // Handle export progress
   const handleExport = () => {
-    const jsonData = exportProgress();
+    const jsonData = exportProgress(userId);
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `jee-syllabus-progress-${new Date().toISOString().split('T')[0]}.json`;
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.download = `jee-syllabus-progress-${dateStr}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  // Handle import progress
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const success = importProgress(e.target.result);
+        const success = importProgress(userId, e.target.result);
         if (success) {
           alert('Progress imported successfully!');
         } else {
@@ -146,6 +327,56 @@ const SyllabusTrackerComponent = () => {
               </p>
             </div>
           </div>
+          
+          {/* Cloud Sync Status Card */}
+          <div className="max-w-2xl mx-auto mt-4">
+            {!isAuthenticated ? (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/50 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-100 dark:bg-blue-800 rounded-full p-2">
+                    <Cloud className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">Backup to the Cloud</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Log in to sync your progress across devices.</p>
+                  </div>
+                </div>
+                <Link href={`/login?returnUrl=${encodedReturnUrl}`} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors whitespace-nowrap shadow-sm">
+                  Sign In
+                </Link>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className={`rounded-full p-2 ${syncEnabled ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}>
+                    {syncEnabled ? (
+                      <Cloud className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    ) : (
+                      <CloudOff className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    )}
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">Cloud Sync</h3>
+                    <div className="text-xs font-medium flex items-center gap-1.5 mt-0.5">
+                      {!syncEnabled ? (
+                        <span className="text-gray-500">Off - Saving locally only</span>
+                      ) : syncStatus === 'syncing' ? (
+                        <span className="text-blue-500 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Syncing...</span>
+                      ) : syncStatus === 'error' ? (
+                        <span className="text-red-500 flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Sync failed</span>
+                      ) : (
+                        <span className="text-green-500 flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Synced</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" className="sr-only peer" checked={syncEnabled} onChange={handleToggleSync} disabled={isInitializingSync} />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -197,6 +428,11 @@ const SyllabusTrackerComponent = () => {
             <span className="hidden sm:inline">Reset All</span>
           </button>
         </div>
+
+        <SyncConflictModal 
+          isOpen={showConflictModal} 
+          onResolve={handleConflictResolve} 
+        />
 
         {/* Share Progress Modal */}
         <ShareProgressModal

@@ -1,6 +1,7 @@
 // Utility functions for progress tracking and localStorage management
 
-const STORAGE_KEY = 'jee_syllabus_progress';
+export const LEGACY_STORAGE_KEY = 'jee_syllabus_progress';
+export const ANONYMOUS_STORAGE_KEY = 'jee_syllabus_progress_anonymous';
 
 const progressListeners = new Set();
 
@@ -8,28 +9,66 @@ function notifyProgressListeners() {
   progressListeners.forEach((fn) => fn());
 }
 
+export function getStorageKey(userId) {
+  return userId ? `jee_syllabus_progress_${userId}` : ANONYMOUS_STORAGE_KEY;
+}
+
+/**
+ * Perform a one-time migration from the legacy key to the anonymous key
+ * if the anonymous key doesn't exist yet, but the legacy one does.
+ */
+function migrateLegacyIfNeeded() {
+  if (typeof window === 'undefined') return;
+  try {
+    const anonymousData = localStorage.getItem(ANONYMOUS_STORAGE_KEY);
+    if (!anonymousData) {
+      const legacyData = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacyData) {
+        localStorage.setItem(ANONYMOUS_STORAGE_KEY, legacyData);
+        // We keep the legacy key around for any very old open tabs, 
+        // but ANONYMOUS_STORAGE_KEY is now the source of truth for logged-out users.
+      }
+    }
+  } catch (error) {
+    console.error('Error migrating legacy data:', error);
+  }
+}
+
+// Run migration immediately on load if possible
+if (typeof window !== 'undefined') {
+  migrateLegacyIfNeeded();
+}
+
 /**
  * Subscribe to progress changes (same tab + other tabs via storage event).
  * Used with useSyncExternalStore for hydration-safe reads.
  */
-export function subscribeProgressData(onStoreChange) {
+export function subscribeProgressData(userId, onStoreChange) {
   if (typeof window === 'undefined') return () => {};
+  
+  const key = getStorageKey(userId);
 
   const onStorage = (e) => {
-    if (e.key === STORAGE_KEY || e.key === null) onStoreChange();
+    if (e.key === key || e.key === null) onStoreChange();
   };
   window.addEventListener('storage', onStorage);
-  progressListeners.add(onStoreChange);
+  
+  // Wrap the callback so notifyProgressListeners can trigger it for same-tab updates
+  const listenerWrapper = () => onStoreChange();
+  progressListeners.add(listenerWrapper);
+  
   return () => {
     window.removeEventListener('storage', onStorage);
-    progressListeners.delete(onStoreChange);
+    progressListeners.delete(listenerWrapper);
   };
 }
 
 /** Raw localStorage snapshot string for useSyncExternalStore getSnapshot */
-export function getProgressStorageSnapshot() {
+export function getProgressStorageSnapshot(userId) {
+  if (typeof window === 'undefined') return '{}';
+  const key = getStorageKey(userId);
   try {
-    return localStorage.getItem(STORAGE_KEY) ?? '{}';
+    return localStorage.getItem(key) ?? '{}';
   } catch {
     return '{}';
   }
@@ -37,13 +76,12 @@ export function getProgressStorageSnapshot() {
 
 /**
  * Get progress data from localStorage
- * @returns {Object} Progress data object
  */
-export const getProgressData = () => {
+export const getProgressData = (userId) => {
   if (typeof window === 'undefined') return {};
-  
+  const key = getStorageKey(userId);
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : {};
   } catch (error) {
     console.error('Error reading progress data:', error);
@@ -52,14 +90,41 @@ export const getProgressData = () => {
 };
 
 /**
- * Save progress data to localStorage
- * @param {Object} data - Progress data to save
+ * Get anonymous progress data specifically (useful for migration/claiming)
  */
-export const saveProgressData = (data) => {
-  if (typeof window === 'undefined') return;
-  
+export const getAnonymousProgressData = () => {
+  if (typeof window === 'undefined') return {};
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const data = localStorage.getItem(ANONYMOUS_STORAGE_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch {
+    return {};
+  }
+};
+
+/**
+ * Delete the anonymous progress data after it has been claimed
+ */
+export const deleteAnonymousProgressData = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(ANONYMOUS_STORAGE_KEY);
+    // Also remove legacy to be completely clean
+    localStorage.removeItem(LEGACY_STORAGE_KEY); 
+  } catch (error) {
+    console.error('Error deleting anonymous progress data:', error);
+  }
+};
+
+
+/**
+ * Save progress data to localStorage
+ */
+export const saveProgressData = (userId, data) => {
+  if (typeof window === 'undefined') return;
+  const key = getStorageKey(userId);
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
     notifyProgressListeners();
   } catch (error) {
     console.error('Error saving progress data:', error);
@@ -68,13 +133,9 @@ export const saveProgressData = (data) => {
 
 /**
  * Update progress for a specific chapter and task
- * @param {string} subject - Subject name (physics, chemistry, mathematics)
- * @param {string} chapterId - Chapter ID
- * @param {string} taskType - Task type (theory, pyqs, revision)
- * @param {boolean} completed - Completion status
  */
-export const updateChapterProgress = (subject, chapterId, taskType, completed) => {
-  const progressData = getProgressData();
+export const updateChapterProgress = (userId, subject, chapterId, taskType, completed) => {
+  const progressData = getProgressData(userId);
   
   if (!progressData[subject]) {
     progressData[subject] = {};
@@ -89,19 +150,16 @@ export const updateChapterProgress = (subject, chapterId, taskType, completed) =
   }
   
   progressData[subject][chapterId][taskType] = completed;
-  saveProgressData(progressData);
+  saveProgressData(userId, progressData);
   
   return progressData;
 };
 
 /**
  * Get progress for a specific chapter
- * @param {string} subject - Subject name
- * @param {string} chapterId - Chapter ID
- * @returns {Object} Chapter progress object
  */
-export const getChapterProgress = (subject, chapterId) => {
-  const progressData = getProgressData();
+export const getChapterProgress = (userId, subject, chapterId) => {
+  const progressData = getProgressData(userId);
   
   if (progressData[subject] && progressData[subject][chapterId]) {
     return progressData[subject][chapterId];
@@ -116,11 +174,8 @@ export const getChapterProgress = (subject, chapterId) => {
 
 /**
  * Calculate overall progress for a subject
- * @param {string} subject - Subject name
- * @param {Array} chapters - Array of chapters
- * @returns {Object} Progress statistics
  */
-export const calculateSubjectProgress = (subject, chapters, progressData = getProgressData()) => {
+export const calculateSubjectProgress = (subject, chapters, progressData) => {
   const subjectData = progressData[subject] || {};
   
   let totalTasks = chapters.length * 3; // 3 tasks per chapter (theory, pyqs, revision)
@@ -173,10 +228,8 @@ export const calculateSubjectProgress = (subject, chapters, progressData = getPr
 
 /**
  * Calculate overall progress across all subjects
- * @param {Object} syllabusData - Complete syllabus data
- * @returns {Object} Overall progress statistics
  */
-export const calculateOverallProgress = (syllabusData, progressData = getProgressData()) => {
+export const calculateOverallProgress = (syllabusData, progressData) => {
   let totalTasks = 0;
   let completedTasks = 0;
   
@@ -198,11 +251,11 @@ export const calculateOverallProgress = (syllabusData, progressData = getProgres
 /**
  * Reset all progress data
  */
-export const resetAllProgress = () => {
+export const resetAllProgress = (userId) => {
   if (typeof window === 'undefined') return;
-  
+  const key = getStorageKey(userId);
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(key);
     notifyProgressListeners();
   } catch (error) {
     console.error('Error resetting progress data:', error);
@@ -211,22 +264,19 @@ export const resetAllProgress = () => {
 
 /**
  * Export progress data as JSON
- * @returns {string} JSON string of progress data
  */
-export const exportProgress = () => {
-  const data = getProgressData();
+export const exportProgress = (userId) => {
+  const data = getProgressData(userId);
   return JSON.stringify(data, null, 2);
 };
 
 /**
  * Import progress data from JSON
- * @param {string} jsonString - JSON string to import
- * @returns {boolean} Success status
  */
-export const importProgress = (jsonString) => {
+export const importProgress = (userId, jsonString) => {
   try {
     const data = JSON.parse(jsonString);
-    saveProgressData(data);
+    saveProgressData(userId, data);
     return true;
   } catch (error) {
     console.error('Error importing progress data:', error);

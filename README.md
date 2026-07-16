@@ -77,9 +77,11 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Progress tracking for Physics, Chemistry, and Mathematics
 - Chapter-wise completion tracking for Theory, PYQs, and Revision
 - Visual progress indicators and statistics
+- **Cloud Sync**: Securely backup and sync your progress across multiple devices (MongoDB backed)
+- **Smart Merge Conflict Resolution**: Intuitive UI to merge or choose between browser and cloud data
 - Export progress as an image with `html-to-image`
-- Import/export progress data across devices
-- Local storage persistence — never lose progress
+- Import/export progress data manually via JSON
+- Local storage persistence with automatic cross-tab synchronization
 - Motivation-driven progress visualization
 - Subject-wise progress overview
 
@@ -132,7 +134,10 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ### Backend & APIs
 
 - **Authentication**: NextAuth.js v4 with Google OAuth provider
-- **Database**: MongoDB with @auth/mongodb-adapter for session and user storage
+- **Databases (Microservice Architecture)**: 
+  - `jee_challenger_auth`: User sessions and authentication
+  - `jee_challenger_ai`: AI Tutor chat history
+  - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress
 - **Caching / Rate Limiting**: Upstash Redis
 - **Token Handling**: jsonwebtoken (JWT)
 - **Email Service**: Nodemailer for contact form
