@@ -64,7 +64,7 @@ Your content here...
 
 ### Get all articles:
 ```javascript
-import { getAllArticles } from '@/lib/articles';
+import { getAllArticles } from '@/utils/articles';
 
 // Get all articles with content (default)
 const articles = await getAllArticles();
@@ -75,21 +75,21 @@ const articles = await getAllArticles(false);
 
 ### Get single article:
 ```javascript
-import { getArticleBySlug } from '@/lib/articles';
+import { getArticleBySlug } from '@/utils/articles';
 
 const article = getArticleBySlug('article-slug');
 ```
 
 ### Get by category:
 ```javascript
-import { getArticlesByCategory } from '@/lib/articles';
+import { getArticlesByCategory } from '@/utils/articles';
 
 const categoryArticles = await getArticlesByCategory('Category');
 ```
 
 ### Get all categories:
 ```javascript
-import { getAllCategories } from '@/lib/articles';
+import { getAllCategories } from '@/utils/articles';
 
 const categories = await getAllCategories();
 ```

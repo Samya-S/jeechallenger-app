@@ -69,7 +69,6 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Markdown and LaTeX rendering for mathematical expressions
 - Chat history persistence backed by MongoDB
 - Real-time message streaming
-- Privacy Policy and Terms of Service
 
 
 ### 📊 Syllabus Tracker
@@ -227,8 +226,7 @@ npm start
 jeechallenger-app/
 ├── app/                        # Next.js App Router pages
 │   ├── ai-tutor/               # AI Tutor functionality
-│   │   ├── privacy/            # AI Tutor Privacy Policy
-│   │   └── terms/              # AI Tutor Terms of Service
+│   │   └── components/         # AI Tutor specific components
 │   ├── syllabus-tracker/       # Progress tracking system
 │   ├── blog/                   # Blog post display with dynamic routes
 │   │   ├── [slug]/             # Dynamic blog post pages
@@ -247,26 +245,36 @@ jeechallenger-app/
 │   ├── more-platforms/         # External platform links
 │   ├── news/                   # Latest JEE news section
 │   ├── official-links/         # JEE official papers
-│   └── contact-us/             # Contact form
+│   ├── login/                  # Login functionality
+│   ├── contact-us/             # Contact form
+│   ├── profile/                # User profile dashboard
+│   ├── donate/                 # Support & Donations
+│   ├── privacy-policy/         # Global Privacy Policy
+│   └── terms-of-service/       # Global Terms of Service
 ├── components/                 # Reusable React components
-│   ├── AiTutorComponents/      # AI Tutor specific components
+│   ├── ui/                     # UI components (e.g. BlogCard)
 │   ├── common/                 # Shared components
-│   ├── home/                   # Home page components
-│   ├── materials/              # Study materials components (Formula Sheets, KaTeX)
-│   └── utils/                  # Utility components
+│   ├── materials/              # Study materials components
+│   └── providers/              # Context providers
+├── config/                     # Configuration files
 ├── data/                       # Content data
-│   ├── blog/                   # Blog articles
-│   │   └── articles/           # MDX article files
-│   └── materials/              # Formula, Unit Conversion, and Periodic Table data
-│       ├── PhysicsFormulaData.js
-│       ├── ChemistryFormulaData.js
-│       ├── MathematicsFormulaData.js
-│       ├── UnitConversionData.js
-│       └── PeriodicTableData.js
+│   ├── blogs/                  # MDX blog articles
+│   ├── faq-data.js             # General FAQ data
+│   ├── syllabus-data.js        # Syllabus Tracker data
+│   └── materials/              # Resources, Formula, Unit Conversion, and Periodic Table data
+│       ├── physics-formula-data.js
+│       ├── chemistry-formula-data.js
+│       ├── mathematics-formula-data.js
+│       ├── physics-resources.js
+│       ├── chemistry-resources.js
+│       ├── mathematics-resources.js
+│       ├── unit-conversion-data.js
+│       ├── periodic-table-explorer-constants.js
+│       └── periodic-table-data.js
 ├── docs/                       # Documentation
 │   ├── blog-structure.md       # Blog system documentation
 │   └── color-system.md         # Design system colors
-├── lib/                        # Utility functions and configs
+├── utils/                      # Utility functions
 ├── server/                     # Server actions
 └── public/                     # Static assets
 ```
