@@ -20,6 +20,9 @@ export const EXCLUDED_AD_PATHS = [
  * @returns {boolean}
  */
 export function isAdExcluded(pathname) {
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
   return EXCLUDED_AD_PATHS.some(
     (path) => pathname === path || pathname.startsWith(path + '/')
   );
