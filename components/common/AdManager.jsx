@@ -169,7 +169,7 @@ export default function AdManager() {
   return (
     <>
       <AdScriptLoader pathname={pathname} />
-      <AdBlockDetector pathname={pathname} />
+      {/* <AdBlockDetector pathname={pathname} /> */}
     </>
   );
 }
