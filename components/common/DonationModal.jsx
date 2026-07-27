@@ -21,6 +21,7 @@ const DonationModal = () => {
 	const handleClose = () => {
 		setIsOpen(false);
 		sessionStorage.setItem('hasSeenDonationModal', 'true');
+		window.dispatchEvent(new CustomEvent('donationModalClosed'));
 	};
 
 	if (!isOpen) return null;

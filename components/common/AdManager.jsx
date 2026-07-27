@@ -146,6 +146,23 @@ function AdBlockDetector({ pathname }) {
 export default function AdManager() {
   const pathname = usePathname();
   const isExcluded = isAdExcluded(pathname);
+  const [isModalCleared, setIsModalCleared] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const hasSeen = sessionStorage.getItem('hasSeenDonationModal');
+    if (hasSeen) {
+      setIsModalCleared(true);
+    }
+
+    const handleModalClose = () => {
+      setIsModalCleared(true);
+    };
+
+    window.addEventListener('donationModalClosed', handleModalClose);
+    return () => window.removeEventListener('donationModalClosed', handleModalClose);
+  }, []);
 
   // Monitor SPA transition from ad-enabled pages to ad-excluded pages.
   // Monetag registers persistent click/mousedown listeners globally on the document/window.
@@ -168,8 +185,12 @@ export default function AdManager() {
 
   return (
     <>
-      <AdScriptLoader pathname={pathname} />
-      <AdBlockDetector pathname={pathname} />
+      {isModalCleared && (
+        <>
+          <AdScriptLoader pathname={pathname} />
+          <AdBlockDetector pathname={pathname} />
+        </>
+      )}
     </>
   );
 }
