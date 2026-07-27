@@ -17,9 +17,9 @@ const FeedbackModal = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const isFormValid = 
-		formData.name.trim() !== "" && 
-		validateEmail(formData.email) && 
+	const isFormValid =
+		formData.name.trim() !== "" &&
+		validateEmail(formData.email) &&
 		formData.feedback.trim() !== "";
 
 	useEffect(() => {
@@ -52,7 +52,7 @@ const FeedbackModal = () => {
 				setIsSubmitted(true);
 				setIsError(false);
 				sessionStorage.setItem('hasSeenFeedbackModal', 'true');
-				
+
 				// Removed the auto-close timeout here so users have time to see the donation request
 				// // Close modal after success
 				// setTimeout(() => {
@@ -136,7 +136,7 @@ const FeedbackModal = () => {
 							<div className="text-center w-full bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
 								<h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Keep JEE Challenger Running 🚀</h3>
 								<p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-									We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. If our platform has added value to your preparation journey, consider chipping in a small amount to keep the servers powered up!
+									We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in. <strong>Once we reach our bare minimum funding goal to cover server costs, we will remove all pop-up ads and redirects completely!</strong>
 								</p>
 
 								<div className="flex flex-col items-center space-y-4 max-w-sm mx-auto">
@@ -209,11 +209,10 @@ const FeedbackModal = () => {
 								</label>
 								<input
 									id="email"
-									className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${
-										formData.email && !validateEmail(formData.email)
-											? "border-red-500 dark:border-red-500 focus:ring-red-500"
-											: "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
-									}`}
+									className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${formData.email && !validateEmail(formData.email)
+										? "border-red-500 dark:border-red-500 focus:ring-red-500"
+										: "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+										}`}
 									type="email"
 									name="email"
 									placeholder="Your email address"

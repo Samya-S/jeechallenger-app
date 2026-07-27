@@ -24,7 +24,7 @@ const DonateComponent = () => {
         </h1>
 
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
-          We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. If our platform has added value to your preparation journey, consider chipping in a small amount to keep the servers powered up!
+          We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in. <strong>Once we reach our bare minimum funding goal to cover server costs, we will remove all pop-up ads and redirects completely!</strong>
         </p>
 
         <div className="flex flex-col items-center space-y-6 max-w-md mx-auto">
