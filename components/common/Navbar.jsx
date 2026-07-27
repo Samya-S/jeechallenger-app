@@ -258,7 +258,7 @@ export default function NavBar() {
           ) : (
             <Link
               href={loginHref}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+              className="!bg-blue-600 hover:!bg-blue-700 !text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
               style={{ display: 'inline-block' }}
             >
               Sign In
