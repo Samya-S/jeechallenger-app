@@ -4,9 +4,10 @@ import { Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import TelegramJoinFloat from "@/components/ui/TelegramJoinFloat";
-import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
-import FeedbackModal from "@/components/common/FeedbackModal";
+// import TelegramJoinFloat from "@/components/ui/TelegramJoinFloat";
+// import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
+// import FeedbackModal from "@/components/common/FeedbackModal";
+import DonationModal from "@/components/common/DonationModal";
 import TelegramGateProvider from '../providers/TelegramGateProvider';
 
 export default function ConditionalLayout({ children }) {
@@ -37,7 +38,8 @@ export default function ConditionalLayout({ children }) {
       )}
       {!isAITutorPage && <Footer />}
       {/* {!isAITutorPage && <AIAnnouncementModal />} */}
-      {!isAITutorPage && <FeedbackModal />}
+      {/* {!isAITutorPage && <FeedbackModal />} */}
+      {!isAITutorPage && <DonationModal />}
     </TelegramGateProvider>
   );
 } 
