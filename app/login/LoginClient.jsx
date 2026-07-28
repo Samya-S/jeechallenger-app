@@ -1,6 +1,7 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import GoogleAuthButton from "@/app/login/GoogleAuthButton";
@@ -8,9 +9,17 @@ import { useState, useEffect } from "react";
 
 export default function LoginClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { status } = useSession();
   const [authError, setAuthError] = useState("");
   
   const returnUrl = searchParams.get("returnUrl") || searchParams.get("callbackUrl") || "/";
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push(returnUrl);
+    }
+  }, [status, router, returnUrl]);
 
   useEffect(() => {
     const errorParam = searchParams.get("error");
