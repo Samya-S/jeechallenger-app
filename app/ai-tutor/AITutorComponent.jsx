@@ -49,12 +49,13 @@ const AIResponseRenderer = ({ content }) => {
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-          h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-sm font-bold mb-2">{children}</h3>,
-          ul: ({ children }) => <ul className="list-disc mb-2 space-y-1 ml-4">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal mb-2 space-y-1 ml-4">{children}</ol>,
+          p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+          h1: ({ children }) => <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 dark:text-gray-100">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-lg font-bold mt-4 mb-2 text-gray-900 dark:text-gray-100">{children}</h3>,
+          hr: () => <hr className="my-6 border-gray-300 dark:border-gray-700" />,
+          ul: ({ children }) => <ul className="list-disc mb-4 space-y-2 pl-6">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal mb-4 space-y-2 pl-6">{children}</ol>,
           li: ({ children }) => <li className="mb-1 leading-relaxed">{children}</li>,
           a: ({ href, children }) => (
             <a
@@ -67,10 +68,10 @@ const AIResponseRenderer = ({ content }) => {
             </a>
           ),
           code: ({ children }) => (
-            <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
+            <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-pink-600 dark:text-pink-400">{children}</code>
           ),
-          pre: ({ children }) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded mb-2 overflow-x-auto text-sm">{children}</pre>,
-          blockquote: ({ children }) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-2 italic mb-2 text-sm">{children}</blockquote>,
+          pre: ({ children }) => <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg mb-4 overflow-x-auto text-sm">{children}</pre>,
+          blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-500 pl-4 italic mb-4 py-1 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 rounded-r">{children}</blockquote>,
           table: ({ children }) => <MarkdownTable>{children}</MarkdownTable>,
           thead: ({ children }) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
           tbody: ({ children }) => <tbody>{children}</tbody>,
