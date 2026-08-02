@@ -362,4 +362,24 @@ main {
 /* Blog markdown: remove extra bottom space inside blockquotes */
 blockquote > p:last-child {
   margin-bottom: 0;
+}
+
+/* Marquee Animation */
+.contributorMarquee {
+  display: inline-flex;
+  min-width: max-content;
+  animation: contributorMarqueeScroll 12s linear infinite;
+}
+
+.contributorMarquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes contributorMarqueeScroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
