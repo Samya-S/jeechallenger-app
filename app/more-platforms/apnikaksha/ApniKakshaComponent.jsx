@@ -22,7 +22,7 @@ const ApniKakshaComponent = () => {
         <section className="pb-16 pt-4 px-4 sm:px-6 lg:px-8">
           <Breadcrumbs
             crumbs={[
-              { label: 'More Platforms' },
+              { label: 'More Platforms', href: '/more-platforms' },
               { label: 'Apni Kaksha', href: '/more-platforms/apnikaksha' }
             ]}
             className="pb-12"

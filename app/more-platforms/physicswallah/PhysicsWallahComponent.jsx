@@ -22,7 +22,7 @@ const PhysicsWallahComponent = () => {
         <section className="pb-16 pt-4 px-4 sm:px-6 lg:px-8">
           <Breadcrumbs
             crumbs={[
-              { label: 'More Platforms' },
+              { label: 'More Platforms', href: '/more-platforms' },
               { label: 'Physics Wallah', href: '/more-platforms/physicswallah' }
             ]}
             className="pb-12"
