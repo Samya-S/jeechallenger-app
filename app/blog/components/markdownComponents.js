@@ -46,14 +46,14 @@ export const getMarkdownComponents = () => ({
   },
   ul: ({ children }) => {
     return (
-      <ul className="space-y-2.5 my-6 list-disc list-inside marker:text-blue-600 dark:marker:text-blue-400 marker:font-bold">
+      <ul className="space-y-2.5 my-6 list-disc list-outside pl-6 marker:text-blue-600 dark:marker:text-blue-400 marker:font-bold">
         {children}
       </ul>
     );
   },
   ol: ({ children }) => {
     return (
-      <ol className="space-y-2.5 my-6 list-decimal list-inside marker:text-blue-600 dark:marker:text-blue-400 marker:font-bold">
+      <ol className="space-y-2.5 my-6 list-decimal list-outside pl-6 marker:text-blue-600 dark:marker:text-blue-400 marker:font-bold">
         {children}
       </ol>
     );
