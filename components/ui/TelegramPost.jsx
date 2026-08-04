@@ -141,9 +141,9 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                 </div>
                 <p className="text-red-700 dark:text-red-300">
                   There was an issue loading the Telegram post. Please try refreshing the page or{" "}
-                  <Link 
-                    href={`https://t.me/${url}`} 
-                    target="_blank" 
+                  <Link
+                    href={`https://t.me/${url}`}
+                    target="_blank"
                     className="underline hover:text-red-800 dark:hover:text-red-200"
                   >
                     view it directly on Telegram
@@ -152,9 +152,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
               </div>
             </div>
           ) : (
-            <div className="rounded-xl p-4 -ml-10 md:-ml-0">
-              <div id="telegram-widget-container" className="darkmode-ignore w-full" />
-            </div>
+            <div id="telegram-widget-container" className="darkmode-ignore w-full" />
           )}
         </div>
       </div>
