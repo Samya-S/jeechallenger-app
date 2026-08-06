@@ -5,6 +5,7 @@ export const EXCLUDED_AD_PATHS = [
   '/login',
   '/profile',
   '/ai-tutor',
+  '/syllabus-tracker',
   '/materials/chemistry/periodic-table',
   '/donate',
   '/disclaimer',
