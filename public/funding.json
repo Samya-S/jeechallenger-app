@@ -8,7 +8,8 @@
         "email": "samyasahaofficial@gmail.com",
         "description": "I am a 5th-year BS-MS undergraduate in Statistics and Data Science at IIT Kharagpur. I am a full-stack developer (Next.js, C#, Python) currently exploring LLM architecture from scratch. I build open-source educational utilities like JEE Challenger to level the playing field for Indian students.",
         "webpageUrl": {
-            "url": "https://samyasaha.vercel.app"
+            "url": "https://samyasaha.vercel.app",
+            "wellKnown": "https://samyasaha.vercel.app/.well-known/funding-manifest-urls"
         }
     },
     "projects": [
@@ -20,7 +21,8 @@
                 "url": "https://www.jeechallenger.com"
             },
             "repositoryUrl": {
-                "url": "https://github.com/Samya-S/jeechallenger-app"
+                "url": "https://github.com/Samya-S/jeechallenger-app",
+                "wellKnown": "https://github.com/Samya-S/jeechallenger-app/blob/main/.well-known/funding-manifest-urls"
             },
             "licenses": [
                 "spdx:MIT"
@@ -40,8 +42,14 @@
             {
                 "guid": "upi-transfer",
                 "type": "payment-provider",
-                "address": "",
-                "description": "Direct support via UPI or Bank Transfer. Please contact me directly via email or phone to receive exact payment details."
+                "address": "samyasaha@upi",
+                "description": "Direct support via UPI. Please contact me directly via email for any issues."
+            },
+            {
+                "guid": "bank-transfer",
+                "type": "payment-provider",
+                "address": "samyasaha@upi",
+                "description": "Direct support via Bank Transfer. Please contact me directly via email to receive exact payment details."
             }
         ],
         "plans": [
