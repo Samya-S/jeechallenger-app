@@ -188,12 +188,14 @@ const FormulaSheets = ({ formulaData, colorTheme = "blue" }) => {
                               </h4>
                             </div>
 
-                            <div className="overflow-x-auto py-2 flex items-center justify-center min-h-[60px] custom-scrollbar">
-                              <KaTeXRenderer
-                                latex={formula.latex}
-                                displayMode={true}
-                                className="text-gray-900 dark:text-white scale-[1.05]"
-                              />
+                            <div className="overflow-x-auto py-2 min-h-[60px] custom-scrollbar">
+                              <div className="w-max mx-auto">
+                                <KaTeXRenderer
+                                  latex={formula.latex}
+                                  displayMode={true}
+                                  className="text-gray-900 dark:text-white scale-[1.05]"
+                                />
+                              </div>
                             </div>
 
                             {formula.description && (
