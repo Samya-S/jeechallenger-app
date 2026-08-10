@@ -51,15 +51,21 @@ const FormulaSheets = ({ formulaData, colorTheme = "blue" }) => {
     if (!search.trim()) return formulaData;
     const q = search.toLowerCase();
     return formulaData
-      .map((ch) => ({
-        ...ch,
-        formulas: ch.formulas.filter(
-          (f) =>
-            f.name.toLowerCase().includes(q) ||
-            f.description.toLowerCase().includes(q) ||
-            f.latex.toLowerCase().includes(q)
-        ),
-      }))
+      .map((ch) => {
+        // If the chapter name itself matches, show ALL its formulas
+        const chapterMatches = ch.chapter.toLowerCase().includes(q);
+        return {
+          ...ch,
+          formulas: chapterMatches
+            ? ch.formulas
+            : ch.formulas.filter(
+                (f) =>
+                  f.name.toLowerCase().includes(q) ||
+                  f.description.toLowerCase().includes(q) ||
+                  f.latex.toLowerCase().includes(q)
+              ),
+        };
+      })
       .filter((ch) => ch.formulas.length > 0 || ch.chapter.toLowerCase().includes(q));
   }, [formulaData, search]);
 
