@@ -277,8 +277,7 @@ export default function NavBar() {
           aria-controls="mobile-menu"
         >
           <div className={Styles.hamburgerIcon}>
-            <FaBars style={{ opacity: showMobileNav ? 0 : 1 }} />
-            <FaTimes style={{ opacity: showMobileNav ? 1 : 0 }} />
+            <FaBars />
           </div>
         </button>
       </div>
