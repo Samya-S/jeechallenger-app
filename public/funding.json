@@ -48,7 +48,7 @@
             {
                 "guid": "bank-transfer",
                 "type": "payment-provider",
-                "address": "samyasaha@upi",
+                "address": "",
                 "description": "Direct support via Bank Transfer. Please contact me directly via email to receive exact payment details."
             }
         ],
@@ -62,7 +62,8 @@
                 "currency": "INR",
                 "frequency": "one-time",
                 "channels": [
-                    "upi-transfer"
+                    "upi-transfer",
+                    "bank-transfer"
                 ]
             },
             {
@@ -74,7 +75,8 @@
                 "currency": "INR",
                 "frequency": "one-time",
                 "channels": [
-                    "upi-transfer"
+                    "upi-transfer",
+                    "bank-transfer"
                 ]
             }
         ]
