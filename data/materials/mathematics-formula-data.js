@@ -81,7 +81,7 @@ const MathematicsFormulaData = [
     formulas: [
       { name: "Factorial", latex: "n! = n\\cdot(n-1)\\cdot(n-2)\\cdots2\\cdot1,\\quad 0! = 1", description: "Grows rapidly: 10! = 3,628,800" },
       { name: "Permutation", latex: "^nP_r = \\frac{n!}{(n-r)!}", description: "Ordered arrangements of r from n distinct objects" },
-      { name: "Combination", latex: "^nC_r = \\binom{n}{r} = \\frac{n!}{r!(n-r)!}", description: "Unordered selections; ^nC_r = ^nC_{n-r}" },
+      { name: "Combination", latex: "^nC_r = \\binom{n}{r} = \\frac{n!}{r!(n-r)!} = {}^nC_{n-r}", description: "Unordered selections" },
       { name: "Relation P and C", latex: "^nP_r = r! \\cdot {}^nC_r", description: "Permutation = r! × combination" },
       { name: "Permutations with Repetition", latex: "n^r", description: "r items from n with replacement (ordered)" },
       { name: "Permutations with Identical Items", latex: "\\frac{n!}{p!\\,q!\\,r!}", description: "n items with p alike, q alike, r alike" },
