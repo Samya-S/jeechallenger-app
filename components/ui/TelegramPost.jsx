@@ -1,87 +1,91 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useId } from "react";
+import { useTheme } from "@teispace/next-themes";
 
 const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) => {
-  const [error, setError] = useState(false);
+  const [status, setStatus] = useState("loading"); // "loading" | "ready" | "error"
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef(null);
+  // useId gives a collision-free, SSR-safe unique ID per instance
+  const instanceId = useId();
+  // resolvedTheme gives the actual "dark" or "light" value (resolves "system" for us)
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  // Track whether we're below Tailwind's `sm` breakpoint (640px)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Theme configuration dictionary
   const themeConfig = {
-    'from-blue-600 to-purple-600': {
-      background: 'from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20',
-      textColor: 'text-blue-600 dark:text-blue-400'
+    "from-blue-600 to-purple-600": {
+      background: "from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20",
+      textColor: "text-blue-600 dark:text-blue-400",
     },
-    'from-green-600 to-teal-600': {
-      background: 'from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20',
-      textColor: 'text-green-600 dark:text-green-400'
+    "from-green-600 to-teal-600": {
+      background: "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
+      textColor: "text-green-600 dark:text-green-400",
     },
-    'from-purple-600 to-pink-600': {
-      background: 'from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20',
-      textColor: 'text-purple-600 dark:text-purple-400'
+    "from-purple-600 to-pink-600": {
+      background: "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20",
+      textColor: "text-purple-600 dark:text-purple-400",
     },
-    'from-orange-600 to-red-600': {
-      background: 'from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20',
-      textColor: 'text-orange-600 dark:text-orange-400'
+    "from-orange-600 to-red-600": {
+      background: "from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20",
+      textColor: "text-orange-600 dark:text-orange-400",
     },
-    'from-indigo-600 to-cyan-600': {
-      background: 'from-indigo-50 to-cyan-50 dark:from-indigo-900/20 dark:to-cyan-900/20',
-      textColor: 'text-indigo-600 dark:text-indigo-400'
+    "from-indigo-600 to-cyan-600": {
+      background: "from-indigo-50 to-cyan-50 dark:from-indigo-900/20 dark:to-cyan-900/20",
+      textColor: "text-indigo-600 dark:text-indigo-400",
     },
-    'from-yellow-600 to-orange-600': {
-      background: 'from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20',
-      textColor: 'text-yellow-600 dark:text-yellow-400'
+    "from-yellow-600 to-orange-600": {
+      background: "from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
+      textColor: "text-yellow-600 dark:text-yellow-400",
     },
-    'from-emerald-600 to-teal-600': {
-      background: 'from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20',
-      textColor: 'text-emerald-600 dark:text-emerald-400'
-    }
+    "from-emerald-600 to-teal-600": {
+      background: "from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20",
+      textColor: "text-emerald-600 dark:text-emerald-400",
+    },
   };
 
-  const currentTheme = themeConfig[themeGradient] || themeConfig['from-blue-600 to-purple-600'];
+  const currentTheme = themeConfig[themeGradient] || themeConfig["from-blue-600 to-purple-600"];
 
   useEffect(() => {
-    let isMounted = true;
-    let script = null;
-
-    if (!url) {
-      setError(true);
+    if (!url || !containerRef.current) {
+      setStatus("error");
       return;
     }
 
-    // Wait for the URL check to succeed before loading the widget
-    fetch(`https://t.me/${url}`, { mode: 'no-cors' })
-      .then(() => {
-        if (!isMounted) return;
+    setStatus("loading");
 
-        script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-widget.js?22";
-        script.async = true;
-        script.setAttribute("data-telegram-post", url);
-        script.setAttribute("data-width", "100%");
-        script.setAttribute("data-dark", "1");
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.async = true;
+    script.setAttribute("data-telegram-post", url);
+    script.setAttribute("data-width", "100%");
+    // Re-runs whenever isDark changes, so the widget always matches the site theme
+    script.setAttribute("data-dark", isDark ? "1" : "0");
+    // Hide the channel avatar (userpic) on mobile screens
+    script.setAttribute("data-userpic", isMobile ? "false" : "true");
 
-        script.onerror = () => {
-          if (isMounted) setError(true);
-        };
+    script.onload = () => setStatus("ready");
+    script.onerror = () => setStatus("error");
 
-        const container = document.getElementById("telegram-widget-container");
-        if (container) {
-          container.appendChild(script);
-        }
-      })
-      .catch(() => {
-        // If fetch fails (network unreachable), only show our custom error block
-        if (isMounted) setError(true);
-      });
+    containerRef.current.appendChild(script);
 
+    // Cleanup: wipe the container (removes the injected iframe too) on unmount/url/theme change
     return () => {
-      isMounted = false;
-      const container = document.getElementById("telegram-widget-container");
-      if (container && script && container.contains(script)) {
-        container.removeChild(script);
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
       }
     };
-  }, [url]);
+  }, [url, isDark, isMobile]);
 
   return (
     <section className="py-16">
@@ -93,10 +97,10 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
             Stay updated with our latest posts and announcements from our official Telegram channel
           </p>
-          <div className={`w-24 h-1 bg-gradient-to-r ${themeGradient} mx-auto rounded-full`}></div>
+          <div className={`w-24 h-1 bg-gradient-to-r ${themeGradient} mx-auto rounded-full`} />
         </div>
 
-        <div className="rounded-2xl p-8">
+        <div className="rounded-2xl">
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className={`bg-gradient-to-r ${themeGradient} p-3 rounded-full shadow-lg`}>
@@ -128,7 +132,15 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
             </div>
           </div>
 
-          {error ? (
+          {/* Loading skeleton */}
+          {status === "loading" && (
+            <div className="w-full animate-pulse rounded-xl overflow-hidden">
+              <div className="bg-gray-200 dark:bg-gray-700 h-64 rounded-xl" />
+            </div>
+          )}
+
+          {/* Error state */}
+          {status === "error" && (
             <div className="text-center py-8">
               <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
                 <div className="flex items-center justify-center gap-3 mb-4">
@@ -151,9 +163,17 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                 </p>
               </div>
             </div>
-          ) : (
-            <div id="telegram-widget-container" className="darkmode-ignore w-full" />
           )}
+
+          {/*
+            Always in the DOM so containerRef stays attached.
+            Hidden until the widget script finishes loading.
+          */}
+          <div
+            ref={containerRef}
+            id={`telegram-widget-${instanceId}`}
+            className={`w-full ${status !== "ready" ? "hidden" : ""}`}
+          />
         </div>
       </div>
     </section>
