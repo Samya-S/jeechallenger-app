@@ -164,24 +164,47 @@ export default function AdManager() {
     return () => window.removeEventListener('donationModalClosed', handleModalClose);
   }, []);
 
-  // Monitor SPA transition from ad-enabled pages to ad-excluded pages.
-  // Monetag registers persistent click/mousedown listeners globally on the document/window.
-  // When navigating client-side, these listeners persist even when the script tag is unmounted.
-  // A hard reload on entering an excluded page is the cleanest way to wipe the window event queue.
+  // Intercept SPA navigations to excluded pages before Next.js's router starts.
+  //
+  // Next.js calls history.pushState() for every client-side navigation. By patching
+  // it here (while on an ad-enabled page), we can redirect to a full page load
+  // BEFORE any RSC fetch or React render happens — eliminating any visible flash.
+  // popstate covers the browser Back/Forward buttons (which bypass pushState).
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (isExcluded) return;
 
-    const wasAdEnabled = sessionStorage.getItem('was_ad_enabled') === 'true';
+    const originalPushState = history.pushState.bind(history);
 
-    if (isExcluded) {
-      if (wasAdEnabled) {
-        sessionStorage.setItem('was_ad_enabled', 'false');
+    history.pushState = function (state, title, url) {
+      if (typeof url === 'string') {
+        const pathname = (url.startsWith('/')
+          ? url
+          : new URL(url, window.location.href).pathname
+        ).split('?')[0].split('#')[0];
+
+        if (isAdExcluded(pathname)) {
+          window.location.href = url;
+          return;
+        }
+      }
+      return originalPushState(state, title, url);
+    };
+
+    const handlePopState = () => {
+      if (isAdExcluded(window.location.pathname)) {
         window.location.reload();
       }
-    } else {
-      sessionStorage.setItem('was_ad_enabled', 'true');
-    }
-  }, [pathname, isExcluded]);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      history.pushState = originalPushState;
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isExcluded]);
+
 
   return (
     <>
@@ -194,3 +217,4 @@ export default function AdManager() {
     </>
   );
 }
+
