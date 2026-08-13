@@ -210,7 +210,7 @@ const ProfileContent = () => {
                       {' '}with your request.
                     </p>
                     <p className="text-xs text-red-500 dark:text-red-400 mt-3">
-                      This action cannot be undone. All your data, including chat history and uploaded files, will be permanently deleted.
+                      This action cannot be undone. All your data will be permanently deleted.
                     </p>
                   </div>
                 </div>
