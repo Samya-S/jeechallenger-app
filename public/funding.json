@@ -42,8 +42,8 @@
             {
                 "guid": "upi-transfer",
                 "type": "payment-provider",
-                "address": "samyasaha@upi",
-                "description": "Direct support via UPI. Please contact me directly via email for any issues."
+                "address": "upi://pay?pa=samyasaha@upi&pn=JEE%20Challenger&cu=INR",
+                "description": "Direct support via UPI (ID: samyasaha@upi). Please contact me directly via email for any issues."
             },
             {
                 "guid": "bank-transfer",
