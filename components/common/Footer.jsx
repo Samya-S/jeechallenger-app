@@ -29,8 +29,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/materials/chapterwise-solved-pyqs" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  Chapterwise PYQs
+                <Link href="/materials/previous-year-questions" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Previous Year Questions
                 </Link>
               </li>
               <li>

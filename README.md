@@ -36,7 +36,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
 - **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
-- **Chapter-wise PYQs**: Solved previous year questions organized by chapters
+- **Previous Year Questions**: Solved previous year questions organized by chapters
 - **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and filtering
 - **Real-time News**: Latest JEE-related news and updates powered by GNews API
 - **Contact Form**: Email integration for user queries and feedback
@@ -241,7 +241,7 @@ jeechallenger-app/
 │   │   │   └── periodic-table/ # Interactive Periodic Table explorer tool
 │   │   ├── mathematics/        # Mathematics resources
 │   │   │   └── unit-converter/ # Mathematics unit converter tool
-│   │   └── chapterwise-solved-pyqs/  # PYQs by chapter
+│   │   └── previous-year-questions/  # PYQs
 │   ├── more-platforms/         # External platform links
 │   ├── news/                   # Latest JEE news section
 │   ├── official-links/         # JEE official papers

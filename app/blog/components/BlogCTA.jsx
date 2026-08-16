@@ -14,7 +14,7 @@ export default function BlogCTA() {
             Ready to Ace Your JEE Preparation?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Access free study materials, chapterwise PYQs, AI-powered doubt solving, and track your syllabus progress
+            Access free study materials, previous year questions, AI-powered doubt solving, and track your syllabus progress
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link

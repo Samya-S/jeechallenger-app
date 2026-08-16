@@ -125,6 +125,11 @@ const nextConfig = {
         destination: '/blogs',
         permanent: true, // Sets a 301 redirect (SEO friendly)
       },
+      {
+        source: '/materials/chapterwise-solved-pyqs',
+        destination: '/materials/previous-year-questions',
+        permanent: true,
+      },
     ];
   },
 };
