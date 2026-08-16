@@ -45,17 +45,21 @@ const NavbarItems = [
     ]
   },
   {
-    title: 'Syllabus Tracker',
-    type: 'link',
-    url: '/syllabus-tracker'
+    title: 'Utilities',
+    type: 'dropdown',
+    items: [
+      {
+        title: 'AI Tutor',
+        url: '/ai-tutor'
+      },
+      {
+        title: 'Syllabus Tracker',
+        url: '/syllabus-tracker'
+      },
+    ]
   },
   {
-    title: 'AI Tutor',
-    type: 'link',
-    url: '/ai-tutor'
-  },
-  {
-    title: 'Resources',
+    title: 'Read More',
     type: 'dropdown',
     items: [
       {
