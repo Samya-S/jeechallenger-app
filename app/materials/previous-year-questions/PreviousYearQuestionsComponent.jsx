@@ -20,7 +20,7 @@ const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButto
   ssr: false
 });
 
-const ChapterWiseSolvedPYQsComponent = () => {
+const PreviousYearQuestionsComponent = () => {
   return (
     <div>
       {/* Hero Section */}
@@ -28,7 +28,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         <Breadcrumbs
           crumbs={[
             { label: 'Study Materials', href: '/materials' },
-            { label: 'Chapter-wise Solved PYQs', href: '/materials/chapterwise-solved-pyqs' },
+            { label: 'Previous Year Questions', href: '/materials/previous-year-questions' },
           ]} 
           hasBanner={true}
           className="pb-12"
@@ -36,7 +36,7 @@ const ChapterWiseSolvedPYQsComponent = () => {
         <div className="flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">
-              Chapter-wise Solved PYQs
+              Previous Year Questions
             </h1>
             <p className="text-xl md:text-2xl font-medium max-w-3xl mx-auto drop-shadow-md animate-fade-in-delay">
               Master JEE preparation with comprehensive chapter-wise solved previous years&lsquo; questions from top publications
@@ -529,4 +529,4 @@ const ChapterWiseSolvedPYQsComponent = () => {
   );
 };
 
-export default ChapterWiseSolvedPYQsComponent;
+export default PreviousYearQuestionsComponent;

@@ -21,8 +21,8 @@ const NavbarItems = [
         url: '/materials/mathematics'
       },
       {
-        title: 'Chapterwise solved PYQs',
-        url: '/materials/chapterwise-solved-pyqs'
+        title: 'Previous Year Questions',
+        url: '/materials/previous-year-questions'
       },
       {
         title: 'More study materials',

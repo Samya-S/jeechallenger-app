@@ -1,0 +1,60 @@
+import PreviousYearQuestionsComponent from './PreviousYearQuestionsComponent'
+import StructuredData from '@/components/common/StructuredData'
+import { pyqFAQs } from '@/data/faq-data'
+import { ogImageMeta } from '@/utils/og-metadata'
+
+const pageOg = ogImageMeta({
+  title: 'Previous Year Questions',
+  subtitle: 'Access Free Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced',
+  theme: 'pyqs',
+  alt: 'Previous Year Questions',
+})
+
+export const metadata = {
+  title: "Previous Year Questions | Free Download PDFs",
+  description: "Access Free Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced from last 43 years. Physics, Chemistry & Maths - All chapters covered. Master PYQs and crack JEE!",
+  alternates: {
+    canonical: '/materials/previous-year-questions',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "Previous Year Questions - JEE Challenger",
+    description: "Previous years' questions for JEE Main and JEE Advanced.",
+    url: '/materials/previous-year-questions',
+    siteName: "JEE Challenger",
+    images: pageOg.images,
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Previous Year Questions - JEE Challenger",
+    description: "Previous years' questions for JEE Main and JEE Advanced.",
+    images: pageOg.twitterImages,
+  },
+};
+
+const PreviousYearQuestionsPage = () => {
+  return (
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData type="faq" data={pyqFAQs} />
+      <StructuredData
+        type="breadcrumb"
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Study Materials", path: "/materials" },
+            { name: "Previous Year Questions", path: "/materials/previous-year-questions" }
+          ]
+        }}
+      />
+      <PreviousYearQuestionsComponent />
+    </>
+  )
+}
+
+export default PreviousYearQuestionsPage

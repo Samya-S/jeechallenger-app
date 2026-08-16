@@ -168,13 +168,13 @@ export default function MaterialsPage() {
 									<FileText className="w-8 h-8 text-white" />
 								</div>
 								<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
-									Chapter-wise PYQs
+									Previous Year Questions
 								</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
 									Solved previous year questions from JEE Main & Advanced with detailed solutions
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/chapterwise-solved-pyqs" aria-label="View Chapter-wise Previous Years' Questions">
+									<Link href="/materials/previous-year-questions" aria-label="View Chapter-wise Previous Years' Questions">
 										<button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

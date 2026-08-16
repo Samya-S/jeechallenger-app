@@ -17,7 +17,7 @@ export const homepageFAQs = {
     },
     {
       question: "How can I prepare for JEE without coaching using JEE Challenger?",
-      answer: "You can prepare for JEE completely free using JEE Challenger by: 1) Following our comprehensive study materials for all subjects, 2) Using the syllabus tracker to monitor your progress, 3) Solving 43 years of chapter-wise PYQs, 4) Getting instant doubt resolution through our AI tutor, 5) Staying updated with latest JEE news and exam patterns."
+      answer: "You can prepare for JEE completely free using JEE Challenger by: 1) Following our comprehensive study materials for all subjects, 2) Using the syllabus tracker to monitor your progress, 3) Solving 43 years of previous year questions, 4) Getting instant doubt resolution through our AI tutor, 5) Staying updated with latest JEE news and exam patterns."
     },
     {
       question: "What is the AI Tutor feature?",
@@ -29,7 +29,7 @@ export const homepageFAQs = {
     },
     {
       question: "Are previous year questions important for JEE?",
-      answer: "Yes! Previous year questions (PYQs) are crucial for JEE preparation. They help you understand exam patterns, frequently asked topics, difficulty levels, and time management. JEE Challenger provides 43 years of chapter-wise solved PYQs from Arihant and Disha publications."
+      answer: "Yes! Previous year questions (PYQs) are crucial for JEE preparation. They help you understand exam patterns, frequently asked topics, difficulty levels, and time management. JEE Challenger provides 43 years of previous year questions from Arihant and Disha publications."
     },
     {
       question: "Can I access JEE Challenger on mobile?",
@@ -117,23 +117,23 @@ export const pyqFAQs = {
   questions: [
     {
       question: "Why are previous year questions important for JEE?",
-      answer: "PYQs are crucial because they: 1) Reveal exam patterns and question trends, 2) Show frequently asked topics and weightage, 3) Help understand difficulty levels, 4) Improve time management skills, 5) Build confidence through familiar question types, 6) Highlight important concepts tested repeatedly. JEE Challenger provides 43 years of chapter-wise solved PYQs."
+      answer: "PYQs are crucial because they: 1) Reveal exam patterns and question trends, 2) Show frequently asked topics and weightage, 3) Help understand difficulty levels, 4) Improve time management skills, 5) Build confidence through familiar question types, 6) Highlight important concepts tested repeatedly. JEE Challenger provides 43 years of previous year questions."
     },
     {
       question: "How many years of PYQs should I solve for JEE?",
       answer: "Solve at least 15-20 years of PYQs for JEE Main and 10-15 years for JEE Advanced. For best results, solve them chapter-wise (not year-wise) to master topic patterns. JEE Challenger provides 43 years of solved PYQs organized chapter-wise from Arihant and Disha publications."
     },
     {
-      question: "Where can I get chapter-wise solved PYQs for free?",
+      question: "Where can I get previous year questions for free?",
       answer: "JEE Challenger offers free chapter-wise solved Previous Year Questions (PYQs) for all three subjects - Physics, Chemistry, and Mathematics. We provide Arihant's 41 Years and Disha's 41 Years collections with detailed solutions, organized chapter-wise for systematic practice."
     },
     {
       question: "Should I solve PYQs year-wise or chapter-wise?",
-      answer: "Solve chapter-wise PYQs during preparation phase to master each topic's pattern. Switch to year-wise solving during final months (3-4 months before exam) as full-length mock tests for time management and exam simulation. JEE Challenger provides both formats."
+      answer: "Solve previous year questions during preparation phase to master each topic's pattern. Switch to year-wise solving during final months (3-4 months before exam) as full-length mock tests for time management and exam simulation. JEE Challenger provides both formats."
     },
     {
       question: "When should I start solving JEE previous year questions?",
-      answer: "Start solving PYQs after completing each chapter's theory and basic practice problems. Don't wait until syllabus completion. Solving chapter-wise PYQs immediately after studying a topic helps reinforce concepts and identify weak areas early."
+      answer: "Start solving PYQs after completing each chapter's theory and basic practice problems. Don't wait until syllabus completion. Solving previous year questions immediately after studying a topic helps reinforce concepts and identify weak areas early."
     }
   ]
 };
