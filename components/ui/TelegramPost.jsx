@@ -52,6 +52,10 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
       background: "from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20",
       textColor: "text-emerald-600 dark:text-emerald-400",
     },
+    "from-cyan-500 to-teal-600": {
+      background: "from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20",
+      textColor: "text-cyan-600 dark:text-cyan-400",
+    },
   };
 
   const currentTheme = themeConfig[themeGradient] || themeConfig["from-blue-600 to-purple-600"];
