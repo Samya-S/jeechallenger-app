@@ -1,5 +1,4 @@
-import MathematicsResources from '@/data/materials/mathematics-resources';
-import CategorySection from '@/components/materials/CategorySection';
+
 import PYQandMoreSection from '@/components/materials/PYQandMoreSection';
 import FormulaSheets from '@/components/materials/FormulaSheets';
 import MathematicsFormulaData from '@/data/materials/mathematics-formula-data';
@@ -71,29 +70,6 @@ const MathematicsComponent = () => {
               </div>
             </div>
           </Link>
-        </div>
-
-        {/* Resources Grid */}
-        <div className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Advanced Mathematics Resources
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              From basic concepts to advanced problem-solving techniques, access the best mathematics materials for JEE
-            </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-6 rounded-full"></div>
-          </div>
-
-          {MathematicsResources.map((resource, index) => (
-            <CategorySection
-              key={index}
-              category={resource.category}
-              backgroundColor={index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}
-              items={resource.items}
-              colorTheme="purple"
-            />
-          ))}
         </div>
 
 
