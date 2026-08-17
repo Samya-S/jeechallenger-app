@@ -255,15 +255,15 @@ export default function MaterialsPage() {
 						<p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
 							Get personalized assistance and instant help with our advanced AI Tutor
 						</p>
-						<div className="w-24 h-1 bg-gradient-to-r from-violet-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
+						<div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
 					</div>
 
 					<div className="max-w-4xl mx-auto">
-						<div className="bg-white dark:bg-gray-800/50 rounded-2xl shadow-xl border border-violet-200 dark:border-violet-800 overflow-hidden">
+						<div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden">
 							<div className="p-8 md:p-12">
 								<div className="flex flex-col md:flex-row items-center gap-8">
 									<div className="flex-shrink-0">
-										<div className="w-24 h-24 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+										<div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
 											<FaChalkboardTeacher className="w-12 h-12 text-white" />
 										</div>
 									</div>
@@ -276,25 +276,25 @@ export default function MaterialsPage() {
 										</p>
 										<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 w-fit mx-auto sm:w-auto">
 											<div className="flex items-start gap-3">
-												<div className="w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+												<div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
 												<span className="text-gray-700 dark:text-gray-300">24/7 instant doubt solving</span>
 											</div>
 											<div className="flex items-start gap-3">
-												<div className="w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+												<div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
 												<span className="text-gray-700 dark:text-gray-300">Step-by-step explanations</span>
 											</div>
 											<div className="flex items-start gap-3">
-												<div className="w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+												<div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
 												<span className="text-gray-700 dark:text-gray-300">Personalized learning path</span>
 											</div>
 											<div className="flex items-start gap-3">
-												<div className="w-2 h-2 bg-violet-500 rounded-full mt-2"></div>
+												<div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
 												<span className="text-gray-700 dark:text-gray-300">All JEE subjects covered</span>
 											</div>
 										</div>
 										<div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
 											<Link href="/ai-tutor" target="_blank" rel="noopener noreferrer" aria-label="Start learning with AI Tutor">
-												<button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+												<button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
 													<span className="flex items-center justify-center">
 														<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 640 512">
 															<path d="M208 352c-2.39 0-4.78.35-7.06 1.09C187.98 357.3 174.35 360 160 360c-14.35 0-27.98-2.7-40.95-6.91-2.28-.74-4.66-1.09-7.05-1.09C49.94 352-.33 402.48 0 464.62.14 490.88 21.73 512 48 512h224c26.27 0 47.86-21.12 48-47.38.33-62.14-49.94-112.62-112-112.62zm-48-32c53.02 0 96-42.98 96-96s-42.98-96-96-96-96 42.98-96 96 42.98 96 96 96zM592 0H208c-26.47 0-48 22.25-48 49.59V96c23.42 0 45.1 6.78 64 17.8V64h352v288h-64v-64H384v64h-76.24c19.1 16.69 33.12 38.73 39.69 64H592c26.47 0 48-22.25 48-49.59V49.59C640 22.25 618.47 0 592 0z"/>

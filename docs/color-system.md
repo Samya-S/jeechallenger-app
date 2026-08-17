@@ -62,6 +62,14 @@ Each subject maintains its own identity for easy recognition.
 
 ## Page-Specific Colors
 
+### More Study Materials
+- **Cyan-Teal Gradient**
+- Gradient: `from-cyan-600 via-cyan-700 to-teal-700`
+- Hero Background: `from-cyan-600 via-cyan-700 to-teal-700`
+- Buttons: `from-cyan-500 to-teal-600`
+- Accent Line: `from-cyan-500 to-teal-500`
+- Card Backgrounds: `from-cyan-50 to-teal-50` (light) | `from-cyan-900/20 to-teal-900/20` (dark)
+
 ### AI Tutor
 - **Primary Blue-Purple**
 - All CTAs and highlights: `from-blue-600 to-purple-600`
