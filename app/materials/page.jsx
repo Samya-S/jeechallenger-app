@@ -161,7 +161,7 @@ export default function MaterialsPage() {
 					</div>
 
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-						{/* Previous Years' Questions */}
+						{/* Previous Year Questions */}
 						<div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-orange-200 dark:border-orange-800 overflow-hidden flex flex-col h-full">
 							<div className="p-6 flex flex-col flex-grow">
 								<div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -174,7 +174,7 @@ export default function MaterialsPage() {
 									Solved previous year questions from JEE Main & Advanced with detailed solutions
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/previous-year-questions" aria-label="View Chapter-wise Previous Years' Questions">
+									<Link href="/materials/previous-year-questions" aria-label="View Chapter-wise Previous Year Questions">
 										<button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
