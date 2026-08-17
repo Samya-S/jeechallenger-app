@@ -1,12 +1,19 @@
+import {
+  FaHome, FaBook, FaLink, FaLightbulb,
+  FaLayerGroup, FaRobot, FaBrain, FaCubes, FaMagic, FaCompass, FaCogs
+} from 'react-icons/fa';
+
 const NavbarItems = [
   {
     title: 'Home',
     type: 'link',
-    url: '/'
+    url: '/',
+    icon: <FaHome />
   },
   {
     title: 'Materials',
     type: 'dropdown',
+    icon: <FaBook />,
     items: [
       {
         title: 'Physics',
@@ -33,6 +40,7 @@ const NavbarItems = [
   {
     title: 'Official Links',
     type: 'dropdown',
+    icon: <FaLink />,
     items: [
       {
         title: 'JEE Main',
@@ -47,6 +55,7 @@ const NavbarItems = [
   {
     title: 'Utilities',
     type: 'dropdown',
+    icon: <FaCompass />,
     items: [
       {
         title: 'AI Tutor',
@@ -61,6 +70,7 @@ const NavbarItems = [
   {
     title: 'Read More',
     type: 'dropdown',
+    icon: <FaLightbulb />,
     items: [
       {
         title: 'Articles & Tips',

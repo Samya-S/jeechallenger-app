@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Styles from "./Navbar.module.css";
-import { FaBars, FaTimes, FaCaretDown, FaHome, FaBook, FaLink, FaGlobe, FaLightbulb, FaChartLine, FaChalkboardTeacher, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaCaretDown, FaUser, FaSignOutAlt } from "react-icons/fa";
 import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTheme } from "@teispace/next-themes";
@@ -60,27 +60,7 @@ export default function NavBar() {
     setDropdownState({});
   };
 
-  // Icon mapping for navigation items
-  const getIcon = (title) => {
-    switch (title.toLowerCase()) {
-      case 'home':
-        return <FaHome />;
-      case 'materials':
-        return <FaBook />;
-      case 'official links':
-        return <FaLink />;
-      case 'syllabus tracker':
-        return <FaChartLine />;
-      case 'ai tutor':
-        return <FaChalkboardTeacher />;
-      case 'more platforms':
-        return <FaGlobe />;
-      case 'resources':
-        return <FaLightbulb />;
-      default:
-        return null;
-    }
-  };
+
 
   // Add this new useEffect to lock body scroll when menu is open
   useEffect(() => {
@@ -310,7 +290,7 @@ export default function NavBar() {
                       role="menuitem"
                       aria-label={`Go to ${item.title} page`}
                     >
-                      {getIcon(item.title)}
+                      {item.icon}
                       {item.title}
                     </Link>
                   </li>
@@ -330,7 +310,7 @@ export default function NavBar() {
                       className={Styles.mobileDropdownButton}
                     >
                       <span style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        {getIcon(item.title)}
+                        {item.icon}
                         {item.title}
                       </span>
                       <span
