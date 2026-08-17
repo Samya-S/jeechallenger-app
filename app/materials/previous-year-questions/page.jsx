@@ -22,7 +22,7 @@ export const metadata = {
   },
   openGraph: {
     title: "Previous Year Questions - JEE Challenger",
-    description: "Previous years' questions for JEE Main and JEE Advanced.",
+    description: "Previous year questions for JEE Main and JEE Advanced.",
     url: '/materials/previous-year-questions',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -32,7 +32,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: "Previous Year Questions - JEE Challenger",
-    description: "Previous years' questions for JEE Main and JEE Advanced.",
+    description: "Previous year questions for JEE Main and JEE Advanced.",
     images: pageOg.twitterImages,
   },
 };

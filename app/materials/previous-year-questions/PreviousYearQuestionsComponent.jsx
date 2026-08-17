@@ -39,7 +39,7 @@ const PreviousYearQuestionsComponent = () => {
               Previous Year Questions
             </h1>
             <p className="text-xl md:text-2xl font-medium max-w-3xl mx-auto drop-shadow-md animate-fade-in-delay">
-              Master JEE preparation with comprehensive chapter-wise solved previous years&lsquo; questions from top publications
+              Master JEE preparation with comprehensive chapter-wise solved previous year questions from top publications
             </p>
           </div>
         </div>
