@@ -12,7 +12,7 @@ export default function LoginClient() {
   const router = useRouter();
   const { status } = useSession();
   const [authError, setAuthError] = useState("");
-  
+
   const returnUrl = searchParams.get("returnUrl") || searchParams.get("callbackUrl") || "/";
 
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function LoginClient() {
     const errorParam = searchParams.get("error");
     if (errorParam) {
       if (errorParam === "Callback" || errorParam === "AccessDenied") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setAuthError("Authentication was cancelled. Please try again.");
       } else {
         setAuthError("An error occurred during login. Please try again.");
@@ -43,9 +44,9 @@ export default function LoginClient() {
 
           <div className="text-center mb-8 w-full">
             <div className="w-20 h-20 mx-auto mb-6 relative rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
-              <Image 
-                src="/images/jcicon.jpg" 
-                alt="JEE Challenger Icon" 
+              <Image
+                src="/images/jcicon.jpg"
+                alt="JEE Challenger Icon"
                 fill
                 style={{ objectFit: 'cover' }}
                 sizes="80px"
@@ -71,7 +72,8 @@ export default function LoginClient() {
               onLoginError={(msg) => setAuthError(msg)}
             />
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-              New to JEE Challenger? Signing in will automatically create your account.
+              New to JEE Challenger?<br />
+              Signing in will automatically create your account.
             </p>
           </div>
 
