@@ -225,58 +225,67 @@ npm start
 ```
 jeechallenger-app/
 ├── app/                        # Next.js App Router pages
-│   ├── ai-tutor/               # AI Tutor functionality
-│   │   └── components/         # AI Tutor specific components
-│   ├── syllabus-tracker/       # Progress tracking system
-│   ├── blog/                   # Blog post display with dynamic routes
-│   │   ├── [slug]/             # Dynamic blog post pages
-│   │   ├── components/         # Blog UI components (TOC, Share, etc.)
-│   │   └── hooks/              # Blog custom hooks
-│   ├── blogs/                  # Blog listing page with search/filter
+│   ├── (about)/                # Connect and Support
+│   │   ├── contact-us/         # Contact form
+│   │   └── donate/             # Support & Donations
+│   ├── (legal)/                # Legal policies
+│   │   ├── disclaimer/         # Disclaimer
+│   │   ├── privacy-policy/     # Global Privacy Policy
+│   │   └── terms-of-service/   # Global Terms of Service
+│   ├── (read-more)/            # Reading and content pages
+│   │   ├── blog/               # Blog post display with dynamic routes
+│   │   │   ├── [slug]/         # Dynamic blog post pages
+│   │   │   ├── components/     # Blog UI components (TOC, Share, etc.)
+│   │   │   └── hooks/          # Blog custom hooks
+│   │   ├── blogs/              # Blog listing page with search/filter
+│   │   └── news/               # Latest JEE news section
 │   ├── (resources)/            # Resources
-│   │   ├── physics/            # Physics resources
-│   │   │   └── unit-converter/ # Physics unit converter tool
 │   │   ├── chemistry/          # Chemistry resources
-│   │   │   ├── unit-converter/ # Chemistry unit converter tool
-│   │   │   └── periodic-table/ # Interactive Periodic Table explorer tool
+│   │   │   ├── periodic-table/ # Interactive Periodic Table explorer tool
+│   │   │   └── unit-converter/ # Chemistry unit converter tool
 │   │   ├── mathematics/        # Mathematics resources
 │   │   │   └── unit-converter/ # Mathematics unit converter tool
+│   │   ├── physics/            # Physics resources
+│   │   │   └── unit-converter/ # Physics unit converter tool
 │   │   └── previous-year-questions/  # PYQs
-│   ├── more-platforms/         # External platform links
-│   ├── news/                   # Latest JEE news section
-│   ├── official-links/         # JEE official papers
+│   ├── (seo)/                  # SEO and Meta routes
+│   │   ├── image-sitemap.xml/  # Sitemap generator
+│   │   ├── og/                 # OpenGraph image generator
+│   │   └── rss.xml/            # RSS feed generator
+│   ├── ai-tutor/               # AI Tutor functionality
+│   │   └── components/         # AI Tutor specific components
+│   ├── api/                    # API routes
 │   ├── login/                  # Login functionality
-│   ├── contact-us/             # Contact form
+│   ├── more-platforms/         # External platform links
+│   ├── official-links/         # JEE official papers
 │   ├── profile/                # User profile dashboard
-│   ├── donate/                 # Support & Donations
-│   ├── privacy-policy/         # Global Privacy Policy
-│   └── terms-of-service/       # Global Terms of Service
+│   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
-│   ├── ui/                     # UI components (e.g. BlogCard)
 │   ├── common/                 # Shared components
+│   ├── providers/              # Context providers
 │   ├── resources/              # Resources components
-│   └── providers/              # Context providers
+│   └── ui/                     # UI components (e.g. BlogCard)
 ├── config/                     # Configuration files
 ├── data/                       # Content data
 │   ├── blogs/                  # MDX blog articles
 │   ├── faq-data.js             # General FAQ data
-│   ├── syllabus-data.js        # Syllabus Tracker data
-│   └── resources/              # Resources, Formula, Unit Conversion, and Periodic Table data
-│       ├── physics-formula-data.js
-│       ├── chemistry-formula-data.js
-│       ├── mathematics-formula-data.js
-│       ├── physics-resources.js
-│       ├── chemistry-resources.js
-│       ├── mathematics-resources.js
-│       ├── unit-conversion-data.js
-│       ├── periodic-table-explorer-constants.js
-│       └── periodic-table-data.js
+│   ├── resources/              # Resources, Formula, Unit Conversion, and Periodic Table data
+│   │   ├── chemistry-formula-data.js
+│   │   ├── chemistry-resources.js
+│   │   ├── mathematics-formula-data.js
+│   │   ├── mathematics-resources.js
+│   │   ├── periodic-table-data.js
+│   │   ├── periodic-table-explorer-constants.js
+│   │   ├── physics-formula-data.js
+│   │   ├── physics-resources.js
+│   │   └── unit-conversion-data.js
+│   └── syllabus-data.js        # Syllabus Tracker data
 ├── docs/                       # Documentation
 │   ├── blog-structure.md       # Blog system documentation
 │   └── color-system.md         # Design system colors
-├── utils/                      # Utility functions
+├── public/                     # Static assets
 ├── server/                     # Server actions
-└── public/                     # Static assets
+└── utils/                      # Utility functions
 ```
 
 

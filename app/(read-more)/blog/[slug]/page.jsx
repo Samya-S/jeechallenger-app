@@ -1,4 +1,4 @@
-import { getArticleBySlug, getAllArticles } from '../../../utils/articles';
+import { getArticleBySlug, getAllArticles } from '@/utils/articles';
 import BlogPostComponent from '../BlogPostComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { notFound } from 'next/navigation';
@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const post = getArticleBySlug(slug);
-  
+
   if (!post) {
     return {
       title: 'Article Not Found | JEE Challenger',
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }) {
 export default async function BlogPost({ params }) {
   const { slug } = await params;
   const post = getArticleBySlug(slug);
-  
+
   if (!post) {
     notFound();
   }
@@ -73,8 +73,8 @@ export default async function BlogPost({ params }) {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData 
-        type="article" 
+      <StructuredData
+        type="article"
         data={{
           title: post.title,
           description: post.excerpt,
@@ -86,19 +86,19 @@ export default async function BlogPost({ params }) {
           }),
           publishedAt: post.date,
           source: post.author || 'JEE Challenger Team'
-        }} 
+        }}
       />
-      <StructuredData 
-        type="breadcrumb" 
+      <StructuredData
+        type="breadcrumb"
         data={{
           items: [
             { name: "Home", path: "/" },
             { name: "Blogs", path: "/blogs" },
             { name: post.title, path: `/blog/${slug}` }
           ]
-        }} 
+        }}
       />
-      
+
       <BlogPostComponent post={post} />
     </>
   );

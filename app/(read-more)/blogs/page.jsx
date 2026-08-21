@@ -1,5 +1,5 @@
 import { getBatchViewCounts } from '@/server/views-actions';
-import { getAllArticles } from '../../utils/articles';
+import { getAllArticles } from '@/utils/articles';
 import BlogListingComponent from './BlogListingComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { ogImageMeta } from '@/utils/og-metadata';
@@ -46,24 +46,24 @@ export default async function BlogPage() {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData 
-        type="breadcrumb" 
+      <StructuredData
+        type="breadcrumb"
         data={{
           items: [
             { name: "Home", path: "/" },
             { name: "Blogs", path: "/blogs" }
           ]
-        }} 
+        }}
       />
-      
+
       {/* Blog List Structured Data */}
-      <StructuredData 
-        type="blogList" 
+      <StructuredData
+        type="blogList"
         data={{
           items: articles
-        }} 
+        }}
       />
-      
+
       <BlogListingComponent articles={articles} />
     </>
   );
