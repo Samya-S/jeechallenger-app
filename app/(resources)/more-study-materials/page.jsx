@@ -12,7 +12,7 @@ export const metadata = {
   title: "More Study Materials | JEE Challenger",
   description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
   alternates: {
-    canonical: '/materials/more-study-materials',
+    canonical: '/more-study-materials',
   },
   robots: {
     index: true,
@@ -21,7 +21,7 @@ export const metadata = {
   openGraph: {
     title: 'More Study Materials - JEE Challenger',
     description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
-    url: '/materials/more-study-materials',
+    url: '/more-study-materials',
     siteName: "JEE Challenger",
     images: pageOg.images,
     locale: 'en_IN',

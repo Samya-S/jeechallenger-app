@@ -8,14 +8,14 @@ const pageOg = ogImageMeta({
 	title: 'Free JEE Study Materials & Resources',
 	subtitle: 'Physics, Chemistry & Mathematics — free PDFs, notes, and PYQs',
 	theme: 'materials',
-	alt: 'JEE Study Materials for Physics, Chemistry, and Mathematics',
+	alt: 'JEE Resources for Physics, Chemistry, and Mathematics',
 });
 
 export const metadata = {
 	title: 'Free JEE Study Materials & Resources | JEE Challenger',
 	description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics notes, Previous Year Questions, and comprehensive preparation resources. Download PDFs, solved problems, and chapter-wise study materials.',
 	alternates: {
-		canonical: '/materials',
+		canonical: '/resources',
 	},
 	robots: {
 		index: true,
@@ -24,7 +24,7 @@ export const metadata = {
 	openGraph: {
 		title: 'Free JEE Study Materials & Resources | JEE Challenger',
 		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. Free PDFs, notes, and previous year questions for JEE Main & Advanced.',
-		url: '/materials',
+		url: '/resources',
 		siteName: 'JEE Challenger',
 		images: pageOg.images,
 		locale: 'en_IN',
@@ -46,7 +46,7 @@ export default function MaterialsPage() {
 				<div className="max-w-7xl mx-auto">
           <Breadcrumbs
             crumbs={[
-              { label: 'Study Materials', href: '/materials' }
+              { label: 'Resources', href: '/resources' }
             ]}
             className="pb-12"
           />
@@ -76,7 +76,7 @@ export default function MaterialsPage() {
 									Comprehensive study materials, formulas, and solved problems for JEE Physics
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/physics" aria-label="View Physics study materials">
+									<Link href="/physics" aria-label="View Physics resources">
 										<button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ export default function MaterialsPage() {
 									Notes, reactions, and practice problems for Physical, Organic & Inorganic Chemistry
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/chemistry" aria-label="View Chemistry study materials">
+									<Link href="/chemistry" aria-label="View Chemistry resources">
 										<button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@ export default function MaterialsPage() {
 									Formulas, theorems, and problem-solving techniques for JEE Mathematics
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/mathematics" aria-label="View Mathematics study materials">
+									<Link href="/mathematics" aria-label="View Mathematics resources">
 										<button className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,7 +174,7 @@ export default function MaterialsPage() {
 									Solved previous year questions from JEE Main & Advanced with detailed solutions
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/previous-year-questions" aria-label="View Chapter-wise Previous Year Questions">
+									<Link href="/previous-year-questions" aria-label="View Chapter-wise Previous Year Questions">
 										<button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +228,7 @@ export default function MaterialsPage() {
 									Additional resources, worksheets, and supplementary preparation materials
 								</p>
 								<div className="text-center mt-auto">
-									<Link href="/materials/more-study-materials" aria-label="View More Study Materials">
+									<Link href="/more-study-materials" aria-label="View More Study Materials">
 										<button className="bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
 											<span className="flex items-center justify-center">
 												<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

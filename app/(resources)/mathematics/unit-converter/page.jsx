@@ -14,12 +14,12 @@ const pageOg = ogImageMeta({
 export const metadata = {
   title: 'Mathematics Unit Converter | JEE Challenger',
   description: 'Instantly convert mathematics units for length, area, volume, and time.',
-  alternates: { canonical: '/materials/mathematics/unit-converter' },
+  alternates: { canonical: '/mathematics/unit-converter' },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Mathematics Unit Converter | JEE Challenger',
     description: 'Instantly convert mathematics units for length, area, volume, and time.',
-    url: '/materials/mathematics/unit-converter',
+    url: '/mathematics/unit-converter',
     siteName: 'JEE Challenger',
     images: pageOg.images,
     locale: 'en_IN',
@@ -40,9 +40,9 @@ export default function MathematicsUnitConverterPage() {
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 dark:from-purple-900 dark:to-pink-900 pb-24 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Mathematics', href: '/materials/mathematics' },
-            { label: 'Unit Converter', href: '/materials/mathematics/unit-converter' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Mathematics', href: '/mathematics' },
+            { label: 'Unit Converter', href: '/mathematics/unit-converter' },
           ]} 
           hasBanner={true}
           className="pb-12"

@@ -175,7 +175,7 @@ const HomeComponent = ({ latestArticles }) => {
                   <Image
                     className="rounded-lg"
                     src="/images/physics.jpg"
-                    alt="JEE Physics Study Materials - Free Books, Notes and PDFs for JEE Main and Advanced preparation"
+                    alt="JEE Physics resources - Free Books, Notes and PDFs for JEE Main and Advanced preparation"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -188,7 +188,7 @@ const HomeComponent = ({ latestArticles }) => {
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- Albert Einstein</p>
                 <div className="mt-auto">
-                  <Link href="/materials/physics" aria-label="Explore Physics study materials" className="mt-auto">
+                  <Link href="/physics" aria-label="Explore Physics resources" className="mt-auto">
                     <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,7 +208,7 @@ const HomeComponent = ({ latestArticles }) => {
                   <Image
                     className="rounded-lg"
                     src="/images/chemistry.jpg"
-                    alt="JEE Chemistry Study Materials - Free Organic, Inorganic and Physical Chemistry Notes and PDFs"
+                    alt="JEE Chemistry resources - Free Organic, Inorganic and Physical Chemistry Notes and PDFs"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -221,7 +221,7 @@ const HomeComponent = ({ latestArticles }) => {
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- William Crookes</p>
                 <div className="mt-auto">
-                  <Link href="/materials/chemistry" aria-label="Explore Chemistry study materials" className="mt-auto">
+                  <Link href="/chemistry" aria-label="Explore Chemistry resources" className="mt-auto">
                     <button className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,7 +241,7 @@ const HomeComponent = ({ latestArticles }) => {
                   <Image
                     className="rounded-lg"
                     src="/images/maths.jpg"
-                    alt="JEE Mathematics Study Materials - Free Calculus, Algebra, Trigonometry Books and PDFs"
+                    alt="JEE Mathematics resources - Free Calculus, Algebra, Trigonometry Books and PDFs"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                     style={{ objectFit: 'cover' }}
@@ -254,7 +254,7 @@ const HomeComponent = ({ latestArticles }) => {
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">- Leo Tolstoy</p>
                 <div className="mt-auto">
-                  <Link href="/materials/mathematics" aria-label="Explore Mathematics study materials" className="mt-auto">
+                  <Link href="/mathematics" aria-label="Explore Mathematics resources" className="mt-auto">
                     <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

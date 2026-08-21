@@ -31,7 +31,7 @@ const PYQandMoreSection = () => {
                 Chapter-wise solved previous year JEE papers with detailed solutions
               </p>
               <div className="mt-auto">
-                <Link href="/materials/previous-year-questions" aria-label="View Chapter wise solved previous year JEE papers">
+                <Link href="/previous-year-questions" aria-label="View Chapter wise solved previous year JEE papers">
                   <button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                     Explore PYQs
                   </button>
@@ -79,7 +79,7 @@ const PYQandMoreSection = () => {
                 Additional resources and study materials to boost your preparation
               </p>
               <div className="mt-auto">
-                <Link href="/materials/more-study-materials" aria-label="Explore more study materials">
+                <Link href="/more-study-materials" aria-label="Explore more study materials">
                   <button className="bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                     Explore More
                   </button>

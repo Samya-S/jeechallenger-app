@@ -80,7 +80,7 @@ export async function GET() {
     };
 
     // 3. Automatically Scan your App Directories
-    const materials = scanDirectory('app/materials', 'materials', 'Study Materials');
+    const resources = scanDirectory('app/(resources)', 'resources', 'Resources');
     const platforms = scanDirectory('app/more-platforms', 'more-platforms', 'More Platforms');
     const officialLinks = scanDirectory('app/official-links', 'official-links', 'Official Resources');
 
@@ -137,7 +137,7 @@ export async function GET() {
     });
 
     // Combine everything
-    const allPages = [homePage, ...materials, ...platforms, ...officialLinks, ...standalonePages, ...blogPages];
+    const allPages = [homePage, ...resources, ...platforms, ...officialLinks, ...standalonePages, ...blogPages];
 
     // Generate XML safely
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

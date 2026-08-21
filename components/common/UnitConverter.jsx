@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { ArrowLeftRight, Activity, ChevronDown } from "lucide-react";
 
-import { conversionData } from "@/data/materials/unit-conversion-data";
+import { conversionData } from "@/data/resources/unit-conversion-data";
 
 const CustomDropdown = ({ value, onChange, options, theme }) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -9,32 +9,32 @@ const Footer = () => {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
 
-          {/* Study Materials */}
+          {/* Resources */}
           <div className="order-2 lg:order-1">
-            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Study Materials</p>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Resources</p>
             <ul className="space-y-2">
               <li>
-                <Link href="/materials/physics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/physics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Physics
                 </Link>
               </li>
               <li>
-                <Link href="/materials/chemistry" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/chemistry" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Chemistry
                 </Link>
               </li>
               <li>
-                <Link href="/materials/mathematics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/mathematics" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Mathematics
                 </Link>
               </li>
               <li>
-                <Link href="/materials/previous-year-questions" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/previous-year-questions" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   Previous Year Questions
                 </Link>
               </li>
               <li>
-                <Link href="/materials/more-study-materials" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/more-study-materials" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   More Materials
                 </Link>
               </li>

@@ -127,7 +127,17 @@ const nextConfig = {
       },
       {
         source: '/materials/chapterwise-solved-pyqs',
-        destination: '/materials/previous-year-questions',
+        destination: '/previous-year-questions',
+        permanent: true,
+      },
+      {
+        source: '/materials',
+        destination: '/resources',
+        permanent: true,
+      },
+      {
+        source: '/materials/:path*',
+        destination: '/:path*',
         permanent: true,
       },
     ];

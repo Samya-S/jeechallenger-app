@@ -212,7 +212,7 @@ export default function BlogListingComponent({ articles }) {
                   Try AI Tutor Free
                 </Link>
                 <Link
-                  href="/materials"
+                  href="/resources"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold px-8 py-4 rounded-xl transition-all border border-gray-300 dark:border-gray-700"

@@ -7,7 +7,7 @@ export const EXCLUDED_AD_PATHS = [
 
   '/ai-tutor',
   '/syllabus-tracker',
-  '/materials/chemistry/periodic-table',
+  '/chemistry/periodic-table',
 
   '/donate',
   '/disclaimer',

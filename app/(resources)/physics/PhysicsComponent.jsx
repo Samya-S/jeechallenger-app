@@ -1,7 +1,7 @@
 
-import PYQandMoreSection from '@/components/materials/PYQandMoreSection';
-import FormulaSheets from '@/components/materials/FormulaSheets';
-import PhysicsFormulaData from '@/data/materials/physics-formula-data';
+import PYQandMoreSection from '@/components/resources/PYQandMoreSection';
+import FormulaSheets from '@/components/resources/FormulaSheets';
+import PhysicsFormulaData from '@/data/resources/physics-formula-data';
 import TelegramPost from '@/components/ui/TelegramPost';
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
@@ -15,8 +15,8 @@ const PhysicsComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Physics', href: '/materials/physics' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Physics', href: '/physics' },
           ]} 
           hasBanner={true}
           className="pb-12"
@@ -51,7 +51,7 @@ const PhysicsComponent = () => {
           </div>
 
           <Link 
-            href="/materials/physics/unit-converter"
+            href="/physics/unit-converter"
             className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 p-8 sm:p-10 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
           >
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 group-hover:scale-150 transition-transform duration-700 ease-out blur-3xl"></div>

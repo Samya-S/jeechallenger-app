@@ -11,8 +11,8 @@ const MoreMaterialsComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-700 to-teal-700 dark:from-cyan-900 dark:to-teal-900 pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'More Study Materials', href: '/materials/more-study-materials' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'More Study Materials', href: '/more-study-materials' },
           ]}
           hasBanner={true}
           className="pb-12"

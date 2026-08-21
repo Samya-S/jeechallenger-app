@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Search, Sliders, Layers, RefreshCw, X, ChevronDown } from "lucide-react";
-import { periodicTableData } from "@/data/materials/periodic-table-data";
-import { CATEGORIES, STATES, BLOCKS, HEATMAP_MODES } from "@/data/materials/periodic-table-explorer-constants";
+import { periodicTableData } from "@/data/resources/periodic-table-data";
+import { CATEGORIES, STATES, BLOCKS, HEATMAP_MODES } from "@/data/resources/periodic-table-explorer-constants";
 import ElementDetailsModal from "./ElementDetailsModal";
 
 const CustomDropdown = ({ value, onChange, options }) => {
