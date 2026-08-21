@@ -30,59 +30,98 @@ export async function GET() {
     // This array acts as our "pool". As images are assigned to specific routes, they are removed.
     let unassignedImages = [...allPublicImages];
 
-    // 2. The Auto-Scanner Function
-    const scanDirectory = (dirPath, basePath, subtitle) => {
-        const fullPath = path.join(/*turbopackIgnore: true*/ process.cwd(), dirPath);
+    // 2. Dynamic Next.js App Traversal
+    const getValidRoutes = (dir, currentPath = []) => {
+        const fullPath = path.join(/*turbopackIgnore: true*/ process.cwd(), dir);
         if (!fs.existsSync(fullPath)) return [];
 
+        let routes = [];
         const entries = fs.readdirSync(fullPath, { withFileTypes: true });
-        const pages = [];
+        
+        // Check if this directory has a page file (making it a valid route)
+        // We skip the root 'app' folder because the homepage is handled separately
+        if (dir !== 'app' && entries.some(e => e.isFile() && (e.name === 'page.js' || e.name === 'page.jsx' || e.name === 'page.tsx'))) {
+            // If the folder is a route group, its name isn't part of the URL, so use the last path segment instead
+            const isDirRouteGroup = path.basename(dir).startsWith('(');
+            const folderNameForTitle = isDirRouteGroup && currentPath.length > 0 
+                ? currentPath[currentPath.length - 1] 
+                : path.basename(dir);
+
+            routes.push({
+                folderName: folderNameForTitle,
+                basePath: currentPath.join('/')
+            });
+        }
 
         entries.forEach(entry => {
-            // Only process valid route folders
-            if (entry.isDirectory() && !entry.name.startsWith('[')) {
-                const folderName = entry.name;
-                const titleName = folderName.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            if (entry.isDirectory()) {
+                const name = entry.name;
+                
+                // --- NEXT.JS EDGE CASES ---
+                if (
+                    name.startsWith('[') || // 1. Dynamic routes (handled separately, e.g. blog)
+                    name.startsWith('_') || // 2. Private folders
+                    name.startsWith('@') || // 3. Parallel routes
+                    (name.startsWith('(') && name.includes('.')) || // 4. Intercepting routes like (.), (..)
+                    name === 'api' || // 5. API routes
+                    name === 'image-sitemap.xml' // 6. Avoid infinite loops or self-scanning
+                ) {
+                    return; // Skip this folder entirely
+                }
 
-                // Always generate the dynamic OG image for the route
-                const pageImages = [{
-                    url: getOgUrl(titleName, subtitle),
-                    title: `${titleName} - JEE Challenger`,
-                    caption: `Explore ${titleName} resources on JEE Challenger`
-                }];
-
-                // Smart Matcher: Find images in the pool that belong to this route
-                // Matches exact names (e.g., 'physics.jpg') OR prefix names (e.g., 'physics_banner.jpg')
-                const matchedImages = unassignedImages.filter(img => {
-                    const imgName = path.parse(img).name.toLowerCase();
-                    const targetFolder = folderName.toLowerCase();
-                    return imgName === targetFolder || imgName.startsWith(`${targetFolder}-`) || imgName.startsWith(`${targetFolder}_`);
-                });
-
-                // Attach matched static images to this route and remove them from the pool
-                matchedImages.forEach(img => {
-                    pageImages.push({
-                        url: `${siteUrl}/images/${img}`,
-                        title: `${titleName} Visual`,
-                        caption: `${titleName} Image Resource`
-                    });
-                    // Remove claimed image from the unassigned pool
-                    unassignedImages = unassignedImages.filter(unassigned => unassigned !== img);
-                });
-
-                pages.push({
-                    loc: `${siteUrl}/${basePath}/${folderName}`,
-                    images: pageImages
-                });
+                // 7. Route Groups (e.g. '(resources)') do NOT add to the URL path
+                const isRouteGroup = name.startsWith('(') && name.endsWith(')');
+                const newPath = isRouteGroup ? [...currentPath] : [...currentPath, name];
+                
+                routes = routes.concat(getValidRoutes(path.join(dir, name), newPath));
             }
         });
-        return pages;
+
+        return routes;
     };
 
-    // 3. Automatically Scan your App Directories
-    const resources = scanDirectory('app/(resources)', 'resources', 'Resources');
-    const platforms = scanDirectory('app/more-platforms', 'more-platforms', 'More Platforms');
-    const officialLinks = scanDirectory('app/official-links', 'official-links', 'Official Resources');
+    // 3. Automatically Scan your App Directories dynamically
+    const allDynamicRoutes = getValidRoutes('app');
+    
+    const dynamicPages = allDynamicRoutes.map(route => {
+        // Clean up folder name for a readable title
+        const titleName = route.folderName.replace(/[()]/g, '').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        
+        // Use the parent path segment as subtitle if nested, else default to 'Resources'
+        const pathSegments = route.basePath.split('/');
+        let subtitle = 'Resources';
+        if (pathSegments.length > 1) {
+             subtitle = pathSegments[0].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+        
+        const pageImages = [{
+            url: getOgUrl(titleName, subtitle),
+            title: `${titleName} - JEE Challenger`,
+            caption: `Explore ${titleName} resources on JEE Challenger`
+        }];
+
+        // Smart Matcher: Find matching static images in public/images pool
+        const matchedImages = unassignedImages.filter(img => {
+            const imgName = path.parse(img).name.toLowerCase();
+            const targetFolder = route.folderName.replace(/[()]/g, '').toLowerCase();
+            return imgName === targetFolder || imgName.startsWith(`${targetFolder}-`) || imgName.startsWith(`${targetFolder}_`);
+        });
+
+        matchedImages.forEach(img => {
+            pageImages.push({
+                url: `${siteUrl}/images/${img}`,
+                title: `${titleName} Visual`,
+                caption: `${titleName} Image Resource`
+            });
+            // Remove claimed image from the unassigned pool
+            unassignedImages = unassignedImages.filter(unassigned => unassigned !== img);
+        });
+
+        return {
+            loc: `${siteUrl}/${route.basePath}`,
+            images: pageImages
+        };
+    });
 
     // 4. The Homepage (Takes the Dynamic OG + all leftover static images in the pool)
     const homePageImages = [
@@ -108,22 +147,7 @@ export async function GET() {
         loc: `${siteUrl}`,
         images: homePageImages
     };
-
-    // 5. Standalone Tools/Pages (Only OG images since they don't have matching folders in this context)
-    const standalonePages = [
-        { path: 'syllabus-tracker', title: 'JEE Syllabus Tracker', subtitle: 'Tools' },
-        { path: 'news', title: 'JEE News & Updates', subtitle: 'News' },
-        { path: 'ai-tutor', title: 'JEE Challenger AI Tutor', subtitle: 'AI Tutor' }
-    ].map(page => ({
-        loc: `${siteUrl}/${page.path}`,
-        images: [{
-            url: getOgUrl(page.title, page.subtitle),
-            title: page.title,
-            caption: `Explore ${page.title} on JEE Challenger`
-        }]
-    }));
-
-    // 6. Auto-fetch Dynamic Blog Posts
+    // 5. Auto-fetch Dynamic Blog Posts
     const articles = await getAllArticles(false);
     const blogPages = articles.map((article) => {
         return {
@@ -137,7 +161,7 @@ export async function GET() {
     });
 
     // Combine everything
-    const allPages = [homePage, ...resources, ...platforms, ...officialLinks, ...standalonePages, ...blogPages];
+    const allPages = [homePage, ...dynamicPages, ...blogPages];
 
     // Generate XML safely
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
