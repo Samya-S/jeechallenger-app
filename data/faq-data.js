@@ -5,7 +5,7 @@ export const homepageFAQs = {
   questions: [
     {
       question: "What is JEE Challenger?",
-      answer: "JEE Challenger is a comprehensive free online platform for JEE Main and Advanced preparation. It provides 5000+ study materials including books, notes, previous year questions, an AI-powered tutor, syllabus tracker, and real-time exam updates - all completely free."
+      answer: "JEE Challenger is a comprehensive free online platform for JEE Main and Advanced preparation. It provides 5000+ study resources including books, notes, previous year questions, an AI-powered tutor, syllabus tracker, and real-time exam updates - all completely free."
     },
     {
       question: "Is JEE Challenger completely free?",

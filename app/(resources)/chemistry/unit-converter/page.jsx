@@ -14,12 +14,12 @@ const pageOg = ogImageMeta({
 export const metadata = {
   title: 'Chemistry Unit Converter | JEE Challenger',
   description: 'Instantly convert chemistry units for mass, temperature, pressure, volume, and molarity.',
-  alternates: { canonical: '/materials/chemistry/unit-converter' },
+  alternates: { canonical: '/chemistry/unit-converter' },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Chemistry Unit Converter | JEE Challenger',
     description: 'Instantly convert chemistry units for mass, temperature, pressure, volume, and molarity.',
-    url: '/materials/chemistry/unit-converter',
+    url: '/chemistry/unit-converter',
     siteName: 'JEE Challenger',
     images: pageOg.images,
     locale: 'en_IN',
@@ -40,9 +40,9 @@ export default function ChemistryUnitConverterPage() {
       <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-700 to-teal-700 dark:from-green-900 dark:to-teal-900 pb-24 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Chemistry', href: '/materials/chemistry' },
-            { label: 'Unit Converter', href: '/materials/chemistry/unit-converter' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Chemistry', href: '/chemistry' },
+            { label: 'Unit Converter', href: '/chemistry/unit-converter' },
           ]} 
           hasBanner={true}
           className="pb-12"

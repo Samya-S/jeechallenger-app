@@ -1,8 +1,8 @@
 
-import PYQandMoreSection from '@/components/materials/PYQandMoreSection';
+import PYQandMoreSection from '@/components/resources/PYQandMoreSection';
 import { BookOpen, Target, Sparkles, ChevronRight, Calculator, Table } from "lucide-react";
-import FormulaSheets from '@/components/materials/FormulaSheets';
-import ChemistryFormulaData from '@/data/materials/chemistry-formula-data';
+import FormulaSheets from '@/components/resources/FormulaSheets';
+import ChemistryFormulaData from '@/data/resources/chemistry-formula-data';
 import TelegramPost from '@/components/ui/TelegramPost';
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
@@ -15,8 +15,8 @@ const ChemistryComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-700 to-teal-700 dark:from-green-900 dark:to-teal-900 pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Chemistry', href: '/materials/chemistry' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Chemistry', href: '/chemistry' },
           ]}
           hasBanner={true}
           className="pb-12"
@@ -52,7 +52,7 @@ const ChemistryComponent = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Unit Converter Banner */}
             <Link
-              href="/materials/chemistry/unit-converter"
+              href="/chemistry/unit-converter"
               className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-600 via-green-700 to-teal-700 dark:from-green-900 dark:to-teal-900 p-8 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
             >
               <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white opacity-10 group-hover:scale-150 transition-transform duration-700 ease-out blur-3xl"></div>
@@ -69,7 +69,7 @@ const ChemistryComponent = () => {
 
             {/* Periodic Table Banner */}
             <Link
-              href="/materials/chemistry/periodic-table"
+              href="/chemistry/periodic-table"
               className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-green-600 dark:from-teal-900 dark:to-green-900 p-8 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
             >
               <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white opacity-10 group-hover:scale-150 transition-transform duration-700 ease-out blur-3xl"></div>

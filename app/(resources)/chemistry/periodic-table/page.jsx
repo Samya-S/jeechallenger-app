@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/components/common/Breadcrumbs";
-import PeriodicTableExplorer from "@/app/materials/chemistry/periodic-table/PeriodicTableExplorer";
+import PeriodicTableExplorer from "@/app/(resources)/chemistry/periodic-table/PeriodicTableExplorer";
 import RelatedConverters from "@/components/common/RelatedConverters";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { ogImageMeta } from '@/utils/og-metadata';
@@ -14,12 +14,12 @@ const pageOg = ogImageMeta({
 export const metadata = {
   title: 'Interactive Periodic Table Explorer | JEE Challenger',
   description: 'Interactive periodic table explorer for JEE chemistry with properties, electronegativity, ionization energy heatmaps, s/p/d/f blocks, and high-yield study notes.',
-  alternates: { canonical: '/materials/chemistry/periodic-table' },
+  alternates: { canonical: '/chemistry/periodic-table' },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Interactive Periodic Table Explorer | JEE Challenger',
     description: 'Interactive periodic table explorer for JEE chemistry with properties, electronegativity, ionization energy heatmaps, s/p/d/f blocks, and high-yield study notes.',
-    url: '/materials/chemistry/periodic-table',
+    url: '/chemistry/periodic-table',
     siteName: 'JEE Challenger',
     images: pageOg.images,
     locale: 'en_IN',
@@ -40,9 +40,9 @@ export default function PeriodicTablePage() {
       <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-700 to-teal-700 dark:from-green-900 dark:to-teal-900 pb-24 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Chemistry', href: '/materials/chemistry' },
-            { label: 'Periodic Table', href: '/materials/chemistry/periodic-table' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Chemistry', href: '/chemistry' },
+            { label: 'Periodic Table', href: '/chemistry/periodic-table' },
           ]}
           hasBanner={true}
           className="pb-12"

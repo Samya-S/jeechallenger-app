@@ -11,7 +11,7 @@ const pageOg = ogImageMeta({
 
 export const metadata = {
   title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
-  description: 'Download Official JEE Main Papers, Answer Keys & Solutions from NTA. Previous year question papers, official notifications, exam pattern, cutoffs. Direct links to JEE Main resources. Prepare with authentic materials!',
+  description: 'Download Official JEE Main Papers, Answer Keys & Solutions from NTA. Previous year question papers, official notifications, exam pattern, cutoffs. Direct links to JEE Main resources. Prepare with authentic resources!',
   alternates: {
     canonical: '/official-links/jee-main',
   },

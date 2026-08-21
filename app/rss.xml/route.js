@@ -36,7 +36,7 @@ function getStaticPages(dir, routePrefix = '') {
 }
 
 /**
- * Formats a raw URL route (e.g., "/materials/physics") into readable Titles & Categories
+ * Formats a raw URL route (e.g., "/physics") into readable Titles & Categories
  */
 function formatRouteDetails(route) {
   const parts = route.split('/').filter(Boolean);

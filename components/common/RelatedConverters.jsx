@@ -6,7 +6,7 @@ const converters = {
     title: 'Physics Unit Converter',
     desc: 'Force, Energy, Pressure, and more',
     icon: Atom,
-    href: '/materials/physics/unit-converter',
+    href: '/physics/unit-converter',
     hoverBg: 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800',
     textColor: 'text-blue-600 dark:text-blue-400',
     iconBg: 'bg-blue-100 dark:bg-blue-900/30'
@@ -15,7 +15,7 @@ const converters = {
     title: 'Chemistry Unit Converter',
     desc: 'Molarity, Volume, Mass, and more',
     icon: Beaker,
-    href: '/materials/chemistry/unit-converter',
+    href: '/chemistry/unit-converter',
     hoverBg: 'hover:bg-green-50 dark:hover:bg-green-900/20 hover:border-green-200 dark:hover:border-green-800',
     textColor: 'text-green-600 dark:text-green-400',
     iconBg: 'bg-green-100 dark:bg-green-900/30'
@@ -24,7 +24,7 @@ const converters = {
     title: 'Mathematics Unit Converter',
     desc: 'Length, Area, Volume, Time',
     icon: Calculator,
-    href: '/materials/mathematics/unit-converter',
+    href: '/mathematics/unit-converter',
     hoverBg: 'hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800',
     textColor: 'text-purple-600 dark:text-purple-400',
     iconBg: 'bg-purple-100 dark:bg-purple-900/30'

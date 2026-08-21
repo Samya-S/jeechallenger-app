@@ -14,7 +14,7 @@ export const metadata = {
   title: "Previous Year Questions | Free Download PDFs",
   description: "Access Free Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced from last 43 years. Physics, Chemistry & Maths - All chapters covered. Master PYQs and crack JEE!",
   alternates: {
-    canonical: '/materials/previous-year-questions',
+    canonical: '/previous-year-questions',
   },
   robots: {
     index: true,
@@ -23,7 +23,7 @@ export const metadata = {
   openGraph: {
     title: "Previous Year Questions - JEE Challenger",
     description: "Previous year questions for JEE Main and JEE Advanced.",
-    url: '/materials/previous-year-questions',
+    url: '/previous-year-questions',
     siteName: "JEE Challenger",
     images: pageOg.images,
     locale: 'en_IN',
@@ -47,8 +47,8 @@ const PreviousYearQuestionsPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "Study Materials", path: "/materials" },
-            { name: "Previous Year Questions", path: "/materials/previous-year-questions" }
+            { name: "Resources", path: "/resources" },
+            { name: "Previous Year Questions", path: "/previous-year-questions" }
           ]
         }}
       />

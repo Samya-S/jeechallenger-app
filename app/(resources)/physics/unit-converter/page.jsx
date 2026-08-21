@@ -14,12 +14,12 @@ const pageOg = ogImageMeta({
 export const metadata = {
   title: 'Physics Unit Converter | JEE Challenger',
   description: 'Instantly convert physics units for length, mass, time, temperature, and more.',
-  alternates: { canonical: '/materials/physics/unit-converter' },
+  alternates: { canonical: '/physics/unit-converter' },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Physics Unit Converter | JEE Challenger',
     description: 'Instantly convert physics units for length, mass, time, temperature, and more.',
-    url: '/materials/physics/unit-converter',
+    url: '/physics/unit-converter',
     siteName: 'JEE Challenger',
     images: pageOg.images,
     locale: 'en_IN',
@@ -40,9 +40,9 @@ export default function UnitConverterPage() {
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 pb-24 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Physics', href: '/materials/physics' },
-            { label: 'Unit Converter', href: '/materials/physics/unit-converter' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Physics', href: '/physics' },
+            { label: 'Unit Converter', href: '/physics/unit-converter' },
           ]} 
           hasBanner={true}
           className="pb-12"

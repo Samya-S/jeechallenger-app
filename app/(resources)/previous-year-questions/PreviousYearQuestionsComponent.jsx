@@ -27,8 +27,8 @@ const PreviousYearQuestionsComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-900 dark:to-red-900 pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Study Materials', href: '/materials' },
-            { label: 'Previous Year Questions', href: '/materials/previous-year-questions' },
+            { label: 'Resources', href: '/resources' },
+            { label: 'Previous Year Questions', href: '/previous-year-questions' },
           ]} 
           hasBanner={true}
           className="pb-12"

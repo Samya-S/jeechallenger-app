@@ -233,7 +233,7 @@ jeechallenger-app/
 │   │   ├── components/         # Blog UI components (TOC, Share, etc.)
 │   │   └── hooks/              # Blog custom hooks
 │   ├── blogs/                  # Blog listing page with search/filter
-│   ├── materials/              # Study materials
+│   ├── (resources)/            # Resources
 │   │   ├── physics/            # Physics resources
 │   │   │   └── unit-converter/ # Physics unit converter tool
 │   │   ├── chemistry/          # Chemistry resources
@@ -254,14 +254,14 @@ jeechallenger-app/
 ├── components/                 # Reusable React components
 │   ├── ui/                     # UI components (e.g. BlogCard)
 │   ├── common/                 # Shared components
-│   ├── materials/              # Study materials components
+│   ├── resources/              # Resources components
 │   └── providers/              # Context providers
 ├── config/                     # Configuration files
 ├── data/                       # Content data
 │   ├── blogs/                  # MDX blog articles
 │   ├── faq-data.js             # General FAQ data
 │   ├── syllabus-data.js        # Syllabus Tracker data
-│   └── materials/              # Resources, Formula, Unit Conversion, and Periodic Table data
+│   └── resources/              # Resources, Formula, Unit Conversion, and Periodic Table data
 │       ├── physics-formula-data.js
 │       ├── chemistry-formula-data.js
 │       ├── mathematics-formula-data.js

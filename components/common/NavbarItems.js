@@ -11,29 +11,29 @@ const NavbarItems = [
     icon: <FaHome />
   },
   {
-    title: 'Materials',
+    title: 'Resources',
     type: 'dropdown',
     icon: <FaBook />,
     items: [
       {
         title: 'Physics',
-        url: '/materials/physics'
+        url: '/physics'
       },
       {
         title: 'Chemistry',
-        url: '/materials/chemistry'
+        url: '/chemistry'
       },
       {
         title: 'Mathematics',
-        url: '/materials/mathematics'
+        url: '/mathematics'
       },
       {
         title: 'Previous Year Questions',
-        url: '/materials/previous-year-questions'
+        url: '/previous-year-questions'
       },
       {
         title: 'More study materials',
-        url: '/materials/more-study-materials'
+        url: '/more-study-materials'
       }
     ]
   },
