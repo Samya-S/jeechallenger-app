@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import GoogleAuthButton from "@/app/login/GoogleAuthButton";
+import GoogleAuthButton from "./GoogleAuthButton";
 import { useState, useEffect } from "react";
 
 export default function LoginClient() {
