@@ -253,6 +253,7 @@ jeechallenger-app/
 │   │   ├── og/                 # OpenGraph image generator
 │   │   └── rss.xml/            # RSS feed generator
 │   ├── ai-tutor/               # AI Tutor functionality
+│   │   ├── chat/               # Main chat interface and logic
 │   │   └── components/         # AI Tutor specific components
 │   ├── api/                    # API routes
 │   ├── login/                  # Login functionality
