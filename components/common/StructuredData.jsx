@@ -97,12 +97,13 @@ export default function StructuredData({ type, data }) {
       };
       break;
 
-    case 'educationalOccupationalCredential':
+    case 'learningResource':
       schema = {
         "@context": "https://schema.org",
-        "@type": "Course",
+        "@type": "LearningResource",
         "name": data.name,
         "description": data.description,
+        "learningResourceType": ["Interactive Resource", "Previous Year Questions", "Formula Sheet"],
         "provider": {
           "@type": "Organization",
           "name": "JEE Challenger"
@@ -111,11 +112,6 @@ export default function StructuredData({ type, data }) {
         "about": {
           "@type": "Thing",
           "name": data.subject
-        },
-        "hasCourseInstance": {
-          "@type": "CourseInstance",
-          "courseMode": "online",
-          "courseWorkload": data.chapters ? `${data.chapters} chapters` : undefined
         }
       };
       break;

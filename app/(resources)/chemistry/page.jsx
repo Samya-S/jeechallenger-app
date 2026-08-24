@@ -5,14 +5,14 @@ import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Chemistry Resources',
-  subtitle: 'Books, notes & resources for JEE Main & Advanced',
+  subtitle: 'Interactive tools, formula sheets & PYQs for JEE Main & Advanced',
   theme: 'chemistry',
   alt: 'Chemistry Resources for JEE',
 })
 
 export const metadata = {
-  title: "JEE Chemistry Resources - Free Books, Notes & Tricks | Download PDFs",
-  description: "Complete JEE Chemistry Resources: Organic, Inorganic & Physical Chemistry. Download Free NCERT Solutions, OP Tandon PDFs, Reaction Mechanisms, Named Reactions & 500+ Solved Examples. Ace JEE Chemistry!",
+  title: "JEE Chemistry Resources - Interactive Tools, Formula Sheets & PYQs",
+  description: "Master JEE Chemistry with our premium study materials. Access interactive study tools (like the Interactive Periodic Table and Unit Converters), comprehensive formula sheets, previous year questions (PYQs), and more for JEE Main & Advanced.",
   alternates: {
     canonical: '/chemistry',
   },
@@ -21,8 +21,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Chemistry Resources - JEE Challenger",
-    description: "Chemistry resources for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    title: "JEE Chemistry Resources - Interactive Tools, Formula Sheets & PYQs",
+    description: "Master JEE Chemistry with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
     url: '/chemistry',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -31,8 +31,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Chemistry Resources - JEE Challenger",
-    description: "Chemistry resources for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    title: "JEE Chemistry Resources - Interactive Tools, Formula Sheets & PYQs",
+    description: "Master JEE Chemistry with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
     images: pageOg.twitterImages,
   },
 };
@@ -42,26 +42,25 @@ const ChemistryPage = () => {
     <>
       {/* Structured Data for SEO */}
       <StructuredData type="faq" data={chemistryFAQs} />
-      <StructuredData 
-        type="breadcrumb" 
+      <StructuredData
+        type="breadcrumb"
         data={{
           items: [
             { name: "Home", path: "/" },
             { name: "Resources", path: "/resources" },
             { name: "Chemistry", path: "/chemistry" }
           ]
-        }} 
+        }}
       />
       <StructuredData 
-        type="educationalOccupationalCredential" 
+        type="learningResource" 
         data={{
           name: "JEE Chemistry Resources",
-          description: "Complete Chemistry resources for JEE Main and Advanced including NCERT, OP Tandon, and MS Chouhan",
-          subject: "Chemistry",
-          chapters: 30
+          description: "Comprehensive Chemistry resources for JEE Main and Advanced including interactive study tools, formula sheets, and PYQs",
+          subject: "Chemistry"
         }} 
       />
-      
+
       <ChemistryComponent />
     </>
   )

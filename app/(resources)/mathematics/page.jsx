@@ -5,14 +5,14 @@ import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'Mathematics Resources',
-  subtitle: 'Books, notes & resources for JEE Main & Advanced',
+  subtitle: 'Interactive tools, formula sheets & PYQs for JEE Main & Advanced',
   theme: 'mathematics',
   alt: 'Mathematics Resources for JEE',
 })
 
 export const metadata = {
-  title: "JEE Mathematics Resources - Free Books, Notes & PYQs | Download PDFs",
-  description: "Download Free JEE Mathematics PDFs: 500+ Solved Problems, Calculus, Algebra, Trigonometry, Coordinate Geometry. Best Books by Cengage, Arihant & RD Sharma. Start Scoring 100/100 in JEE Maths Today!",
+  title: "JEE Mathematics Resources - Interactive Tools, Formula Sheets & PYQs",
+  description: "Master JEE Mathematics with our premium study materials. Access interactive study tools (like Unit Converters), comprehensive formula sheets, previous year questions (PYQs), and more for JEE Main & Advanced.",
   alternates: {
     canonical: '/mathematics',
   },
@@ -21,8 +21,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Mathematics Resources - JEE Challenger",
-    description: "Mathematics resources for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    title: "JEE Mathematics Resources - Interactive Tools, Formula Sheets & PYQs",
+    description: "Master JEE Mathematics with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
     url: '/mathematics',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -31,8 +31,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Mathematics Resources - JEE Challenger",
-    description: "Mathematics resources for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    title: "JEE Mathematics Resources - Interactive Tools, Formula Sheets & PYQs",
+    description: "Master JEE Mathematics with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
     images: pageOg.twitterImages,
   },
 };
@@ -42,26 +42,25 @@ const MathematicsPage = () => {
     <>
       {/* Structured Data for SEO */}
       <StructuredData type="faq" data={mathematicsFAQs} />
-      <StructuredData 
-        type="breadcrumb" 
+      <StructuredData
+        type="breadcrumb"
         data={{
           items: [
             { name: "Home", path: "/" },
             { name: "Resources", path: "/resources" },
             { name: "Mathematics", path: "/mathematics" }
           ]
-        }} 
+        }}
       />
       <StructuredData 
-        type="educationalOccupationalCredential" 
+        type="learningResource" 
         data={{
           name: "JEE Mathematics Resources",
-          description: "Complete Mathematics resources for JEE Main and Advanced including RD Sharma, Cengage, and NCERT",
-          subject: "Mathematics",
-          chapters: 29
+          description: "Comprehensive Mathematics resources for JEE Main and Advanced including interactive study tools, formula sheets, and PYQs",
+          subject: "Mathematics"
         }} 
       />
-      
+
       <MathematicsComponent />
     </>
   )
