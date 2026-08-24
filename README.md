@@ -252,14 +252,15 @@ jeechallenger-app/
 │   │   ├── image-sitemap.xml/  # Sitemap generator
 │   │   ├── og/                 # OpenGraph image generator
 │   │   └── rss.xml/            # RSS feed generator
+│   ├── (user)/                 # User-centric routes
+│   │   ├── login/              # Login functionality
+│   │   └── profile/            # User profile dashboard
 │   ├── ai-tutor/               # AI Tutor functionality
 │   │   ├── chat/               # Main chat interface and logic
 │   │   └── components/         # AI Tutor specific components
 │   ├── api/                    # API routes
-│   ├── login/                  # Login functionality
 │   ├── more-platforms/         # External platform links
 │   ├── official-links/         # JEE official papers
-│   ├── profile/                # User profile dashboard
 │   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
 │   ├── common/                 # Shared components
