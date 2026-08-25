@@ -6,14 +6,14 @@ import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 const pageOg = ogImageMeta({
 	title: 'Free JEE Study Materials & Resources',
-	subtitle: 'Physics, Chemistry & Mathematics — free PDFs, notes, and PYQs',
+	subtitle: 'Physics, Chemistry & Mathematics — NCERT PDFs, interactive tools, and PYQs',
 	theme: 'materials',
 	alt: 'JEE Resources for Physics, Chemistry, and Mathematics',
 });
 
 export const metadata = {
 	title: 'Free JEE Study Materials & Resources | JEE Challenger',
-	description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics notes, Previous Year Questions, and comprehensive preparation resources. Download PDFs, solved problems, and chapter-wise study materials.',
+	description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics interactive tools, Previous Year Questions, and comprehensive preparation resources. Download NCERT PDFs, solved problems, and chapter-wise study materials.',
 	alternates: {
 		canonical: '/resources',
 	},
@@ -23,7 +23,7 @@ export const metadata = {
 	},
 	openGraph: {
 		title: 'Free JEE Study Materials & Resources | JEE Challenger',
-		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. Free PDFs, notes, and previous year questions for JEE Main & Advanced.',
+		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. NCERT PDFs, interactive tools, and previous year questions for JEE Main & Advanced.',
 		url: '/resources',
 		siteName: 'JEE Challenger',
 		images: pageOg.images,
@@ -33,7 +33,7 @@ export const metadata = {
 	twitter: {
 		card: 'summary_large_image',
 		title: 'Free JEE Study Materials & Resources | JEE Challenger',
-		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. Free PDFs, notes, and previous year questions.',
+		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. NCERT PDFs, interactive tools, and previous year questions.',
 		images: pageOg.twitterImages,
 	},
 };
@@ -73,7 +73,7 @@ export default function MaterialsPage() {
 									Physics
 								</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
-									Comprehensive study materials, formulas, and solved problems for JEE Physics
+									Interactive calculators, formula sheets, and chapter-wise PYQs for JEE Physics
 								</p>
 								<div className="text-center mt-auto">
 									<Link href="/physics" aria-label="View Physics resources">
@@ -100,7 +100,7 @@ export default function MaterialsPage() {
 									Chemistry
 								</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
-									Notes, reactions, and practice problems for Physical, Organic & Inorganic Chemistry
+									Reactions, interactive tools, and practice problems for Physical, Organic & Inorganic Chemistry
 								</p>
 								<div className="text-center mt-auto">
 									<Link href="/chemistry" aria-label="View Chemistry resources">
@@ -127,7 +127,7 @@ export default function MaterialsPage() {
 									Mathematics
 								</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
-									Formulas, theorems, and problem-solving techniques for JEE Mathematics
+									Dynamic formula sheets, theorems, and interactive problem-solving for JEE Mathematics
 								</p>
 								<div className="text-center mt-auto">
 									<Link href="/mathematics" aria-label="View Mathematics resources">

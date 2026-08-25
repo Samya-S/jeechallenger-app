@@ -3,7 +3,7 @@ import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'More Study Materials',
-  subtitle: 'NCERT PDFs, books, notes & additional JEE resources',
+  subtitle: 'Books, notes & additional JEE resources',
   theme: 'materials',
   alt: 'More Study Materials for JEE',
 })
