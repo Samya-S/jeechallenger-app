@@ -136,7 +136,7 @@ const FeedbackModal = () => {
 							<div className="text-center w-full bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
 								<h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Keep JEE Challenger Running 🚀</h3>
 								<p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-									We are committed to keeping our tools, trackers, and AI assistant free for all aspirants. However, high-traffic server architecture and API resources cost money. We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in. <strong>Once we reach our bare minimum funding goal to cover server costs, we will remove all pop-up ads and redirects completely!</strong>
+									We are committed to keeping our tools, trackers, resources, and AI assistant free for all aspirants. However, maintaining our infrastructure and keeping the platform running smoothly costs money. We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in. <strong>Once we reach our bare minimum funding goal to cover infrastructure costs, we will remove all pop-up ads and redirects completely!</strong>
 								</p>
 
 								<div className="flex flex-col items-center space-y-4 max-w-sm mx-auto">
