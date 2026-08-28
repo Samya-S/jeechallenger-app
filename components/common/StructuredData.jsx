@@ -16,7 +16,7 @@ export default function StructuredData({ type, data }) {
         "name": "JEE Challenger",
         "url": siteUrl,
         "logo": `${siteUrl}/images/jcicon.jpg`,
-        "description": "Free JEE Preparation Platform with 5000+ study materials, AI-powered tutor, and previous year questions for JEE Main and Advanced",
+        "description": "Free JEE Preparation Platform with comprehensive study materials, an AI-powered tutor, and previous year questions for JEE Main and Advanced",
         "foundingDate": "2020",
         "contactPoint": {
           "@type": "ContactPoint",

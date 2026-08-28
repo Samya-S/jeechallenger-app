@@ -269,7 +269,7 @@ export default function MaterialsPage() {
 									Previous Year Questions
 								</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
-									Solved previous year questions from JEE Main & Advanced with detailed solutions
+									Previous year questions from JEE Main & Advanced with detailed step-by-step solutions
 								</p>
 								<div className="text-center mt-auto">
 									<Link href="/previous-year-questions" aria-label="View Chapter-wise Previous Year Questions">

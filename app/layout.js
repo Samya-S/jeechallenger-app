@@ -17,7 +17,7 @@ const homeOg = ogImageMeta({
 
 export const metadata = {
   title: "JEE Challenger - Free JEE Preparation Platform | Study Materials, AI Tutor & PYQs",
-  description: "Download Free JEE Study Materials: 5000+ Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
+  description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
   keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "resources", "JEE resources", "free JEE resources", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books", "IIT JEE", "free JEE materials", "AI tutor", "JEE 2026"],
   authors: [{ name: "JEE Challenger" }],
   creator: "JEE Challenger",

@@ -34,7 +34,7 @@ const TermsOfServiceComponent = () => {
 
 						{/* Last Updated */}
 						<div className="text-sm text-gray-600 dark:text-gray-400 text-right pb-6 border-b border-gray-200 dark:border-gray-700">
-							Last Updated: July 2026
+							Last Updated: August 2026
 						</div>
 
 						{/* Introduction */}
@@ -187,10 +187,10 @@ const TermsOfServiceComponent = () => {
 										</p>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
-											Third-Party Content
+											Intellectual Property
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Educational materials, PDFs, books, and resources shared or linked on the Platform remain the intellectual property of their respective publishers and authors. JEE Challenger does not claim ownership over any third-party content. Please refer to our <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline">Disclaimer</Link> for full details on copyright and fair use.
+											All original study notes, question bank structures, and platform designs are the intellectual property of JEE Challenger. Any official previous year questions (PYQs) or syllabi provided are public domain educational records. JEE Challenger respects all intellectual property rights. Please refer to our <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline">Disclaimer</Link> for full details.
 										</p>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">

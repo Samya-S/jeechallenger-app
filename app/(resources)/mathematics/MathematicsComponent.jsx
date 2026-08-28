@@ -2,7 +2,7 @@
 import PYQandMoreSection from '@/components/resources/PYQandMoreSection';
 import FormulaSheets from '@/components/resources/FormulaSheets';
 import MathematicsFormulaData from '@/data/resources/mathematics-formula-data';
-import TelegramPost from '@/components/ui/TelegramPost';
+
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ const MathematicsComponent = () => {
           crumbs={[
             { label: 'Resources', href: '/resources' },
             { label: 'Mathematics', href: '/mathematics' },
-          ]} 
+          ]}
           hasBanner={true}
           className="pb-12"
         />
@@ -50,7 +50,7 @@ const MathematicsComponent = () => {
             <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-6 rounded-full"></div>
           </div>
 
-          <Link 
+          <Link
             href="/mathematics/unit-converter"
             className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 dark:from-purple-900 dark:to-pink-900 p-8 sm:p-10 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
           >
@@ -72,19 +72,15 @@ const MathematicsComponent = () => {
           </Link>
         </div>
 
-
-
         {/* Additional Sections */}
-        <PYQandMoreSection />
-
-        {/* Telegram Section */}
-        <div className="py-8">
-          <TelegramPost url="jeechallengerindex/6" themeGradient="from-purple-600 to-pink-600" />
+        <div className="pb-8">
+          <PYQandMoreSection />
         </div>
+
       </div>
 
       {/* Floating Action Button */}
-      <ScrollToTopButton 
+      <ScrollToTopButton
         gradientColors="from-purple-600 to-pink-600"
         hoverColors="hover:from-purple-700 hover:to-pink-700"
       />

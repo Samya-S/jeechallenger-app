@@ -34,7 +34,7 @@ const DisclaimerComponent = () => {
 
 						{/* Last Updated */}
 						<div className="text-sm text-gray-600 dark:text-gray-400 text-right pb-6 border-b border-gray-200 dark:border-gray-700">
-							Last Updated: July 2026
+							Last Updated: August 2026
 						</div>
 
 						{/* 1. No Affiliation Clause */}
@@ -98,7 +98,7 @@ const DisclaimerComponent = () => {
 							</div>
 						</div>
 
-						{/* 3. Educational Fair Use Statement */}
+						{/* 3. Intellectual Property Statement */}
 						<div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
 							<div className="flex flex-col items-center">
 								<div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mb-4">
@@ -106,60 +106,28 @@ const DisclaimerComponent = () => {
 								</div>
 								<div className="w-full">
 									<h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
-										Educational Fair Use & Copyright Notice
+										Intellectual Property & Copyright Notice
 									</h2>
 									<div className="prose dark:prose-invert max-w-none text-left">
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Study materials, including PDFs, books, notes, and educational resources available on or linked from this platform, are provided strictly for <strong>educational, non-commercial, and informational purposes</strong>.
+											JEE Challenger is committed to providing high-quality, original educational content. All study notes, platform designs, question bank structures, and interactive tools are the exclusive intellectual property of JEE Challenger.
 										</p>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
-											Copyright Ownership
+											Public Domain Educational Records
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											We <strong>do not claim ownership</strong> of any copyrighted study materials, books, PDFs, or educational content shared or linked on this platform. All intellectual property rights belong to the <strong>respective publishers, authors, and content creators</strong>, including but not limited to:
+											Any Previous Year Questions (PYQs), official syllabi, or examination patterns provided on this platform are part of the public domain educational record as released by examination authorities (e.g., NTA, IITs). They are provided strictly for educational and informational purposes to assist students in their preparation.
 										</p>
-										<ul className="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300 mb-4">
-											<li>Arihant Publications</li>
-											<li>Cengage Learning</li>
-											<li>McGraw Hill Education</li>
-											<li>Pearson Education</li>
-											<li>Disha Publication</li>
-											<li>And all other publishers whose materials may be referenced</li>
-										</ul>
-
-										<div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 my-6">
-											<h4 className="font-bold text-green-800 dark:text-green-300 mb-2 flex items-center gap-2">
-												<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-												</svg>
-												Support the Authors - Buy Original Copies
-											</h4>
-											<p className="text-green-800 dark:text-green-300">
-												We <strong>strongly encourage</strong> all students to <strong>purchase original, legally published copies</strong> of educational materials. Supporting authors and publishers sustains the creation of quality educational content. If you find a resource valuable, please purchase the official version to support the creators.
-											</p>
-										</div>
-
-										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
-											Fair Use Policy
-										</h3>
-										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-											Any materials shared on this platform are intended for:
-										</p>
-										<ul className="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300 mb-4">
-											<li><strong>Educational purposes</strong> - To help students prepare for competitive examinations</li>
-											<li><strong>Non-commercial use</strong> - We do not sell or profit from copyrighted materials</li>
-											<li><strong>Reference and review</strong> - To help students make informed decisions about purchasing books</li>
-										</ul>
 
 										<h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">
 											DMCA & Copyright Takedown
 										</h3>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
-											If you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+											We take intellectual property rights seriously and ensure all content is either original or public domain. However, if you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
 										</p>
 										<p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-											We take intellectual property rights seriously and will promptly investigate and remove any infringing content upon proper notification.
+											We will promptly investigate and remove any infringing content upon proper notification.
 										</p>
 									</div>
 								</div>

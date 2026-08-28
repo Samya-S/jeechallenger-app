@@ -2,7 +2,7 @@
 import PYQandMoreSection from '@/components/resources/PYQandMoreSection';
 import FormulaSheets from '@/components/resources/FormulaSheets';
 import PhysicsFormulaData from '@/data/resources/physics-formula-data';
-import TelegramPost from '@/components/ui/TelegramPost';
+
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ const PhysicsComponent = () => {
           crumbs={[
             { label: 'Resources', href: '/resources' },
             { label: 'Physics', href: '/physics' },
-          ]} 
+          ]}
           hasBanner={true}
           className="pb-12"
         />
@@ -50,7 +50,7 @@ const PhysicsComponent = () => {
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-6 rounded-full"></div>
           </div>
 
-          <Link 
+          <Link
             href="/physics/unit-converter"
             className="group block relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 p-8 sm:p-10 transition-transform duration-300 hover:scale-[1.02] shadow-xl hover:shadow-2xl"
           >
@@ -72,19 +72,15 @@ const PhysicsComponent = () => {
           </Link>
         </div>
 
-
-
         {/* Additional Sections */}
-        <PYQandMoreSection />
-
-        {/* Telegram Section */}
-        <div className="py-8">
-          <TelegramPost url="jeechallengerindex/4" themeGradient="from-blue-600 to-purple-600" />
+        <div className="pb-8">
+          <PYQandMoreSection />
         </div>
+
       </div>
 
       {/* Floating Action Button */}
-      <ScrollToTopButton 
+      <ScrollToTopButton
         gradientColors="from-blue-600 to-purple-600"
         hoverColors="hover:from-blue-700 hover:to-purple-700"
       />

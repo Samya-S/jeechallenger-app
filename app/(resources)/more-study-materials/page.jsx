@@ -3,14 +3,14 @@ import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
   title: 'More Study Materials',
-  subtitle: 'Books, notes & additional JEE resources',
+  subtitle: 'Notes, practice papers & community resources',
   theme: 'materials',
   alt: 'More Study Materials for JEE',
 })
 
 export const metadata = {
   title: "More Study Materials | JEE Challenger",
-  description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+  description: "Community-driven study materials for JEE Main and JEE Advanced, including notes, practice papers, and other resources.",
   alternates: {
     canonical: '/more-study-materials',
   },
@@ -20,7 +20,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'More Study Materials - JEE Challenger',
-    description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    description: "Community-driven study materials for JEE Main and JEE Advanced, including notes, practice papers, and other resources.",
     url: '/more-study-materials',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -30,7 +30,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'More Study Materials - JEE Challenger',
-    description: "Miscellaneous study materials for JEE Main and JEE Advanced, including books, notes, and other resources.",
+    description: "Community-driven study materials for JEE Main and JEE Advanced, including notes, practice papers, and other resources.",
     images: pageOg.twitterImages,
   },
 };

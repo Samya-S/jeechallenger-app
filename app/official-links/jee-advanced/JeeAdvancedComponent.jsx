@@ -1,17 +1,18 @@
-import TelegramPost from '@/components/ui/TelegramPost';
+
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
+import Link from 'next/link';
 
 const JeeAdvancedComponent = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-yellow-700 to-orange-700 dark:from-yellow-900 dark:to-orange-900 pb-20 pt-4">
+      <div className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-yellow-700 to-orange-700 dark:from-yellow-900 dark:to-orange-900 pb-16 pt-4">
         <Breadcrumbs
           crumbs={[
             { label: 'Official Links' },
             { label: 'JEE Advanced', href: '/official-links/jee-advanced' },
-          ]} 
+          ]}
           hasBanner={true}
           className="pb-12"
         />
@@ -28,9 +29,9 @@ const JeeAdvancedComponent = () => {
       </div>
 
       {/* Content Section */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto pb-12">
         {/* Official Website Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Official JEE Advanced Website
@@ -60,7 +61,7 @@ const JeeAdvancedComponent = () => {
         </section>
 
         {/* More Official Links Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               More Official Links
@@ -173,47 +174,46 @@ const JeeAdvancedComponent = () => {
           </div>
         </section>
 
-        {/* Revised Syllabus Section */}
-        {/* <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <img 
-                  src="/images/flashingNew.gif" 
-                  alt="New" 
-                  className="h-12 w-12"
-                  width="48"
-                  height="48"
-                />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Revised Syllabus to be followed from JEE (Advanced) 2023
-                </h3>
+        {/* Previous Year Questions Section */}
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col md:flex-row items-stretch">
+                <div className="p-8 md:p-10 md:w-2/3 flex flex-col justify-center text-left">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <span className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-500 py-1.5 px-4 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm">
+                      Recommended
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+                    Looking for Previous Year Papers?
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">
+                    Access our comprehensive collection of JEE Advanced previous year question papers with detailed solutions, analysis, and official answer keys.
+                  </p>
+                  <div>
+                    <Link href="/previous-year-questions">
+                      <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3.5 px-8 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center group">
+                        Explore PYQs
+                        <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="hidden md:flex md:w-1/3 bg-gradient-to-br from-yellow-500 to-orange-600 justify-center items-center p-8 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 -mt-16 -mr-16 bg-white opacity-10 rounded-full w-48 h-48 blur-2xl"></div>
+                  <div className="absolute bottom-0 left-0 -mb-16 -ml-16 bg-white opacity-10 rounded-full w-32 h-32 blur-xl"></div>
+                  <svg className="w-32 h-32 text-white/90 drop-shadow-xl relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                </div>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-                Link to official website
-              </p>
-              <a 
-                href="https://jeeadv.ac.in/misc/jee-advanced-2023-syllabus.pdf" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
-                  <span className="flex items-center justify-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download Syllabus
-                  </span>
-                </button>
-              </a>
             </div>
           </div>
-        </section> */}
+        </section>
 
-        {/* Telegram Post Section */}
-        <div className="py-8">
-          <TelegramPost url="jeechallengerindex/11" themeGradient="from-yellow-600 to-orange-600" />
-        </div>
       </div>
 
       {/* Floating Action Button */}
