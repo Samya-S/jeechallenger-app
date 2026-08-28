@@ -132,7 +132,7 @@ const HomeComponent = ({ latestArticles }) => {
           <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg border border-purple-200 dark:border-purple-800 p-6">
             <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4 text-center">Quick Links</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Link href="https://jeemain.nta.ac.in" target="_blank" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 flex items-center justify-center p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
+              <Link href="https://jeemain.nta.nic.in" target="_blank" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 flex items-center justify-center p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                 </svg>
