@@ -3,7 +3,7 @@ import PYQandMoreSection from '@/components/resources/PYQandMoreSection';
 import { BookOpen, Target, Sparkles, ChevronRight, Calculator, Table } from "lucide-react";
 import FormulaSheets from '@/components/resources/FormulaSheets';
 import ChemistryFormulaData from '@/data/resources/chemistry-formula-data';
-import TelegramPost from '@/components/ui/TelegramPost';
+
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Link from 'next/link';
@@ -86,15 +86,11 @@ const ChemistryComponent = () => {
           </div>
         </div>
 
-
-
         {/* Additional Sections */}
-        <PYQandMoreSection />
-
-        {/* Telegram Section */}
-        <div className="py-8">
-          <TelegramPost url="jeechallengerindex/5" themeGradient="from-green-600 to-teal-600" />
+        <div className="pb-8">
+          <PYQandMoreSection />
         </div>
+
       </div>
 
       {/* Floating Action Button */}

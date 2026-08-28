@@ -28,7 +28,7 @@ const PYQandMoreSection = () => {
                 Previous Year Questions
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Chapter-wise solved previous year JEE papers with detailed solutions
+                Chapter-wise previous year JEE questions with detailed step-by-step solutions
               </p>
               <div className="mt-auto">
                 <Link href="/previous-year-questions" aria-label="View Chapter wise solved previous year JEE papers">
@@ -88,6 +88,52 @@ const PYQandMoreSection = () => {
             </div>
           </div>
         </div>
+
+        {/* Premium Resources Banner */}
+        <div className="mt-20 relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 group">
+          {/* Animated Background Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 dark:from-indigo-800 dark:via-purple-900 dark:to-indigo-900"></div>
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-fuchsia-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-20"></div>
+          
+          <div className="relative px-8 py-14 md:py-16 md:px-16 flex flex-col md:flex-row items-center justify-between text-center md:text-left gap-10 backdrop-blur-sm">
+            
+            <div className="flex-1 max-w-3xl flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+              {/* Icon Container */}
+              <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center transform rotate-3 group-hover:rotate-6 transition-transform duration-300 shadow-[0_0_30px_rgba(255,255,255,0.3)] border border-white/20">
+                <svg className="w-10 h-10 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              
+              {/* Text Content */}
+              <div>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight drop-shadow-sm">
+                  Supercharge Your Preparation
+                </h3>
+                <p className="text-gray-300 text-lg leading-relaxed max-w-2xl font-medium">
+                  Stop searching, start learning. Access our entire library of premium study materials, interactive tools, and chapter-wise question banks all in one place.
+                </p>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="flex-shrink-0 w-full md:w-auto">
+              <Link href="/resources" aria-label="Explore all resources" className="block">
+                <button className="w-full md:w-auto relative overflow-hidden bg-white text-gray-900 font-bold text-lg py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] flex items-center justify-center group">
+                  <span className="relative z-10 flex items-center">
+                    Explore Resources Hub
+                    <svg className="w-6 h-6 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   )

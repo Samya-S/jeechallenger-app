@@ -11,8 +11,8 @@ const pageOg = ogImageMeta({
 })
 
 export const metadata = {
-  title: "Previous Year Questions | Free Download PDFs",
-  description: "Access Free Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced from last 43 years. Physics, Chemistry & Maths - All chapters covered. Master PYQs and crack JEE!",
+  title: "Previous Year Questions | PYQ Question Bank",
+  description: "Access our comprehensive built-in Question Bank of Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced. Practice Physics, Chemistry & Maths chapter-wise and year-wise.",
   alternates: {
     canonical: '/previous-year-questions',
   },
