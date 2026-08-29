@@ -13,7 +13,7 @@ export const metadata = {
   title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
   description: 'Download Official JEE Main Papers, Answer Keys & Solutions from NTA. Previous year question papers, official notifications, exam pattern, cutoffs. Direct links to JEE Main resources. Prepare with authentic resources!',
   alternates: {
-    canonical: '/official-links/jee-main',
+    canonical: '/jee-main',
   },
   robots: {
     index: true,
@@ -22,7 +22,7 @@ export const metadata = {
   openGraph: {
     title: 'JEE Main Official Links & PYQs - JEE Challenger',
     description: 'Official links for JEE Main and previous year question papers.',
-    url: '/official-links/jee-main',
+    url: '/jee-main',
     siteName: "JEE Challenger",
     images: pageOg.images,
     locale: 'en_IN',
@@ -45,7 +45,7 @@ const JeeMainPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "JEE Main", path: "/official-links/jee-main" }
+            { name: "JEE Main", path: "/jee-main" }
           ]
         }} 
       />

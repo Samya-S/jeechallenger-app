@@ -140,6 +140,11 @@ const nextConfig = {
         destination: '/:path*',
         permanent: true,
       },
+      {
+        source: '/official-links/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
     ];
   },
 };

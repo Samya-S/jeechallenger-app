@@ -98,12 +98,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/official-links/jee-main" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/jee-main" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   JEE Main Links
                 </Link>
               </li>
               <li>
-                <Link href="/official-links/jee-advanced" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <Link href="/jee-advanced" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                   JEE Advanced Links
                 </Link>
               </li>

@@ -13,7 +13,7 @@ export const metadata = {
   title: 'JEE Advanced Official Papers - Download Solutions & Question Papers',
   description: 'Download Official JEE Advanced Papers, Detailed Solutions & Answer Keys from IITs. Previous year papers, cutoff analysis, admission information. Direct links to authentic JEE Advanced resources. Your IIT dream starts here!',
   alternates: {
-    canonical: '/official-links/jee-advanced',
+    canonical: '/jee-advanced',
   },
   robots: {
     index: true,
@@ -22,7 +22,7 @@ export const metadata = {
   openGraph: {
     title: 'JEE Advanced Official Links & PYQs - JEE Challenger',
     description: 'Official links for JEE Advanced and previous year question papers.',
-    url: '/official-links/jee-advanced',
+    url: '/jee-advanced',
     siteName: "JEE Challenger",
     images: pageOg.images,
     locale: 'en_IN',
@@ -45,7 +45,7 @@ const JeeAdvancedPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "JEE Advanced", path: "/official-links/jee-advanced" }
+            { name: "JEE Advanced", path: "/jee-advanced" }
           ]
         }} 
       />

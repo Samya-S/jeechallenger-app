@@ -232,6 +232,9 @@ jeechallenger-app/
 │   │   ├── disclaimer/         # Disclaimer
 │   │   ├── privacy-policy/     # Global Privacy Policy
 │   │   └── terms-of-service/   # Global Terms of Service
+│   ├── (official-links)/       # JEE official links & resources
+│   │   ├── jee-advanced/       # JEE Advanced official links
+│   │   └── jee-main/           # JEE Main official links
 │   ├── (read-more)/            # Reading and content pages
 │   │   ├── blog/               # Blog post display with dynamic routes
 │   │   │   ├── [slug]/         # Dynamic blog post pages
@@ -260,7 +263,6 @@ jeechallenger-app/
 │   │   └── components/         # AI Tutor specific components
 │   ├── api/                    # API routes
 │   ├── more-platforms/         # External platform links
-│   ├── official-links/         # JEE official papers
 │   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
 │   ├── common/                 # Shared components

@@ -10,8 +10,7 @@ const JeeAdvancedComponent = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-yellow-700 to-orange-700 dark:from-yellow-900 dark:to-orange-900 pb-16 pt-4">
         <Breadcrumbs
           crumbs={[
-            { label: 'Official Links' },
-            { label: 'JEE Advanced', href: '/official-links/jee-advanced' },
+            { label: 'JEE Advanced', href: '/jee-advanced' },
           ]}
           hasBanner={true}
           className="pb-12"
