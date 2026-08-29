@@ -68,7 +68,7 @@ const HomeComponent = ({ latestArticles }) => {
                   </li>
                 </ul>
                 <div className="text-center">
-                  <Link href="/official-links/jee-main" aria-label="Access official JEE Main resources and links" className="mt-auto">
+                  <Link href="/jee-main" aria-label="Access official JEE Main resources and links" className="mt-auto">
                     <button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@ const HomeComponent = ({ latestArticles }) => {
                   </li>
                 </ul>
                 <div className="text-center">
-                  <Link href="/official-links/jee-advanced" aria-label="Access official JEE Advanced resources and links" className="mt-auto">
+                  <Link href="/jee-advanced" aria-label="Access official JEE Advanced resources and links" className="mt-auto">
                     <button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

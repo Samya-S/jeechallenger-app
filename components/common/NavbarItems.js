@@ -44,11 +44,11 @@ const NavbarItems = [
     items: [
       {
         title: 'JEE Main',
-        url: '/official-links/jee-main'
+        url: '/jee-main'
       },
       {
         title: 'JEE Advanced',
-        url: '/official-links/jee-advanced'
+        url: '/jee-advanced'
       }
     ]
   },
