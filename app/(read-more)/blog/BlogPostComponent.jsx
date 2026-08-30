@@ -15,20 +15,7 @@ import { getMarkdownComponents } from './components/markdownComponents';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 export default function BlogPostComponent({ post }) {
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Article Not Found
-          </h1>
-          <Link href="/blogs" className="text-blue-600 hover:underline">
-            ← Back to All Articles
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (!post) return null;
 
   // Check if article has math from frontmatter
   const hasMath = post.hasMath === true;

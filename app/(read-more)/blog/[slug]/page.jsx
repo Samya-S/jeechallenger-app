@@ -18,6 +18,11 @@ export async function generateMetadata({ params }) {
   if (!post) {
     return {
       title: 'Article Not Found | JEE Challenger',
+      description: "The requested JEE preparation article could not be found.",
+      robots: {
+        index: false,
+        follow: true,
+      },
     };
   }
 
