@@ -1,4 +1,35 @@
 import Link from 'next/link'
+import { ogImageMeta } from '@/utils/og-metadata';
+
+const pageOg = ogImageMeta({
+  title: '404 - Page Not Found',
+  subtitle: "Oops! The page you're looking for doesn't exist.",
+  theme: 'not-found',
+  alt: '404 Page Not Found',
+});
+
+export const metadata = {
+  title: "Page Not Found | JEE Challenger",
+  description: "The page you're looking for doesn't exist. Let's get you back on track to your JEE preparation journey!",
+  robots: {
+    index: false,
+    follow: true,
+  },
+  openGraph: {
+    title: "Page Not Found | JEE Challenger",
+    description: "The page you're looking for doesn't exist. Let's get you back on track to your JEE preparation journey!",
+    siteName: "JEE Challenger",
+    images: pageOg.images,
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Page Not Found | JEE Challenger",
+    description: "The page you're looking for doesn't exist. Let's get you back on track to your JEE preparation journey!",
+    images: pageOg.twitterImages,
+  },
+};
 
 const NotFoundPage = () => {
   return (
@@ -29,13 +60,13 @@ const NotFoundPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              
+
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 Don&lsquo;t Worry!
               </h3>
-              
+
               <p className="text-gray-600 dark:text-gray-400 mb-8">
-                The page you&lsquo;re looking for might have been moved, deleted, or you entered the wrong URL. 
+                The page you&lsquo;re looking for might have been moved, deleted, or you entered the wrong URL.
                 Let&lsquo;s get you back on track to your JEE preparation journey!
               </p>
 
