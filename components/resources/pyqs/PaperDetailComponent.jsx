@@ -223,18 +223,12 @@ function PaperDetailContent({ paperData }) {
 
         {/* Paper Header Card */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
-                {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
-              </span>
-              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
-                {paperData.exam_year}
-              </span>
-            </div>
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-3 py-1 rounded-lg flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Verified Official Paper
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
+              {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
+            </span>
+            <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+              {paperData.exam_year}
             </span>
           </div>
 

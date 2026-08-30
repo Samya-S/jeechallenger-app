@@ -257,20 +257,10 @@ export default function QuestionDetailComponent({ question }) {
         {/* Step-by-Step KaTeX Solution Card */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
           {/* Solution Banner Header */}
-          <div className="p-5 md:p-6 bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-lg sm:text-xl font-black tracking-tight">
-                  Step-by-Step Solution & Derivation
-                </h2>
-                <p className="text-xs text-orange-100/90 font-medium">
-                  Verified mathematical steps with formulas and explanations
-                </p>
-              </div>
-            </div>
+          <div className="p-4 sm:p-5 bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center gap-2.5">
+            <h2 className="text-base sm:text-lg font-bold tracking-tight">
+              Step-by-Step Solution
+            </h2>
           </div>
 
           {/* Solution Body */}
