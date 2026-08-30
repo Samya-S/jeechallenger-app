@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import { BookOpen, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, HelpCircle, Sparkles } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PYQFilterBar from "@/components/resources/pyqs/PYQFilterBar";
@@ -170,6 +170,16 @@ function PreviousYearQuestionsContent() {
 
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Continuous Upload Notice Banner */}
+        <div className="mb-6 px-4 py-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-900 dark:text-orange-200 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-400" />
+            <span>
+              <strong>Note:</strong> We are currently processing and uploading the full archive of verified JEE questions and shift papers. More questions and solutions will be available soon as they finish processing!
+            </span>
+          </div>
+        </div>
+
         {/* Filter Bar */}
         <PYQFilterBar
           activeTab={activeTab}
