@@ -228,6 +228,7 @@ jeechallenger-app/
 │   ├── (about)/                # Connect and Support
 │   │   ├── contact-us/         # Contact form
 │   │   └── donate/             # Support & Donations
+│   ├── (home)/                 # Home page specific routes and components
 │   ├── (legal)/                # Legal policies
 │   │   ├── disclaimer/         # Disclaimer
 │   │   ├── privacy-policy/     # Global Privacy Policy
@@ -272,7 +273,6 @@ jeechallenger-app/
 ├── config/                     # Configuration files
 ├── data/                       # Content data
 │   ├── blogs/                  # MDX blog articles
-│   ├── faq-data.js             # General FAQ data
 │   ├── resources/              # Resources, Formula, Unit Conversion, and Periodic Table data
 │   │   ├── chemistry-formula-data.js
 │   │   ├── chemistry-resources.js
@@ -283,10 +283,12 @@ jeechallenger-app/
 │   │   ├── physics-formula-data.js
 │   │   ├── physics-resources.js
 │   │   └── unit-conversion-data.js
+│   ├── faq-data.js             # General FAQ data
 │   └── syllabus-data.js        # Syllabus Tracker data
 ├── docs/                       # Documentation
 │   ├── blog-structure.md       # Blog system documentation
-│   └── color-system.md         # Design system colors
+│   ├── color-system.md         # Design system colors
+│   └── product-vision.md       # Platform vision and goals
 ├── public/                     # Static assets
 ├── server/                     # Server actions
 └── utils/                      # Utility functions

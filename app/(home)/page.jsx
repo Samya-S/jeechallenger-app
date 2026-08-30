@@ -1,4 +1,4 @@
-import HomeComponent from "@/app/HomeComponent";
+import HomeComponent from "./HomeComponent";
 import StructuredData from "@/components/common/StructuredData";
 import { homepageFAQs } from "@/data/faq-data";
 import { getAllArticles } from "@/utils/articles";
