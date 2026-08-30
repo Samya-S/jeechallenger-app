@@ -376,6 +376,41 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     inputRef.current?.focus();
   }, []);
 
+  // Update document title dynamically based on active chat and prevent Next.js from overwriting it
+  useEffect(() => {
+    let desiredTitle = "Personalized AI Tutor | JEE Challenger";
+    
+    if (activeChatId && chats.length > 0) {
+      const activeChat = chats.find(c => c.id === activeChatId);
+      if (activeChat) {
+        desiredTitle = `${activeChat.title} - AI Tutor | JEE Challenger`;
+      } else {
+        desiredTitle = "AI Tutor Chat | JEE Challenger";
+      }
+    }
+
+    // Immediately set the title
+    document.title = desiredTitle;
+
+    // Next.js fetches the RSC payload for the new page on navigation and applies its static metadata,
+    // which overwrites our client-side title a split second later. 
+    // This observer watches the <head> tag and forces it back to our desired title if Next.js tries to change it.
+    const observer = new MutationObserver(() => {
+      if (document.title !== desiredTitle) {
+        document.title = desiredTitle;
+      }
+    });
+
+    // Observe the entire head in case Next.js completely swaps the <title> DOM node
+    observer.observe(document.head, { 
+      childList: true, 
+      subtree: true,
+      characterData: true
+    });
+
+    return () => observer.disconnect();
+  }, [activeChatId, chats]);
+
 
   // Group messages by date
   const groupMessagesByDate = (messages) => {

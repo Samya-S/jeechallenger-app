@@ -10,8 +10,8 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: "Free AI Tutor | JEE Challenger",
-  description: "Free AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
+  title: "AI Tutor | JEE Challenger",
+  description: "Personalized AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
   alternates: {
     canonical: '/ai-tutor',
   },
@@ -20,8 +20,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Free AI Tutor | JEE Challenger",
-    description: "Free AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
+    title: "AI Tutor | JEE Challenger",
+    description: "Personalized AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
     url: '/ai-tutor',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -30,8 +30,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Free AI Tutor | JEE Challenger",
-    description: "Free AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
+    title: "AI Tutor | JEE Challenger",
+    description: "Personalized AI-Powered JEE Tutor: Get instant doubt resolution for Physics, Chemistry & Maths. Step-by-step solutions, LaTeX support, file uploads. Available 24/7. Ask unlimited questions. Your personal JEE mentor - Start learning now!",
     images: pageOg.twitterImages,
   },
 };

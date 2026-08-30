@@ -14,6 +14,7 @@ export const OG_THEMES = {
   syllabus: { from: '#14b8a6', to: '#0891b2', glow: '#2dd4bf' },
   platform: { from: '#8b5cf6', to: '#a855f7', glow: '#a78bfa' },
   legal: { from: '#64748b', to: '#475569', glow: '#94a3b8' },
+  'not-found': { from: '#ea580c', to: '#dc2626', glow: '#fb923c' },
 };
 
 export function normalizeOgTheme(theme) {
