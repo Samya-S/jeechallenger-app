@@ -267,6 +267,7 @@ jeechallenger-app/
 │   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
 │   ├── common/                 # Shared components
+│   ├── modals/                 # Modal components
 │   ├── providers/              # Context providers
 │   ├── resources/              # Resources components
 │   └── ui/                     # UI components (e.g. BlogCard)
