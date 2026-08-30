@@ -1,27 +1,29 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Search, RotateCcw, Filter, BookOpen, FileText, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Search, RotateCcw, Filter, BookOpen, FileText } from "lucide-react";
 import { syllabusData } from "@/data/syllabus-data";
+import CustomSelect from "@/components/ui/CustomSelect";
 
-const YEARS = ["All", "2026", "2025", "2024", "2023", "2022"];
 const EXAM_TYPES = [
   { label: "All Exams", value: "ALL" },
   { label: "JEE Main", value: "JEE_MAIN" },
   { label: "JEE Advanced", value: "JEE_ADVANCED" },
 ];
+
 const DIFFICULTIES = [
   { label: "All Difficulties", value: "ALL" },
-  { label: "Easy", value: "Easy", color: "text-emerald-500" },
-  { label: "Medium", value: "Medium", color: "text-amber-500" },
-  { label: "Hard", value: "Hard", color: "text-rose-500" },
+  { label: "Easy", value: "Easy" },
+  { label: "Medium", value: "Medium" },
+  { label: "Hard", value: "Hard" },
 ];
+
 const QUESTION_TYPES = [
-  { label: "All Types", value: "ALL" },
+  { label: "All Formats", value: "ALL" },
   { label: "Single Correct (MCQ)", value: "MCQ" },
-  { label: "Numerical", value: "NUMERIC" },
+  { label: "Numerical Value", value: "NUMERIC" },
   { label: "Multi-Correct", value: "MULTI_CORRECT" },
-  { label: "Comprehension", value: "COMPREHENSION" },
+  { label: "Comprehension / Passage", value: "COMPREHENSION" },
 ];
 
 export default function PYQFilterBar({
@@ -32,6 +34,7 @@ export default function PYQFilterBar({
   onResetFilters,
   totalCount,
   loading,
+  availableYears = ["All", "2026", "2025", "2024"],
 }) {
   const [searchInput, setSearchInput] = useState(filters.search || "");
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
@@ -46,24 +49,31 @@ export default function PYQFilterBar({
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Sync external search filter changes (e.g. on reset)
+  // Sync external search changes
   useEffect(() => {
     setSearchInput(filters.search || "");
   }, [filters.search]);
 
   // Extract chapters based on current subject
-  const currentChapters = React.useMemo(() => {
+  const chapterOptions = useMemo(() => {
+    let list = [];
     if (!filters.subject || filters.subject === "ALL") {
       const allChaps = [
         ...(syllabusData.physics?.chapters || []),
         ...(syllabusData.chemistry?.chapters || []),
         ...(syllabusData.mathematics?.chapters || []),
       ];
-      return Array.from(new Set(allChaps.map((c) => c.name))).sort();
+      list = Array.from(new Set(allChaps.map((c) => c.name))).sort();
+    } else {
+      const subKey = filters.subject.toLowerCase();
+      const chaps = syllabusData[subKey]?.chapters || [];
+      list = chaps.map((c) => c.name);
     }
-    const subKey = filters.subject.toLowerCase();
-    const chaps = syllabusData[subKey]?.chapters || [];
-    return chaps.map((c) => c.name);
+
+    return [
+      { label: `All Chapters (${filters.subject === "ALL" ? "All Subjects" : filters.subject})`, value: "ALL" },
+      ...list.map((c) => ({ label: c, value: c })),
+    ];
   }, [filters.subject]);
 
   const hasActiveFilters =
@@ -77,9 +87,9 @@ export default function PYQFilterBar({
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 mb-8 transition-all">
-      {/* Top Mode Switcher */}
+      {/* Top Mode Switcher & Counter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-gray-800">
-        <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-full sm:w-auto">
+        <div className="flex p-1 bg-gray-100 dark:bg-gray-800/90 rounded-xl w-full sm:w-auto">
           <button
             type="button"
             onClick={() => setActiveTab("practice")}
@@ -106,10 +116,10 @@ export default function PYQFilterBar({
           </button>
         </div>
 
-        {/* Counter badge */}
+        {/* Counter */}
         <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
           {loading ? (
-            <span className="inline-block w-20 h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+            <span className="inline-block w-24 h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
           ) : (
             <span>
               Found <strong className="text-gray-900 dark:text-white font-bold">{totalCount}</strong>{" "}
@@ -121,27 +131,24 @@ export default function PYQFilterBar({
 
       {activeTab === "practice" && (
         <div className="pt-5 space-y-4">
-          {/* Subject Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          {/* Subject Pills (Segmented control container with inner padding to prevent boundary clipping) */}
+          <div className="flex items-center gap-1.5 p-1 bg-gray-100 dark:bg-gray-800/70 rounded-2xl overflow-x-auto scrollbar-hide max-w-fit">
             {[
-              { label: "All Subjects", value: "ALL", color: "bg-gray-600" },
-              { label: "Physics", value: "Physics", color: "bg-blue-600" },
-              { label: "Chemistry", value: "Chemistry", color: "bg-emerald-600" },
-              { label: "Mathematics", value: "Mathematics", color: "bg-purple-600" },
+              { label: "All Subjects", value: "ALL", activeBg: "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm" },
+              { label: "Physics", value: "Physics", activeBg: "bg-blue-600 text-white shadow-sm" },
+              { label: "Chemistry", value: "Chemistry", activeBg: "bg-emerald-600 text-white shadow-sm" },
+              { label: "Mathematics", value: "Mathematics", activeBg: "bg-purple-600 text-white shadow-sm" },
             ].map((sub) => {
               const isSelected = filters.subject === sub.value;
               return (
                 <button
                   key={sub.value}
                   type="button"
-                  onClick={() => {
-                    onFilterChange("subject", sub.value);
-                    onFilterChange("chapter", "ALL"); // reset chapter on subject change
-                  }}
+                  onClick={() => onFilterChange("subject", sub.value)}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                     isSelected
-                      ? `${sub.color} text-white shadow-md ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ring-${sub.color.replace('bg-', '')}`
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                      ? sub.activeBg
+                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/60 dark:hover:bg-gray-700/50"
                   }`}
                 >
                   {sub.label}
@@ -150,7 +157,7 @@ export default function PYQFilterBar({
             })}
           </div>
 
-          {/* Search and Chapter Row */}
+          {/* Search Box and Custom Chapter Dropdown */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Search Box */}
             <div className="md:col-span-6 relative">
@@ -164,33 +171,28 @@ export default function PYQFilterBar({
               />
             </div>
 
-            {/* Chapter Dropdown */}
-            <div className="md:col-span-6 relative">
-              <select
+            {/* Custom Chapter Select with search filter inside */}
+            <div className="md:col-span-6">
+              <CustomSelect
                 value={filters.chapter}
-                onChange={(e) => onFilterChange("chapter", e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer appearance-none pr-10"
-              >
-                <option value="ALL">All Chapters ({filters.subject === 'ALL' ? 'Select Subject for List' : filters.subject})</option>
-                {currentChapters.map((chap) => (
-                  <option key={chap} value={chap}>
-                    {chap}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                onChange={(val) => onFilterChange("chapter", val)}
+                options={chapterOptions}
+                placeholder="Select Chapter"
+                searchable={true}
+                searchPlaceholder="Filter chapters..."
+              />
             </div>
           </div>
 
-          {/* Quick Year Pills */}
+          {/* Dynamic Year Pills & Filter Actions */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide text-xs">
             <span className="font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">Year:</span>
-            {YEARS.map((y) => (
+            {availableYears.map((y) => (
               <button
                 key={y}
                 type="button"
                 onClick={() => onFilterChange("year", y)}
-                className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
                   filters.year === y
                     ? "bg-orange-600 text-white shadow-sm"
                     : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -222,7 +224,7 @@ export default function PYQFilterBar({
             )}
           </div>
 
-          {/* Collapsible Advanced Filters Strip */}
+          {/* Collapsible Advanced Filters with CustomSelects */}
           {isAdvancedOpen && (
             <div className="pt-4 border-t border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-fade-in">
               {/* Exam Type */}
@@ -230,17 +232,11 @@ export default function PYQFilterBar({
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
                   Exam Type
                 </label>
-                <select
+                <CustomSelect
                   value={filters.examType}
-                  onChange={(e) => onFilterChange("examType", e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                >
-                  {EXAM_TYPES.map((et) => (
-                    <option key={et.value} value={et.value}>
-                      {et.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => onFilterChange("examType", val)}
+                  options={EXAM_TYPES}
+                />
               </div>
 
               {/* Difficulty */}
@@ -248,17 +244,11 @@ export default function PYQFilterBar({
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
                   Difficulty Level
                 </label>
-                <select
+                <CustomSelect
                   value={filters.difficulty}
-                  onChange={(e) => onFilterChange("difficulty", e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                >
-                  {DIFFICULTIES.map((d) => (
-                    <option key={d.value} value={d.value}>
-                      {d.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => onFilterChange("difficulty", val)}
+                  options={DIFFICULTIES}
+                />
               </div>
 
               {/* Question Type */}
@@ -266,17 +256,11 @@ export default function PYQFilterBar({
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
                   Question Format
                 </label>
-                <select
+                <CustomSelect
                   value={filters.questionType}
-                  onChange={(e) => onFilterChange("questionType", e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                >
-                  {QUESTION_TYPES.map((qt) => (
-                    <option key={qt.value} value={qt.value}>
-                      {qt.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => onFilterChange("questionType", val)}
+                  options={QUESTION_TYPES}
+                />
               </div>
             </div>
           )}
@@ -303,14 +287,14 @@ export default function PYQFilterBar({
             ))}
           </div>
 
-          {/* Year pills for Papers */}
+          {/* Dynamic Year pills for Papers */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
-            {YEARS.map((y) => (
+            {availableYears.map((y) => (
               <button
                 key={y}
                 type="button"
                 onClick={() => onFilterChange("year", y)}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   filters.year === y
                     ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md"
                     : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
