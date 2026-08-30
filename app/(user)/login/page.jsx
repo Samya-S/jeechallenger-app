@@ -6,7 +6,7 @@ import { FaSpinner } from "react-icons/fa";
 import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
-  title: 'Sign In | JEE Challenger',
+  title: 'Sign In',
   subtitle: 'Access your personalized JEE Challenger account',
   theme: 'dark',
   alt: 'Login to JEE Challenger',

@@ -2,15 +2,15 @@ import ProfileComponent from "./ProfileComponent";
 import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
-  title: 'Profile - JEE Challenger',
+  title: 'Profile',
   subtitle: 'Manage your settings and preferences',
   theme: 'default',
   alt: 'JEE Challenger Profile Settings',
 });
 
 export const metadata = {
-  title: "Profile - JEE Challenger",
-  description: "Manage your JEE Challenger profile, settings, and preferences.",
+  title: 'Profile | JEE Challenger',
+  description: 'Manage your JEE Challenger profile, track your progress, and customize your settings.',
   alternates: {
     canonical: '/profile',
   },
@@ -20,7 +20,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Profile | JEE Challenger',
-    description: "Manage your JEE Challenger profile, settings, and preferences.",
+    description: 'Manage your JEE Challenger profile, track your progress, and customize your settings.',
     url: '/profile',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -30,7 +30,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Profile | JEE Challenger',
-    description: "Manage your JEE Challenger profile, settings, and preferences.",
+    description: 'Manage your JEE Challenger profile, track your progress, and customize your settings.',
     images: pageOg.twitterImages,
   },
 };

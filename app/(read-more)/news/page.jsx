@@ -12,8 +12,8 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: 'Latest JEE News - Exam Dates, Results & Important Updates',
-  description: 'Latest JEE Main & JEE Advanced News: Exam dates, registration deadlines, admit cards, results, cutoffs, counseling updates. Real-time notifications. Never miss important JEE dates! Check now.',
+  title: "Latest JEE News | JEE Challenger",
+  description: "Stay updated with the latest JEE Main and JEE Advanced news, exam dates, syllabus changes, and official announcements from NTA & IITs.",
   alternates: {
     canonical: '/news',
   },
@@ -32,8 +32,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Latest JEE News - JEE Challenger',
-    description: 'Stay updated with the latest news and information for JEE aspirants',
+    title: "Latest JEE News | JEE Challenger",
+    description: "Stay updated with the latest JEE Main and JEE Advanced news, exam dates, syllabus changes, and official announcements from NTA & IITs.",
     images: pageOg.twitterImages,
   },
 };

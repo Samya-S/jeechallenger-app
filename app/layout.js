@@ -16,7 +16,7 @@ const homeOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: "JEE Challenger - Free JEE Preparation Platform | Study Materials, AI Tutor & PYQs",
+  title: "JEE Challenger | Complete JEE Preparation Platform",
   description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
   keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "resources", "JEE resources", "free JEE resources", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books", "IIT JEE", "free JEE materials", "AI tutor", "JEE 2026"],
   authors: [{ name: "JEE Challenger" }],
@@ -30,15 +30,15 @@ export const metadata = {
     type: 'website',
     locale: 'en_IN',
     url: '/',
-    title: "JEE Challenger - Complete JEE Preparation Platform",
-    description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials. Get free access to Physics, Chemistry, and Mathematics resources.",
+    title: "JEE Challenger | Complete JEE Preparation Platform",
+    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
     siteName: "JEE Challenger",
     images: homeOg.images,
   },
   twitter: {
     card: 'summary_large_image',
-    title: "JEE Challenger - Complete JEE Preparation Platform",
-    description: "A one-stop platform for all your JEE preparation needs, featuring books, notes, PYQs, and other study materials.",
+    title: "JEE Challenger | Complete JEE Preparation Platform",
+    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
     images: homeOg.twitterImages,
     creator: '@JEEChallenger',
     site: '@JEEChallenger',

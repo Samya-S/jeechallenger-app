@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Apni Kaksha - Free JEE YouTube Channel | JEE Challenger',
+    title: 'Apni Kaksha | JEE Challenger',
     description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',
     url: '/more-platforms/apnikaksha',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Apni Kaksha - Free JEE YouTube Channel | JEE Challenger',
+    title: 'Apni Kaksha | JEE Challenger',
     description: 'Apni Kaksha is a YouTube channel that provides high-quality educational content for free. It covers a wide range of subjects and is a great resource for students.',
     images: pageOg.twitterImages,
   },

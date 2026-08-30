@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Physics Wallah - Free JEE Preparation | JEE Challenger',
+    title: "Physics Wallah | JEE Challenger",
     description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",
     url: '/more-platforms/physicswallah',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Physics Wallah - Free JEE Preparation | JEE Challenger',
+    title: "Physics Wallah | JEE Challenger",
     description: "Physics Wallah is a platform that provides free physics lectures for JEE and NEET aspirants.",
     images: pageOg.twitterImages,
   },

@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Support Us - JEE Challenger",
+    title: "Support Us | JEE Challenger",
     description: "Support JEE Challenger to help us cover server costs, maintain the AI Tutor, and keep the platform completely free for all aspirants.",
     url: '/donate',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Support Us - JEE Challenger",
+    title: "Support Us | JEE Challenger",
     description: "Support JEE Challenger to help us cover server costs, maintain the AI Tutor, and keep the platform completely free for all aspirants.",
     images: pageOg.twitterImages,
   },

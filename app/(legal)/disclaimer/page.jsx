@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Disclaimer - JEE Challenger",
+    title: "Disclaimer | JEE Challenger",
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
     url: '/disclaimer',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Disclaimer - JEE Challenger",
+    title: "Disclaimer | JEE Challenger",
     description: "Legal disclaimer for JEE Challenger - Important information about affiliations, content usage, and monetization policies.",
     images: pageOg.twitterImages,
   },

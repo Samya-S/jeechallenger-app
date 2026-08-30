@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Privacy Policy - JEE Challenger",
+    title: "Privacy Policy | JEE Challenger",
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
     url: '/privacy-policy',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Privacy Policy - JEE Challenger",
+    title: "Privacy Policy | JEE Challenger",
     description: "Privacy Policy for JEE Challenger - Learn how we collect, use, and protect your information.",
     images: pageOg.twitterImages,
   },

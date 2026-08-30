@@ -12,7 +12,7 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-	title: 'Free JEE Study Materials & Resources | JEE Challenger',
+	title: 'Study Materials & Resources | JEE Challenger',
 	description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics interactive tools, Previous Year Questions, and comprehensive preparation resources. Download NCERT PDFs, solved problems, and chapter-wise study materials.',
 	alternates: {
 		canonical: '/resources',
@@ -22,8 +22,8 @@ export const metadata = {
 		follow: true,
 	},
 	openGraph: {
-		title: 'Free JEE Study Materials & Resources | JEE Challenger',
-		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. NCERT PDFs, interactive tools, and previous year questions for JEE Main & Advanced.',
+		title: 'Study Materials & Resources | JEE Challenger',
+		description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics interactive tools, Previous Year Questions, and comprehensive preparation resources. Download NCERT PDFs, solved problems, and chapter-wise study materials.',
 		url: '/resources',
 		siteName: 'JEE Challenger',
 		images: pageOg.images,
@@ -32,8 +32,8 @@ export const metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'Free JEE Study Materials & Resources | JEE Challenger',
-		description: 'Access comprehensive JEE preparation materials for Physics, Chemistry, and Mathematics. NCERT PDFs, interactive tools, and previous year questions.',
+		title: 'Study Materials & Resources | JEE Challenger',
+		description: 'Access free JEE Main & Advanced study materials including Physics, Chemistry, Mathematics interactive tools, Previous Year Questions, and comprehensive preparation resources. Download NCERT PDFs, solved problems, and chapter-wise study materials.',
 		images: pageOg.twitterImages,
 	},
 };

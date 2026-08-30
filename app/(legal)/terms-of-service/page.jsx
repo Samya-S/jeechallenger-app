@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Terms of Service - JEE Challenger",
+    title: "Terms of Service | JEE Challenger",
     description: "Terms of Service for JEE Challenger - Read the rules governing your use of JEE Challenger and all its features.",
     url: '/terms-of-service',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Terms of Service - JEE Challenger",
+    title: "Terms of Service | JEE Challenger",
     description: "Terms of Service for JEE Challenger - Read the rules governing your use of JEE Challenger and all its features.",
     images: pageOg.twitterImages,
   },

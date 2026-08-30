@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
       follow: true,
     },
     openGraph: {
-      title: post.title,
+      title: `${post.title} | JEE Challenger`,
       description: post.excerpt,
       url: `/blog/${slug}`,
       siteName: 'JEE Challenger',
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
+      title: `${post.title} | JEE Challenger`,
       description: post.excerpt,
       images: pageOg.twitterImages,
     },

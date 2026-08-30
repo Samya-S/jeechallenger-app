@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Unacademy - Online JEE Classes | JEE Challenger',
+    title: 'Unacademy | JEE Challenger',
     description: 'Unacademy is a platform that provides online classes for JEE aspirants. Get the best JEE preparation resources from Unacademy.',
     url: '/more-platforms/unacademy',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Unacademy - Online JEE Classes | JEE Challenger',
+    title: 'Unacademy | JEE Challenger',
     description: 'Unacademy is a platform that provides online classes for JEE aspirants. Get the best JEE preparation resources from Unacademy.',
     images: pageOg.twitterImages,
   },

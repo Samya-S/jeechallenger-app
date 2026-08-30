@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Contact Us - JEE Challenger",
+    title: "Contact Us | JEE Challenger",
     description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",
     url: '/contact-us',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Contact Us - JEE Challenger",
+    title: "Contact Us | JEE Challenger",
     description: "Contact us for any queries, feedback, or suggestions related to JEE Challenger.",
     images: pageOg.twitterImages,
   },

@@ -12,12 +12,12 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: 'Interactive Periodic Table Explorer | JEE Challenger',
+  title: 'Periodic Table Explorer | JEE Challenger',
   description: 'Interactive periodic table explorer for JEE chemistry with properties, electronegativity, ionization energy heatmaps, s/p/d/f blocks, and high-yield study notes.',
   alternates: { canonical: '/chemistry/periodic-table' },
   robots: { index: true, follow: true },
   openGraph: {
-    title: 'Interactive Periodic Table Explorer | JEE Challenger',
+    title: 'Periodic Table Explorer | JEE Challenger',
     description: 'Interactive periodic table explorer for JEE chemistry with properties, electronegativity, ionization energy heatmaps, s/p/d/f blocks, and high-yield study notes.',
     url: '/chemistry/periodic-table',
     siteName: 'JEE Challenger',
@@ -27,7 +27,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Interactive Periodic Table Explorer | JEE Challenger',
+    title: 'Periodic Table Explorer | JEE Challenger',
     description: 'Interactive periodic table explorer for JEE chemistry with properties, electronegativity, ionization energy heatmaps, s/p/d/f blocks, and high-yield study notes.',
     images: pageOg.twitterImages,
   },
