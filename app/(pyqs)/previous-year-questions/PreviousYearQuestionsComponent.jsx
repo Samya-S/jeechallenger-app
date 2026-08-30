@@ -1,79 +1,282 @@
 "use client";
-import Breadcrumbs from '@/components/common/Breadcrumbs';
-import dynamic from 'next/dynamic';
 
-const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {
-  ssr: false
+import React, { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+import { BookOpen, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+
+import Breadcrumbs from "@/components/common/Breadcrumbs";
+import PYQFilterBar from "@/components/resources/pyqs/PYQFilterBar";
+import PYQQuestionCard from "@/components/resources/pyqs/PYQQuestionCard";
+import PYQPapersList from "@/components/resources/pyqs/PYQPapersList";
+
+const ScrollToTopButton = dynamic(() => import("@/components/ui/ScrollToTopButton"), {
+  ssr: false,
 });
 
-const PreviousYearQuestionsComponent = () => {
+function PreviousYearQuestionsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // Read initial filter values from URL
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "practice"); // "practice" | "papers"
+  const [filters, setFilters] = useState({
+    subject: searchParams.get("subject") || "ALL",
+    chapter: searchParams.get("chapter") || "ALL",
+    examType: searchParams.get("exam_type") || "ALL",
+    year: searchParams.get("year") || "All",
+    difficulty: searchParams.get("difficulty") || "ALL",
+    questionType: searchParams.get("question_type") || "ALL",
+    search: searchParams.get("search") || "",
+  });
+
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1", 10));
+  const [limit] = useState(15);
+  const [questions, setQuestions] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [totalPapersCount, setTotalPapersCount] = useState(0);
+
+  // Sync URL query params with active filters
+  const updateURL = useCallback(
+    (newFilters, newPage, newTab) => {
+      const params = new URLSearchParams();
+      if (newTab && newTab !== "practice") params.set("tab", newTab);
+      if (newFilters.subject && newFilters.subject !== "ALL") params.set("subject", newFilters.subject);
+      if (newFilters.chapter && newFilters.chapter !== "ALL") params.set("chapter", newFilters.chapter);
+      if (newFilters.examType && newFilters.examType !== "ALL") params.set("exam_type", newFilters.examType);
+      if (newFilters.year && newFilters.year !== "All") params.set("year", newFilters.year);
+      if (newFilters.difficulty && newFilters.difficulty !== "ALL") params.set("difficulty", newFilters.difficulty);
+      if (newFilters.questionType && newFilters.questionType !== "ALL") params.set("question_type", newFilters.questionType);
+      if (newFilters.search) params.set("search", newFilters.search);
+      if (newPage > 1) params.set("page", String(newPage));
+
+      const query = params.toString();
+      const targetUrl = query ? `${pathname}?${query}` : pathname;
+      window.history.replaceState(null, "", targetUrl);
+    },
+    [pathname]
+  );
+
+  const handleFilterChange = (key, value) => {
+    const updated = { ...filters, [key]: value };
+    setFilters(updated);
+    setPage(1); // reset to page 1 on filter change
+    updateURL(updated, 1, activeTab);
+  };
+
+  const handleResetFilters = () => {
+    const defaultFilters = {
+      subject: "ALL",
+      chapter: "ALL",
+      examType: "ALL",
+      year: "All",
+      difficulty: "ALL",
+      questionType: "ALL",
+      search: "",
+    };
+    setFilters(defaultFilters);
+    setPage(1);
+    updateURL(defaultFilters, 1, activeTab);
+  };
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    updateURL(filters, page, newTab);
+  };
+
+  // Fetch questions from backend
+  useEffect(() => {
+    if (activeTab !== "practice") return;
+
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filters.subject !== "ALL") params.set("subject", filters.subject);
+    if (filters.chapter !== "ALL") params.set("chapter", filters.chapter);
+    if (filters.examType !== "ALL") params.set("exam_type", filters.examType);
+    if (filters.year !== "All") params.set("exam_year", filters.year);
+    if (filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
+    if (filters.questionType !== "ALL") params.set("question_type", filters.questionType);
+    if (filters.search) params.set("search", filters.search);
+    params.set("page", String(page));
+    params.set("limit", String(limit));
+
+    fetch(`/api/pyqs/questions?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const list = data.data || [];
+        setQuestions(list);
+        if (data.meta) {
+          setTotalCount(data.meta.total || 0);
+          setTotalPages(data.meta.total_pages || 1);
+        } else {
+          setTotalCount(list.length);
+          setTotalPages(1);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching PYQs:", err);
+        setQuestions([]);
+        setTotalCount(0);
+        setTotalPages(1);
+        setLoading(false);
+      });
+  }, [filters, page, limit, activeTab]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-900 dark:to-red-900 pb-20 pt-4">
+      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-950 dark:via-orange-900 dark:to-red-950 pb-20 pt-4 border-b border-orange-500/20">
         <Breadcrumbs
-          crumbs={[
-            { label: 'Resources', href: '/resources' },
-            { label: 'Previous Year Questions', href: '/previous-year-questions' },
-          ]}
+          crumbs={[{ label: "PYQs", href: "/previous-year-questions" }]}
           hasBanner={true}
-          className="pb-12"
+          className="pb-8 max-w-7xl mx-auto px-4"
         />
-        <div className="flex items-center justify-center">
-          <div className="text-center text-white px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center text-center">
+          <div className="text-white">
+            <h1 className="text-4xl sm:text-6xl font-black mb-4 tracking-tight drop-shadow-md">
               Previous Year Questions
             </h1>
-            <p className="text-xl md:text-2xl font-medium max-w-3xl mx-auto drop-shadow-md animate-fade-in-delay">
-              Master JEE preparation with our comprehensive, integrated question bank of chapter-wise and year-wise previous year questions
+            <p className="text-base sm:text-xl font-medium max-w-3xl mx-auto text-orange-100/90 leading-relaxed">
+              Master JEE Main & Advanced with verified chapter-wise practice questions and official shift papers.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Content Section - Coming Soon */}
-      <div className="max-w-4xl mx-auto px-4 py-24">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden relative text-center p-12 md:p-20">
+      {/* Main Content Container */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Filter Bar */}
+        <PYQFilterBar
+          activeTab={activeTab}
+          setActiveTab={handleTabChange}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onResetFilters={handleResetFilters}
+          totalCount={activeTab === "practice" ? totalCount : totalPapersCount}
+          loading={loading}
+        />
 
-          {/* Decorative Background Elements */}
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-orange-50 dark:from-orange-900/20 to-transparent"></div>
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        {/* Tab 1: Chapter-Wise Practice Feed */}
+        {activeTab === "practice" && (
+          <div>
+            {loading ? (
+              <div className="space-y-6">
+                {[1, 2, 3, 4].map((n) => (
+                  <div
+                    key={n}
+                    className="bg-white dark:bg-gray-900 rounded-2xl p-6 md:p-8 border border-gray-200 dark:border-gray-800 space-y-4 animate-pulse shadow-md"
+                  >
+                    <div className="flex gap-2">
+                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+                      <div className="w-24 h-6 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+                    </div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-full"></div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-4/5"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
+                      <div className="h-12 bg-gray-100 dark:bg-gray-800/60 rounded-xl"></div>
+                      <div className="h-12 bg-gray-100 dark:bg-gray-800/60 rounded-xl"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : questions.length === 0 ? (
+              <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 shadow-sm">
+                <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Questions Found</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto mb-6">
+                  No previous year questions match your selected filters. Try broadening your chapter, year, or difficulty criteria.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-md transition-all cursor-pointer"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {questions.map((q, idx) => (
+                  <PYQQuestionCard
+                    key={q._id || q.slug || idx}
+                    question={q}
+                    practiceIndex={(page - 1) * limit + idx + 1}
+                  />
+                ))}
 
-          <div className="relative z-10 flex flex-col items-center">
-            {/* Icon */}
-            <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/40 dark:to-red-900/40 rounded-full flex items-center justify-center mb-8 shadow-inner border border-orange-200 dark:border-orange-800">
-              <svg className="w-12 h-12 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
+                {/* Pagination Bar */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between gap-4 pt-8 border-t border-gray-200 dark:border-gray-800">
+                    <button
+                      type="button"
+                      disabled={page <= 1}
+                      onClick={() => {
+                        const newPage = Math.max(1, page - 1);
+                        setPage(newPage);
+                        updateURL(filters, newPage, activeTab);
+                        window.scrollTo({ top: 300, behavior: "smooth" });
+                      }}
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span>Previous</span>
+                    </button>
 
-            {/* Text */}
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight">
-              A New Experience is Building...
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-10">
-              We are currently upgrading this page to feature our brand new, fully integrated Chapter-wise Question Bank. Get ready for a seamless practice experience!
-            </p>
+                    <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
+                      Page <strong className="text-gray-900 dark:text-white">{page}</strong> of{" "}
+                      <strong className="text-gray-900 dark:text-white">{totalPages}</strong>
+                    </span>
 
-            {/* Progress/Sync indicator */}
-            <div className="flex items-center justify-center gap-3 bg-gray-50 dark:bg-gray-900 px-6 py-3 rounded-full border border-gray-200 dark:border-gray-700 shadow-inner">
-              <svg className="w-5 h-5 text-orange-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">Syncing Question Bank...</span>
-            </div>
+                    <button
+                      type="button"
+                      disabled={page >= totalPages}
+                      onClick={() => {
+                        const newPage = Math.min(totalPages, page + 1);
+                        setPage(newPage);
+                        updateURL(filters, newPage, activeTab);
+                        window.scrollTo({ top: 300, behavior: "smooth" });
+                      }}
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
+        )}
+
+        {/* Tab 2: Full Shift Papers List */}
+        {activeTab === "papers" && (
+          <PYQPapersList filters={filters} setTotalPapersCount={setTotalPapersCount} />
+        )}
       </div>
 
-      {/* Floating Action Button */}
+      {/* Floating Scroll to Top */}
       <ScrollToTopButton
         gradientColors="from-orange-600 to-red-600"
         hoverColors="hover:from-orange-700 hover:to-red-700"
       />
     </div>
   );
-};
+}
 
-export default PreviousYearQuestionsComponent;
+export default function PreviousYearQuestionsComponent() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center p-8 text-gray-500">
+          Loading Question Bank...
+        </div>
+      }
+    >
+      <PreviousYearQuestionsContent />
+    </Suspense>
+  );
+}
