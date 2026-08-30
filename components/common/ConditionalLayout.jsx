@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 // import TelegramJoinFloat from "@/components/ui/TelegramJoinFloat";
-// import AIAnnouncementModal from "@/components/common/AIAnnouncementModal";
-// import FeedbackModal from "@/components/common/FeedbackModal";
-import DonationModal from "@/components/common/DonationModal";
+// import AIAnnouncementModal from "@/components/modals/AIAnnouncementModal";
+// import FeedbackModal from "@/components/modals/FeedbackModal";
+import DonationModal from "@/components/modals/DonationModal";
 import TelegramGateProvider from '../providers/TelegramGateProvider';
 
 export default function ConditionalLayout({ children }) {
