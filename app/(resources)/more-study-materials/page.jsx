@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'More Study Materials - JEE Challenger',
+    title: "More Study Materials | JEE Challenger",
     description: "Community-driven study materials for JEE Main and JEE Advanced, including notes, practice papers, and other resources.",
     url: '/more-study-materials',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'More Study Materials - JEE Challenger',
+    title: "More Study Materials | JEE Challenger",
     description: "Community-driven study materials for JEE Main and JEE Advanced, including notes, practice papers, and other resources.",
     images: pageOg.twitterImages,
   },

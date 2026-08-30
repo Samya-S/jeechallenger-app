@@ -13,8 +13,8 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: 'JEE Preparation Tips & Strategy Blogs | JEE Challenger',
-  description: 'Expert tips, strategies, and advice for JEE Main and Advanced preparation. Learn from proven methods to crack JEE with better scores. Get actionable study techniques, time management tips, and preparation roadmaps.',
+  title: "JEE Preparation Blogs | JEE Challenger",
+  description: "Read expert tips, strategies, study plans, and motivation for JEE Main and JEE Advanced preparation.",
   alternates: {
     canonical: '/blogs',
   },
@@ -23,8 +23,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'JEE Preparation Tips & Strategy Blogs | JEE Challenger',
-    description: 'Expert tips, strategies, and advice for JEE Main and Advanced preparation. Learn from proven methods to crack JEE with better scores.',
+    title: "JEE Preparation Blogs | JEE Challenger",
+    description: "Read expert tips, strategies, study plans, and motivation for JEE Main and JEE Advanced preparation.",
     url: '/blogs',
     siteName: 'JEE Challenger',
     images: pageOg.images,
@@ -33,8 +33,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JEE Preparation Tips & Strategy Blogs | JEE Challenger',
-    description: 'Expert tips, strategies, and advice for JEE Main and Advanced preparation.',
+    title: "JEE Preparation Blogs | JEE Challenger",
+    description: "Read expert tips, strategies, study plans, and motivation for JEE Main and JEE Advanced preparation.",
     images: pageOg.twitterImages,
   },
 };

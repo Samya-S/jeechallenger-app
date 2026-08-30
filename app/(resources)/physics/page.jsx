@@ -11,7 +11,7 @@ const pageOg = ogImageMeta({
 })
 
 export const metadata = {
-  title: "JEE Physics Resources - Interactive Tools, Formula Sheets & PYQs",
+  title: "Physics Resources | JEE Challenger",
   description: "Master JEE Physics with our premium study materials. Access interactive study tools (like Unit Converters), comprehensive formula sheets, previous year questions (PYQs), and more for JEE Main & Advanced.",
   alternates: {
     canonical: '/physics',
@@ -21,8 +21,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "JEE Physics Resources - Interactive Tools, Formula Sheets & PYQs",
-    description: "Master JEE Physics with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
+    title: "Physics Resources | JEE Challenger",
+    description: "Master JEE Physics with our premium study materials. Access interactive study tools (like Unit Converters), comprehensive formula sheets, previous year questions (PYQs), and more for JEE Main & Advanced.",
     url: '/physics',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -31,8 +31,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "JEE Physics Resources - Interactive Tools, Formula Sheets & PYQs",
-    description: "Master JEE Physics with our premium study materials. Access interactive study tools, comprehensive formula sheets, previous year questions (PYQs), and more.",
+    title: "Physics Resources | JEE Challenger",
+    description: "Master JEE Physics with our premium study materials. Access interactive study tools (like Unit Converters), comprehensive formula sheets, previous year questions (PYQs), and more for JEE Main & Advanced.",
     images: pageOg.twitterImages,
   },
 };

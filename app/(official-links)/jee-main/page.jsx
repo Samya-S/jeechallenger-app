@@ -10,8 +10,8 @@ const pageOg = ogImageMeta({
 })
 
 export const metadata = {
-  title: 'JEE Main Official Papers - Download Answer Keys & Question Papers',
-  description: 'Download Official JEE Main Papers, Answer Keys & Solutions from NTA. Previous year question papers, official notifications, exam pattern, cutoffs. Direct links to JEE Main resources. Prepare with authentic resources!',
+  title: 'JEE Main Official Links & PYQs | JEE Challenger',
+  description: 'Download official JEE Main previous year question papers and final answer keys from NTA. Direct links for all sessions.',
   alternates: {
     canonical: '/jee-main',
   },
@@ -20,8 +20,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'JEE Main Official Links & PYQs - JEE Challenger',
-    description: 'Official links for JEE Main and previous year question papers.',
+    title: 'JEE Main Official Links & PYQs | JEE Challenger',
+    description: 'Download official JEE Main previous year question papers and final answer keys from NTA. Direct links for all sessions.',
     url: '/jee-main',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -30,8 +30,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JEE Main Official Links & PYQs - JEE Challenger',
-    description: 'Official links for JEE Main and previous year question papers.',
+    title: 'JEE Main Official Links & PYQs | JEE Challenger',
+    description: 'Download official JEE Main previous year question papers and final answer keys from NTA. Direct links for all sessions.',
     images: pageOg.twitterImages,
   },
 }

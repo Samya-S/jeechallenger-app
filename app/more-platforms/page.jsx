@@ -19,7 +19,7 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'More Platforms - JEE Challenger',
+    title: "More Platforms | JEE Challenger",
     description: "Explore top learning platforms like Unacademy, Apni Kaksha, and Physics Wallah for your JEE Main and JEE Advanced preparation.",
     url: '/more-platforms',
     siteName: "JEE Challenger",
@@ -29,7 +29,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'More Platforms - JEE Challenger',
+    title: "More Platforms | JEE Challenger",
     description: "Explore top learning platforms like Unacademy, Apni Kaksha, and Physics Wallah for your JEE Main and JEE Advanced preparation.",
     images: pageOg.twitterImages,
   },

@@ -12,7 +12,7 @@ const pageOg = ogImageMeta({
 });
 
 export const metadata = {
-  title: 'Free JEE Syllabus Tracker - Track Your Progress | All 88 Chapters',
+  title: 'Syllabus Tracker | JEE Challenger',
   description: 'Track your JEE preparation progress free across 88 chapters of Physics, Chemistry & Maths. Monitor Theory, PYQs & Revision completion. Visual progress indicators, export/import data. Stay organized and ace JEE! Start tracking now.',
   alternates: {
     canonical: '/syllabus-tracker',
@@ -22,8 +22,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Syllabus Tracker - JEE Challenger',
-    description: 'Track your JEE preparation progress across Physics, Chemistry, and Mathematics. Mark chapters as complete for Theory, PYQs, and Revision.',
+    title: 'Syllabus Tracker | JEE Challenger',
+    description: 'Track your JEE preparation progress free across 88 chapters of Physics, Chemistry & Maths. Monitor Theory, PYQs & Revision completion. Visual progress indicators, export/import data. Stay organized and ace JEE! Start tracking now.',
     url: '/syllabus-tracker',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -32,8 +32,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Syllabus Tracker - JEE Challenger',
-    description: 'Track your JEE preparation progress across Physics, Chemistry, and Mathematics. Mark chapters as complete for Theory, PYQs, and Revision.',
+    title: 'Syllabus Tracker | JEE Challenger',
+    description: 'Track your JEE preparation progress free across 88 chapters of Physics, Chemistry & Maths. Monitor Theory, PYQs & Revision completion. Visual progress indicators, export/import data. Stay organized and ace JEE! Start tracking now.',
     images: pageOg.twitterImages,
   },
 };

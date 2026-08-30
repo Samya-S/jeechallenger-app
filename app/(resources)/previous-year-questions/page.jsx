@@ -11,8 +11,8 @@ const pageOg = ogImageMeta({
 })
 
 export const metadata = {
-  title: "Previous Year Questions | PYQ Question Bank",
-  description: "Access our comprehensive built-in Question Bank of Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced. Practice Physics, Chemistry & Maths chapter-wise and year-wise.",
+  title: 'Previous Year Questions | JEE Challenger',
+  description: 'Access chapter-wise and year-wise JEE Main and Advanced Previous Year Questions (PYQs). Practice with detailed solutions to boost your exam preparation.',
   alternates: {
     canonical: '/previous-year-questions',
   },
@@ -21,8 +21,8 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Previous Year Questions - JEE Challenger",
-    description: "Previous year questions for JEE Main and JEE Advanced.",
+    title: 'Previous Year Questions | JEE Challenger',
+    description: 'Access chapter-wise and year-wise JEE Main and Advanced Previous Year Questions (PYQs). Practice with detailed solutions to boost your exam preparation.',
     url: '/previous-year-questions',
     siteName: "JEE Challenger",
     images: pageOg.images,
@@ -31,8 +31,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Previous Year Questions - JEE Challenger",
-    description: "Previous year questions for JEE Main and JEE Advanced.",
+    title: 'Previous Year Questions | JEE Challenger',
+    description: 'Access chapter-wise and year-wise JEE Main and Advanced Previous Year Questions (PYQs). Practice with detailed solutions to boost your exam preparation.',
     images: pageOg.twitterImages,
   },
 };

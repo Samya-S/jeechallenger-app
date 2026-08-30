@@ -1,13 +1,6 @@
 import { normalizeOgTheme } from '@/config/og-themes';
 import { getSiteUrl } from '@/config/site-url';
 
-const BRAND_SUFFIXES = [
-  ' | JEE Challenger Blog',
-  ' - JEE Challenger Blog',
-  ' | JEE Challenger',
-  ' - JEE Challenger',
-];
-
 export const OG_PARAM_LIMITS = {
   title: 120,
   subtitle: 200,
@@ -19,21 +12,11 @@ export function sanitizeOgText(text, max) {
   return text.trim().slice(0, max);
 }
 
-export function cleanOgTitle(title) {
-  if (!title) return 'JEE Challenger';
-  let cleaned = title;
-  for (const suffix of BRAND_SUFFIXES) {
-    if (cleaned.endsWith(suffix)) {
-      cleaned = cleaned.slice(0, -suffix.length);
-    }
-  }
-  return cleaned.trim() || 'JEE Challenger';
-}
 
 /** Pack OG fields into one query param — avoids & in URLs (HTML encodes those as &amp;). */
 export function packOgImageParams({ title, subtitle, theme = 'brand', badge }) {
   const payload = {
-    t: cleanOgTitle(sanitizeOgText(title, OG_PARAM_LIMITS.title)),
+    t: sanitizeOgText(title, OG_PARAM_LIMITS.title) || 'JEE Challenger',
     th: normalizeOgTheme(theme),
   };
   const cleanSubtitle = sanitizeOgText(subtitle, OG_PARAM_LIMITS.subtitle);
@@ -69,7 +52,7 @@ export function ogImages({ title, subtitle, theme = 'brand', badge, alt }) {
       url,
       width: 1200,
       height: 630,
-      alt: alt || cleanOgTitle(title),
+      alt: alt || title || 'JEE Challenger',
       type: 'image/png',
     },
   ];

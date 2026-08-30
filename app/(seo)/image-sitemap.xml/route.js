@@ -1,5 +1,6 @@
 import { getAllArticles } from '@/utils/articles';
 import { getSiteUrl } from '@/config/site-url';
+import { buildAbsoluteOgImageUrl } from '@/utils/og-metadata';
 import fs from 'fs';
 import path from 'path';
 
@@ -7,12 +8,38 @@ import path from 'path';
 // Ensures 'fs' can safely read your directories on Vercel without crashing.
 export const dynamic = 'force-static';
 
+const getPageMetadata = (pagePath) => {
+    try {
+        if (!fs.existsSync(pagePath)) return null;
+        const content = fs.readFileSync(pagePath, 'utf8');
+        const ogMatch = content.match(/ogImageMeta\(\s*\{([\s\S]*?)\}\s*\)/);
+        if (ogMatch) {
+            const titleMatch = ogMatch[1].match(/title:\s*(['"`])(.*?)\1/);
+            const subtitleMatch = ogMatch[1].match(/subtitle:\s*(['"`])(.*?)\1/);
+            const themeMatch = ogMatch[1].match(/theme:\s*(['"`])(.*?)\1/);
+            const badgeMatch = ogMatch[1].match(/badge:\s*(['"`])(.*?)\1/);
+            return {
+                title: titleMatch ? titleMatch[2] : null,
+                subtitle: subtitleMatch ? subtitleMatch[2] : null,
+                theme: themeMatch ? themeMatch[2] : null,
+                badge: badgeMatch ? badgeMatch[2] : null
+            };
+        }
+    } catch (e) {
+        console.error(`Error reading metadata from ${pagePath}:`, e);
+    }
+    return null;
+};
+
 export async function GET() {
     const siteUrl = getSiteUrl();
 
     // Helper to safely encode parameters for the OG Image generator
-    const getOgUrl = (title, subtitle) => {
-        return `${siteUrl}/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}`;
+    const getOgUrl = (title, subtitle, theme, badge) => {
+        const options = { title, subtitle };
+        if (theme) options.theme = theme;
+        if (badge) options.badge = badge;
+        return buildAbsoluteOgImageUrl(options);
     };
 
     // 1. Read ALL files in public/images into a pool
@@ -40,7 +67,8 @@ export async function GET() {
         
         // Check if this directory has a page file (making it a valid route)
         // We skip the root 'app' folder because the homepage is handled separately
-        if (dir !== 'app' && entries.some(e => e.isFile() && (e.name === 'page.js' || e.name === 'page.jsx' || e.name === 'page.tsx'))) {
+        const pageFileEntry = entries.find(e => e.isFile() && (e.name === 'page.js' || e.name === 'page.jsx' || e.name === 'page.tsx'));
+        if (dir !== 'app' && pageFileEntry) {
             // If the folder is a route group, its name isn't part of the URL, so use the last path segment instead
             const isDirRouteGroup = path.basename(dir).startsWith('(');
             const folderNameForTitle = isDirRouteGroup && currentPath.length > 0 
@@ -49,7 +77,8 @@ export async function GET() {
 
             routes.push({
                 folderName: folderNameForTitle,
-                basePath: currentPath.join('/')
+                basePath: currentPath.join('/'),
+                pagePath: path.join(fullPath, pageFileEntry.name)
             });
         }
 
@@ -80,12 +109,12 @@ export async function GET() {
         return routes;
     };
 
-    // 3. Automatically Scan your App Directories dynamically
-    const allDynamicRoutes = getValidRoutes('app');
+    // 3. Automatically Scan your App Directories to find static route pages
+    const allStaticRoutes = getValidRoutes('app');
     
-    const dynamicPages = allDynamicRoutes.map(route => {
+    const staticRoutePages = allStaticRoutes.map(route => {
         // Clean up folder name for a readable title
-        const titleName = route.folderName.replace(/[()]/g, '').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        let titleName = route.folderName.replace(/[()]/g, '').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         
         // Use the parent path segment as subtitle if nested, else default to 'Resources'
         const pathSegments = route.basePath.split('/');
@@ -94,10 +123,21 @@ export async function GET() {
              subtitle = pathSegments[0].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
         
+        let theme = undefined;
+        let badge = undefined;
+        
+        const extractedMeta = getPageMetadata(route.pagePath);
+        if (extractedMeta) {
+            if (extractedMeta.title) titleName = extractedMeta.title;
+            if (extractedMeta.subtitle) subtitle = extractedMeta.subtitle;
+            if (extractedMeta.theme) theme = extractedMeta.theme;
+            if (extractedMeta.badge) badge = extractedMeta.badge;
+        }
+        
         const pageImages = [{
-            url: getOgUrl(titleName, subtitle),
-            title: `${titleName} - JEE Challenger`,
-            caption: `Explore ${titleName} resources on JEE Challenger`
+            url: getOgUrl(titleName, subtitle, theme, badge),
+            title: titleName,
+            caption: subtitle
         }];
 
         // Smart Matcher: Find matching static images in public/images pool
@@ -124,11 +164,24 @@ export async function GET() {
     });
 
     // 4. The Homepage (Takes the Dynamic OG + all leftover static images in the pool)
+    let homeTitle = 'JEE Challenger';
+    let homeSubtitle = 'Complete JEE Preparation Platform';
+    let homeTheme = undefined;
+    let homeBadge = undefined;
+
+    const layoutMeta = getPageMetadata(path.join(/*turbopackIgnore: true*/ process.cwd(), 'app', 'layout.js'));
+    if (layoutMeta) {
+        if (layoutMeta.title) homeTitle = layoutMeta.title;
+        if (layoutMeta.subtitle) homeSubtitle = layoutMeta.subtitle;
+        if (layoutMeta.theme) homeTheme = layoutMeta.theme;
+        if (layoutMeta.badge) homeBadge = layoutMeta.badge;
+    }
+
     const homePageImages = [
         { 
-            url: getOgUrl('JEE Challenger', 'Complete JEE Preparation Platform'), 
-            title: 'JEE Challenger', 
-            caption: 'One-stop platform for all your JEE preparation needs' 
+            url: getOgUrl(homeTitle, homeSubtitle, homeTheme, homeBadge), 
+            title: homeTitle, 
+            caption: homeSubtitle 
         }
     ];
 
@@ -148,12 +201,22 @@ export async function GET() {
         images: homePageImages
     };
     // 5. Auto-fetch Dynamic Blog Posts
+    let blogTheme = 'blog';
+    let blogBadge = 'JEE Challenger Blog';
+    
+    // Attempt to dynamically fetch the default theme/badge from the blog template
+    const blogTemplateMeta = getPageMetadata(path.join(/*turbopackIgnore: true*/ process.cwd(), 'app', '(read-more)', 'blog', '[slug]', 'page.jsx'));
+    if (blogTemplateMeta) {
+        if (blogTemplateMeta.theme) blogTheme = blogTemplateMeta.theme;
+        if (blogTemplateMeta.badge) blogBadge = blogTemplateMeta.badge;
+    }
+
     const articles = await getAllArticles(false);
     const blogPages = articles.map((article) => {
         return {
             loc: `${siteUrl}/blog/${article.slug}`,
             images: [{
-                url: getOgUrl(article.title || 'JEE Challenger Article', article.category || 'Blog'),
+                url: getOgUrl(article.title || 'JEE Challenger Article', article.excerpt || 'Blog', blogTheme, blogBadge),
                 title: article.title,
                 caption: article.excerpt || `Read about ${article.title} on JEE Challenger`
             }]
@@ -161,7 +224,7 @@ export async function GET() {
     });
 
     // Combine everything
-    const allPages = [homePage, ...dynamicPages, ...blogPages];
+    const allPages = [homePage, ...staticRoutePages, ...blogPages];
 
     // Generate XML safely
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
