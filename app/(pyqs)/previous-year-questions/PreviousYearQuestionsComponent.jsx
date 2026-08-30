@@ -31,6 +31,7 @@ function PreviousYearQuestionsContent() {
     search: searchParams.get("search") || "",
   });
 
+  const [availableYears, setAvailableYears] = useState(["All", "2026", "2025", "2024"]);
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1", 10));
   const [limit] = useState(15);
   const [questions, setQuestions] = useState([]);
@@ -39,36 +40,59 @@ function PreviousYearQuestionsContent() {
   const [loading, setLoading] = useState(true);
   const [totalPapersCount, setTotalPapersCount] = useState(0);
 
-  // Sync URL query params with active filters
-  const updateURL = useCallback(
-    (newFilters, newPage, newTab) => {
-      const params = new URLSearchParams();
-      if (newTab && newTab !== "practice") params.set("tab", newTab);
-      if (newFilters.subject && newFilters.subject !== "ALL") params.set("subject", newFilters.subject);
-      if (newFilters.chapter && newFilters.chapter !== "ALL") params.set("chapter", newFilters.chapter);
-      if (newFilters.examType && newFilters.examType !== "ALL") params.set("exam_type", newFilters.examType);
-      if (newFilters.year && newFilters.year !== "All") params.set("year", newFilters.year);
-      if (newFilters.difficulty && newFilters.difficulty !== "ALL") params.set("difficulty", newFilters.difficulty);
-      if (newFilters.questionType && newFilters.questionType !== "ALL") params.set("question_type", newFilters.questionType);
-      if (newFilters.search) params.set("search", newFilters.search);
-      if (newPage > 1) params.set("page", String(newPage));
+  // Fetch available years dynamically from published papers
+  useEffect(() => {
+    fetch("/api/pyqs/papers")
+      .then((res) => res.json())
+      .then((data) => {
+        const list = data.data || data.papers || [];
+        const yearsSet = new Set(list.map((p) => String(p.exam_year)).filter(Boolean));
+        if (yearsSet.size > 0) {
+          const sorted = Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
+          setAvailableYears(["All", ...sorted]);
+        }
+      })
+      .catch((err) => console.error("Error fetching papers for years:", err));
+  }, []);
 
-      const query = params.toString();
-      const targetUrl = query ? `${pathname}?${query}` : pathname;
-      window.history.replaceState(null, "", targetUrl);
-    },
-    [pathname]
-  );
+  // Sync URL query params with active filters in useEffect
+  const isInitialMount = React.useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const params = new URLSearchParams();
+    if (activeTab && activeTab !== "practice") params.set("tab", activeTab);
+    if (filters.subject && filters.subject !== "ALL") params.set("subject", filters.subject);
+    if (filters.chapter && filters.chapter !== "ALL") params.set("chapter", filters.chapter);
+    if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
+    if (filters.year && filters.year !== "All") params.set("year", filters.year);
+    if (filters.difficulty && filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
+    if (filters.questionType && filters.questionType !== "ALL") params.set("question_type", filters.questionType);
+    if (filters.search) params.set("search", filters.search);
+    if (page > 1) params.set("page", String(page));
+
+    const query = params.toString();
+    const targetUrl = query ? `${pathname}?${query}` : pathname;
+    window.history.replaceState(null, "", targetUrl);
+  }, [filters, page, activeTab, pathname]);
 
   const handleFilterChange = (key, value) => {
-    const updated = { ...filters, [key]: value };
-    setFilters(updated);
+    setFilters((prev) => {
+      const updated = { ...prev, [key]: value };
+      if (key === "subject") {
+        updated.chapter = "ALL"; // reset chapter atomically with subject change
+      }
+      return updated;
+    });
     setPage(1); // reset to page 1 on filter change
-    updateURL(updated, 1, activeTab);
   };
 
   const handleResetFilters = () => {
-    const defaultFilters = {
+    setFilters({
       subject: "ALL",
       chapter: "ALL",
       examType: "ALL",
@@ -76,15 +100,12 @@ function PreviousYearQuestionsContent() {
       difficulty: "ALL",
       questionType: "ALL",
       search: "",
-    };
-    setFilters(defaultFilters);
+    });
     setPage(1);
-    updateURL(defaultFilters, 1, activeTab);
   };
 
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
-    updateURL(filters, page, newTab);
   };
 
   // Fetch questions from backend
@@ -158,6 +179,7 @@ function PreviousYearQuestionsContent() {
           onResetFilters={handleResetFilters}
           totalCount={activeTab === "practice" ? totalCount : totalPapersCount}
           loading={loading}
+          availableYears={availableYears}
         />
 
         {/* Tab 1: Chapter-Wise Practice Feed */}
