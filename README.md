@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/Samya-S/jeechallenger-app)](https://github.com/Samya-S/jeechallenger-app/blob/main/LICENSE)
 
-A comprehensive one-stop platform for all your JEE preparation needs, featuring AI-powered tutoring, study materials, official papers, and more.
+A comprehensive one-stop platform for all your JEE preparation needs, featuring AI-powered tutoring, study materials, official papers, previous year questions, and more.
 
 ## Table of Contents
 
@@ -10,6 +10,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - [Core Features](#-core-features)
   - [User Experience](#-user-experience)
   - [Study Resources](#-study-resources)
+  - [Previous Year Questions](#-previous-year-questions)
   - [AI Tutor](#%E2%80%8D-ai-tutor)
   - [Syllabus Tracker](#-syllabus-tracker)
   - [News & Updates](#-news--updates)
@@ -32,14 +33,14 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 🎯 Core Features
 
-- **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history
-- **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking
-- **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics
-- **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys
-- **Previous Year Questions**: Solved previous year questions organized by chapters
-- **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and filtering
-- **Real-time News**: Latest JEE-related news and updates powered by GNews API
-- **Contact Form**: Email integration for user queries and feedback
+- **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/questions/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/papers/:slug`) with section navigation.
+- **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history.
+- **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking and cloud sync.
+- **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics.
+- **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys.
+- **Blog & Articles**: Expert JEE preparation tips, strategies, and study guides with search and category filtering.
+- **Real-time News**: Latest JEE-related news and updates powered by GNews API.
+- **Contact Form**: Email integration for user queries and feedback.
 
 
 ### 🎨 User Experience
@@ -47,19 +48,37 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Modern and responsive UI built with Next.js and Tailwind CSS
 - Dark/Light theme support with system preference detection
 - Mobile-first design approach
-- Smooth animations and hover effects
-- SEO optimized with automatic sitemap generation
+- Smooth animations and crisp, instant interaction states
+- SEO optimized with automatic sitemap generation and OpenGraph cards
 
 
 ### 📚 Study Resources
 
-- **Interactive Formula Sheets**: Dynamic, chapter-wise formulas rendered with KaTeX for quick revision
-- **Universal Unit Converters**: High-precision, interactive tools to instantly convert complex derived units across Physics, Chemistry, and Mathematics
+- **Interactive Formula Sheets**: Dynamic, chapter-wise formulas rendered with KaTeX for quick revision.
+- **Universal Unit Converters**: High-precision, interactive tools to instantly convert complex derived units across Physics, Chemistry, and Mathematics.
 - **Periodic Table Explorer**: Interactive periodic table featuring s/p/d/f block highlights (fully aligned with NCERT/JEE syllabus standards), properties trends heatmaps (electronegativity, ionization energy, atomic mass, melting point), STP state of matter filters, responsive mobile list views, and high-yield inorganic chemistry study notes.
-- **Physics Resources**: Complete study materials and reference books
-- **Chemistry Resources**: Comprehensive chemistry study guides
-- **Mathematics Resources**: Extensive math preparation materials
-- **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha
+- **Physics Resources**: Complete study materials and reference books.
+- **Chemistry Resources**: Comprehensive chemistry study guides.
+- **Mathematics Resources**: Extensive math preparation materials.
+- **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha.
+
+
+### 📝 Previous Year Questions
+
+- **Chapter-Wise Practice Hub (`/previous-year-questions`)**:
+  - Filter by Subject (Physics, Chemistry, Mathematics), Dynamic Chapter cascading, Exam Type (JEE Main / Advanced), Exam Year, Difficulty, and Question Format.
+  - Custom, instant `CustomSelect` dropdown with embedded search filter and zero animation delay.
+  - Interactive self-testing: select options (MCQ / Multi-Correct / Numeric) and click **"Check Answer"** for instant scoring (`+4 Marks` / `-1 Mark`) and answer verification.
+  - Click-to-zoom high-resolution diagram modal for detailed graphs and circuits.
+  - "Full Papers" directory tab displaying published shift papers.
+- **Dedicated Single Question Pages (`/questions/[slug]`)**:
+  - Standalone, indexable landing page for every question with dynamic SEO metadata, OpenGraph cards, and JSON-LD breadcrumbs (`Home > PYQs > {question.title}`).
+  - Verified answer key and full **Step-by-Step KaTeX Derivation** with mathematical steps and diagrams.
+  - One-click question URL sharing with clipboard feedback.
+- **Dedicated Full Paper Pages (`/papers/[slug]`)**:
+  - Complete official shift paper viewer with responsive **2-Tier Subject & Section Navigator** (`Physics Sec A/B`, `Chemistry Sec A/B`, `Mathematics Sec A/B`).
+  - Real-time URL query parameter synchronization (`?subject=...&section=...`) to persist active state across reloads.
+  - Sequential paper question numbering (`Q1..Q90`) and external solution links opening in new tabs.
 
 
 ### 👨‍🏫 AI Tutor
@@ -112,6 +131,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Physics Wallah**: Access to PW study materials
 - **Apni Kaksha**: Additional study resources
 
+
 ## Technologies Used
 
 ### Frontend
@@ -122,8 +142,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Icons**: Lucide React & React Icons
 - **Theme Management**: @teispace/next-themes
 - **Floating UI**: @floating-ui/react for tooltips and popovers
-- **Markdown Rendering**: React Markdown with `remark-gfm` for GitHub Flavored Markdown
-- **Math Rendering**: KaTeX with `rehype-katex` and `remark-math` for mathematical expression parsing and rendering
+- **Markdown & Math Rendering**: Custom `MarkdownMathRenderer` built with KaTeX, `remark-math`, `rehype-katex`, and `remark-gfm`
 - **Heading Anchors**: rehype-slug for blog table of contents
 - **Content Management**: gray-matter for MDX frontmatter parsing
 - **Image Export**: html-to-image for exporting the Syllabus Tracker
@@ -137,6 +156,9 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - `jee_challenger_auth`: User sessions and authentication
   - `jee_challenger_ai`: AI Tutor chat history
   - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress
+  - `jee_challenger_pyqs`: High-performance Go microservice with MongoDB for Question Bank and Paper metadata
+- **FastAPI AI Tutor Microservice**: Python & FastAPI microservice connected via Next.js proxy route `/api/ai/[...path]` with JWT authentication and streaming chat responses
+- **Go PYQ Microservice**: High-performance Go microservice connected via Next.js proxy route `/api/pyqs/[...path]` with JWT authentication and Cloudflare R2 image CDN
 - **Caching / Rate Limiting**: Upstash Redis
 - **Token Handling**: jsonwebtoken (JWT)
 - **Email Service**: Nodemailer for contact form
@@ -201,6 +223,8 @@ JWT_SECRET=your-jwt-secret
 
 # AI Tutor Backend (for production)
 # The app uses API rewrites to connect to the AI tutor backend
+
+# PYQ Go Backend Microservice URL (optional)
 ```
 
 4. Run the development server:
@@ -236,6 +260,10 @@ jeechallenger-app/
 │   ├── (official-links)/       # JEE official links & resources
 │   │   ├── jee-advanced/       # JEE Advanced official links
 │   │   └── jee-main/           # JEE Main official links
+│   ├── (pyqs)/                 # Previous Year Questions system
+│   │   ├── papers/[slug]/      # Dedicated Full Paper page with section navigation
+│   │   ├── previous-year-questions/ # Main PYQ Hub & Practice feed
+│   │   └── questions/[slug]/   # Dedicated Single Question page with KaTeX derivations
 │   ├── (read-more)/            # Reading and content pages
 │   │   ├── blog/               # Blog post display with dynamic routes
 │   │   │   ├── [slug]/         # Dynamic blog post pages
@@ -249,9 +277,8 @@ jeechallenger-app/
 │   │   │   └── unit-converter/ # Chemistry unit converter tool
 │   │   ├── mathematics/        # Mathematics resources
 │   │   │   └── unit-converter/ # Mathematics unit converter tool
-│   │   ├── physics/            # Physics resources
-│   │   │   └── unit-converter/ # Physics unit converter tool
-│   │   └── previous-year-questions/  # PYQs
+│   │   └── physics/            # Physics resources
+│   │       └── unit-converter/ # Physics unit converter tool
 │   ├── (seo)/                  # SEO and Meta routes
 │   │   ├── image-sitemap.xml/  # Sitemap generator
 │   │   ├── og/                 # OpenGraph image generator
@@ -263,26 +290,28 @@ jeechallenger-app/
 │   │   ├── chat/               # Main chat interface and logic
 │   │   └── components/         # AI Tutor specific components
 │   ├── api/                    # API routes
+│   │   ├── ai/                 # Reverse proxy to FastAPI AI Tutor microservice
+│   │   ├── auth/               # NextAuth API endpoints
+│   │   ├── pyqs/               # Reverse proxy to Go PYQ microservice
+│   │   └── syllabus-tracker/   # Syllabus tracker sync API
 │   ├── more-platforms/         # External platform links
 │   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
-│   ├── common/                 # Shared components
+│   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
 │   ├── modals/                 # Modal components
 │   ├── providers/              # Context providers
 │   ├── resources/              # Resources components
-│   └── ui/                     # UI components (e.g. BlogCard)
+│   │   └── pyqs/               # PYQ components (PYQFilterBar, PYQQuestionCard, etc.)
+│   └── ui/                     # UI components (CustomSelect, BlogCard, etc.)
 ├── config/                     # Configuration files
 ├── data/                       # Content data
 │   ├── blogs/                  # MDX blog articles
-│   ├── resources/              # Resources, Formula, Unit Conversion, and Periodic Table data
+│   ├── resources/              # Formula, Unit Conversion, and Periodic Table data
 │   │   ├── chemistry-formula-data.js
-│   │   ├── chemistry-resources.js
 │   │   ├── mathematics-formula-data.js
-│   │   ├── mathematics-resources.js
 │   │   ├── periodic-table-data.js
 │   │   ├── periodic-table-explorer-constants.js
 │   │   ├── physics-formula-data.js
-│   │   ├── physics-resources.js
 │   │   └── unit-conversion-data.js
 │   ├── faq-data.js             # General FAQ data
 │   └── syllabus-data.js        # Syllabus Tracker data
