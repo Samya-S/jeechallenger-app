@@ -4,9 +4,18 @@ import { buildAbsoluteOgImageUrl } from '@/utils/og-metadata';
 import fs from 'fs';
 import path from 'path';
 
-// CRITICAL: Forces Next.js to run this script at build-time. 
-// Ensures 'fs' can safely read your directories on Vercel without crashing.
-export const dynamic = 'force-static';
+// Revalidate sitemap every hour for fresh dynamic routes
+export const revalidate = 3600;
+
+function escapeXml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
 
 const getPageMetadata = (pagePath) => {
     try {
@@ -31,6 +40,74 @@ const getPageMetadata = (pagePath) => {
     return null;
 };
 
+async function getDynamicPapers() {
+    try {
+        const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(`${PYQS_API_URL}/papers`, {
+            signal: controller.signal,
+            next: { revalidate: 3600 }
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return [];
+        const json = await res.json();
+        return json.data || json.papers || [];
+    } catch (e) {
+        console.error('Error fetching papers for image-sitemap:', e.message);
+        return [];
+    }
+}
+
+async function getDynamicQuestions() {
+    try {
+        const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const firstRes = await fetch(`${PYQS_API_URL}/questions?limit=100&page=1`, {
+            signal: controller.signal,
+            next: { revalidate: 3600 }
+        });
+        clearTimeout(timeoutId);
+        if (!firstRes.ok) return [];
+        const firstJson = await firstRes.json();
+        const totalPages = firstJson.meta?.total_pages || 1;
+        let allQuestions = [...(firstJson.data || [])];
+
+        if (totalPages > 1) {
+            const promises = [];
+            for (let p = 2; p <= totalPages; p++) {
+                promises.push(
+                    (async () => {
+                        try {
+                            const pController = new AbortController();
+                            const pTimeout = setTimeout(() => pController.abort(), 8000);
+                            const pRes = await fetch(`${PYQS_API_URL}/questions?limit=100&page=${p}`, {
+                                signal: pController.signal,
+                                next: { revalidate: 3600 }
+                            });
+                            clearTimeout(pTimeout);
+                            if (pRes.ok) {
+                                const pJson = await pRes.json();
+                                return pJson.data || [];
+                            }
+                        } catch (err) {
+                            console.error(`Error fetching questions page ${p} for image-sitemap:`, err.message);
+                        }
+                        return [];
+                    })()
+                );
+            }
+            const rest = await Promise.all(promises);
+            rest.forEach(items => allQuestions.push(...items));
+        }
+        return allQuestions;
+    } catch (e) {
+        console.error('Error fetching questions for image-sitemap:', e.message);
+        return [];
+    }
+}
+
 export async function GET() {
     const siteUrl = getSiteUrl();
 
@@ -43,21 +120,18 @@ export async function GET() {
     };
 
     // 1. Read ALL files in public/images into a pool
-    // Added turbopackIgnore comment to prevent Next.js from tracing the whole repository
     const publicImagesPath = path.join(/*turbopackIgnore: true*/ process.cwd(), 'public', 'images');
     let allPublicImages = [];
     
     if (fs.existsSync(publicImagesPath)) {
         const files = fs.readdirSync(publicImagesPath);
         const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-        // Filter out non-images
         allPublicImages = files.filter(file => validExtensions.includes(path.extname(file).toLowerCase()));
     }
 
-    // This array acts as our "pool". As images are assigned to specific routes, they are removed.
     let unassignedImages = [...allPublicImages];
 
-    // 2. Dynamic Next.js App Traversal
+    // 2. Dynamic Next.js App Traversal for static pages
     const getValidRoutes = (dir, currentPath = []) => {
         const fullPath = path.join(/*turbopackIgnore: true*/ process.cwd(), dir);
         if (!fs.existsSync(fullPath)) return [];
@@ -65,11 +139,8 @@ export async function GET() {
         let routes = [];
         const entries = fs.readdirSync(fullPath, { withFileTypes: true });
         
-        // Check if this directory has a page file (making it a valid route)
-        // We skip the root 'app' folder because the homepage is handled separately
         const pageFileEntry = entries.find(e => e.isFile() && (e.name === 'page.js' || e.name === 'page.jsx' || e.name === 'page.tsx'));
         if (dir !== 'app' && pageFileEntry) {
-            // If the folder is a route group, its name isn't part of the URL, so use the last path segment instead
             const isDirRouteGroup = path.basename(dir).startsWith('(');
             const folderNameForTitle = isDirRouteGroup && currentPath.length > 0 
                 ? currentPath[currentPath.length - 1] 
@@ -86,19 +157,17 @@ export async function GET() {
             if (entry.isDirectory()) {
                 const name = entry.name;
                 
-                // --- NEXT.JS EDGE CASES ---
                 if (
-                    name.startsWith('[') || // 1. Dynamic routes (handled separately, e.g. blog)
-                    name.startsWith('_') || // 2. Private folders
-                    name.startsWith('@') || // 3. Parallel routes
-                    (name.startsWith('(') && name.includes('.')) || // 4. Intercepting routes like (.), (..)
-                    name === 'api' || // 5. API routes
-                    name === 'image-sitemap.xml' // 6. Avoid infinite loops or self-scanning
+                    name.startsWith('[') ||
+                    name.startsWith('_') ||
+                    name.startsWith('@') ||
+                    (name.startsWith('(') && name.includes('.')) ||
+                    name === 'api' ||
+                    name === 'image-sitemap.xml'
                 ) {
-                    return; // Skip this folder entirely
+                    return;
                 }
 
-                // 7. Route Groups (e.g. '(resources)') do NOT add to the URL path
                 const isRouteGroup = name.startsWith('(') && name.endsWith(')');
                 const newPath = isRouteGroup ? [...currentPath] : [...currentPath, name];
                 
@@ -109,14 +178,12 @@ export async function GET() {
         return routes;
     };
 
-    // 3. Automatically Scan your App Directories to find static route pages
+    // 3. Automatically Scan App Directories to find static route pages
     const allStaticRoutes = getValidRoutes('app');
     
     const staticRoutePages = allStaticRoutes.map(route => {
-        // Clean up folder name for a readable title
         let titleName = route.folderName.replace(/[()]/g, '').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         
-        // Use the parent path segment as subtitle if nested, else default to 'Resources'
         const pathSegments = route.basePath.split('/');
         let subtitle = 'Resources';
         if (pathSegments.length > 1) {
@@ -140,7 +207,6 @@ export async function GET() {
             caption: subtitle
         }];
 
-        // Smart Matcher: Find matching static images in public/images pool
         const matchedImages = unassignedImages.filter(img => {
             const imgName = path.parse(img).name.toLowerCase();
             const targetFolder = route.folderName.replace(/[()]/g, '').toLowerCase();
@@ -153,7 +219,6 @@ export async function GET() {
                 title: `${titleName} Visual`,
                 caption: `${titleName} Image Resource`
             });
-            // Remove claimed image from the unassigned pool
             unassignedImages = unassignedImages.filter(unassigned => unassigned !== img);
         });
 
@@ -163,13 +228,13 @@ export async function GET() {
         };
     });
 
-    // 4. The Homepage (Takes the Dynamic OG + all leftover static images in the pool)
+    // 4. The Homepage
     let homeTitle = 'JEE Challenger';
-    let homeSubtitle = 'Complete JEE Preparation Platform';
-    let homeTheme = undefined;
+    let homeSubtitle = 'Free JEE Preparation Platform: Study Materials, AI Tutor, Previous Year Questions, Syllabus Tracker for Physics, Chemistry & Mathematics';
+    let homeTheme = 'brand';
     let homeBadge = undefined;
 
-    const layoutMeta = getPageMetadata(path.join(/*turbopackIgnore: true*/ process.cwd(), 'app', 'layout.js'));
+    const layoutMeta = getPageMetadata(path.join(/*turbopackIgnore: true*/ process.cwd(), 'app', 'layout.jsx'));
     if (layoutMeta) {
         if (layoutMeta.title) homeTitle = layoutMeta.title;
         if (layoutMeta.subtitle) homeSubtitle = layoutMeta.subtitle;
@@ -185,9 +250,7 @@ export async function GET() {
         }
     ];
 
-    // Any image that didn't match a specific folder gets attached to the homepage
     unassignedImages.forEach(img => {
-        // Create a readable title out of the filename (e.g., 'jcicon' -> 'Jcicon')
         const titleFromName = path.parse(img).name.split(/[-_]/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         homePageImages.push({
             url: `${siteUrl}/images/${img}`,
@@ -200,11 +263,11 @@ export async function GET() {
         loc: `${siteUrl}`,
         images: homePageImages
     };
-    // 5. Auto-fetch Dynamic Blog Posts
+
+    // 5. Dynamic Blog Posts
     let blogTheme = 'blog';
     let blogBadge = 'JEE Challenger Blog';
     
-    // Attempt to dynamically fetch the default theme/badge from the blog template
     const blogTemplateMeta = getPageMetadata(path.join(/*turbopackIgnore: true*/ process.cwd(), 'app', '(read-more)', 'blog', '[slug]', 'page.jsx'));
     if (blogTemplateMeta) {
         if (blogTemplateMeta.theme) blogTheme = blogTemplateMeta.theme;
@@ -216,33 +279,118 @@ export async function GET() {
         return {
             loc: `${siteUrl}/blog/${article.slug}`,
             images: [{
-                url: getOgUrl(article.title || 'JEE Challenger Article', article.excerpt || 'Blog', blogTheme, blogBadge),
-                title: article.title,
+                url: getOgUrl(article.title, article.excerpt, blogTheme, blogBadge),
+                title: `${article.title} | JEE Challenger`,
                 caption: article.excerpt || `Read about ${article.title} on JEE Challenger`
             }]
         };
     });
 
+    // 6. Dynamic PYQ Question Papers
+    const papers = await getDynamicPapers();
+    const paperPages = papers
+        .filter(paper => paper && paper.slug)
+        .map((paper) => {
+            const examLabel = paper.exam_type === 'JEE_ADVANCED' ? 'JEE Advanced' : 'JEE Main';
+            const ogTitle = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
+            const ogSubtitle = `${examLabel} • ${paper.exam_year} • Complete Paper & Solutions`;
+            
+            return {
+                loc: `${siteUrl}/papers/${paper.slug}`,
+                images: [{
+                    url: getOgUrl(ogTitle, ogSubtitle, 'pyqs', 'JEE Challenger'),
+                    title: `${ogTitle} | Solutions & Answer Key`,
+                    caption: `Access full ${examLabel} ${paper.exam_year} official question paper with section-wise questions, verified answer keys, and step-by-step KaTeX solutions.`
+                }]
+            };
+        });
+
+    // 7. Dynamic PYQ Questions with Diagrams
+    const questions = await getDynamicQuestions();
+    const questionPages = questions
+        .filter(q => q && q.slug)
+        .map((q) => {
+            const examLabel = q.exam_type === 'JEE_ADVANCED' ? 'JEE Advanced' : 'JEE Main';
+            const examOrigin = `${examLabel} ${q.exam_year || ''}`.trim();
+            const ogTitle = q.title || 'JEE Previous Year Question';
+            const ogSubtitle = `${q.subject || ''} • ${q.chapter || ''} • ${examOrigin}`;
+            
+            const images = [{
+                url: getOgUrl(ogTitle, ogSubtitle, 'pyqs', 'JEE Challenger'),
+                title: `${ogTitle} | ${q.subject || 'JEE'} PYQ Solution`,
+                caption: `Detailed step-by-step solution for ${q.subject || ''} - ${q.chapter || ''} ${examOrigin} Previous Year Question with KaTeX formulas and answer key.`
+            }];
+
+            if (Array.isArray(q.question_diagram_urls)) {
+                q.question_diagram_urls.forEach((imgUrl, i) => {
+                    if (imgUrl && typeof imgUrl === 'string') {
+                        images.push({
+                            url: imgUrl,
+                            title: `${ogTitle} - Question Diagram ${i + 1}`,
+                            caption: `Official Question Diagram for ${q.subject || 'JEE'} - ${q.chapter || ''}`
+                        });
+                    }
+                });
+            }
+
+            if (q.options && typeof q.options === 'object') {
+                ['A', 'B', 'C', 'D'].forEach((key) => {
+                    const opt = q.options[key];
+                    if (opt && opt.diagram_url && typeof opt.diagram_url === 'string') {
+                        images.push({
+                            url: opt.diagram_url,
+                            title: `${ogTitle} - Option ${key} Diagram`,
+                            caption: `Option ${key} diagram for ${ogTitle}`
+                        });
+                    }
+                });
+            }
+
+            if (Array.isArray(q.solution_diagram_urls)) {
+                q.solution_diagram_urls.forEach((imgUrl, i) => {
+                    if (imgUrl && typeof imgUrl === 'string') {
+                        images.push({
+                            url: imgUrl,
+                            title: `${ogTitle} - Solution Diagram ${i + 1}`,
+                            caption: `Step-by-step solution derivation figure for ${ogTitle}`
+                        });
+                    }
+                });
+            }
+
+            return {
+                loc: `${siteUrl}/questions/${q.slug}`,
+                images
+            };
+        });
+
     // Combine everything
-    const allPages = [homePage, ...staticRoutePages, ...blogPages];
+    const allPages = [
+        homePage, 
+        ...staticRoutePages, 
+        ...blogPages, 
+        ...paperPages, 
+        ...questionPages
+    ];
 
     // Generate XML safely
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-					<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-							xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-					${allPages.map(page => `  <url>
-						<loc>${page.loc}</loc>
-					${page.images.map(img => `    <image:image>
-						<image:loc>${img.url.replace(/&/g, '&amp;')}</image:loc>
-						<image:title>${img.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:title>
-						<image:caption>${img.caption.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</image:caption>
-						</image:image>`).join('\n')}
-					</url>`).join('\n')}
-					</urlset>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${allPages.map(page => `  <url>
+    <loc>${escapeXml(page.loc)}</loc>
+${page.images.map(img => `    <image:image>
+      <image:loc>${escapeXml(img.url)}</image:loc>
+      <image:title>${escapeXml(img.title)}</image:title>
+      <image:caption>${escapeXml(img.caption)}</image:caption>
+    </image:image>`).join('\n')}
+  </url>`).join('\n')}
+</urlset>`;
 
     return new Response(sitemap, {
         headers: {
-            'Content-Type': 'application/xml; charset=utf-8'
+            'Content-Type': 'application/xml; charset=utf-8',
+            'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
         },
     });
 }

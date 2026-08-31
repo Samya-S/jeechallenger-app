@@ -32,14 +32,18 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const examLabel = question.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
+  const examOrigin = `${examLabel} ${question.exam_year || ""}`.trim();
+
   const title = `${question.title || "JEE Previous Year Question"} | ${question.subject} PYQ Solution`;
-  const description = `Detailed step-by-step solution for ${question.subject} - ${question.chapter} JEE ${question.exam_year || ""} Previous Year Question with KaTeX formulas and answer key.`;
+  const description = `Detailed step-by-step solution for ${question.subject} - ${question.chapter} ${examOrigin} Previous Year Question with KaTeX formulas and answer key.`;
 
   const pageOg = ogImageMeta({
     title: question.title || "JEE Previous Year Question",
-    subtitle: `${question.subject} • ${question.chapter} • JEE ${question.exam_year || ""}`,
+    subtitle: `${question.subject || ""} • ${question.chapter || ""} • ${examOrigin}`,
     theme: "pyqs",
-    alt: question.title || "JEE Question",
+    badge: "JEE Challenger",
+    alt: question.title || "JEE Previous Year Question",
   });
 
   return {

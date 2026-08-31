@@ -3,56 +3,101 @@ import { getAllArticles } from "@/utils/articles";
 import fs from 'fs';
 import path from 'path';
 
+export const revalidate = 3600;
+
 /**
- * Recursively crawls the /app directory to find all static pages
- * It ignores dynamic routes (like [slug]), api routes, and hidden/component folders.
+ * Recursively crawls the /app directory to find all valid public static routes.
+ * Correctly strips Next.js route groups like (resources), (about), (legal) from the URL.
  */
-function getStaticPages(dir, routePrefix = '') {
-  let pages = [];
-  
-  // Read all files and folders in the current directory
-  const files = fs.readdirSync(dir);
+function getValidStaticRoutes(dir, currentPath = []) {
+  const fullDirPath = path.join(/*turbopackIgnore: true*/ process.cwd(), dir);
+  if (!fs.existsSync(fullDirPath)) return [];
 
-  for (const file of files) {
-    // Skip hidden files, system folders, components, API routes, and dynamic route brackets [slug]
-    if (file.startsWith('.') || file.startsWith('_') || file.includes('[') || file === 'api') {
-      continue;
-    }
+  let routes = [];
+  const entries = fs.readdirSync(fullDirPath, { withFileTypes: true });
 
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
+  const pageFileEntry = entries.find(
+    (e) => e.isFile() && (e.name === 'page.js' || e.name === 'page.jsx' || e.name === 'page.tsx')
+  );
 
-    if (stat.isDirectory()) {
-      // If it's a folder, search inside it recursively
-      pages = pages.concat(getStaticPages(fullPath, `${routePrefix}/${file}`));
-    } else if (file === 'page.js' || file === 'page.jsx') {
-      // If it's a page file, register the route (ignore the root homepage '/')
-      if (routePrefix !== '') {
-         pages.push(routePrefix);
-      }
-    }
+  if (dir !== 'app' && pageFileEntry && currentPath.length > 0) {
+    const isDirRouteGroup = path.basename(dir).startsWith('(');
+    const folderNameForTitle = isDirRouteGroup && currentPath.length > 0 
+      ? currentPath[currentPath.length - 1] 
+      : path.basename(dir);
+
+    routes.push({
+      folderName: folderNameForTitle,
+      basePath: currentPath.join('/'),
+      pagePath: path.join(fullDirPath, pageFileEntry.name)
+    });
   }
-  return pages;
+
+  entries.forEach((entry) => {
+    if (entry.isDirectory()) {
+      const name = entry.name;
+
+      if (
+        name.startsWith('[') ||
+        name.startsWith('_') ||
+        name.startsWith('@') ||
+        (name.startsWith('(') && name.includes('.')) ||
+        name === 'api' ||
+        name === 'rss.xml' ||
+        name === 'image-sitemap.xml' ||
+        name === 'og' ||
+        name === 'login' ||
+        name === 'profile'
+      ) {
+        return;
+      }
+
+      const isRouteGroup = name.startsWith('(') && name.endsWith(')');
+      const newPath = isRouteGroup ? [...currentPath] : [...currentPath, name];
+
+      routes = routes.concat(getValidStaticRoutes(path.join(/*turbopackIgnore: true*/ dir, name), newPath));
+    }
+  });
+
+  return routes;
 }
 
 /**
- * Formats a raw URL route (e.g., "/physics") into readable Titles & Categories
+ * Formats a raw URL route (e.g., "physics/unit-converter") into readable Titles & Categories
  */
 function formatRouteDetails(route) {
-  const parts = route.split('/').filter(Boolean);
-  const namePart = parts[parts.length - 1]; // e.g., "physics"
-  const categoryPart = parts.length > 1 ? parts[0] : "General"; // e.g., "materials"
+  const parts = route.basePath.split('/').filter(Boolean);
+  const namePart = parts[parts.length - 1] || 'Home';
+  const categoryPart = parts.length > 1 ? parts[0] : "General";
 
-  // Format strings: "jee-main" -> "Jee Main"
-  const title = namePart.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const category = categoryPart.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const title = namePart.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+  const category = categoryPart.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
   return {
-    slug: route,
+    urlPath: `/${route.basePath}`,
     title: `${title} - JEE Challenger`,
-    description: `Explore resources for ${title} on JEE Challenger.`,
+    description: `Explore ${title} resources and study materials on JEE Challenger.`,
     category: category
   };
+}
+
+async function getDynamicPapers() {
+  try {
+    const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(`${PYQS_API_URL}/papers`, {
+      signal: controller.signal,
+      next: { revalidate: 3600 }
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data || json.papers || [];
+  } catch (e) {
+    console.error('Error fetching papers for rss:', e.message);
+    return [];
+  }
 }
 
 export async function GET() {
@@ -60,14 +105,13 @@ export async function GET() {
   const currentDate = new Date().toUTCString();
   
   // ---------------------------------------------------------
-  // 1. AUTO-DISCOVER STATIC PAGES FROM THE FILESYSTEM
+  // 1. AUTO-DISCOVER STATIC PAGES (with clean URLs)
   // ---------------------------------------------------------
-  const appDirectory = path.join(process.cwd(), 'app');
-  const staticRoutes = getStaticPages(appDirectory);
+  const staticRoutes = getValidStaticRoutes('app');
   
   const staticItems = staticRoutes.map((route) => {
     const pageDetails = formatRouteDetails(route);
-    const pageUrl = `${siteUrl}${pageDetails.slug}`;
+    const pageUrl = `${siteUrl}${pageDetails.urlPath}`;
     
     return `<item>
               <title><![CDATA[${pageDetails.title}]]></title>
@@ -77,13 +121,13 @@ export async function GET() {
               <pubDate>${currentDate}</pubDate>
               <category><![CDATA[${pageDetails.category}]]></category>
             </item>`;
-  }).join('');
+  }).join('\n');
 
   // ---------------------------------------------------------
   // 2. FETCH DYNAMIC BLOG ARTICLES
   // ---------------------------------------------------------
   const articles = await getAllArticles(false);
-  const dynamicItems = articles.map((article) => {
+  const dynamicBlogItems = articles.map((article) => {
     const articleUrl = `${siteUrl}/blog/${article.slug}`;
     return `<item>
               <title><![CDATA[${article.title}]]></title>
@@ -91,37 +135,61 @@ export async function GET() {
               <guid isPermaLink="true">${articleUrl}</guid>
               <description><![CDATA[${article.excerpt}]]></description>
               <pubDate>${new Date(article.date).toUTCString()}</pubDate>
-              <category><![CDATA[${article.category}]]></category>
+              <category><![CDATA[${article.category || 'Blog'}]]></category>
             </item>`;
-  }).join('');
+  }).join('\n');
 
   // ---------------------------------------------------------
-  // 3. COMBINE XML
+  // 3. FETCH DYNAMIC QUESTION PAPERS
+  // ---------------------------------------------------------
+  const papers = await getDynamicPapers();
+  const dynamicPaperItems = papers
+    .filter((paper) => paper && paper.slug)
+    .map((paper) => {
+      const examLabel = paper.exam_type === 'JEE_ADVANCED' ? 'JEE Advanced' : 'JEE Main';
+      const title = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
+      const pageUrl = `${siteUrl}/papers/${paper.slug}`;
+      const pubDate = paper.approved_at ? new Date(paper.approved_at).toUTCString() : currentDate;
+      
+      return `<item>
+                <title><![CDATA[${title} - Full Paper & Solutions]]></title>
+                <link>${pageUrl}</link>
+                <guid isPermaLink="true">${pageUrl}</guid>
+                <description><![CDATA[Access official ${examLabel} ${paper.exam_year} question paper with section-wise questions, verified answer keys, and detailed KaTeX solutions.]]></description>
+                <pubDate>${pubDate}</pubDate>
+                <category><![CDATA[PYQs]]></category>
+              </item>`;
+    }).join('\n');
+
+  // ---------------------------------------------------------
+  // 4. COMBINE RSS 2.0 XML
   // ---------------------------------------------------------
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-              <rss version="2.0" 
-                  xmlns:atom="http://www.w3.org/2005/Atom"
-                  xmlns:content="http://purl.org/rss/1.0/modules/content/"
-                  xmlns:dc="http://purl.org/dc/elements/1.1/">
-                <channel>
-                  <title>JEE Challenger - Complete JEE Preparation Platform</title>
-                  <link>${siteUrl}</link>
-                  <description>Free JEE Preparation Platform: Study Materials, AI Tutor, Previous Year Questions, Syllabus Tracker for Physics, Chemistry &amp; Mathematics</description>
-                  <language>en-IN</language>
-                  <lastBuildDate>${currentDate}</lastBuildDate>
-                  <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>
-                  <image>
-                    <url>${siteUrl}/images/jcicon.jpg</url>
-                    <title>JEE Challenger</title>
-                    <link>${siteUrl}</link>
-                  </image>
-                  
-                  ${staticItems}
+<rss version="2.0" 
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>JEE Challenger - Complete JEE Preparation Platform</title>
+    <link>${siteUrl}</link>
+    <description>Free JEE Preparation Platform: Study Materials, AI Tutor, Previous Year Questions, Syllabus Tracker for Physics, Chemistry &amp; Mathematics</description>
+    <language>en-IN</language>
+    <lastBuildDate>${currentDate}</lastBuildDate>
+    <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>
+    <image>
+      <url>${siteUrl}/images/jcicon.jpg</url>
+      <title>JEE Challenger</title>
+      <link>${siteUrl}</link>
+    </image>
 
-                  ${dynamicItems}
-                  
-                </channel>
-              </rss>`;
+${staticItems}
+
+${dynamicBlogItems}
+
+${dynamicPaperItems}
+
+  </channel>
+</rss>`;
 
   return new Response(rss, {
     headers: {

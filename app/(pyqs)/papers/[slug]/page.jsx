@@ -20,6 +20,23 @@ async function fetchPaper(slug) {
   }
 }
 
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/papers`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const papers = data.data || data.papers || [];
+    return papers.filter((p) => p && p.slug).map((paper) => ({
+      slug: paper.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params for papers:", error);
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
@@ -33,14 +50,16 @@ export async function generateMetadata({ params }) {
   }
 
   const examLabel = paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
-  const title = `${paper.title || `${examLabel} ${paper.exam_year} Question Paper`} | Solutions & Answer Key`;
+  const ogTitle = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
+  const title = `${ogTitle} | Solutions & Answer Key`;
   const description = `Access full ${examLabel} ${paper.exam_year} official question paper with section-wise questions, verified answer keys, and step-by-step KaTeX solutions.`;
 
   const pageOg = ogImageMeta({
-    title: paper.title || `${examLabel} Question Paper`,
+    title: ogTitle,
     subtitle: `${examLabel} • ${paper.exam_year} • Complete Paper & Solutions`,
     theme: "pyqs",
-    alt: paper.title || "JEE Paper",
+    badge: "JEE Challenger",
+    alt: ogTitle,
   });
 
   return {

@@ -7,6 +7,7 @@ const pageOg = ogImageMeta({
   title: 'Previous Year Questions',
   subtitle: 'Access Free Previous Year Questions (PYQs) with Solutions for JEE Main & Advanced',
   theme: 'pyqs',
+  badge: 'JEE Challenger',
   alt: 'Previous Year Questions',
 })
 
