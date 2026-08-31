@@ -1,13 +1,13 @@
-import { getArticleBySlug, getAllArticles } from '@/utils/articles';
+import { getArticleBySlug, getAllArticles, getAllArticleSlugs } from '@/utils/articles';
 import BlogPostComponent from '../BlogPostComponent';
 import StructuredData from '@/components/common/StructuredData';
 import { notFound } from 'next/navigation';
 import { buildAbsoluteOgImageUrl, ogImageMeta } from '@/utils/og-metadata';
 
 export async function generateStaticParams() {
-  const articles = await getAllArticles();
-  return articles.map((article) => ({
-    slug: article.slug,
+  const slugs = getAllArticleSlugs();
+  return slugs.map((slug) => ({
+    slug,
   }));
 }
 
