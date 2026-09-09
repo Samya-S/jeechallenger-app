@@ -83,28 +83,30 @@ const FeedbackModal = () => {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+		<div className="fixed inset-0 z-[9999] overflow-y-auto">
 			{/* Backdrop */}
 			<div
-				className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+				className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
 				onClick={handleClose}
 			/>
 
-			{/* Modal */}
-			<div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[90vh] flex flex-col">
-				{/* Close button */}
-				<button
-					onClick={handleClose}
-					className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-					aria-label="Close feedback modal"
-				>
-					<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
+			{/* Centering wrapper with min-h-full to prevent clipping */}
+			<div className="min-h-full flex items-center justify-center p-3 sm:p-4 md:p-6">
+				{/* Modal */}
+				<div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-5 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col my-auto">
+					{/* Close button */}
+					<button
+						onClick={handleClose}
+						className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1.5 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+						aria-label="Close feedback modal"
+					>
+						<svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
 
-				{/* Content - Scrollable */}
-				<div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+					{/* Content - Scrollable */}
+					<div className="overflow-y-auto pr-1 -mr-1 overscroll-contain">
 					{!isSubmitted && (
 						<div className="text-center mb-6">
 							<div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -270,6 +272,7 @@ const FeedbackModal = () => {
 				</div>
 			</div>
 		</div>
+	</div>
 	);
 };
 

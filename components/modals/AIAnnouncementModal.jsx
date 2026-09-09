@@ -22,28 +22,30 @@ const AIAnnouncementModal = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Modal */}
-      <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[90vh] flex flex-col">
-        {/* Close button */}
-        <button
-          onClick={() => setIsOpen(false)}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-          aria-label="Close announcement modal"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+      {/* Centering wrapper with min-h-full to prevent clipping */}
+      <div className="min-h-full flex items-center justify-center p-3 sm:p-4 md:p-6">
+        {/* Modal */}
+        <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-5 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col my-auto">
+          {/* Close button */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1.5 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Close announcement modal"
+          >
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-        {/* Content - Scrollable */}
-        <div className="overflow-y-auto pr-2 -mr-2">
+          {/* Content - Scrollable */}
+          <div className="overflow-y-auto pr-1 -mr-1 overscroll-contain">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
               <svg className="w-7 h-7 sm:w-8 sm:h-8 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 640 512">
@@ -97,7 +99,7 @@ const AIAnnouncementModal = () => {
         </div>
 
         {/* Button - Fixed at bottom */}
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center shrink-0">
           <Link
             href="/ai-tutor"
             target="_blank"
@@ -111,6 +113,7 @@ const AIAnnouncementModal = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
