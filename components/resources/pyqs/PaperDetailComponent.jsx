@@ -11,14 +11,13 @@ import {
   CheckCircle2, 
   XCircle, 
   ArrowUpRight, 
-  Maximize2, 
-  X, 
   Eye,
   BookOpen
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
+import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 
 function PaperDetailContent({ paperData }) {
   const searchParams = useSearchParams();
@@ -371,16 +370,13 @@ function PaperDetailContent({ paperData }) {
                           <div
                             key={i}
                             onClick={() => setZoomedImage(imgUrl)}
-                            className="relative group rounded-xl border border-gray-200 dark:border-gray-700 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md cursor-zoom-in hover:border-orange-500 transition-all"
+                            className="relative rounded-xl border border-gray-200 dark:border-gray-700 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
                           >
                             <img
                               src={imgUrl}
                               alt={`Question Diagram ${i + 1}`}
                               className="max-h-72 w-auto object-contain rounded-lg mr-auto"
                             />
-                            <div className="absolute inset-0 bg-black/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                              <Maximize2 className="w-6 h-6" />
-                            </div>
                           </div>
                         ))}
                       </div>
@@ -427,16 +423,13 @@ function PaperDetailContent({ paperData }) {
                                       e.stopPropagation();
                                       setZoomedImage(opt.diagram_url);
                                     }}
-                                    className="relative group mt-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500"
+                                    className="relative mt-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
                                   >
                                     <img
                                       src={opt.diagram_url}
                                       alt={`Option ${key}`}
                                       className="max-h-60 sm:max-h-72 w-auto object-contain rounded-lg mr-auto"
                                     />
-                                    <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                      <Maximize2 className="w-4 h-4" />
-                                    </div>
                                   </div>
                                 )}
                               </div>
@@ -532,25 +525,11 @@ function PaperDetailContent({ paperData }) {
 
       {/* High-Resolution Diagram Zoom Lightbox Modal */}
       {zoomedImage && (
-        <div
-          onClick={() => setZoomedImage(null)}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
-        >
-          <div className="relative max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 p-3 rounded-2xl shadow-2xl border border-gray-800">
-            <button
-              type="button"
-              onClick={() => setZoomedImage(null)}
-              className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-lg hover:bg-orange-600 transition-all cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <img
-              src={zoomedImage}
-              alt="Zoomed Diagram"
-              className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl mx-auto"
-            />
-          </div>
-        </div>
+        <PYQImageLightbox
+          src={zoomedImage}
+          alt={paperData?.title || "Paper Diagram"}
+          onClose={() => setZoomedImage(null)}
+        />
       )}
     </div>
   );
