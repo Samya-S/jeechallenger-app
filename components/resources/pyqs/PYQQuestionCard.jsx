@@ -89,7 +89,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden transition-all hover:shadow-xl">
+      <div className="isolate bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden transition-all hover:shadow-xl">
         {/* Question Header */}
         <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
