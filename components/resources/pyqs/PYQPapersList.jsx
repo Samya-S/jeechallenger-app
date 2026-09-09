@@ -84,15 +84,15 @@ export default function PYQPapersList({ filters, setTotalPapersCount }) {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-orange-500" />
                   <span>{paper.duration_minutes || 180}m</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center gap-1.5">
                   <Award className="w-3.5 h-3.5 text-emerald-500" />
                   <span>{paper.total_marks || 300} Marks</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-blue-500" />
                   <span>{totalQuestions} Qs</span>
                 </div>
