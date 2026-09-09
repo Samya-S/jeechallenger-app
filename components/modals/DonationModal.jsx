@@ -27,30 +27,28 @@ const DonationModal = () => {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-[9999] overflow-y-auto">
+		<div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
 			{/* Backdrop */}
 			<div
-				className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+				className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
 				onClick={handleClose}
 			/>
 
-			{/* Centering wrapper with min-h-full to prevent clipping */}
-			<div className="min-h-full flex items-center justify-center p-3 sm:p-4 md:p-6">
-				{/* Modal */}
-				<div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-5 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col my-auto">
-					{/* Close button */}
-					<button
-						onClick={handleClose}
-						className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1.5 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-						aria-label="Close donation modal"
-					>
-						<svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+			{/* Modal */}
+			<div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[90vh] flex flex-col">
+				{/* Close button */}
+				<button
+					onClick={handleClose}
+					className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+					aria-label="Close donation modal"
+				>
+					<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
 
-					{/* Content - Scrollable */}
-					<div className="overflow-y-auto pr-1 -mr-1 overscroll-contain">
+				{/* Content - Scrollable */}
+				<div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                     <div className="flex flex-col items-center animate-fade-in">
                         <div className="text-center w-full">
                             <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Keep JEE Challenger Running 🚀</h3>
@@ -93,7 +91,6 @@ const DonationModal = () => {
 				</div>
 			</div>
 		</div>
-	</div>
 	);
 };
 
