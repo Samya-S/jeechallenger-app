@@ -48,7 +48,8 @@ const PreviousYearQuestionsPage = () => {
         data={{
           items: [
             { name: "Home", path: "/" },
-            { name: "PYQs", path: "/previous-year-questions" }
+            { name: "Resources", path: "/resources" },
+            { name: "Previous Year Questions", path: "/previous-year-questions" }
           ]
         }}
       />

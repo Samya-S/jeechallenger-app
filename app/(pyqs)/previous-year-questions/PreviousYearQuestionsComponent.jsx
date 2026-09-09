@@ -150,19 +150,22 @@ function PreviousYearQuestionsContent() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-950 dark:via-orange-900 dark:to-red-950 pb-20 pt-4 border-b border-orange-500/20">
+      <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-950 dark:via-orange-900 dark:to-red-950 pb-20 pt-4">
         <Breadcrumbs
-          crumbs={[{ label: "PYQs", href: "/previous-year-questions" }]}
+          crumbs={[
+            { label: "Resources", href: "/resources" },
+            { label: "Previous Year Questions", href: "/previous-year-questions" },
+          ]}
           hasBanner={true}
-          className="pb-8 max-w-7xl mx-auto px-4"
+          className="pb-12"
         />
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center text-center">
-          <div className="text-white">
-            <h1 className="text-4xl sm:text-6xl font-black mb-4 tracking-tight drop-shadow-md">
+        <div className="flex items-center justify-center">
+          <div className="text-center text-white px-4">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg animate-fade-in">
               Previous Year Questions
             </h1>
-            <p className="text-base sm:text-xl font-medium max-w-3xl mx-auto text-orange-100/90 leading-relaxed">
-              Master JEE Main & Advanced with verified chapter-wise practice questions and official shift papers.
+            <p className="text-xl md:text-2xl font-medium max-w-2xl mx-auto drop-shadow-md animate-fade-in-delay">
+              Master JEE Main & Advanced with verified chapter-wise practice questions and official shift papers
             </p>
           </div>
         </div>
