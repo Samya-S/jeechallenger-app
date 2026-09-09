@@ -10,9 +10,12 @@ import {
   ArrowLeft, 
   CheckCircle2, 
   XCircle, 
+  AlertCircle, 
   ArrowUpRight, 
   Eye,
-  BookOpen
+  BookOpen,
+  Check,
+  X
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -131,19 +134,32 @@ function PaperDetailContent({ paperData }) {
     });
   }, [currentSection, allQuestions]);
 
-  const handleSelectOption = (qId, optionKey) => {
+  const handleSelectOption = (qId, optionKey, isMulti = false) => {
     const current = userAnswers[qId];
     if (current?.checkedState) return;
-    setUserAnswers((prev) => ({
-      ...prev,
-      [qId]: { ...prev[qId], selectedOption: optionKey },
-    }));
+
+    if (isMulti) {
+      const existing = current?.selectedMultiOptions || [];
+      const updated = existing.includes(optionKey)
+        ? existing.filter((k) => k !== optionKey)
+        : [...existing, optionKey];
+      setUserAnswers((prev) => ({
+        ...prev,
+        [qId]: { ...prev[qId], selectedMultiOptions: updated },
+      }));
+    } else {
+      setUserAnswers((prev) => ({
+        ...prev,
+        [qId]: { ...prev[qId], selectedOption: optionKey },
+      }));
+    }
   };
 
   const handleCheckAnswer = (q) => {
     const qId = q._id;
     const ans = userAnswers[qId] || {};
     const isMCQ = q.question_type === "MCQ" || !q.question_type;
+    const isMulti = q.question_type === "MULTI_CORRECT";
     const isNumeric = q.question_type === "NUMERIC";
 
     if (isMCQ) {
@@ -155,11 +171,45 @@ function PaperDetailContent({ paperData }) {
         [qId]: {
           ...prev[qId],
           checkedState: {
+            status: isCorrect ? "correct" : "incorrect",
             isCorrect,
             correctAnswers: correctArr,
             message: isCorrect
-              ? "Correct! +4 Marks"
-              : `Incorrect (-1 Mark) • Correct Answer is Option (${correctArr.join(", ")})`,
+              ? "Correct!"
+              : `Incorrect • Correct Answer is Option (${correctArr.join(", ")})`,
+          },
+        },
+      }));
+    } else if (isMulti) {
+      const selected = ans.selectedMultiOptions || [];
+      if (selected.length === 0) return;
+      const correctArr = q.correct_answer || [];
+      const isExactMatch =
+        selected.length === correctArr.length &&
+        selected.every((opt) => correctArr.includes(opt));
+      const hasAnyWrong = selected.some((opt) => !correctArr.includes(opt));
+      const isPartial = !hasAnyWrong && !isExactMatch;
+      const status = isExactMatch ? "correct" : isPartial ? "partial" : "incorrect";
+
+      let msg = "";
+      if (isExactMatch) {
+        msg = "Correct! All correct options selected.";
+      } else if (isPartial) {
+        const missing = correctArr.filter((opt) => !selected.includes(opt)).sort();
+        msg = `Partially Correct • You selected (${selected.sort().join(", ")}), correct options also include (${missing.join(", ")})`;
+      } else {
+        msg = `Incorrect • Correct Options are (${correctArr.sort().join(", ")})`;
+      }
+
+      setUserAnswers((prev) => ({
+        ...prev,
+        [qId]: {
+          ...prev[qId],
+          checkedState: {
+            status,
+            isCorrect: isExactMatch,
+            correctAnswers: correctArr,
+            message: msg,
           },
         },
       }));
@@ -180,9 +230,10 @@ function PaperDetailContent({ paperData }) {
         [qId]: {
           ...prev[qId],
           checkedState: {
+            status: isCorrect ? "correct" : "incorrect",
             isCorrect,
             message: isCorrect
-              ? "Correct! +4 Marks"
+              ? "Correct!"
               : `Incorrect • Official Answer: ${numAns?.exact_value ?? `${numAns?.min_value} to ${numAns?.max_value}`}`,
           },
         },
@@ -389,17 +440,45 @@ function PaperDetailContent({ paperData }) {
                           const opt = q.options[key];
                           if (!opt || (!opt.text && !opt.diagram_url)) return null;
 
-                          const isSelected = ansState.selectedOption === key;
+                          const isSelected = isMulti
+                            ? (ansState.selectedMultiOptions || []).includes(key)
+                            : ansState.selectedOption === key;
                           const isCorrectAnswer = ansState.checkedState?.correctAnswers?.includes(key);
 
                           let optionStyle = "border-gray-200 dark:border-gray-700 hover:border-orange-500/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20";
+                          let badge = null;
+
                           if (isSelected && !ansState.checkedState) {
                             optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                           } else if (ansState.checkedState) {
-                            if (isCorrectAnswer) {
+                            if (isSelected && isCorrectAnswer) {
                               optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                              badge = (
+                                <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                                  <Check className="w-3 h-3" />
+                                  Your Choice (Correct)
+                                </span>
+                              );
                             } else if (isSelected && !isCorrectAnswer) {
                               optionStyle = "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/50";
+                              badge = (
+                                <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-2 py-0.5 rounded-md">
+                                  <X className="w-3 h-3" />
+                                  Your Choice (Incorrect)
+                                </span>
+                              );
+                            } else if (!isSelected && isCorrectAnswer) {
+                              optionStyle = isMulti
+                                ? "border-dashed border-emerald-500/80 bg-emerald-50/30 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200"
+                                : "border-emerald-500/80 bg-emerald-50/40 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200";
+                              badge = (
+                                <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">
+                                  <Check className="w-3 h-3" />
+                                  {isMulti ? "Missed (Correct)" : "Correct Answer"}
+                                </span>
+                              );
+                            } else {
+                              optionStyle = "border-gray-200 dark:border-gray-800 opacity-50";
                             }
                           }
 
@@ -407,7 +486,7 @@ function PaperDetailContent({ paperData }) {
                             <button
                               key={key}
                               type="button"
-                              onClick={() => handleSelectOption(qId, key)}
+                              onClick={() => handleSelectOption(qId, key, isMulti)}
                               className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all cursor-pointer ${optionStyle}`}
                             >
                               <span className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs ${
@@ -433,6 +512,7 @@ function PaperDetailContent({ paperData }) {
                                   </div>
                                 )}
                               </div>
+                              {badge}
                             </button>
                           );
                         })}
@@ -466,13 +546,17 @@ function PaperDetailContent({ paperData }) {
                     {ansState.checkedState && (
                       <div
                         className={`p-4 rounded-xl flex items-center gap-3 border ${
-                          ansState.checkedState.isCorrect
+                          ansState.checkedState.status === "correct"
                             ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+                            : ansState.checkedState.status === "partial"
+                            ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
                             : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
                         }`}
                       >
-                        {ansState.checkedState.isCorrect ? (
+                        {ansState.checkedState.status === "correct" ? (
                           <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+                        ) : ansState.checkedState.status === "partial" ? (
+                          <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
                         ) : (
                           <XCircle className="w-5 h-5 shrink-0 text-rose-500" />
                         )}
@@ -487,7 +571,13 @@ function PaperDetailContent({ paperData }) {
                           <button
                             type="button"
                             onClick={() => handleCheckAnswer(q)}
-                            disabled={isMCQ ? !ansState.selectedOption : !ansState.numericVal?.trim()}
+                            disabled={
+                              isMulti
+                                ? !ansState.selectedMultiOptions || ansState.selectedMultiOptions.length === 0
+                                : isMCQ
+                                ? !ansState.selectedOption
+                                : !ansState.numericVal?.trim()
+                            }
                             className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                           >
                             Check Answer
