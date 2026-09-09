@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileText } from "lucide-react";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 
@@ -15,9 +15,10 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
 
   if (!question) return null;
 
-  const isMCQ = question.question_type === "MCQ" || !question.question_type;
-  const isMulti = question.question_type === "MULTI_CORRECT";
-  const isNumeric = question.question_type === "NUMERIC";
+  const inputFormat = question.input_format || question.question_type || "MCQ";
+  const isMCQ = inputFormat === "MCQ";
+  const isMulti = inputFormat === "MULTI_CORRECT";
+  const isNumeric = inputFormat === "NUMERIC";
 
   const handleCheckAnswer = () => {
     if (isMCQ) {
@@ -134,6 +135,19 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
 
         {/* Question Body */}
         <div className="p-5 md:p-7 space-y-6">
+          {/* Linked Passage (for COMPREHENSION questions) */}
+          {question.linked_passage_text && (
+            <div className="p-4 md:p-5 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+                <FileText className="w-4 h-4" />
+                <span>Comprehension Passage</span>
+              </div>
+              <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                <MarkdownMathRenderer content={question.linked_passage_text} />
+              </div>
+            </div>
+          )}
+
           {/* Question Text */}
           <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed">
             <MarkdownMathRenderer content={question.question_text} />
