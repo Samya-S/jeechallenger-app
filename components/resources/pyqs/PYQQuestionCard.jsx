@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, XCircle, ArrowUpRight, Eye } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X } from "lucide-react";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 
@@ -25,11 +25,12 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
       const correctArr = question.correct_answer || [];
       const isCorrect = correctArr.includes(selectedOption);
       setCheckedState({
+        status: isCorrect ? "correct" : "incorrect",
         isCorrect,
         correctAnswers: correctArr,
         message: isCorrect
-          ? "Correct! +4 Marks"
-          : `Incorrect (-1 Mark) • Correct Answer is Option (${correctArr.join(", ")})`,
+          ? "Correct!"
+          : `Incorrect • Correct Answer is Option (${correctArr.join(", ")})`,
       });
     } else if (isMulti) {
       if (selectedMultiOptions.length === 0) return;
@@ -37,12 +38,25 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
       const isExactMatch =
         selectedMultiOptions.length === correctArr.length &&
         selectedMultiOptions.every((opt) => correctArr.includes(opt));
+      const hasAnyWrong = selectedMultiOptions.some((opt) => !correctArr.includes(opt));
+      const isPartial = !hasAnyWrong && !isExactMatch;
+      const status = isExactMatch ? "correct" : isPartial ? "partial" : "incorrect";
+
+      let msg = "";
+      if (isExactMatch) {
+        msg = "Correct! All correct options selected.";
+      } else if (isPartial) {
+        const missing = correctArr.filter((opt) => !selectedMultiOptions.includes(opt)).sort();
+        msg = `Partially Correct • You selected (${selectedMultiOptions.sort().join(", ")}), correct options also include (${missing.join(", ")})`;
+      } else {
+        msg = `Incorrect • Correct Options are (${correctArr.sort().join(", ")})`;
+      }
+
       setCheckedState({
+        status,
         isCorrect: isExactMatch,
         correctAnswers: correctArr,
-        message: isExactMatch
-          ? "Perfect! All Correct Options Selected (+4 Marks)"
-          : `Correct Options: (${correctArr.join(", ")})`,
+        message: msg,
       });
     } else if (isNumeric) {
       if (!numericValue.trim()) return;
@@ -57,9 +71,10 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
         }
       }
       setCheckedState({
+        status: isCorrect ? "correct" : "incorrect",
         isCorrect,
         message: isCorrect
-          ? "Correct! +4 Marks"
+          ? "Correct!"
           : `Incorrect • Official Answer: ${numAns?.exact_value ?? `${numAns?.min_value} to ${numAns?.max_value}`}`,
       });
     }
@@ -154,13 +169,37 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 const isCorrectAnswer = checkedState?.correctAnswers?.includes(key);
 
                 let optionStyle = "border-gray-200 dark:border-gray-700 hover:border-orange-500/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20";
+                let badge = null;
+
                 if (isSelected && !checkedState) {
                   optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                 } else if (checkedState) {
-                  if (isCorrectAnswer) {
+                  if (isSelected && isCorrectAnswer) {
                     optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                        <Check className="w-3 h-3" />
+                        Your Choice (Correct)
+                      </span>
+                    );
                   } else if (isSelected && !isCorrectAnswer) {
                     optionStyle = "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/50";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-2 py-0.5 rounded-md">
+                        <X className="w-3 h-3" />
+                        Your Choice (Incorrect)
+                      </span>
+                    );
+                  } else if (!isSelected && isCorrectAnswer) {
+                    optionStyle = "border-emerald-500/80 bg-emerald-50/40 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">
+                        <Check className="w-3 h-3" />
+                        Correct Answer
+                      </span>
+                    );
+                  } else {
+                    optionStyle = "border-gray-200 dark:border-gray-800 opacity-50";
                   }
                 }
 
@@ -194,6 +233,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                         </div>
                       )}
                     </div>
+                    {badge}
                   </button>
                 );
               })}
@@ -210,13 +250,37 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 const isCorrectAnswer = checkedState?.correctAnswers?.includes(key);
 
                 let optionStyle = "border-gray-200 dark:border-gray-700 hover:border-orange-500/50";
+                let badge = null;
+
                 if (isSelected && !checkedState) {
                   optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                 } else if (checkedState) {
-                  if (isCorrectAnswer) {
+                  if (isSelected && isCorrectAnswer) {
                     optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                        <Check className="w-3 h-3" />
+                        Your Choice (Correct)
+                      </span>
+                    );
                   } else if (isSelected && !isCorrectAnswer) {
                     optionStyle = "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/50";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-2 py-0.5 rounded-md">
+                        <X className="w-3 h-3" />
+                        Your Choice (Incorrect)
+                      </span>
+                    );
+                  } else if (!isSelected && isCorrectAnswer) {
+                    optionStyle = "border-dashed border-emerald-500/80 bg-emerald-50/30 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200";
+                    badge = (
+                      <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">
+                        <Check className="w-3 h-3" />
+                        Missed (Correct)
+                      </span>
+                    );
+                  } else {
+                    optionStyle = "border-gray-200 dark:border-gray-800 opacity-50";
                   }
                 }
 
@@ -250,6 +314,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                         </div>
                       )}
                     </div>
+                    {badge}
                   </button>
                 );
               })}
@@ -277,13 +342,17 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
           {checkedState && (
             <div
               className={`p-4 rounded-xl flex items-center gap-3 border ${
-                checkedState.isCorrect
+                checkedState.status === "correct"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+                  : checkedState.status === "partial"
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
                   : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
               }`}
             >
-              {checkedState.isCorrect ? (
+              {checkedState.status === "correct" ? (
                 <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+              ) : checkedState.status === "partial" ? (
+                <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
               ) : (
                 <XCircle className="w-5 h-5 shrink-0 text-rose-500" />
               )}
