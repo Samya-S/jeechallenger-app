@@ -158,9 +158,10 @@ function PaperDetailContent({ paperData }) {
   const handleCheckAnswer = (q) => {
     const qId = q._id;
     const ans = userAnswers[qId] || {};
-    const isMCQ = q.question_type === "MCQ" || !q.question_type;
-    const isMulti = q.question_type === "MULTI_CORRECT";
-    const isNumeric = q.question_type === "NUMERIC";
+    const inputFormat = q.input_format || q.question_type || "MCQ";
+    const isMCQ = inputFormat === "MCQ";
+    const isMulti = inputFormat === "MULTI_CORRECT";
+    const isNumeric = inputFormat === "NUMERIC";
 
     if (isMCQ) {
       if (!ans.selectedOption) return;
@@ -378,9 +379,10 @@ function PaperDetailContent({ paperData }) {
             sectionQuestions.map((q) => {
               const qId = q._id;
               const ansState = userAnswers[qId] || {};
-              const isMCQ = q.question_type === "MCQ" || !q.question_type;
-              const isNumeric = q.question_type === "NUMERIC";
-              const isMulti = q.question_type === "MULTI_CORRECT";
+              const inputFormat = q.input_format || q.question_type || "MCQ";
+              const isMCQ = inputFormat === "MCQ";
+              const isNumeric = inputFormat === "NUMERIC";
+              const isMulti = inputFormat === "MULTI_CORRECT";
 
               return (
                 <div
@@ -410,6 +412,19 @@ function PaperDetailContent({ paperData }) {
 
                   {/* Question Body */}
                   <div className="p-5 md:p-7 space-y-6">
+                    {/* Linked Passage (for COMPREHENSION questions) */}
+                    {q.linked_passage_text && (
+                      <div className="p-4 md:p-5 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
+                        <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+                          <FileText className="w-4 h-4" />
+                          <span>Comprehension Passage</span>
+                        </div>
+                        <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                          <MarkdownMathRenderer content={q.linked_passage_text} />
+                        </div>
+                      </div>
+                    )}
+
                     <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed text-left">
                       <MarkdownMathRenderer content={q.question_text} />
                     </div>

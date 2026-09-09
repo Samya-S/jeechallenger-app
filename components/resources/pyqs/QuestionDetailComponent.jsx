@@ -10,7 +10,8 @@ import {
   BookOpen, 
   Award, 
   Layers,
-  Sparkles
+  Sparkles,
+  FileText
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -38,9 +39,10 @@ export default function QuestionDetailComponent({ question }) {
     );
   }
 
-  const isMCQ = question.question_type === "MCQ" || !question.question_type;
-  const isMulti = question.question_type === "MULTI_CORRECT";
-  const isNumeric = question.question_type === "NUMERIC";
+  const inputFormat = question.input_format || question.question_type || "MCQ";
+  const isMCQ = inputFormat === "MCQ";
+  const isMulti = inputFormat === "MULTI_CORRECT";
+  const isNumeric = inputFormat === "NUMERIC";
   const correctAnswers = question.correct_answer || [];
 
   const handleShare = () => {
@@ -143,6 +145,19 @@ export default function QuestionDetailComponent({ question }) {
           {/* Question Body */}
           <div className="p-6 md:p-8 space-y-6">
             
+            {/* Linked Passage (for COMPREHENSION questions) */}
+            {question.linked_passage_text && (
+              <div className="p-4 md:p-5 rounded-2xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+                  <FileText className="w-4 h-4" />
+                  <span>Comprehension Passage</span>
+                </div>
+                <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                  <MarkdownMathRenderer content={question.linked_passage_text} />
+                </div>
+              </div>
+            )}
+
             {/* Question Text */}
             <div className="text-gray-900 dark:text-gray-100 text-lg md:text-xl leading-relaxed">
               <MarkdownMathRenderer content={question.question_text} />
