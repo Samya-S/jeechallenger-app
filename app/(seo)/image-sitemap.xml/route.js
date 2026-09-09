@@ -296,7 +296,7 @@ export async function GET() {
             const ogSubtitle = `${examLabel} • ${paper.exam_year} • Complete Paper & Solutions`;
             
             return {
-                loc: `${siteUrl}/papers/${paper.slug}`,
+                loc: `${siteUrl}/paper/${paper.slug}`,
                 images: [{
                     url: getOgUrl(ogTitle, ogSubtitle, 'pyqs', 'JEE Challenger'),
                     title: `${ogTitle} | Solutions & Answer Key`,
@@ -359,7 +359,7 @@ export async function GET() {
             }
 
             return {
-                loc: `${siteUrl}/questions/${q.slug}`,
+                loc: `${siteUrl}/question/${q.slug}`,
                 images
             };
         });

@@ -33,7 +33,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 🎯 Core Features
 
-- **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/questions/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/papers/:slug`) with section navigation.
+- **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/question/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/paper/:slug`) with section navigation.
 - **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history.
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking and cloud sync.
 - **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics.
@@ -71,11 +71,11 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - Interactive self-testing: select options (MCQ / Multi-Correct / Numeric) and click **"Check Answer"** for instant scoring (`+4 Marks` / `-1 Mark`) and answer verification.
   - Click-to-zoom high-resolution diagram modal for detailed graphs and circuits.
   - "Full Papers" directory tab displaying published shift papers.
-- **Dedicated Single Question Pages (`/questions/[slug]`)**:
+- **Dedicated Single Question Pages (`/question/[slug]`)**:
   - Standalone, indexable landing page for every question with dynamic SEO metadata, OpenGraph cards, and JSON-LD breadcrumbs (`Home > PYQs > {question.title}`).
   - Verified answer key and full **Step-by-Step KaTeX Derivation** with mathematical steps and diagrams.
   - One-click question URL sharing with clipboard feedback.
-- **Dedicated Full Paper Pages (`/papers/[slug]`)**:
+- **Dedicated Full Paper Pages (`/paper/[slug]`)**:
   - Complete official shift paper viewer with responsive **2-Tier Subject & Section Navigator** (`Physics Sec A/B`, `Chemistry Sec A/B`, `Mathematics Sec A/B`).
   - Real-time URL query parameter synchronization (`?subject=...&section=...`) to persist active state across reloads.
   - Sequential paper question numbering (`Q1..Q90`) and external solution links opening in new tabs.
@@ -261,9 +261,9 @@ jeechallenger-app/
 │   │   ├── jee-advanced/       # JEE Advanced official links
 │   │   └── jee-main/           # JEE Main official links
 │   ├── (pyqs)/                 # Previous Year Questions system
-│   │   ├── papers/[slug]/      # Dedicated Full Paper page with section navigation
+│   │   ├── paper/[slug]/       # Dedicated Full Paper page with section navigation
 │   │   ├── previous-year-questions/ # Main PYQ Hub & Practice feed
-│   │   └── questions/[slug]/   # Dedicated Single Question page with KaTeX derivations
+│   │   └── question/[slug]/    # Dedicated Single Question page with KaTeX derivations
 │   ├── (read-more)/            # Reading and content pages
 │   │   ├── blog/               # Blog post display with dynamic routes
 │   │   │   ├── [slug]/         # Dynamic blog post pages

@@ -148,7 +148,7 @@ export async function GET() {
     .map((paper) => {
       const examLabel = paper.exam_type === 'JEE_ADVANCED' ? 'JEE Advanced' : 'JEE Main';
       const title = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
-      const pageUrl = `${siteUrl}/papers/${paper.slug}`;
+      const pageUrl = `${siteUrl}/paper/${paper.slug}`;
       const pubDate = paper.approved_at ? new Date(paper.approved_at).toUTCString() : currentDate;
       
       return `<item>

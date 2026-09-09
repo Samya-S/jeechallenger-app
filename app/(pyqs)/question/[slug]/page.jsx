@@ -50,7 +50,7 @@ export async function generateMetadata({ params }) {
     title: `${title} - JEE Challenger`,
     description,
     alternates: {
-      canonical: `/questions/${slug}`,
+      canonical: `/question/${slug}`,
     },
     robots: {
       index: true,
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: `${title} - JEE Challenger`,
       description,
-      url: `/questions/${slug}`,
+      url: `/question/${slug}`,
       siteName: "JEE Challenger",
       images: pageOg.images,
       locale: "en_IN",
@@ -86,7 +86,7 @@ export default async function SingleQuestionPage({ params }) {
   const breadcrumbItems = [
     { name: "Home", path: "/" },
     { name: "PYQs", path: "/previous-year-questions" },
-    { name: question.title || "Question", path: `/questions/${slug}` },
+    { name: question.title || "Question", path: `/question/${slug}` },
   ];
 
   return (

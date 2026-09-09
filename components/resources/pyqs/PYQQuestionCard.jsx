@@ -329,7 +329,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
 
             {/* View Full Solution Button (opens in new tab) */}
             <Link
-              href={`/questions/${question.slug}`}
+              href={`/question/${question.slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-800 transition-all"

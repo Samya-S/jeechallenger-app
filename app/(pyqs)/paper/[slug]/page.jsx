@@ -66,7 +66,7 @@ export async function generateMetadata({ params }) {
     title: `${title} - JEE Challenger`,
     description,
     alternates: {
-      canonical: `/papers/${slug}`,
+      canonical: `/paper/${slug}`,
     },
     robots: {
       index: true,
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: `${title} - JEE Challenger`,
       description,
-      url: `/papers/${slug}`,
+      url: `/paper/${slug}`,
       siteName: "JEE Challenger",
       images: pageOg.images,
       locale: "en_IN",
@@ -102,7 +102,7 @@ export default async function SinglePaperPage({ params }) {
   const breadcrumbItems = [
     { name: "Home", path: "/" },
     { name: "PYQs", path: "/previous-year-questions" },
-    { name: paper.title || "Paper", path: `/papers/${slug}` },
+    { name: paper.title || "Paper", path: `/paper/${slug}` },
   ];
 
   return (
