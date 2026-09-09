@@ -15,7 +15,8 @@ import {
   Eye,
   BookOpen,
   Check,
-  X
+  X,
+  Share2
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -71,6 +72,15 @@ function PaperDetailContent({ paperData }) {
   );
   const [zoomedImage, setZoomedImage] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   // Synchronize active subject and section with URL search parameters
   const isInitialMount = useRef(true);
@@ -274,13 +284,35 @@ function PaperDetailContent({ paperData }) {
 
         {/* Paper Header Card */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
-              {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
-            </span>
-            <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
-              {paperData.exam_year}
-            </span>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
+                {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
+              </span>
+              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+                {paperData.exam_year}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              title={copied ? "Link copied!" : "Share paper"}
+              aria-label="Share paper"
+              className="flex items-center gap-1.5 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="hidden sm:inline text-emerald-600 dark:text-emerald-400">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Share</span>
+                </>
+              )}
+            </button>
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-tight">

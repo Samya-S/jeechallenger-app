@@ -82,34 +82,13 @@ export default function QuestionDetailComponent({ question }) {
             ]}
           />
 
-          {/* Quick Actions */}
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/previous-year-questions?subject=${question.subject || "ALL"}&chapter=${encodeURIComponent(question.chapter || "ALL")}`}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>More {question.chapter} PYQs</span>
-            </Link>
-
-            <button
-              type="button"
-              onClick={handleShare}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-600 dark:text-emerald-400">Copied Link!</span>
-                </>
-              ) : (
-                <>
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Share Question</span>
-                </>
-              )}
-            </button>
-          </div>
+          <Link
+            href={`/previous-year-questions?subject=${question.subject || "ALL"}&chapter=${encodeURIComponent(question.chapter || "ALL")}`}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all self-start sm:self-auto"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>More from {question.chapter}</span>
+          </Link>
         </div>
 
         {/* Main Question Card */}
@@ -132,9 +111,31 @@ export default function QuestionDetailComponent({ question }) {
                 )}
               </div>
 
-              <span className="px-3 py-1 rounded-lg text-xs font-bold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                {examOrigin}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-lg text-xs font-bold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                  {examOrigin}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  title={copied ? "Link copied!" : "Share question"}
+                  aria-label="Share question"
+                  className="flex items-center gap-1.5 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="hidden sm:inline text-emerald-600 dark:text-emerald-400">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Share</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-tight">
