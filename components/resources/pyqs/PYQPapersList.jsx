@@ -102,7 +102,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount }) {
             {/* Action */}
             <div className="pt-6">
               <Link
-                href={`/papers/${paper.slug}`}
+                href={`/paper/${paper.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 transition-all"

@@ -72,7 +72,7 @@ async function getPaperRoutes() {
     return papers
       .filter((paper) => paper && paper.slug)
       .map((paper) => ({
-        loc: `/papers/${paper.slug}`,
+        loc: `/paper/${paper.slug}`,
         changefreq: 'monthly',
         priority: 0.8,
         lastmod: paper.approved_at
@@ -146,7 +146,7 @@ async function getQuestionRoutes() {
     return allQuestions
       .filter((q) => q && q.slug)
       .map((q) => ({
-        loc: `/questions/${q.slug}`,
+        loc: `/question/${q.slug}`,
         changefreq: 'monthly',
         priority: 0.7,
         lastmod: q.approved_at
