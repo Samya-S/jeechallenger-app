@@ -86,7 +86,7 @@ export default function PYQFilterBar({
     filters.search !== "";
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 mb-8 transition-all">
+    <div className="relative z-20 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 mb-8 transition-all">
       {/* Top Mode Switcher & Counter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-gray-800">
         <div className="flex p-1 bg-gray-100 dark:bg-gray-800/90 rounded-xl w-full sm:w-auto">
@@ -226,7 +226,7 @@ export default function PYQFilterBar({
 
           {/* Collapsible Advanced Filters with CustomSelects */}
           {isAdvancedOpen && (
-            <div className="pt-4 border-t border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-fade-in">
+            <div className="pt-4 border-t border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Exam Type */}
               <div>
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">

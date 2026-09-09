@@ -48,7 +48,7 @@ export default function CustomSelect({
     : options;
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative ${isOpen ? "z-30" : "z-0"} ${className}`}>
       {/* Trigger Button */}
       <button
         type="button"
