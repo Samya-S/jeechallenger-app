@@ -17,6 +17,7 @@ import {
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
+import { formatExamOrigin } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
@@ -65,9 +66,7 @@ export default function QuestionDetailComponent({ question }) {
     Mathematics: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800",
   };
 
-  const examOrigin = question.exam_type === "JEE_ADVANCED"
-    ? `JEE Advanced ${question.exam_year || ""}`
-    : `JEE Main ${question.exam_year || ""} • ${question.original_paper_id?.replace(/_/g, " ") || "Paper"}`;
+  const examOrigin = formatExamOrigin(question);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-6 sm:py-10">

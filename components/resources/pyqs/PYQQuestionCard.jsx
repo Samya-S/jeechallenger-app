@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileText } from "lucide-react";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
+import { formatExamOrigin } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -100,9 +101,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
     Mathematics: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800",
   };
 
-  const examOrigin = question.exam_type === "JEE_ADVANCED"
-    ? `JEE Advanced ${question.exam_year || ""}`
-    : `JEE Main ${question.exam_year || ""} • ${question.original_paper_id?.replace(/_/g, " ") || "Paper"}`;
+  const examOrigin = formatExamOrigin(question);
 
   return (
     <>
