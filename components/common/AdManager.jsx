@@ -13,6 +13,12 @@ function AdScriptLoader({ pathname }) {
     return null;
   }
 
+  const handleScriptError = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('adBlockDetected'));
+    }
+  };
+
   return (
     <>
       {/* Monetag Smart Tag */}
@@ -22,6 +28,7 @@ function AdScriptLoader({ pathname }) {
         data-zone="259240"
         strategy="afterInteractive"
         data-cfasync="false"
+        onError={handleScriptError}
       />
 
       {/* Google AdSense */}
@@ -30,72 +37,103 @@ function AdScriptLoader({ pathname }) {
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
         strategy="lazyOnload"
         crossOrigin="anonymous"
+        onError={handleScriptError}
       />
     </>
   );
 }
 
 /**
- * Detects ad blockers and shows lock screen overlay if necessary
+ * Detects ad blockers quietly in the background, but only displays
+ * the blocking overlay once the user has cleared/closed the Donation Modal.
  */
-function AdBlockDetector({ pathname }) {
+function AdBlockDetector({ pathname, isModalCleared }) {
   // Cache the detection result across navigation in the same session.
   // null = not checked, true = adblocker found, false = no adblocker.
   const [adBlockStatus, setAdBlockStatus] = useState(null);
 
+  // Listen for script error events dispatched by AdScriptLoader
   useEffect(() => {
-    // If ads are excluded on this route, don't perform any check now.
+    const handleAdBlockEvent = () => {
+      setAdBlockStatus(true);
+    };
+
+    window.addEventListener('adBlockDetected', handleAdBlockEvent);
+    return () => window.removeEventListener('adBlockDetected', handleAdBlockEvent);
+  }, []);
+
+  useEffect(() => {
+    // If ads are excluded on this route, don't perform any check.
     if (isAdExcluded(pathname)) {
       return;
     }
 
-    // If we already completed the check for this session, don't repeat it.
-    if (adBlockStatus !== null) {
+    // If we already determined that an adblocker is present, no need to re-probe.
+    if (adBlockStatus === true) {
       return;
     }
 
     const checkAdBlocker = async () => {
       try {
-        // Try fetching the ad script URLs that are crucial for the site
-        // Ad blockers will typically intercept and block these network requests
-        await Promise.all([
+        // 1. Universal Network Probe:
+        // Test essential ad scripts with Promise.allSettled.
+        // Ad blockers (including Brave Shields, uBlock, AdBlock, AdGuard) intercept
+        // and reject one or both of these ad network domains.
+        const networkResults = await Promise.allSettled([
           fetch("https://quge5.com/88/tag.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" }),
-          fetch("https://3nbf4.com/act/files/service-worker.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" })
+          fetch("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: "HEAD", mode: "no-cors", cache: "no-store" })
         ]);
 
-        // Secondary check using a known adblock bait
+        const isNetworkBlocked = networkResults.some((res) => res.status === 'rejected');
+        if (isNetworkBlocked) {
+          setAdBlockStatus(true);
+          return;
+        }
+
+        // 2. Universal Cosmetic Filter Probe:
+        // Extensions inject CSS rules hiding standard ad class names.
         const bait = document.createElement("div");
-        bait.className = "ad-banner ad-container ad-placement public-api-ad";
+        bait.className = "ad-banner ad-container ad-placement public-api-ad adsbox";
+        bait.setAttribute("aria-hidden", "true");
         bait.style.position = "absolute";
-        bait.style.top = "-999px";
-        bait.style.left = "-999px";
-        bait.style.height = "10px";
+        bait.style.top = "-9999px";
+        bait.style.left = "-9999px";
+        bait.style.width = "1px";
+        bait.style.height = "1px";
         document.body.appendChild(bait);
 
         setTimeout(() => {
-          if (bait.offsetHeight === 0 || window.getComputedStyle(bait).display === 'none') {
-            setAdBlockStatus(true);
-          } else {
-            setAdBlockStatus(false);
-          }
+          const computed = window.getComputedStyle(bait);
+          const isCosmeticallyHidden =
+            bait.offsetHeight === 0 ||
+            bait.offsetWidth === 0 ||
+            computed.display === 'none' ||
+            computed.visibility === 'hidden';
+
           if (document.body.contains(bait)) {
             document.body.removeChild(bait);
           }
-        }, 300);
+
+          setAdBlockStatus(isCosmeticallyHidden);
+        }, 250);
 
       } catch (error) {
-        // Fetch failed, meaning it was likely blocked by an ad blocker
+        // Any fetch / execution failure indicates blocking
         setAdBlockStatus(true);
       }
     };
 
-    // Run the check after a short delay to ensure extensions have loaded
-    const timer = setTimeout(checkAdBlocker, 500);
+    // Run the check quietly in the background after a short delay
+    const timer = setTimeout(checkAdBlocker, 400);
     return () => clearTimeout(timer);
   }, [pathname, adBlockStatus]);
 
-  // Determine if we should show the block overlay
-  const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true;
+  // Determine if we should show the block overlay:
+  // ONLY freeze and show the overlay if:
+  // 1. Path is not excluded
+  // 2. An ad blocker was detected
+  // 3. AND the user has dismissed/cleared the donation modal (respecting the reading experience)
+  const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true && isModalCleared;
 
   // Manage body scroll lock
   useEffect(() => {
@@ -127,11 +165,11 @@ function AdBlockDetector({ pathname }) {
           Ad Blocker Detected
         </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          We rely on ads to keep JEE Challenger free. Please disable your ad blocker or whitelist our site to continue using the platform.
+          We rely on ads to keep JEE Challenger free for all aspirants. Please disable your ad blocker or Shields to continue using the platform.
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 shadow-md"
         >
           I have disabled it, Reload Page
         </button>
@@ -208,11 +246,17 @@ export default function AdManager() {
 
   return (
     <>
+      {/* 
+        Background detection starts immediately on non-excluded routes,
+        but the alert overlay will wait until the user has dismissed the donation modal.
+      */}
+      <AdBlockDetector pathname={pathname} isModalCleared={isModalCleared} />
+
+      {/* 
+        Only inject ad scripts once the donation modal has been dismissed
+      */}
       {isModalCleared && (
-        <>
-          <AdScriptLoader pathname={pathname} />
-          <AdBlockDetector pathname={pathname} />
-        </>
+        <AdScriptLoader pathname={pathname} />
       )}
     </>
   );
