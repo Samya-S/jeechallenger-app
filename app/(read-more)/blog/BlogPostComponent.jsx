@@ -26,19 +26,24 @@ export default function BlogPostComponent({ post }) {
 
   return (
     <>
-      <BlogPostClient content={post.content}>
-        <Breadcrumbs 
-          crumbs={[
-            { label: 'Blogs', href: '/blogs' },
-            { label: post.title, href: `/blog/${post.slug}` }
-          ]} 
-          className="mb-8"
-        />
-
-        <BlogHeader
-          post={post}
-          shareTitle={post.title}
-        />
+      <BlogPostClient 
+        content={post.content}
+        breadcrumbs={
+          <Breadcrumbs 
+            crumbs={[
+              { label: 'Blogs', href: '/blogs' },
+              { label: post.title, href: `/blog/${post.slug}` }
+            ]} 
+            className="mb-8"
+          />
+        }
+        header={
+          <BlogHeader
+            post={post}
+            shareTitle={post.title}
+          />
+        }
+      >
 
         {/* Article Content - Server-rendered markdown */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 border border-gray-200 dark:border-gray-700">

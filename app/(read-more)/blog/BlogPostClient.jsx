@@ -11,7 +11,7 @@ import { useTableOfContents } from './hooks/useTableOfContents';
 import { useReadingProgress } from './hooks/useReadingProgress';
 import { useActiveHeading } from './hooks/useActiveHeading';
 
-export default function BlogPostClient({ content, children }) {
+export default function BlogPostClient({ content, breadcrumbs, header, children }) {
   const [showTOC, setShowTOC] = useState(false);
 
   // Custom hooks
@@ -28,7 +28,10 @@ export default function BlogPostClient({ content, children }) {
           <div className="flex gap-8 relative">
             {/* Main Content */}
             <div className="flex-1 min-w-0 max-w-4xl mx-auto text-left">
-              {/* Mobile TOC */}
+              {breadcrumbs}
+              {header}
+
+              {/* Mobile TOC (Positioned below Breadcrumbs & Header, right above Article Content) */}
               <MobileTOC 
                 tableOfContents={tableOfContents}
                 activeHeading={activeHeading}
