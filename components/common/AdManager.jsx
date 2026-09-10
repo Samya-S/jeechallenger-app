@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { isAdExcluded } from '@/config/ad-config';
 
 /**
@@ -136,16 +136,112 @@ function AdBlockDetector({ pathname, isModalCleared }) {
   // 3. AND the user has dismissed/cleared the donation modal (respecting the reading experience)
   const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true && isModalCleared;
 
-  // Manage body scroll lock
+  const modalRef = useRef(null);
+
+  // Active DOM tamper defense:
+  // - Purely event-driven via MutationObserver (0ms CPU while idle).
+  // - If user attempts style manipulation (e.g. display: none, opacity: 0, removing overflow: hidden),
+  //   it directly undoes the change in place without reloading.
+  // - If undo fails or if the user completely deletes/removes the modal element,
+  //   it falls back to window.location.reload().
   useEffect(() => {
-    if (shouldBlock) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+    if (!shouldBlock || typeof window === 'undefined') {
+      return;
     }
 
+    const styleId = 'adblock-tamper-shield';
+    let styleTag = document.getElementById(styleId);
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = styleId;
+      styleTag.textContent = `
+        body.adblock-active-freeze > *:not(#adblock-detector-overlay) {
+          filter: blur(12px) !important;
+          pointer-events: none !important;
+          user-select: none !important;
+          -webkit-user-select: none !important;
+        }
+        body.adblock-active-freeze {
+          overflow: hidden !important;
+        }
+      `;
+      document.head.appendChild(styleTag);
+    }
+
+    document.body.classList.add('adblock-active-freeze');
+    document.body.style.setProperty('overflow', 'hidden', 'important');
+
+    let isEnforcing = false;
+
+    const checkAndEnforce = () => {
+      if (isEnforcing) return;
+      isEnforcing = true;
+
+      try {
+        const modal = document.getElementById('adblock-detector-overlay');
+
+        // Check if modal element or its inner card was removed from DOM
+        // (Cannot undo cleanly without desyncing React Virtual DOM -> Reload page)
+        if (!modal || !document.body.contains(modal) || !modal.firstElementChild) {
+          window.location.reload();
+          return;
+        }
+
+        // Try to directly undo style tampering
+        if (!document.body.classList.contains('adblock-active-freeze')) {
+          document.body.classList.add('adblock-active-freeze');
+        }
+        if (document.body.style.overflow !== 'hidden') {
+          document.body.style.setProperty('overflow', 'hidden', 'important');
+        }
+
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('visibility', 'visible', 'important');
+        modal.style.setProperty('opacity', '1', 'important');
+        modal.style.setProperty('z-index', '2147483647', 'important');
+        modal.style.setProperty('pointer-events', 'auto', 'important');
+
+        // Verify if undo succeeded
+        const computed = window.getComputedStyle(modal);
+        const isStillHidden =
+          computed.display === 'none' ||
+          computed.visibility === 'hidden' ||
+          parseFloat(computed.opacity) < 0.1 ||
+          modal.offsetHeight === 0;
+
+        if (isStillHidden) {
+          // If undo failed (e.g. extension forced !important external rule), reload
+          window.location.reload();
+        }
+      } catch (err) {
+        window.location.reload();
+      } finally {
+        setTimeout(() => {
+          isEnforcing = false;
+        }, 0);
+      }
+    };
+
+    // Attach MutationObserver on document.body to react ONLY when DOM is touched
+    const observer = new MutationObserver(() => {
+      checkAndEnforce();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class', 'hidden'],
+    });
+
     return () => {
+      observer.disconnect();
+      document.body.classList.remove('adblock-active-freeze');
       document.body.style.overflow = 'unset';
+      const existingStyle = document.getElementById(styleId);
+      if (existingStyle && document.head.contains(existingStyle)) {
+        document.head.removeChild(existingStyle);
+      }
     };
   }, [shouldBlock]);
 
@@ -153,6 +249,8 @@ function AdBlockDetector({ pathname, isModalCleared }) {
 
   return (
     <div
+      id="adblock-detector-overlay"
+      ref={modalRef}
       className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4"
       style={{ zIndex: 2147483647 }}
     >
