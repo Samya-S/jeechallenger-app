@@ -216,7 +216,7 @@ export default function AdManager() {
 
     history.pushState = function (state, title, url) {
       if (typeof url === 'string') {
-        const pathname = (url.startsWith('/')
+        const pathname = (url[0] === '/'
           ? url
           : new URL(url, window.location.href).pathname
         ).split('?')[0].split('#')[0];
