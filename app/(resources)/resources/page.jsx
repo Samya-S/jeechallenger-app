@@ -62,7 +62,7 @@ export default function MaterialsPage() {
 					</div>
 
 					{/* Subject Materials */}
-					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 						{/* Physics */}
 						<div className="bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-900/20 dark:to-blue-900/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-blue-200 dark:border-blue-800 overflow-hidden flex flex-col h-full">
 							<div className="p-6 flex flex-col flex-grow">
@@ -72,7 +72,7 @@ export default function MaterialsPage() {
 								<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
 									Physics
 								</h3>
-								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
+								<p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
 									Interactive calculators, formula sheets, and chapter-wise PYQs for JEE Physics
 								</p>
 								<div className="text-center mt-auto">
@@ -99,7 +99,7 @@ export default function MaterialsPage() {
 								<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
 									Chemistry
 								</h3>
-								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
+								<p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
 									Reactions, interactive tools, and practice problems for Physical, Organic & Inorganic Chemistry
 								</p>
 								<div className="text-center mt-auto">
@@ -126,7 +126,7 @@ export default function MaterialsPage() {
 								<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
 									Mathematics
 								</h3>
-								<p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
+								<p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
 									Dynamic formula sheets, theorems, and interactive problem-solving for JEE Mathematics
 								</p>
 								<div className="text-center mt-auto">
