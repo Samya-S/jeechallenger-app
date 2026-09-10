@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { isAdExcluded } from '@/config/ad-config';
 
+// Module-scoped flag: coordinates smooth navigation from AdBlock modal to excluded pages
+let isNavigatingFromAdBlockModal = false;
+
 /**
  * Handles injection of ad script tags (Monetag and Google AdSense)
  */
@@ -137,6 +140,8 @@ function AdBlockDetector({ pathname, isModalCleared }) {
   const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true && isModalCleared;
 
   const modalRef = useRef(null);
+  const observerRef = useRef(null);
+  const isNavigatingRef = useRef(false);
 
   // Active DOM tamper defense:
   // - Purely event-driven via MutationObserver (0ms CPU while idle).
@@ -148,6 +153,8 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     if (!shouldBlock || typeof window === 'undefined') {
       return;
     }
+
+    isNavigatingRef.current = false;
 
     const styleId = 'adblock-tamper-shield';
     let styleTag = document.getElementById(styleId);
@@ -174,7 +181,8 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     let isEnforcing = false;
 
     const checkAndEnforce = () => {
-      if (isEnforcing) return;
+      if (isEnforcing || isNavigatingRef.current) return;
+      if (isAdExcluded(pathname) || (typeof window !== 'undefined' && isAdExcluded(window.location.pathname))) return;
       isEnforcing = true;
 
       try {
@@ -226,6 +234,7 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     const observer = new MutationObserver(() => {
       checkAndEnforce();
     });
+    observerRef.current = observer;
 
     observer.observe(document.body, {
       childList: true,
@@ -235,7 +244,10 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     });
 
     return () => {
-      observer.disconnect();
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
       document.body.classList.remove('adblock-active-freeze');
       document.body.style.overflow = 'unset';
       const existingStyle = document.getElementById(styleId);
@@ -243,7 +255,22 @@ function AdBlockDetector({ pathname, isModalCleared }) {
         document.head.removeChild(existingStyle);
       }
     };
-  }, [shouldBlock]);
+  }, [shouldBlock, pathname]);
+
+  const handleLegitimateLeave = () => {
+    isNavigatingRef.current = true;
+    isNavigatingFromAdBlockModal = true;
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
+    document.body.classList.remove('adblock-active-freeze');
+    document.body.style.overflow = 'unset';
+    const existingStyle = document.getElementById('adblock-tamper-shield');
+    if (existingStyle && document.head.contains(existingStyle)) {
+      document.head.removeChild(existingStyle);
+    }
+  };
 
   if (!shouldBlock) return null;
 
@@ -283,6 +310,12 @@ function AdBlockDetector({ pathname, isModalCleared }) {
 
           <Link
             href="/donate"
+            onClick={handleLegitimateLeave}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleLegitimateLeave();
+              }
+            }}
             className="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium py-3 px-6 rounded-xl transition-all duration-200 border border-gray-300 dark:border-gray-700 text-sm flex items-center justify-center gap-2"
           >
             <span>❤️ Support Us (Help Reach the Goal)</span>
@@ -299,15 +332,15 @@ function AdBlockDetector({ pathname, isModalCleared }) {
 export default function AdManager() {
   const pathname = usePathname();
   const isExcluded = isAdExcluded(pathname);
-  const [isModalCleared, setIsModalCleared] = useState(false);
+  const [isModalCleared, setIsModalCleared] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Boolean(sessionStorage.getItem('hasSeenDonationModal'));
+    }
+    return false;
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
-    const hasSeen = sessionStorage.getItem('hasSeenDonationModal');
-    if (hasSeen) {
-      setIsModalCleared(true);
-    }
 
     const handleModalClose = () => {
       setIsModalCleared(true);
@@ -337,6 +370,10 @@ export default function AdManager() {
         ).split('?')[0].split('#')[0];
 
         if (isAdExcluded(pathname)) {
+          if (isNavigatingFromAdBlockModal) {
+            isNavigatingFromAdBlockModal = false;
+            return originalPushState(state, title, url);
+          }
           window.location.href = url;
           return;
         }
