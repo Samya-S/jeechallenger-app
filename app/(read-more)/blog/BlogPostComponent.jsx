@@ -7,7 +7,7 @@ import rehypeSlug from 'rehype-slug';
 import 'katex/dist/katex.min.css';
 import { ArrowLeft } from 'lucide-react';
 
-// Components
+import { getSiteUrl } from '@/config/site-url';
 import BlogPostClient from './BlogPostClient';
 import BlogHeader from './components/BlogHeader';
 import BlogCTA from './components/BlogCTA';
@@ -16,6 +16,8 @@ import Breadcrumbs from '@/components/common/Breadcrumbs';
 
 export default function BlogPostComponent({ post }) {
   if (!post) return null;
+
+  const shareUrl = `${getSiteUrl()}/blog/${post.slug}`;
 
   // Check if article has math from frontmatter
   const hasMath = post.hasMath === true;
@@ -41,6 +43,7 @@ export default function BlogPostComponent({ post }) {
           <BlogHeader
             post={post}
             shareTitle={post.title}
+            shareUrl={shareUrl}
           />
         }
       >

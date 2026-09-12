@@ -74,7 +74,6 @@ export default async function BlogPost({ params }) {
     notFound();
   }
 
-  // ShareUrl will be constructed client-side from window.location
   return (
     <>
       {/* Structured Data for SEO */}

@@ -7,15 +7,21 @@ import { FaXTwitter, FaFacebook, FaLinkedin, FaWhatsapp, FaInstagram } from 'rea
 export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inline = false }) {
   const [copied, setCopied] = useState(false);
   const [instagramMessage, setInstagramMessage] = useState('');
-  const shareUrl = shareUrlProp || (typeof window !== 'undefined' ? window.location.href : '');
+
+  const getShareUrl = () => {
+    if (shareUrlProp) return shareUrlProp;
+    if (typeof window !== 'undefined') return window.location.href;
+    return '';
+  };
 
   const handleWebShare = async () => {
+    const url = getShareUrl();
     if (navigator.share) {
       try {
         await navigator.share({
           title: shareTitle,
           text: shareTitle,
-          url: shareUrl,
+          url,
         });
       } catch (err) {
         if (err.name !== 'AbortError') {
@@ -30,14 +36,15 @@ export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inlin
   };
 
   const handleShare = async (platform) => {
+    const url = getShareUrl();
     // Fallback: Use platform-specific share URLs
     const urls = {
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTitle)}`,
       // Facebook only accepts URL, pulls title/description from Open Graph tags
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
       // LinkedIn pulls from Open Graph but still supports these params as fallback
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + url)}`,
     };
 
     if (urls[platform]) {
@@ -51,12 +58,13 @@ export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inlin
   };
 
   const handleInstagramShare = async () => {
+    const url = getShareUrl();
     // Try Web Share API first (works on mobile)
     if (navigator.share) {
       try {
         await navigator.share({
           title: shareTitle,
-          url: shareUrl,
+          url,
         });
       } catch (err) {
         if (err.name !== 'AbortError') {
@@ -71,13 +79,15 @@ export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inlin
   };
 
   const copyLinkForInstagram = () => {
-    navigator.clipboard.writeText(shareUrl);
+    const url = getShareUrl();
+    navigator.clipboard.writeText(url);
     setInstagramMessage('Link copied! Open Instagram and paste in your story or post.');
     setTimeout(() => setInstagramMessage(''), 3000);
   };
 
   const copyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
+    const url = getShareUrl();
+    navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -88,10 +98,15 @@ export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inlin
       <button
         onClick={handleWebShare}
         className="lg:hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium transition-colors border border-gray-200 dark:border-gray-700"
-        aria-label="Share"
+        aria-label={copied ? "Link copied" : "Share"}
+        title={copied ? "Link copied!" : "Share"}
       >
-        <Share2 size={16} />
-        <span className="text-sm">Share</span>
+        {copied ? (
+          <Check size={16} className="text-green-600 dark:text-green-400" />
+        ) : (
+          <Share2 size={16} />
+        )}
+        <span className="text-sm">{copied ? 'Copied!' : 'Share'}</span>
       </button>
     );
   }
