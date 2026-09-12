@@ -74,11 +74,48 @@ function PaperDetailContent({ paperData }) {
   const [userAnswers, setUserAnswers] = useState({});
   const [copied, setCopied] = useState(false);
 
-  const handleShare = () => {
-    if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
+  const copyToClipboard = async (url) => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = url;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
+  };
+
+  const handleShare = async () => {
+    if (typeof window === "undefined") return;
+    const url = window.location.href;
+    const examLabel = paperData?.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
+    const shareTitle = paperData?.title || `${examLabel} ${paperData?.exam_year || ""} Paper`;
+    const shareText = `Check out this ${shareTitle} with solutions on JEE Challenger`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url,
+        });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          await copyToClipboard(url);
+        }
+      }
+    } else {
+      await copyToClipboard(url);
     }
   };
 
@@ -298,18 +335,18 @@ function PaperDetailContent({ paperData }) {
               type="button"
               onClick={handleShare}
               title={copied ? "Link copied!" : "Share paper"}
-              aria-label="Share paper"
-              className="flex items-center gap-1.5 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
+              aria-label={copied ? "Link copied" : "Share paper"}
+              className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
             >
               {copied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="hidden sm:inline text-emerald-600 dark:text-emerald-400">Copied!</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
                 </>
               ) : (
                 <>
                   <Share2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Share</span>
+                  <span>Share</span>
                 </>
               )}
             </button>
