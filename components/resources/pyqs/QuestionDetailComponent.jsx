@@ -44,6 +44,13 @@ export default function QuestionDetailComponent({ question }) {
   const isMCQ = inputFormat === "MCQ";
   const isMulti = inputFormat === "MULTI_CORRECT";
   const isNumeric = inputFormat === "NUMERIC";
+  const isMarksToAll =
+    question.source_of_answer === "MARKS_TO_ALL" ||
+    ((!question.correct_answer || (Array.isArray(question.correct_answer) && question.correct_answer.length === 0)) &&
+      (!question.numeric_answer ||
+        (question.numeric_answer.exact_value === null &&
+          question.numeric_answer.min_value === null &&
+          question.numeric_answer.max_value === null)));
   const correctAnswers = question.correct_answer || [];
 
   const copyToClipboard = async (url) => {
@@ -144,6 +151,12 @@ export default function QuestionDetailComponent({ question }) {
                     {question.difficulty}
                   </span>
                 )}
+                {isMarksToAll && (
+                  <span className="px-3 py-1 text-xs font-bold rounded-lg border bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Marks to All
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -199,6 +212,19 @@ export default function QuestionDetailComponent({ question }) {
               <MarkdownMathRenderer content={question.question_text} />
             </div>
 
+            {/* Official Notice for Marks to All / Bonus Question */}
+            {isMarksToAll && (
+              <div className="p-4 md:p-5 rounded-2xl bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/20 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Official Notice: Marks Awarded to All</span>
+                </div>
+                <p className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                  This question was dropped / full marks were awarded to all candidates in the official answer key by the exam conducting body due to an ambiguity or error in the question or options.
+                </p>
+              </div>
+            )}
+
             {/* Question Diagrams with click-to-zoom */}
             {question.question_diagram_urls && question.question_diagram_urls.length > 0 && (
               <div className="flex flex-wrap gap-4 pt-2">
@@ -218,7 +244,7 @@ export default function QuestionDetailComponent({ question }) {
               </div>
             )}
 
-            {/* Options Layout with highlighted correct answer */}
+            {/* Options Layout */}
             {(isMCQ || isMulti) && question.options && (
               <div className="pt-4 space-y-3">
                 <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -229,7 +255,7 @@ export default function QuestionDetailComponent({ question }) {
                     const opt = question.options[key];
                     if (!opt || (!opt.text && !opt.diagram_url)) return null;
 
-                    const isCorrect = correctAnswers.includes(key);
+                    const isCorrect = !isMarksToAll && correctAnswers.includes(key);
 
                     return (
                       <div
@@ -280,7 +306,7 @@ export default function QuestionDetailComponent({ question }) {
             )}
 
             {/* Numerical Answer Box */}
-            {isNumeric && (
+            {isNumeric && !isMarksToAll && (
               <div className="p-4 rounded-2xl border border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 ring-2 ring-emerald-500/30 flex items-center justify-between gap-4 max-w-md">
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block mb-1">
