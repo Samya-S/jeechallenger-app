@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileText } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileText, Sparkles } from "lucide-react";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import { formatExamOrigin } from "@/utils/pyq-helpers";
@@ -21,7 +21,29 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
   const isMulti = inputFormat === "MULTI_CORRECT";
   const isNumeric = inputFormat === "NUMERIC";
 
+  const isMarksToAll =
+    question.source_of_answer === "MARKS_TO_ALL" ||
+    ((!question.correct_answer || (Array.isArray(question.correct_answer) && question.correct_answer.length === 0)) &&
+      (!question.numeric_answer ||
+        (question.numeric_answer.exact_value === null &&
+          question.numeric_answer.min_value === null &&
+          question.numeric_answer.max_value === null)));
+
   const handleCheckAnswer = () => {
+    if (isMarksToAll) {
+      if (isMCQ && !selectedOption) return;
+      if (isMulti && selectedMultiOptions.length === 0) return;
+      if (isNumeric && !numericValue.trim()) return;
+
+      setCheckedState({
+        status: "bonus",
+        isCorrect: true,
+        isMarksToAll: true,
+        message: "✨ Marks Awarded to All • Full marks are awarded for this question (Bonus/Dropped in official exam key).",
+      });
+      return;
+    }
+
     if (isMCQ) {
       if (!selectedOption) return;
       const correctArr = question.correct_answer || [];
@@ -121,6 +143,12 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
           </div>
 
           <div className="flex items-center gap-2 ml-auto">
+            {isMarksToAll && (
+              <span className="px-2.5 py-1 text-xs font-bold rounded-lg border bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Marks to All
+              </span>
+            )}
             {question.difficulty && (
               <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
                 {question.difficulty}
@@ -187,7 +215,19 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 if (isSelected && !checkedState) {
                   optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                 } else if (checkedState) {
-                  if (isSelected && isCorrectAnswer) {
+                  if (checkedState.isMarksToAll) {
+                    if (isSelected) {
+                      optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                      badge = (
+                        <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                          <Check className="w-3 h-3" />
+                          Your Choice (Marks Awarded)
+                        </span>
+                      );
+                    } else {
+                      optionStyle = "border-gray-200 dark:border-gray-800 opacity-60";
+                    }
+                  } else if (isSelected && isCorrectAnswer) {
                     optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
                     badge = (
                       <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
@@ -268,7 +308,19 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 if (isSelected && !checkedState) {
                   optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                 } else if (checkedState) {
-                  if (isSelected && isCorrectAnswer) {
+                  if (checkedState.isMarksToAll) {
+                    if (isSelected) {
+                      optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                      badge = (
+                        <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                          <Check className="w-3 h-3" />
+                          Your Choice (Marks Awarded)
+                        </span>
+                      );
+                    } else {
+                      optionStyle = "border-gray-200 dark:border-gray-800 opacity-60";
+                    }
+                  } else if (isSelected && isCorrectAnswer) {
                     optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
                     badge = (
                       <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
@@ -355,14 +407,14 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
           {checkedState && (
             <div
               className={`p-4 rounded-xl flex items-center gap-3 border ${
-                checkedState.status === "correct"
+                checkedState.status === "correct" || checkedState.status === "bonus"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
                   : checkedState.status === "partial"
                   ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
                   : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
               }`}
             >
-              {checkedState.status === "correct" ? (
+              {checkedState.status === "correct" || checkedState.status === "bonus" ? (
                 <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
               ) : checkedState.status === "partial" ? (
                 <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />

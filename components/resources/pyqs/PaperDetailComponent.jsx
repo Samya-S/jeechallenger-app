@@ -16,7 +16,8 @@ import {
   BookOpen,
   Check,
   X,
-  Share2
+  Share2,
+  Sparkles
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -209,6 +210,34 @@ function PaperDetailContent({ paperData }) {
     const isMCQ = inputFormat === "MCQ";
     const isMulti = inputFormat === "MULTI_CORRECT";
     const isNumeric = inputFormat === "NUMERIC";
+
+    const isMarksToAll =
+      q.source_of_answer === "MARKS_TO_ALL" ||
+      ((!q.correct_answer || (Array.isArray(q.correct_answer) && q.correct_answer.length === 0)) &&
+        (!q.numeric_answer ||
+          (q.numeric_answer.exact_value === null &&
+            q.numeric_answer.min_value === null &&
+            q.numeric_answer.max_value === null)));
+
+    if (isMarksToAll) {
+      if (isMCQ && !ans.selectedOption) return;
+      if (isMulti && (!ans.selectedMultiOptions || ans.selectedMultiOptions.length === 0)) return;
+      if (isNumeric && !ans.numericVal?.trim()) return;
+
+      setUserAnswers((prev) => ({
+        ...prev,
+        [qId]: {
+          ...prev[qId],
+          checkedState: {
+            status: "bonus",
+            isCorrect: true,
+            isMarksToAll: true,
+            message: "✨ Marks Awarded to All • Full marks are awarded for this question (Bonus/Dropped in official exam key).",
+          },
+        },
+      }));
+      return;
+    }
 
     if (isMCQ) {
       if (!ans.selectedOption) return;
@@ -472,11 +501,24 @@ function PaperDetailContent({ paperData }) {
                       </span>
                     </div>
 
-                    {q.difficulty && (
-                      <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                        {q.difficulty}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {(q.source_of_answer === "MARKS_TO_ALL" ||
+                        ((!q.correct_answer || (Array.isArray(q.correct_answer) && q.correct_answer.length === 0)) &&
+                          (!q.numeric_answer ||
+                            (q.numeric_answer.exact_value === null &&
+                              q.numeric_answer.min_value === null &&
+                              q.numeric_answer.max_value === null)))) && (
+                        <span className="px-2.5 py-1 text-xs font-bold rounded-lg border bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" />
+                          Marks to All
+                        </span>
+                      )}
+                      {q.difficulty && (
+                        <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                          {q.difficulty}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Question Body */}
@@ -535,7 +577,19 @@ function PaperDetailContent({ paperData }) {
                           if (isSelected && !ansState.checkedState) {
                             optionStyle = "border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 ring-2 ring-orange-500/50";
                           } else if (ansState.checkedState) {
-                            if (isSelected && isCorrectAnswer) {
+                            if (ansState.checkedState.isMarksToAll) {
+                              if (isSelected) {
+                                optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                                badge = (
+                                  <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                                    <Check className="w-3 h-3" />
+                                    Your Choice (Marks Awarded)
+                                  </span>
+                                );
+                              } else {
+                                optionStyle = "border-gray-200 dark:border-gray-800 opacity-60";
+                              }
+                            } else if (isSelected && isCorrectAnswer) {
                               optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
                               badge = (
                                 <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
@@ -630,14 +684,14 @@ function PaperDetailContent({ paperData }) {
                     {ansState.checkedState && (
                       <div
                         className={`p-4 rounded-xl flex items-center gap-3 border ${
-                          ansState.checkedState.status === "correct"
+                          ansState.checkedState.status === "correct" || ansState.checkedState.status === "bonus"
                             ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
                             : ansState.checkedState.status === "partial"
                             ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
                             : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
                         }`}
                       >
-                        {ansState.checkedState.status === "correct" ? (
+                        {ansState.checkedState.status === "correct" || ansState.checkedState.status === "bonus" ? (
                           <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
                         ) : ansState.checkedState.status === "partial" ? (
                           <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
