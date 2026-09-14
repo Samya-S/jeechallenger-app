@@ -182,7 +182,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
 
           {/* Question Diagrams with click-to-zoom */}
           {question.question_diagram_urls && question.question_diagram_urls.length > 0 && (
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap items-start gap-4 pt-2">
               {question.question_diagram_urls.map((imgUrl, i) => (
                 <div
                   key={i}
