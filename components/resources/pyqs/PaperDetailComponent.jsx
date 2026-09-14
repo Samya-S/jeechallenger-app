@@ -17,12 +17,14 @@ import {
   Check,
   X,
   Share2,
-  Sparkles
+  Sparkles,
+  Bug
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
+import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
@@ -75,6 +77,7 @@ function PaperDetailContent({ paperData }) {
   const [zoomedImage, setZoomedImage] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [copied, setCopied] = useState(false);
+  const [reportingQuestion, setReportingQuestion] = useState(null); // question object for the bug modal
 
   const copyToClipboard = async (url) => {
     try {
@@ -732,16 +735,28 @@ function PaperDetailContent({ paperData }) {
                         )}
                       </div>
 
-                      <Link
-                        href={`/question/${q.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-800 transition-all"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>View Step-by-Step Solution</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </Link>
+                      {/* View Solution + Report Bug */}
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/question/${q.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-800 transition-all"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>View Step-by-Step Solution</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setReportingQuestion(q)}
+                          title="Report a bug in this question"
+                          aria-label="Report a bug"
+                          className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 transition-colors duration-100 cursor-pointer"
+                        >
+                          <Bug className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -760,6 +775,13 @@ function PaperDetailContent({ paperData }) {
           onClose={() => setZoomedImage(null)}
         />
       )}
+
+      {/* Bug Report Modal */}
+      <ReportQuestionModal
+        isOpen={!!reportingQuestion}
+        onClose={() => setReportingQuestion(null)}
+        question={reportingQuestion}
+      />
     </div>
   );
 }
