@@ -252,7 +252,6 @@ function PreviousYearQuestionsContent() {
                       onClick={() => {
                         const newPage = Math.max(1, page - 1);
                         setPage(newPage);
-                        updateURL(filters, newPage, activeTab);
                         window.scrollTo({ top: 300, behavior: "smooth" });
                       }}
                       className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
@@ -272,7 +271,6 @@ function PreviousYearQuestionsContent() {
                       onClick={() => {
                         const newPage = Math.min(totalPages, page + 1);
                         setPage(newPage);
-                        updateURL(filters, newPage, activeTab);
                         window.scrollTo({ top: 300, behavior: "smooth" });
                       }}
                       className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
