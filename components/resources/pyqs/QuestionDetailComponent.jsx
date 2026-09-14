@@ -281,7 +281,7 @@ export default function QuestionDetailComponent({ question }) {
                             {opt.diagram_url && (
                               <div
                                 onClick={() => setZoomedImage(opt.diagram_url)}
-                                className="relative mt-3 p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
+                                className={`relative ${opt.text ? "mt-3" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
                               >
                                 <img
                                   src={opt.diagram_url}
