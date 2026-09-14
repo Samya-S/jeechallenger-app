@@ -4,12 +4,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FileText, Clock, Award, ArrowUpRight, CheckCircle } from "lucide-react";
 
-export default function PYQPapersList({ filters, setTotalPapersCount }) {
+export default function PYQPapersList({ filters, setTotalPapersCount, setPapersLoading }) {
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
+    if (setPapersLoading) setPapersLoading(true);
     const params = new URLSearchParams();
     if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
     if (filters.year && filters.year !== "All") params.set("exam_year", filters.year);
@@ -21,14 +22,16 @@ export default function PYQPapersList({ filters, setTotalPapersCount }) {
         setPapers(list);
         if (setTotalPapersCount) setTotalPapersCount(data.meta?.total || list.length);
         setLoading(false);
+        if (setPapersLoading) setPapersLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching papers:", err);
         setPapers([]);
         if (setTotalPapersCount) setTotalPapersCount(0);
         setLoading(false);
+        if (setPapersLoading) setPapersLoading(false);
       });
-  }, [filters.examType, filters.year]);
+  }, [filters.examType, filters.year, setPapersLoading, setTotalPapersCount]);
 
   if (loading) {
     return (
