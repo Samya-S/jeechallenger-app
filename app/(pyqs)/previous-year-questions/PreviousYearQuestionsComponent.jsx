@@ -38,6 +38,7 @@ function PreviousYearQuestionsContent() {
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [papersLoading, setPapersLoading] = useState(true);
   const [totalPapersCount, setTotalPapersCount] = useState(0);
 
   // Fetch available years dynamically from published papers
@@ -191,7 +192,7 @@ function PreviousYearQuestionsContent() {
           onFilterChange={handleFilterChange}
           onResetFilters={handleResetFilters}
           totalCount={activeTab === "practice" ? totalCount : totalPapersCount}
-          loading={loading}
+          loading={activeTab === "practice" ? loading : papersLoading}
           availableYears={availableYears}
         />
 
@@ -287,7 +288,11 @@ function PreviousYearQuestionsContent() {
 
         {/* Tab 2: Full Shift Papers List */}
         {activeTab === "papers" && (
-          <PYQPapersList filters={filters} setTotalPapersCount={setTotalPapersCount} />
+          <PYQPapersList
+            filters={filters}
+            setTotalPapersCount={setTotalPapersCount}
+            setPapersLoading={setPapersLoading}
+          />
         )}
       </div>
 
