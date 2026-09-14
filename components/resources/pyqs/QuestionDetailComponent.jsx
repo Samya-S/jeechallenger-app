@@ -128,63 +128,64 @@ export default function QuestionDetailComponent({ question }) {
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
           
           {/* Card Header & Metadata */}
-          <div className="p-6 md:p-8 bg-gray-50/80 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "bg-gray-100 text-gray-700"}`}>
+          <div className="p-4 sm:p-6 md:p-8 bg-gray-50/80 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              {/* Metadata Badges */}
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "bg-gray-100 text-gray-700"}`}>
                   {question.subject}
                 </span>
-                <span className="px-3 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                   {question.chapter}
                 </span>
                 {question.difficulty && (
-                  <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
+                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
                     {question.difficulty}
                   </span>
                 )}
                 {isMarksToAll && (
-                  <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${MARKS_TO_ALL_COLOR} flex items-center gap-1.5`}>
+                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${MARKS_TO_ALL_COLOR} flex items-center gap-1.5`}>
                     <Sparkles className="w-3.5 h-3.5" />
                     Marks to All
                   </span>
                 )}
-              </div>
-
-              <div className="flex items-center gap-2">
                 {getPaperSlug(question) ? (
                   <Link
                     href={`/paper/${getPaperSlug(question)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={`Open full paper: ${examOrigin}`}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold border hover:opacity-80 transition-opacity inline-block ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border hover:opacity-80 transition-opacity inline-block ${getExamBadgeColor(question.exam_type || examOrigin)}`}
                   >
                     {examOrigin}
                   </Link>
                 ) : (
                   <span
-                    className={`px-3 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
                   >
                     {examOrigin}
                   </span>
                 )}
+              </div>
 
+              {/* Action Buttons (Share & Report Bug) */}
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={handleShare}
                   title={copied ? "Link copied!" : "Share question"}
                   aria-label={copied ? "Link copied" : "Share question"}
-                  className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-solid border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer whitespace-nowrap"
                 >
                   {copied ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+                      <span className="hidden sm:inline text-emerald-600 dark:text-emerald-400">Copied!</span>
                     </>
                   ) : (
                     <>
                       <Share2 className="w-3.5 h-3.5" />
-                      <span>Share</span>
+                      <span className="hidden sm:inline">Share</span>
                     </>
                   )}
                 </button>
@@ -194,15 +195,15 @@ export default function QuestionDetailComponent({ question }) {
                   onClick={() => setIsReportOpen(true)}
                   title="Report a bug in this question"
                   aria-label="Report a bug"
-                  className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-solid border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 shadow-sm transition-colors duration-100 cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-solid border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 shadow-sm transition-colors duration-100 cursor-pointer whitespace-nowrap"
                 >
                   <Bug className="w-3.5 h-3.5" />
-                  <span>Report Bug</span>
+                  <span className="hidden sm:inline">Report Bug</span>
                 </button>
               </div>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-tight">
+            <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-tight mt-2">
               {question.title || "Question Details"}
             </h1>
           </div>
