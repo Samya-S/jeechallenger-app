@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FileText, Clock, Award, ArrowUpRight, CheckCircle } from "lucide-react";
+import { getExamBadgeColor } from "@/utils/pyq-helpers";
 
 export default function PYQPapersList({ filters, setTotalPapersCount, setPapersLoading }) {
   const [papers, setPapers] = useState([]);
@@ -72,7 +73,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
             <div className="space-y-4">
               {/* Badges */}
               <div className="flex items-center justify-between gap-2">
-                <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
+                <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paper.exam_type)}`}>
                   {paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
                 </span>
                 <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg">

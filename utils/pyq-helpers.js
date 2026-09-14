@@ -133,3 +133,36 @@ export function formatExamOrigin(question) {
 
   return base;
 }
+
+export const SUBJECT_COLORS = {
+  Physics: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
+  Chemistry: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+  Mathematics: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800",
+};
+
+export const DIFFICULTY_COLORS = {
+  Easy: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+  Medium: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
+  Hard: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800",
+};
+
+export const subjectColors = SUBJECT_COLORS;
+export const difficultyColors = DIFFICULTY_COLORS;
+
+export const EXAM_TYPE_COLORS = {
+  JEE_MAIN: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+  JEE_ADVANCED: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800",
+};
+
+export const examTypeColors = EXAM_TYPE_COLORS;
+
+export const MARKS_TO_ALL_COLOR = "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800";
+
+/**
+ * Returns badge styling classes for JEE Main vs JEE Advanced.
+ * Supports examType strings ('JEE_MAIN', 'JEE_ADVANCED') or full origin labels ('JEE Main 2026...').
+ */
+export function getExamBadgeColor(examTypeOrText) {
+  const str = String(examTypeOrText || "").toUpperCase();
+  return str.includes("ADVANCED") ? EXAM_TYPE_COLORS.JEE_ADVANCED : EXAM_TYPE_COLORS.JEE_MAIN;
+}

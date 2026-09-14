@@ -17,7 +17,7 @@ import {
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
-import { formatExamOrigin } from "@/utils/pyq-helpers";
+import { formatExamOrigin, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
@@ -99,18 +99,6 @@ export default function QuestionDetailComponent({ question }) {
     }
   };
 
-  const difficultyColors = {
-    Easy: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-    Medium: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-    Hard: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
-  };
-
-  const subjectColors = {
-    Physics: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
-    Chemistry: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
-    Mathematics: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800",
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-6 sm:py-10">
       <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
@@ -152,7 +140,7 @@ export default function QuestionDetailComponent({ question }) {
                   </span>
                 )}
                 {isMarksToAll && (
-                  <span className="px-3 py-1 text-xs font-bold rounded-lg border bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 flex items-center gap-1.5">
+                  <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${MARKS_TO_ALL_COLOR} flex items-center gap-1.5`}>
                     <Sparkles className="w-3.5 h-3.5" />
                     Marks to All
                   </span>
@@ -160,7 +148,9 @@ export default function QuestionDetailComponent({ question }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-lg text-xs font-bold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                <span
+                  className={`px-3 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                >
                   {examOrigin}
                 </span>
 

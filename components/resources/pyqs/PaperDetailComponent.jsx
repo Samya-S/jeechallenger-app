@@ -23,6 +23,7 @@ import {
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
+import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
   const searchParams = useSearchParams();
@@ -352,7 +353,7 @@ function PaperDetailContent({ paperData }) {
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg">
+              <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paperData.exam_type)}`}>
                 {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
               </span>
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
@@ -493,7 +494,7 @@ function PaperDetailContent({ paperData }) {
                       <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
                         Q{q.question_number}
                       </span>
-                      <span className="px-2.5 py-1 text-xs font-bold rounded-lg border bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 border-blue-200 dark:border-blue-800">
+                      <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[q.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
                         {q.subject}
                       </span>
                       <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
@@ -508,13 +509,13 @@ function PaperDetailContent({ paperData }) {
                             (q.numeric_answer.exact_value === null &&
                               q.numeric_answer.min_value === null &&
                               q.numeric_answer.max_value === null)))) && (
-                        <span className="px-2.5 py-1 text-xs font-bold rounded-lg border bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 flex items-center gap-1">
+                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${MARKS_TO_ALL_COLOR} flex items-center gap-1`}>
                           <Sparkles className="w-3 h-3" />
                           Marks to All
                         </span>
                       )}
                       {q.difficulty && (
-                        <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"}`}>
                           {q.difficulty}
                         </span>
                       )}
