@@ -117,7 +117,7 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[90vh] text-left">
+      <div className="relative w-full max-w-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[85vh] text-left">
 
         {/* ── Fixed Header ── */}
         <div className="px-6 pt-6 pb-5 border-b border-gray-200 dark:border-gray-700 flex items-start justify-between gap-4 shrink-0">
