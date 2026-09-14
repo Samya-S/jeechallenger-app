@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileText, Sparkles } from "lucide-react";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
-import { formatExamOrigin, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -112,6 +112,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
   };
 
   const examOrigin = formatExamOrigin(question);
+  const paperSlug = getPaperSlug(question);
 
   return (
     <>
@@ -142,9 +143,25 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 {question.difficulty}
               </span>
             )}
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 hidden sm:inline-block">
-              {examOrigin}
-            </span>
+            {paperSlug ? (
+              <Link
+                href={`/paper/${paperSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open full question paper"
+                className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${
+                  (question.exam_type === "JEE_ADVANCED" || examOrigin.includes("Advanced"))
+                    ? "hover:text-orange-600 dark:hover:text-orange-400"
+                    : "hover:text-emerald-600 dark:hover:text-emerald-400"
+                } transition-colors inline-block`}
+              >
+                {examOrigin}
+              </Link>
+            ) : (
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 inline-block">
+                {examOrigin}
+              </span>
+            )}
           </div>
         </div>
 

@@ -134,6 +134,13 @@ export function formatExamOrigin(question) {
   return base;
 }
 
+/**
+ * Returns the paper route slug from question.original_paper_id.
+ */
+export function getPaperSlug(question) {
+  return question?.original_paper_id?.toLowerCase().replace(/_/g, "-") || "";
+}
+
 export const SUBJECT_COLORS = {
   Physics: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
   Chemistry: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
