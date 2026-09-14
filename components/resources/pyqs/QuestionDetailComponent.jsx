@@ -11,17 +11,20 @@ import {
   Award, 
   Layers,
   Sparkles,
-  FileText
+  FileText,
+  Bug
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
+import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   if (!question) {
     return (
@@ -184,6 +187,17 @@ export default function QuestionDetailComponent({ question }) {
                       <span>Share</span>
                     </>
                   )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsReportOpen(true)}
+                  title="Report a bug in this question"
+                  aria-label="Report a bug"
+                  className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-solid border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 shadow-sm transition-colors duration-100 cursor-pointer"
+                >
+                  <Bug className="w-3.5 h-3.5" />
+                  <span>Report Bug</span>
                 </button>
               </div>
             </div>
@@ -377,6 +391,13 @@ export default function QuestionDetailComponent({ question }) {
           onClose={() => setZoomedImage(null)}
         />
       )}
+
+      {/* Bug Report Modal */}
+      <ReportQuestionModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        question={question}
+      />
     </div>
   );
 }
