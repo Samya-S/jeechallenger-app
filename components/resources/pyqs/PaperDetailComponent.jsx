@@ -542,7 +542,7 @@ function PaperDetailContent({ paperData }) {
 
                     {/* Question Diagrams */}
                     {q.question_diagram_urls && q.question_diagram_urls.length > 0 && (
-                      <div className="flex flex-wrap gap-4 pt-2">
+                      <div className="flex flex-wrap items-start gap-4 pt-2">
                         {q.question_diagram_urls.map((imgUrl, i) => (
                           <div
                             key={i}

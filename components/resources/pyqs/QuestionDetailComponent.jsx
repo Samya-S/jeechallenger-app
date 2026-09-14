@@ -227,7 +227,7 @@ export default function QuestionDetailComponent({ question }) {
 
             {/* Question Diagrams with click-to-zoom */}
             {question.question_diagram_urls && question.question_diagram_urls.length > 0 && (
-              <div className="flex flex-wrap gap-4 pt-2">
+              <div className="flex flex-wrap items-start gap-4 pt-2">
                 {question.question_diagram_urls.map((imgUrl, i) => (
                   <div
                     key={i}
@@ -345,7 +345,7 @@ export default function QuestionDetailComponent({ question }) {
                 <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Solution Diagrams & Graphs
                 </h4>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap items-start gap-4">
                   {question.solution_diagram_urls.map((imgUrl, i) => (
                     <div
                       key={i}
