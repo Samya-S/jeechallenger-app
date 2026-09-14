@@ -17,7 +17,7 @@ import {
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
-import { formatExamOrigin, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
@@ -148,11 +148,23 @@ export default function QuestionDetailComponent({ question }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <span
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
-                >
-                  {examOrigin}
-                </span>
+                {getPaperSlug(question) ? (
+                  <Link
+                    href={`/paper/${getPaperSlug(question)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Open full paper: ${examOrigin}`}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border hover:opacity-80 transition-opacity inline-block ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                  >
+                    {examOrigin}
+                  </Link>
+                ) : (
+                  <span
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                  >
+                    {examOrigin}
+                  </span>
+                )}
 
                 <button
                   type="button"
