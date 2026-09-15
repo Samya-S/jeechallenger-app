@@ -335,20 +335,21 @@ function PaperDetailContent({ paperData }) {
       <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
         
         {/* Navigation & Breadcrumbs Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Breadcrumbs
             crumbs={[
               { label: "PYQs", href: "/previous-year-questions" },
               { label: paperData.title || "Question Paper" },
             ]}
+            className="min-w-0 max-w-full"
           />
 
           <Link
             href="/previous-year-questions?tab=papers"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all self-start sm:self-auto"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all whitespace-nowrap shrink-0"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>All Shift Papers</span>
+            <ArrowLeft className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">All Shift Papers</span>
           </Link>
         </div>
 
