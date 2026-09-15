@@ -391,18 +391,27 @@ function PaperDetailContent({ paperData }) {
           </h1>
 
           {/* Paper Stats */}
-          <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-orange-500" />
-              <span>Duration: <strong className="text-gray-900 dark:text-white">{paperData.duration_minutes || 180} Mins</strong></span>
+              <Clock className="w-4 h-4 text-orange-500 shrink-0" />
+              <span>
+                <span className="hidden sm:inline">Duration: </span>
+                <strong className="text-gray-900 dark:text-white">{paperData.duration_minutes || 180} Mins</strong>
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-emerald-500" />
-              <span>Total Marks: <strong className="text-gray-900 dark:text-white">{paperData.total_marks || 300} Marks</strong></span>
+              <Award className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>
+                <span className="hidden sm:inline">Total Marks: </span>
+                <strong className="text-gray-900 dark:text-white">{paperData.total_marks || 300} Marks</strong>
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <FileText className="w-4 h-4 text-blue-500" />
-              <span>Total Questions: <strong className="text-gray-900 dark:text-white">{allQuestions.length || 90} Qs</strong></span>
+              <FileText className="w-4 h-4 text-blue-500 shrink-0" />
+              <span>
+                <span className="hidden sm:inline">Total Questions: </span>
+                <strong className="text-gray-900 dark:text-white">{allQuestions.length || 90} Qs</strong>
+              </span>
             </div>
           </div>
         </div>
