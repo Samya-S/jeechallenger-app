@@ -6,7 +6,7 @@ import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileTe
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
-import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -113,7 +113,8 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
     );
   };
 
-  const examOrigin = formatExamOrigin(question);
+  const examOriginFull = formatExamOrigin(question, { isShort: false });
+  const examOriginShort = formatExamOrigin(question, { isShort: true });
   const paperSlug = getPaperSlug(question);
 
   return (
@@ -126,7 +127,8 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
               #{practiceIndex}
             </span>
             <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
-              {question.subject}
+              <span className="hidden sm:inline">{question.subject}</span>
+              <span className="sm:hidden">{SUBJECT_SHORT_NAMES[question.subject] || question.subject}</span>
             </span>
             <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
               {question.chapter}
@@ -142,7 +144,8 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
             )}
             {question.difficulty && (
               <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
-                {question.difficulty}
+                <span className="hidden sm:inline">{question.difficulty}</span>
+                <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[question.difficulty] || question.difficulty}</span>
               </span>
             )}
             {paperSlug ? (
@@ -152,16 +155,18 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 rel="noopener noreferrer"
                 title="Open full question paper"
                 className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${
-                  (question.exam_type === "JEE_ADVANCED" || examOrigin.includes("Advanced"))
+                  (question.exam_type === "JEE_ADVANCED" || examOriginFull.includes("Advanced"))
                     ? "hover:text-orange-600 dark:hover:text-orange-400"
                     : "hover:text-emerald-600 dark:hover:text-emerald-400"
                 } transition-colors inline-block`}
               >
-                {examOrigin}
+                <span className="hidden sm:inline">{examOriginFull}</span>
+                <span className="sm:hidden">{examOriginShort}</span>
               </Link>
             ) : (
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 inline-block">
-                {examOrigin}
+                <span className="hidden sm:inline">{examOriginFull}</span>
+                <span className="sm:hidden">{examOriginShort}</span>
               </span>
             )}
           </div>

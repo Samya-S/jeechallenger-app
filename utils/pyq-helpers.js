@@ -24,6 +24,44 @@ const MONTH_MAP = {
   december: "December",
 };
 
+const SHORT_MONTH_MAP = {
+  jan: "Jan",
+  january: "Jan",
+  feb: "Feb",
+  february: "Feb",
+  mar: "Mar",
+  march: "Mar",
+  apr: "Apr",
+  april: "Apr",
+  may: "May",
+  jun: "Jun",
+  june: "Jun",
+  jul: "Jul",
+  july: "Jul",
+  aug: "Aug",
+  august: "Aug",
+  sep: "Sep",
+  september: "Sep",
+  oct: "Oct",
+  october: "Oct",
+  nov: "Nov",
+  november: "Nov",
+  dec: "Dec",
+  december: "Dec",
+};
+
+export const SUBJECT_SHORT_NAMES = {
+  Physics: "Phy",
+  Chemistry: "Chem",
+  Mathematics: "Math",
+};
+
+export const DIFFICULTY_SHORT_NAMES = {
+  Easy: "Easy",
+  Medium: "Med",
+  Hard: "Hard",
+};
+
 /**
  * Returns English ordinal string for any day number (e.g. 1 -> "1st", 4 -> "4th", 22 -> "22nd", 31 -> "31st")
  */
@@ -40,12 +78,11 @@ function getOrdinalDay(n) {
  * Accurately handles 1-digit and 2-digit dates, ordinals, full/abbreviated months, and JEE Advanced papers.
  *
  * Examples:
- * - "Apr_4th_Shift_2" -> "April 4th - Shift 2"
- * - "Jan_24th_Shift_1" -> "January 24th - Shift 1"
- * - "Jan_02_Shift_2" -> "January 2nd - Shift 2"
+ * - "Apr_4th_Shift_2" (full)  -> "April 4th - Shift 2"
+ * - "Apr_4th_Shift_2" (short) -> "4th Apr - Shift 2"
  * - "Paper_1" -> "Paper 1"
  */
-function parseShiftAndDate(cleanPaper) {
+function parseShiftAndDate(cleanPaper, isShort = false) {
   if (!cleanPaper) return "";
 
   // 1. JEE Advanced: Paper 1, Paper 2, etc.
@@ -54,13 +91,15 @@ function parseShiftAndDate(cleanPaper) {
     return `Paper ${paperMatch[1]}`;
   }
 
+  const monthMap = isShort ? SHORT_MONTH_MAP : MONTH_MAP;
+
   // 2. Month followed by 1 or 2 digit date (with or without 'st'/'nd'/'rd'/'th') and optional Shift
   const monthFirstMatch = cleanPaper.match(
     /(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\s_\-]*(\d{1,2})(?:st|nd|rd|th)?(?:[\s_\-]*(?:Shift|Session)[\s_\-]*(\d+))?/i
   );
 
   if (monthFirstMatch) {
-    const month = MONTH_MAP[monthFirstMatch[1].toLowerCase()] || monthFirstMatch[1];
+    const month = monthMap[monthFirstMatch[1].toLowerCase()] || monthFirstMatch[1];
     const day = getOrdinalDay(monthFirstMatch[2]);
     const shift = monthFirstMatch[3] ? `Shift ${monthFirstMatch[3]}` : "";
     return shift ? `${day} ${month} - ${shift}` : `${day} ${month}`;
@@ -73,7 +112,7 @@ function parseShiftAndDate(cleanPaper) {
 
   if (dayFirstMatch) {
     const day = getOrdinalDay(dayFirstMatch[1]);
-    const month = MONTH_MAP[dayFirstMatch[2].toLowerCase()] || dayFirstMatch[2];
+    const month = monthMap[dayFirstMatch[2].toLowerCase()] || dayFirstMatch[2];
     const shift = dayFirstMatch[3] ? `Shift ${dayFirstMatch[3]}` : "";
     return shift ? `${day} ${month} - ${shift}` : `${day} ${month}`;
   }
@@ -88,17 +127,23 @@ function parseShiftAndDate(cleanPaper) {
 }
 
 /**
- * Formats the complete exam origin badge label for any JEE question.
+ * Formats the exam origin badge label for any JEE question.
+ * Supports both full desktop and concise mobile formats.
  *
- * Output examples:
- * - "JEE Main 2026 • April 4th - Shift 2"
- * - "JEE Main 2025 • January 24th - Shift 1"
+ * Full (desktop):
+ * - "JEE Main 2026 • 24th January - Shift 1"
  * - "JEE Advanced 2026 • Paper 1"
  *
+ * Short (mobile):
+ * - "Main 2026 • 24th Jan - Shift 1"
+ * - "Adv 2026 • Paper 1"
+ *
  * @param {Object} question
+ * @param {Object} [options]
+ * @param {boolean} [options.isShort=false]
  * @returns {string} Formatted origin string
  */
-export function formatExamOrigin(question) {
+export function formatExamOrigin(question, { isShort = false } = {}) {
   if (!question) return "";
 
   const paperId = question.original_paper_id || "";
@@ -110,10 +155,16 @@ export function formatExamOrigin(question) {
   const matchedYear = cleanPaper.match(/\b(20\d{2})\b/)?.[1];
   const examYear = question.exam_year || matchedYear || "";
 
-  const examLabel = examType === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
+  let examLabel;
+  if (isShort) {
+    examLabel = examType === "JEE_ADVANCED" ? "Adv" : "Main";
+  } else {
+    examLabel = examType === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
+  }
+
   const base = examYear ? `${examLabel} ${examYear}` : examLabel;
 
-  const detail = parseShiftAndDate(cleanPaper);
+  const detail = parseShiftAndDate(cleanPaper, isShort);
   if (detail) {
     return `${base} • ${detail}`;
   }

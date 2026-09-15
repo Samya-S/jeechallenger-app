@@ -19,7 +19,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
-import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
@@ -77,12 +77,13 @@ export default function QuestionDetailComponent({ question }) {
     }
   };
 
-  const examOrigin = formatExamOrigin(question);
+  const examOriginFull = formatExamOrigin(question, { isShort: false });
+  const examOriginShort = formatExamOrigin(question, { isShort: true });
 
   const handleShare = async () => {
     if (typeof window === "undefined") return;
     const url = window.location.href;
-    const shareTitle = question.title || `${examOrigin ? examOrigin + " " : ""}${question.subject || ""} - ${question.chapter || ""} PYQ`.trim();
+    const shareTitle = question.title || `${examOriginFull ? examOriginFull + " " : ""}${question.subject || ""} - ${question.chapter || ""} PYQ`.trim();
     const shareText = `Check out this ${shareTitle} with solution on JEE Challenger`;
 
     if (navigator.share) {
@@ -133,14 +134,16 @@ export default function QuestionDetailComponent({ question }) {
               {/* Metadata Badges */}
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "bg-gray-100 text-gray-700"}`}>
-                  {question.subject}
+                  <span className="hidden sm:inline">{question.subject}</span>
+                  <span className="sm:hidden">{SUBJECT_SHORT_NAMES[question.subject] || question.subject}</span>
                 </span>
                 <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                   {question.chapter}
                 </span>
                 {question.difficulty && (
                   <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
-                    {question.difficulty}
+                    <span className="hidden sm:inline">{question.difficulty}</span>
+                    <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[question.difficulty] || question.difficulty}</span>
                   </span>
                 )}
                 {isMarksToAll && (
@@ -154,16 +157,18 @@ export default function QuestionDetailComponent({ question }) {
                     href={`/paper/${getPaperSlug(question)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={`Open full paper: ${examOrigin}`}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border hover:opacity-80 transition-opacity inline-block ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                    title={`Open full paper: ${examOriginFull}`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border hover:opacity-80 transition-opacity inline-block ${getExamBadgeColor(question.exam_type || examOriginFull)}`}
                   >
-                    {examOrigin}
+                    <span className="hidden sm:inline">{examOriginFull}</span>
+                    <span className="sm:hidden">{examOriginShort}</span>
                   </Link>
                 ) : (
                   <span
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOrigin)}`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${getExamBadgeColor(question.exam_type || examOriginFull)}`}
                   >
-                    {examOrigin}
+                    <span className="hidden sm:inline">{examOriginFull}</span>
+                    <span className="sm:hidden">{examOriginShort}</span>
                   </span>
                 )}
               </div>
