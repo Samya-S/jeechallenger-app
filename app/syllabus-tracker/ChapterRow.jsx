@@ -69,7 +69,7 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
               href={pyqHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-md text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 hover:border-purple-300 dark:hover:border-purple-700 transition-colors shrink-0"
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-md text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/50 border border-orange-200 dark:border-orange-800/60 hover:bg-orange-100 dark:hover:bg-orange-900/60 hover:border-orange-300 dark:hover:border-orange-700 transition-colors shrink-0"
               title={`Practice Previous Year Questions for ${name}`}
             >
               <span>Practice PYQs</span>
@@ -130,9 +130,9 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
             <div 
               className={`
                 w-4 h-4 sm:w-5 sm:h-5 rounded border transition-all flex items-center justify-center shrink-0
-                peer-focus-visible:ring-2 peer-focus-visible:ring-purple-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
+                peer-focus-visible:ring-2 peer-focus-visible:ring-orange-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
                 ${progress.pyqs 
-                  ? 'bg-purple-600 border-purple-600 dark:bg-purple-600 dark:border-purple-500 text-white shadow-sm' 
+                  ? 'bg-orange-600 border-orange-600 dark:bg-orange-600 dark:border-orange-500 text-white shadow-sm' 
                   : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900/80 group-hover:border-gray-400 dark:group-hover:border-gray-500'
                 }
               `}
@@ -160,9 +160,9 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
             <div 
               className={`
                 w-4 h-4 sm:w-5 sm:h-5 rounded border transition-all flex items-center justify-center shrink-0
-                peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
+                peer-focus-visible:ring-2 peer-focus-visible:ring-green-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
                 ${progress.revision 
-                  ? 'bg-emerald-600 border-emerald-600 dark:bg-emerald-600 dark:border-emerald-500 text-white shadow-sm' 
+                  ? 'bg-green-600 border-green-600 dark:bg-green-600 dark:border-green-500 text-white shadow-sm' 
                   : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900/80 group-hover:border-gray-400 dark:group-hover:border-gray-500'
                 }
               `}
