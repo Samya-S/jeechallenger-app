@@ -51,8 +51,22 @@ export async function generateMetadata({ params }) {
 
   const examLabel = paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
   const ogTitle = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
-  const title = `${ogTitle} | Solutions & Answer Key`;
-  const description = `Access full ${examLabel} ${paper.exam_year} official question paper with section-wise questions, verified answer keys, and step-by-step KaTeX solutions.`;
+  const title = `${ogTitle} | Solutions & Answer Key - JEE Challenger`;
+  const description = `Access full official ${ogTitle} with section-wise questions, step-by-step KaTeX solutions, and verified answer keys on JEE Challenger.`;
+
+  const keywords = [
+    paper.title,
+    examLabel,
+    String(paper.exam_year),
+    `${examLabel} ${paper.exam_year}`,
+    "Official Question Paper",
+    "Previous Year Paper",
+    "JEE Paper Solutions",
+    "Answer Key",
+    "Physics",
+    "Chemistry",
+    "Mathematics",
+  ];
 
   const pageOg = ogImageMeta({
     title: ogTitle,
@@ -63,17 +77,25 @@ export async function generateMetadata({ params }) {
   });
 
   return {
-    title: `${title} - JEE Challenger`,
+    title,
     description,
+    keywords,
     alternates: {
       canonical: `/paper/${slug}`,
     },
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
     openGraph: {
-      title: `${title} - JEE Challenger`,
+      title,
       description,
       url: `/paper/${slug}`,
       siteName: "JEE Challenger",
@@ -83,7 +105,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} - JEE Challenger`,
+      title,
       description,
       images: pageOg.twitterImages,
     },
@@ -107,9 +129,15 @@ export default async function SinglePaperPage({ params }) {
 
   return (
     <>
+      {/* 1. Breadcrumb Schema (matching UI) */}
       <StructuredData
         type="breadcrumb"
         data={{ items: breadcrumbItems }}
+      />
+      {/* 2. Official Examination Paper Schema (for crawlers) */}
+      <StructuredData
+        type="examPaper"
+        data={{ paper }}
       />
       <PaperDetailComponent paperData={paper} />
     </>
