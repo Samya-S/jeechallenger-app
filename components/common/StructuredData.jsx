@@ -1,8 +1,8 @@
 // Structured Data Component for SEO
 // Generates JSON-LD schema for Google Rich Results
 
-import Script from 'next/script';
 import { getSiteUrl } from '@/config/site-url';
+import { cleanMathText } from '@/utils/seo-utils';
 
 export default function StructuredData({ type, data }) {
   const siteUrl = getSiteUrl();
@@ -51,11 +51,12 @@ export default function StructuredData({ type, data }) {
       schema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
+        ...(data.id ? { "@id": data.id } : {}),
         "itemListElement": data.items.map((item, index) => ({
           "@type": "ListItem",
           "position": index + 1,
           "name": item.name,
-          "item": `${siteUrl}${item.path}`
+          "item": item.path.startsWith('http') ? item.path : `${siteUrl}${item.path}`
         }))
       };
       break;
@@ -74,6 +75,154 @@ export default function StructuredData({ type, data }) {
         }))
       };
       break;
+
+    case 'qaPage': {
+      const q = data.question || {};
+      const qText = cleanMathText(q.question_text || q.title || "");
+      const qTitle = cleanMathText(q.title || "JEE Previous Year Question");
+
+      // Build accepted answer solution text
+      let answerText = "";
+      if (q.correct_answer && q.correct_answer.length > 0) {
+        answerText += `Correct Answer: Option (${q.correct_answer.join(", ")}). `;
+      } else if (q.numeric_answer !== null && q.numeric_answer !== undefined) {
+        const numVal = typeof q.numeric_answer === "object"
+          ? `${q.numeric_answer.min_value} to ${q.numeric_answer.max_value}`
+          : q.numeric_answer;
+        answerText += `Correct Answer: ${numVal}. `;
+      }
+      if (q.solution) {
+        answerText += `Step-by-step Solution: ${cleanMathText(q.solution)}`;
+      }
+
+      // Build suggested answers from other options (for MCQ / MULTI_CORRECT)
+      const suggestedAnswers = [];
+      if (q.options && typeof q.options === "object") {
+        Object.entries(q.options).forEach(([optKey, optVal]) => {
+          if (!q.correct_answer || !q.correct_answer.includes(optKey)) {
+            const optText = optVal && typeof optVal === "object" ? optVal.text : optVal;
+            if (optText) {
+              suggestedAnswers.push({
+                "@type": "Answer",
+                "text": `Option (${optKey}): ${cleanMathText(optText)}`,
+              });
+            }
+          }
+        });
+      }
+
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "QAPage",
+        "mainEntity": {
+          "@type": "Question",
+          "name": qTitle,
+          "text": qText,
+          "answerCount": 1,
+          "datePublished": q.approved_at || (q.exam_year ? `${q.exam_year}-01-01` : undefined),
+          "author": {
+            "@type": "Organization",
+            "name": "JEE Challenger",
+            "url": siteUrl,
+          },
+          "about": [
+            q.subject ? { "@type": "Thing", "name": q.subject } : null,
+            q.chapter ? { "@type": "Thing", "name": q.chapter } : null,
+          ].filter(Boolean),
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": answerText.trim(),
+            "url": `${siteUrl}/question/${q.slug}#solution`,
+            "datePublished": q.approved_at || undefined,
+            "author": {
+              "@type": "Organization",
+              "name": "JEE Challenger",
+              "url": siteUrl,
+            },
+          },
+          "suggestedAnswer": suggestedAnswers.length > 0 ? suggestedAnswers : undefined,
+          "isPartOf": q.original_paper_id ? {
+            "@type": "Quiz",
+            "name": q.original_paper_id.replace(/_/g, " "),
+            "url": `${siteUrl}/paper/${q.original_paper_id.toLowerCase().replace(/_/g, "-")}`,
+          } : undefined,
+        },
+      };
+      break;
+    }
+
+    case 'educationQuiz': {
+      const q = data.question || {};
+      const qText = cleanMathText(q.question_text || q.title || "");
+      const qTitle = cleanMathText(q.title || "JEE Previous Year Question");
+
+      let answerText = "";
+      if (q.correct_answer && q.correct_answer.length > 0) {
+        answerText += `Correct Answer: Option (${q.correct_answer.join(", ")}). `;
+      } else if (q.numeric_answer !== null && q.numeric_answer !== undefined) {
+        const numVal = typeof q.numeric_answer === "object"
+          ? `${q.numeric_answer.min_value} to ${q.numeric_answer.max_value}`
+          : q.numeric_answer;
+        answerText += `Correct Answer: ${numVal}. `;
+      }
+      if (q.solution) {
+        answerText += `Solution: ${cleanMathText(q.solution)}`;
+      }
+
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": `${qTitle} - ${q.subject || "JEE"} Solution`,
+        "description": `Step-by-step verified solution for ${q.subject || "JEE"} - ${q.chapter || ""} on JEE Challenger.`,
+        "educationalLevel": "Higher Secondary / IIT JEE Entrance",
+        "about": {
+          "@type": "Thing",
+          "name": q.chapter || q.subject || "JEE Preparation",
+        },
+        "hasPart": [
+          {
+            "@type": "Question",
+            "name": qTitle,
+            "text": qText,
+            "eduQuestionType": "Flashcard",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": answerText.trim(),
+            },
+          },
+        ],
+      };
+      break;
+    }
+
+    case 'examPaper': {
+      const p = data.paper || {};
+      const examLabel = p.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
+      const paperTitle = p.title || `${examLabel} ${p.exam_year || ""} Question Paper`;
+
+      schema = {
+        "@context": "https://schema.org",
+        "@type": ["Quiz", "LearningResource"],
+        "name": `${paperTitle} with Solutions`,
+        "description": `Full official ${paperTitle} with section-wise questions, step-by-step solutions, and answer keys on JEE Challenger.`,
+        "educationalLevel": "Undergraduate Entrance Examination (IIT JEE)",
+        "learningResourceType": ["Previous Year Paper", "Examination Paper", "Practice Problem"],
+        "timeRequired": "PT3H",
+        "provider": {
+          "@type": "Organization",
+          "name": "JEE Challenger",
+          "url": siteUrl,
+          "logo": `${siteUrl}/images/jcicon.jpg`,
+        },
+        "about": [
+          { "@type": "Thing", "name": examLabel },
+          { "@type": "Thing", "name": "Physics" },
+          { "@type": "Thing", "name": "Chemistry" },
+          { "@type": "Thing", "name": "Mathematics" },
+        ],
+      };
+      break;
+    }
 
     case 'softwareApplication':
       schema = {
@@ -103,15 +252,16 @@ export default function StructuredData({ type, data }) {
         "@type": "LearningResource",
         "name": data.name,
         "description": data.description,
-        "learningResourceType": ["Interactive Resource", "Previous Year Questions", "Formula Sheet"],
+        "learningResourceType": data.learningResourceType || ["Interactive Resource", "Previous Year Questions", "Formula Sheet"],
         "provider": {
           "@type": "Organization",
-          "name": "JEE Challenger"
+          "name": "JEE Challenger",
+          "url": siteUrl,
         },
         "educationalLevel": "Undergraduate Admissions",
         "about": {
           "@type": "Thing",
-          "name": data.subject
+          "name": data.subject || "JEE Main & Advanced Preparation"
         }
       };
       break;
@@ -164,8 +314,7 @@ export default function StructuredData({ type, data }) {
   schema = JSON.parse(JSON.stringify(schema));
 
   return (
-    <Script
-      id={`structured-data-${type}`}
+    <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
