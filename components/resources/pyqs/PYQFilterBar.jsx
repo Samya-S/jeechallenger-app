@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Search, RotateCcw, Filter, BookOpen, FileText } from "lucide-react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Search, RotateCcw, Filter, BookOpen, FileText, ChevronDown } from "lucide-react";
 import { syllabusData } from "@/data/syllabus-data";
 import CustomSelect from "@/components/ui/CustomSelect";
 
@@ -26,6 +26,135 @@ const QUESTION_TYPES = [
   { label: "Comprehension / Passage", value: "COMPREHENSION" },
 ];
 
+function YearFilterPills({
+  availableYears = [],
+  selectedYear = "All",
+  onSelectYear,
+  activeClass = "bg-orange-600 text-white shadow-sm",
+  inactiveClass = "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700",
+  size = "sm",
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen]);
+
+  const yearsOnly = useMemo(() => {
+    return availableYears.filter((y) => y !== "All" && y !== "ALL");
+  }, [availableYears]);
+
+  // If 4 or fewer years, show all as pills without dropdown.
+  // If more than 4 years, display top 3 recent years as quick pills and fold the rest into "More ▾"
+  const hasManyYears = yearsOnly.length > 4;
+  const recentYears = hasManyYears ? yearsOnly.slice(0, 3) : yearsOnly;
+  const olderYears = hasManyYears ? yearsOnly.slice(3) : [];
+
+  const isOlderSelected = hasManyYears && olderYears.includes(selectedYear);
+  const pillPadding = size === "md" ? "px-3.5 py-2" : "px-3.5 py-1.5";
+
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap">
+      {/* "All" Pill */}
+      <button
+        type="button"
+        onClick={() => onSelectYear("All")}
+        className={`${pillPadding} rounded-lg text-xs font-bold transition-all cursor-pointer ${
+          selectedYear === "All" || selectedYear === "ALL"
+            ? activeClass
+            : inactiveClass
+        }`}
+      >
+        All
+      </button>
+
+      {/* Quick Pills for Recent Years */}
+      {recentYears.map((y) => (
+        <button
+          key={y}
+          type="button"
+          onClick={() => onSelectYear(y)}
+          className={`${pillPadding} rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            selectedYear === y
+              ? activeClass
+              : inactiveClass
+          }`}
+        >
+          {y}
+        </button>
+      ))}
+
+      {/* Dropdown for older archive years */}
+      {hasManyYears && (
+        <div className="relative inline-block" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className={`flex items-center gap-1 ${pillPadding} rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              isOlderSelected
+                ? activeClass
+                : inactiveClass
+            }`}
+          >
+            <span>{isOlderSelected ? selectedYear : "More"}</span>
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {isOpen && (
+            <div className="absolute right-0 sm:left-0 sm:right-auto mt-1.5 w-48 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="px-2 py-1 mb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 border-b border-gray-100 dark:border-gray-800">
+                Older Archives
+              </div>
+              <div className="max-h-48 overflow-y-auto grid grid-cols-2 gap-1 p-0.5 scrollbar-thin">
+                {olderYears.map((y) => (
+                  <button
+                    key={y}
+                    type="button"
+                    onClick={() => {
+                      onSelectYear(y);
+                      setIsOpen(false);
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${
+                      selectedYear === y
+                        ? "bg-orange-600 text-white font-bold shadow-sm"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {y}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PYQFilterBar({
   activeTab,
   setActiveTab,
@@ -47,12 +176,14 @@ export default function PYQFilterBar({
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, filters.search, onFilterChange]);
 
-  // Sync external search changes
-  useEffect(() => {
+  // Sync external search changes during render
+  const [prevSearch, setPrevSearch] = useState(filters.search || "");
+  if (prevSearch !== (filters.search || "")) {
+    setPrevSearch(filters.search || "");
     setSearchInput(filters.search || "");
-  }, [filters.search]);
+  }
 
   // Extract chapters based on current subject
   const chapterOptions = useMemo(() => {
@@ -185,43 +316,40 @@ export default function PYQFilterBar({
           </div>
 
           {/* Dynamic Year Pills & Filter Actions */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide text-xs">
-            <span className="font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">Year:</span>
-            {availableYears.map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => onFilterChange("year", y)}
-                className={`px-3.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-                  filters.year === y
-                    ? "bg-orange-600 text-white shadow-sm"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
-              >
-                {y}
-              </button>
-            ))}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs pt-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">Year:</span>
+              <YearFilterPills
+                availableYears={availableYears}
+                selectedYear={filters.year}
+                onSelectYear={(y) => onFilterChange("year", y)}
+                activeClass="bg-orange-600 text-white shadow-sm"
+                size="sm"
+              />
+            </div>
 
-            {/* Advanced Filters Toggle */}
-            <button
-              type="button"
-              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-all cursor-pointer shrink-0"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              {isAdvancedOpen ? "Hide Filters" : "More Filters"}
-            </button>
-
-            {hasActiveFilters && (
+            {/* Actions: More Filters + Reset */}
+            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
               <button
                 type="button"
-                onClick={onResetFilters}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shrink-0"
+                onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-all cursor-pointer shrink-0"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Reset
+                <Filter className="w-3.5 h-3.5" />
+                {isAdvancedOpen ? "Hide Filters" : "More Filters"}
               </button>
-            )}
+
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={onResetFilters}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shrink-0"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Collapsible Advanced Filters with CustomSelects */}
@@ -268,9 +396,9 @@ export default function PYQFilterBar({
       )}
 
       {activeTab === "papers" && (
-        <div className="pt-5 flex flex-wrap items-center gap-3">
+        <div className="pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Exam Type for Papers */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {EXAM_TYPES.map((et) => (
               <button
                 key={et.value}
@@ -288,22 +416,13 @@ export default function PYQFilterBar({
           </div>
 
           {/* Dynamic Year pills for Papers */}
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
-            {availableYears.map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => onFilterChange("year", y)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  filters.year === y
-                    ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
+          <YearFilterPills
+            availableYears={availableYears}
+            selectedYear={filters.year}
+            onSelectYear={(y) => onFilterChange("year", y)}
+            activeClass="bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md"
+            size="md"
+          />
         </div>
       )}
     </div>

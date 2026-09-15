@@ -2,37 +2,57 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FileText, Clock, Award, ArrowUpRight, CheckCircle } from "lucide-react";
+import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
 
 export default function PYQPapersList({ filters, setTotalPapersCount, setPapersLoading }) {
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 12;
+
+  // Reset to page 1 whenever filters change
+  const [prevFilters, setPrevFilters] = useState({ examType: filters.examType, year: filters.year });
+  if (prevFilters.examType !== filters.examType || prevFilters.year !== filters.year) {
+    setPrevFilters({ examType: filters.examType, year: filters.year });
+    setPage(1);
+  }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     if (setPapersLoading) setPapersLoading(true);
     const params = new URLSearchParams();
     if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
     if (filters.year && filters.year !== "All") params.set("exam_year", filters.year);
+    params.set("page", String(page));
+    params.set("limit", String(limit));
 
     fetch(`/api/pyqs/papers?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         const list = data.data || data.papers || [];
         setPapers(list);
-        if (setTotalPapersCount) setTotalPapersCount(data.meta?.total || list.length);
+        if (data.meta) {
+          setTotalPages(data.meta.total_pages || 1);
+          if (setTotalPapersCount) setTotalPapersCount(data.meta.total || 0);
+        } else {
+          setTotalPages(1);
+          if (setTotalPapersCount) setTotalPapersCount(list.length);
+        }
         setLoading(false);
         if (setPapersLoading) setPapersLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching papers:", err);
         setPapers([]);
+        setTotalPages(1);
         if (setTotalPapersCount) setTotalPapersCount(0);
         setLoading(false);
         if (setPapersLoading) setPapersLoading(false);
       });
-  }, [filters.examType, filters.year, setPapersLoading, setTotalPapersCount]);
+  }, [filters.examType, filters.year, page, limit, setPapersLoading, setTotalPapersCount]);
 
   if (loading) {
     return (
@@ -61,63 +81,103 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {papers.map((paper) => {
-        const totalQuestions = paper.sections?.reduce((sum, s) => sum + (s.total_questions || 0), 0) || 90;
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {papers.map((paper) => {
+          const totalQuestions = paper.sections?.reduce((sum, s) => sum + (s.total_questions || 0), 0) || 90;
 
-        return (
-          <div
-            key={paper._id || paper.slug}
-            className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-xl transition-all"
+          return (
+            <div
+              key={paper._id || paper.slug}
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-xl transition-all"
+            >
+              <div className="space-y-4">
+                {/* Badges */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paper.exam_type)}`}>
+                    {paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
+                  </span>
+                  <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg">
+                    {paper.exam_year}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">
+                  {paper.title || paper.paper_id?.replace(/_/g, " ")}
+                </h3>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-orange-500" />
+                    <span>{paper.duration_minutes || 180}m</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <Award className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>{paper.total_marks || 300} Marks</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-blue-500" />
+                    <span>{totalQuestions} Qs</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action */}
+              <div className="pt-6">
+                <Link
+                  href={`/paper/${paper.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 transition-all"
+                >
+                  <span>View Complete Paper</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Pagination Bar */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() => {
+              const newPage = Math.max(1, page - 1);
+              setPage(newPage);
+              window.scrollTo({ top: 300, behavior: "smooth" });
+            }}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
           >
-            <div className="space-y-4">
-              {/* Badges */}
-              <div className="flex items-center justify-between gap-2">
-                <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paper.exam_type)}`}>
-                  {paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
-                </span>
-                <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg">
-                  {paper.exam_year}
-                </span>
-              </div>
+            <ChevronLeft className="w-4 h-4" />
+            <span>Previous</span>
+          </button>
 
-              {/* Title */}
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">
-                {paper.title || paper.paper_id?.replace(/_/g, " ")}
-              </h3>
+          <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
+            Page <strong className="text-gray-900 dark:text-white">{page}</strong> of{" "}
+            <strong className="text-gray-900 dark:text-white">{totalPages}</strong>
+          </span>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex items-center justify-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-orange-500" />
-                  <span>{paper.duration_minutes || 180}m</span>
-                </div>
-                <div className="flex items-center justify-center gap-1.5">
-                  <Award className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>{paper.total_marks || 300} Marks</span>
-                </div>
-                <div className="flex items-center justify-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-blue-500" />
-                  <span>{totalQuestions} Qs</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action */}
-            <div className="pt-6">
-              <Link
-                href={`/paper/${paper.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 transition-all"
-              >
-                <span>View Complete Paper</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        );
-      })}
+          <button
+            type="button"
+            disabled={page >= totalPages}
+            onClick={() => {
+              const newPage = Math.min(totalPages, page + 1);
+              setPage(newPage);
+              window.scrollTo({ top: 300, behavior: "smooth" });
+            }}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
+          >
+            <span>Next</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -41,19 +41,18 @@ function PreviousYearQuestionsContent() {
   const [papersLoading, setPapersLoading] = useState(true);
   const [totalPapersCount, setTotalPapersCount] = useState(0);
 
-  // Fetch available years dynamically from published papers
+  // Fetch available years dynamically from dedicated years endpoint
   useEffect(() => {
-    fetch("/api/pyqs/papers")
+    fetch("/api/pyqs/papers/years")
       .then((res) => res.json())
       .then((data) => {
-        const list = data.data || data.papers || [];
-        const yearsSet = new Set(list.map((p) => String(p.exam_year)).filter(Boolean));
-        if (yearsSet.size > 0) {
-          const sorted = Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
+        const list = data.data || [];
+        if (list.length > 0) {
+          const sorted = list.map(String).sort((a, b) => Number(b) - Number(a));
           setAvailableYears(["All", ...sorted]);
         }
       })
-      .catch((err) => console.error("Error fetching papers for years:", err));
+      .catch((err) => console.error("Error fetching available years:", err));
   }, []);
 
   // Sync URL query params with active filters in useEffect
@@ -113,6 +112,7 @@ function PreviousYearQuestionsContent() {
   useEffect(() => {
     if (activeTab !== "practice") return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     const params = new URLSearchParams();
     if (filters.subject !== "ALL") params.set("subject", filters.subject);
