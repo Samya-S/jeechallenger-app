@@ -25,7 +25,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
-import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR } from "@/utils/pyq-helpers";
+import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
   const searchParams = useSearchParams();
@@ -498,7 +498,8 @@ function PaperDetailContent({ paperData }) {
                         Q{q.question_number}
                       </span>
                       <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[q.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
-                        {q.subject}
+                        <span className="hidden sm:inline">{q.subject}</span>
+                        <span className="sm:hidden">{SUBJECT_SHORT_NAMES[q.subject] || q.subject}</span>
                       </span>
                       <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                         {q.chapter}
@@ -519,7 +520,8 @@ function PaperDetailContent({ paperData }) {
                       )}
                       {q.difficulty && (
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"}`}>
-                          {q.difficulty}
+                          <span className="hidden sm:inline">{q.difficulty}</span>
+                          <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[q.difficulty] || q.difficulty}</span>
                         </span>
                       )}
                     </div>
