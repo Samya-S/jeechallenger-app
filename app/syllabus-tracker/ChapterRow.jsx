@@ -1,6 +1,13 @@
 'use client';
 
 import React, { memo, useCallback } from 'react';
+import Link from 'next/link';
+
+const SUBJECT_MAP = {
+  physics: 'Physics',
+  chemistry: 'Chemistry',
+  mathematics: 'Mathematics',
+};
 
 /**
  * ChapterRow Component - Displays a chapter with checkboxes for different task types
@@ -13,6 +20,12 @@ import React, { memo, useCallback } from 'react';
 const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
   const { id, name, unit } = chapter;
   const isFullyCompleted = progress.theory && progress.pyqs && progress.revision;
+  const subjectTitle = SUBJECT_MAP[subject?.toLowerCase()] || subject;
+  const pyqParams = new URLSearchParams({
+    subject: subjectTitle,
+    chapter: name,
+  });
+  const pyqHref = `/previous-year-questions?${pyqParams.toString()}`;
 
   const handleCheckboxChange = useCallback((taskType) => {
     onToggle(subject, id, taskType, !progress[taskType]);
@@ -30,12 +43,12 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         {/* Chapter Name and Unit */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
               {name}
             </h3>
             {isFullyCompleted && (
-              <span className="flex-shrink-0 text-green-600 dark:text-green-400 animate-pulse">
+              <span className="flex-shrink-0 text-green-600 dark:text-green-400 animate-pulse" title="Chapter Completed">
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
                   className="h-4 w-4 sm:h-5 sm:w-5" 
@@ -50,6 +63,24 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
                 </svg>
               </span>
             )}
+            <Link
+              href={pyqHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-md text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 hover:border-purple-300 dark:hover:border-purple-700 transition-colors shrink-0"
+              title={`Practice Previous Year Questions for ${name}`}
+            >
+              <span>Practice PYQs</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-3 w-3 opacity-70" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
           </div>
         </div>
 
