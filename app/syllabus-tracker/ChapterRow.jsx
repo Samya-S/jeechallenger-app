@@ -43,26 +43,28 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         {/* Chapter Name and Unit */}
         <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
-              {name}
-            </h3>
-            {isFullyCompleted && (
-              <span className="flex-shrink-0 text-green-600 dark:text-green-400 animate-pulse" title="Chapter Completed">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-4 w-4 sm:h-5 sm:w-5" 
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path 
-                    fillRule="evenodd" 
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
-                    clipRule="evenodd" 
-                  />
-                </svg>
-              </span>
-            )}
+          <div className="flex items-center justify-between sm:justify-start gap-2 w-full">
+            <div className="flex items-center gap-2 min-w-0">
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
+                {name}
+              </h3>
+              {isFullyCompleted && (
+                <span className="flex-shrink-0 text-green-600 dark:text-green-400 animate-pulse" title="Chapter Completed">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-4 w-4 sm:h-5 sm:w-5" 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path 
+                      fillRule="evenodd" 
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
+                      clipRule="evenodd" 
+                    />
+                  </svg>
+                </span>
+              )}
+            </div>
             <Link
               href={pyqHref}
               target="_blank"
@@ -84,43 +86,94 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
           </div>
         </div>
 
-        {/* Checkboxes */}
-        <div className="flex gap-4 sm:gap-6 md:gap-8">
+        {/* Checkboxes - Spread evenly across mobile with clean custom styling */}
+        <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-6 md:gap-8 w-full sm:w-auto">
           {/* Theory Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-blue-500/10 dark:hover:bg-blue-500/20">
+          <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group py-1.5 px-2 sm:py-1 sm:px-2 rounded-md hover:bg-gray-100/60 dark:hover:bg-gray-700/30 transition-colors select-none">
             <input
               type="checkbox"
               checked={progress.theory}
               onChange={() => handleCheckboxChange('theory')}
-              className="w-5 h-5 text-blue-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 cursor-pointer hover:scale-105 transition-transform"
+              className="sr-only peer"
+              aria-label={`Theory completion for ${name}`}
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <div 
+              className={`
+                w-4 h-4 sm:w-5 sm:h-5 rounded border transition-all flex items-center justify-center shrink-0
+                peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
+                ${progress.theory 
+                  ? 'bg-blue-600 border-blue-600 dark:bg-blue-600 dark:border-blue-500 text-white shadow-sm' 
+                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900/80 group-hover:border-gray-400 dark:group-hover:border-gray-500'
+                }
+              `}
+            >
+              {progress.theory && (
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
               Theory
             </span>
           </label>
 
           {/* PYQs Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-purple-500/10 dark:hover:bg-purple-500/20">
+          <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group py-1.5 px-2 sm:py-1 sm:px-2 rounded-md hover:bg-gray-100/60 dark:hover:bg-gray-700/30 transition-colors select-none">
             <input
               type="checkbox"
               checked={progress.pyqs}
               onChange={() => handleCheckboxChange('pyqs')}
-              className="w-5 h-5 text-purple-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 cursor-pointer hover:scale-105 transition-transform"
+              className="sr-only peer"
+              aria-label={`PYQs completion for ${name}`}
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            <div 
+              className={`
+                w-4 h-4 sm:w-5 sm:h-5 rounded border transition-all flex items-center justify-center shrink-0
+                peer-focus-visible:ring-2 peer-focus-visible:ring-purple-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
+                ${progress.pyqs 
+                  ? 'bg-purple-600 border-purple-600 dark:bg-purple-600 dark:border-purple-500 text-white shadow-sm' 
+                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900/80 group-hover:border-gray-400 dark:group-hover:border-gray-500'
+                }
+              `}
+            >
+              {progress.pyqs && (
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
               PYQs
             </span>
           </label>
 
           {/* Revision Done */}
-          <label className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded-md hover:bg-orange-500/10 dark:hover:bg-orange-500/20">
+          <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group py-1.5 px-2 sm:py-1 sm:px-2 rounded-md hover:bg-gray-100/60 dark:hover:bg-gray-700/30 transition-colors select-none">
             <input
               type="checkbox"
               checked={progress.revision}
               onChange={() => handleCheckboxChange('revision')}
-              className="w-5 h-5 text-orange-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 cursor-pointer hover:scale-105 transition-transform"
+              className="sr-only peer"
+              aria-label={`Revision completion for ${name}`}
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+            <div 
+              className={`
+                w-4 h-4 sm:w-5 sm:h-5 rounded border transition-all flex items-center justify-center shrink-0
+                peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-1 dark:peer-focus-visible:ring-offset-gray-800
+                ${progress.revision 
+                  ? 'bg-emerald-600 border-emerald-600 dark:bg-emerald-600 dark:border-emerald-500 text-white shadow-sm' 
+                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900/80 group-hover:border-gray-400 dark:group-hover:border-gray-500'
+                }
+              `}
+            >
+              {progress.revision && (
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
               Revision
             </span>
           </label>

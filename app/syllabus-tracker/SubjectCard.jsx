@@ -88,16 +88,16 @@ const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle }) =
 
         {/* Statistics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-3 sm:mt-4">
-          <div className="text-center bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-3 hover:bg-blue-100/70 dark:hover:bg-blue-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-center bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-2 sm:p-3 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/30">
+            <div className="text-xl sm:text-2xl font-bold text-indigo-600 dark:text-indigo-400">
               {chaptersCompleted}/{totalChapters}
             </div>
             <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
               Chapters
             </div>
           </div>
-          <div className="text-center bg-green-50 dark:bg-green-900/20 rounded-lg p-2 sm:p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
+          <div className="text-center bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-3 hover:bg-blue-100/70 dark:hover:bg-blue-900/30">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
               {theoryDone}
             </div>
             <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
@@ -112,8 +112,8 @@ const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle }) =
               PYQs Done
             </div>
           </div>
-          <div className="text-center bg-orange-50 dark:bg-orange-900/20 rounded-lg p-2 sm:p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-orange-600 dark:text-orange-400">
+          <div className="text-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-2 sm:p-3 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/30">
+            <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {revisionDone}
             </div>
             <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
