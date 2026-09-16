@@ -128,7 +128,7 @@ function YearFilterPills({
               <div className="px-2 py-1 mb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 border-b border-gray-100 dark:border-gray-800">
                 Older Archives
               </div>
-              <div className="max-h-48 overflow-y-auto grid grid-cols-2 gap-1 p-0.5 scrollbar-thin">
+              <div className="max-h-48 overflow-y-auto grid grid-cols-2 gap-1 p-0.5 custom-scrollbar">
                 {olderYears.map((y) => (
                   <button
                     key={y}

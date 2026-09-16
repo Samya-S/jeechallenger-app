@@ -99,7 +99,7 @@ export default function CustomSelect({
           )}
 
           {/* Options List */}
-          <div className="max-h-60 overflow-y-auto p-1 space-y-0.5 scrollbar-thin">
+          <div className="max-h-60 overflow-y-auto p-1 space-y-0.5 custom-scrollbar">
             {filteredOptions.length === 0 ? (
               <div className="p-3 text-center text-xs text-gray-400">
                 No matching options
