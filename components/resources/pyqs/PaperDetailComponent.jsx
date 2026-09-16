@@ -370,7 +370,7 @@ function PaperDetailContent({ paperData }) {
               onClick={handleShare}
               title={copied ? "Link copied!" : "Share paper"}
               aria-label={copied ? "Link copied" : "Share paper"}
-              className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-solid border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 shadow-sm transition-all cursor-pointer"
             >
               {copied ? (
                 <>
