@@ -214,7 +214,8 @@ export default function PYQFilterBar({
     filters.year !== "All" ||
     filters.difficulty !== "ALL" ||
     filters.questionType !== "ALL" ||
-    filters.search !== "";
+    filters.search !== "" ||
+    !!filters.tag;
 
   return (
     <div className="relative z-20 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 mb-8 transition-all">
@@ -328,8 +329,23 @@ export default function PYQFilterBar({
               />
             </div>
 
-            {/* Actions: More Filters + Reset */}
-            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+            {/* Actions: More Filters + Active Tag + Reset */}
+            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 flex-wrap">
+              {/* Active concept tag pill */}
+              {filters.tag && (
+                <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+                  <span># {filters.tag}</span>
+                  <button
+                    type="button"
+                    onClick={() => onFilterChange("tag", "")}
+                    className="ml-0.5 text-orange-500 hover:text-orange-700 dark:hover:text-orange-200 cursor-pointer leading-none"
+                    aria-label="Remove tag filter"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+
               <button
                 type="button"
                 onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}

@@ -29,6 +29,7 @@ function PreviousYearQuestionsContent() {
     difficulty: searchParams.get("difficulty") || "ALL",
     questionType: searchParams.get("question_type") || "ALL",
     search: searchParams.get("search") || "",
+    tag: searchParams.get("tags") || "",   // single concept tag from badge click
   });
 
   const [availableYears, setAvailableYears] = useState(["All", "2026", "2025", "2024"]);
@@ -73,6 +74,7 @@ function PreviousYearQuestionsContent() {
     if (filters.difficulty && filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
     if (filters.questionType && filters.questionType !== "ALL") params.set("question_type", filters.questionType);
     if (filters.search) params.set("search", filters.search);
+    if (filters.tag) params.set("tags", filters.tag);
     if (page > 1) params.set("page", String(page));
 
     const query = params.toString();
@@ -85,6 +87,7 @@ function PreviousYearQuestionsContent() {
       const updated = { ...prev, [key]: value };
       if (key === "subject") {
         updated.chapter = "ALL"; // reset chapter atomically with subject change
+        updated.tag = "";        // reset tag when subject changes
       }
       return updated;
     });
@@ -100,6 +103,7 @@ function PreviousYearQuestionsContent() {
       difficulty: "ALL",
       questionType: "ALL",
       search: "",
+      tag: "",
     });
     setPage(1);
   };
@@ -122,6 +126,7 @@ function PreviousYearQuestionsContent() {
     if (filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
     if (filters.questionType !== "ALL") params.set("question_type", filters.questionType);
     if (filters.search) params.set("search", filters.search);
+    if (filters.tag) params.set("tags", filters.tag);
     params.set("page", String(page));
     params.set("limit", String(limit));
 
