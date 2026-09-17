@@ -15,6 +15,8 @@ import {
   Bug,
   Copy,
   Tag,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -466,6 +468,53 @@ export default function QuestionDetailComponent({ question }) {
             )}
           </div>
         </div>
+
+        {/* Previous / Next Question Stepper */}
+        {question.navigation && (
+          <div className="flex items-center justify-between gap-4 pt-1">
+            {question.navigation.prev ? (
+              <Link
+                href={`/question/${question.navigation.prev.slug}`}
+                title={question.navigation.prev.title}
+                aria-label={`Previous question: ${question.navigation.prev.title}`}
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-solid border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-800 shadow-sm transition-all cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4 shrink-0" />
+                <span>Previous</span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-gray-100/70 dark:bg-gray-800/40 border border-solid border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 opacity-50 cursor-not-allowed select-none"
+              >
+                <ChevronLeft className="w-4 h-4 shrink-0" />
+                <span>Previous</span>
+              </button>
+            )}
+
+            {question.navigation.next ? (
+              <Link
+                href={`/question/${question.navigation.next.slug}`}
+                title={question.navigation.next.title}
+                aria-label={`Next question: ${question.navigation.next.title}`}
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-solid border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-800 shadow-sm transition-all cursor-pointer ml-auto"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4 shrink-0" />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-gray-100/70 dark:bg-gray-800/40 border border-solid border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 opacity-50 cursor-not-allowed select-none ml-auto"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4 shrink-0" />
+              </button>
+            )}
+          </div>
+        )}
 
       </div>
 
