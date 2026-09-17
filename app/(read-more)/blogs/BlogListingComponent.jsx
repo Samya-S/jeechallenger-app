@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Filter, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
+import { Search, Filter, BookOpen, TrendingUp, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import BlogCard from '@/components/ui/BlogCard';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
@@ -11,9 +11,13 @@ const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButto
   ssr: false
 });
 
+const ITEMS_PER_PAGE = 12;
+
 export default function BlogListingComponent({ articles }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesSectionRef = useRef(null);
 
   // Extract unique categories (memoized to avoid recalculation)
   const categories = useMemo(() => {
@@ -21,9 +25,11 @@ export default function BlogListingComponent({ articles }) {
     return cats;
   }, [articles]);
 
+  const isDefaultView = !searchQuery && selectedCategory === 'All';
+
   // Filter posts based on search and category (memoized for performance)
   const filteredPosts = useMemo(() => {
-    if (!searchQuery && selectedCategory === 'All') {
+    if (isDefaultView) {
       return articles; // Skip filtering if no filters applied
     }
 
@@ -41,15 +47,51 @@ export default function BlogListingComponent({ articles }) {
 
       return matchesSearch && matchesCategory;
     });
-  }, [articles, searchQuery, selectedCategory]);
+  }, [articles, searchQuery, selectedCategory, isDefaultView]);
 
   // Get featured post (most recent) - memoized
   const featuredPost = useMemo(() => articles[0], [articles]);
+
+  // Articles for the grid: on default view, exclude featured post (index 0)
+  const gridPosts = useMemo(() => {
+    if (isDefaultView) {
+      return filteredPosts.slice(1);
+    }
+    return filteredPosts;
+  }, [filteredPosts, isDefaultView]);
+
+  const totalPages = Math.max(1, Math.ceil(gridPosts.length / ITEMS_PER_PAGE));
+
+  // Sliced posts for current page
+  const displayedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return gridPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [gridPosts, currentPage]);
+
+  const handleSearchChange = useCallback((e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleCategoryChange = useCallback((category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  }, []);
 
   // Memoize callback functions
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory('All');
+    setCurrentPage(1);
+  }, []);
+
+  const handlePageChange = useCallback((newPage) => {
+    setCurrentPage(newPage);
+    if (articlesSectionRef.current) {
+      articlesSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 350, behavior: 'smooth' });
+    }
   }, []);
 
   // Memoize article count for hero section
@@ -101,7 +143,7 @@ export default function BlogListingComponent({ articles }) {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div ref={articlesSectionRef} className="container mx-auto px-4 py-12 max-w-6xl scroll-mt-4">
         {/* Search and Filter Section */}
         <div className="mb-12 space-y-6">
           {/* Search Bar */}
@@ -111,7 +153,7 @@ export default function BlogListingComponent({ articles }) {
               type="text"
               placeholder="Search articles by title, topic, category, or keywords..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 dark:text-white placeholder-gray-500"
             />
           </div>
@@ -122,7 +164,7 @@ export default function BlogListingComponent({ articles }) {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedCategory === category
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
@@ -141,8 +183,8 @@ export default function BlogListingComponent({ articles }) {
           )}
         </div>
 
-        {/* Featured Post */}
-        {!searchQuery && selectedCategory === 'All' && featuredPost && (
+        {/* Featured Post - Only shown on Page 1 of the default view */}
+        {isDefaultView && currentPage === 1 && featuredPost && (
           <div className="mb-16">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="text-yellow-500" size={24} />
@@ -155,18 +197,48 @@ export default function BlogListingComponent({ articles }) {
         {/* Blog Posts Grid */}
         {filteredPosts.length > 0 ? (
           <>
-            {!searchQuery && selectedCategory === 'All' && (
+            {isDefaultView && (
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">All Articles</h2>
             )}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, index) => {
-                // Skip the first post if it's the featured one and no filters applied
-                if (index === 0 && !searchQuery && selectedCategory === 'All') {
-                  return null;
-                }
-                return <BlogCard key={post.slug} post={post} />;
-              })}
-            </div>
+            {displayedPosts.length > 0 && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {displayedPosts.map((post) => (
+                  <BlogCard key={post.slug} post={post} />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination Bar */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between gap-4 pt-10 mt-12 border-t border-gray-200 dark:border-gray-800">
+                <button
+                  type="button"
+                  disabled={currentPage <= 1}
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Previous</span>
+                </button>
+
+                <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
+                  Page <strong className="font-bold text-gray-900 dark:text-white">{Number(currentPage || 1).toLocaleString("en-IN")}</strong> of{" "}
+                  <strong className="font-bold text-gray-900 dark:text-white">{Number(totalPages || 1).toLocaleString("en-IN")}</strong>
+                </span>
+
+                <button
+                  type="button"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
+                  aria-label="Next page"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <div className="text-center py-16">
