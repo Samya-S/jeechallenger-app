@@ -248,15 +248,30 @@ export default function PYQFilterBar({
           </button>
         </div>
 
-        {/* Counter */}
-        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
+        {/* Counter Badge */}
+        <div className="text-xs sm:text-sm font-medium">
           {loading ? (
-            <span className="inline-block w-24 h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-800/60 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+              <span className="w-24 h-3.5 bg-gray-200 dark:bg-gray-700 rounded" />
+            </div>
           ) : (
-            <span>
-              Found <strong className="text-gray-900 dark:text-white font-bold">{totalCount}</strong>{" "}
-              {activeTab === "practice" ? "Questions" : "Papers"}
-            </span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100/90 dark:bg-gray-800/70 border border-gray-200/70 dark:border-gray-700/60 text-gray-600 dark:text-gray-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+              <span>
+                Found{" "}
+                <strong className="font-bold text-gray-900 dark:text-white tabular-nums">
+                  {Number(totalCount || 0).toLocaleString("en-IN")}
+                </strong>{" "}
+                {activeTab === "practice"
+                  ? totalCount === 1
+                    ? "Question"
+                    : "Questions"
+                  : totalCount === 1
+                    ? "Paper"
+                    : "Papers"}
+              </span>
+            </div>
           )}
         </div>
       </div>
