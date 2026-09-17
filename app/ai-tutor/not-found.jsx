@@ -44,7 +44,7 @@ export default function AITutorNotFound() {
       </h1>
 
       <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md">
-        Oops! It looks like the AI Tutor couldn&lsquo;t find the page you are looking for.
+        Oops! It looks like the AI Tutor couldn&apos;t find the page you are looking for.
       </p>
 
       <Link
@@ -52,7 +52,7 @@ export default function AITutorNotFound() {
         className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm"
       >
         <FaArrowLeft className="text-sm" />
-        Back to AI Chat
+        Back to AI Tutor
       </Link>
     </div>
   );
