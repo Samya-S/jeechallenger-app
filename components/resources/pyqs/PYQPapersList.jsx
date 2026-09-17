@@ -158,9 +158,9 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
             <span>Previous</span>
           </button>
 
-          <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
-            Page <strong className="text-gray-900 dark:text-white">{page}</strong> of{" "}
-            <strong className="text-gray-900 dark:text-white">{totalPages}</strong>
+          <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
+            Page <strong className="font-bold text-gray-900 dark:text-white">{Number(page || 1).toLocaleString("en-IN")}</strong> of{" "}
+            <strong className="font-bold text-gray-900 dark:text-white">{Number(totalPages || 1).toLocaleString("en-IN")}</strong>
           </span>
 
           <button
