@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { X, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { X, ZoomIn, ZoomOut, RotateCcw, Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 
 export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose }) {
   const [mounted, setMounted] = useState(false);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [imageStatus, setImageStatus] = useState("loading"); // "loading" | "loaded" | "error"
 
   const imageRef = useRef(null);
   const positionRef = useRef({ x: 0, y: 0 });
@@ -18,10 +19,35 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
   const initialTouchDistance = useRef(null);
   const initialTouchScale = useRef(1);
 
-  const updatePosition = useCallback((newPos) => {
-    positionRef.current = newPos;
-    setPosition(newPos);
-  }, []);
+  // Clamp position so the diagram never gets dragged off-screen
+  const clampPosition = useCallback((pos, targetScale = scale) => {
+    if (targetScale <= 1) return { x: 0, y: 0 };
+    const img = imageRef.current;
+    const w = img?.offsetWidth || 400;
+    const h = img?.offsetHeight || 300;
+
+    const extraX = (w * targetScale - w) / 2;
+    const extraY = (h * targetScale - h) / 2;
+
+    const maxPanX = Math.max(extraX + 60, window.innerWidth * 0.35);
+    const maxPanY = Math.max(extraY + 60, window.innerHeight * 0.35);
+
+    return {
+      x: Math.min(Math.max(pos.x, -maxPanX), maxPanX),
+      y: Math.min(Math.max(pos.y, -maxPanY), maxPanY),
+    };
+  }, [scale]);
+
+  const updatePosition = useCallback((newPos, targetScale = scale) => {
+    const clamped = clampPosition(newPos, targetScale);
+    positionRef.current = clamped;
+    setPosition(clamped);
+  }, [clampPosition, scale]);
+
+  // Reset image status on src change
+  useEffect(() => {
+    setImageStatus("loading");
+  }, [src]);
 
   // Mount only on client for Portal
   useEffect(() => {
@@ -49,7 +75,7 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
   // Reset zoom & pan
   const handleReset = useCallback(() => {
     setScale(1);
-    updatePosition({ x: 0, y: 0 });
+    updatePosition({ x: 0, y: 0 }, 1);
   }, [updatePosition]);
 
   // Close on backdrop / outside click (ignoring drag/pan releases)
@@ -85,7 +111,11 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
     e?.stopPropagation();
     setScale((prev) => {
       const next = Math.max(prev - 0.5, 1);
-      if (next === 1) updatePosition({ x: 0, y: 0 });
+      if (next === 1) {
+        updatePosition({ x: 0, y: 0 }, 1);
+      } else {
+        updatePosition(positionRef.current, next);
+      }
       return next;
     });
   };
@@ -94,15 +124,16 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
   const handleWheel = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    if (e.deltaY < 0) {
-      setScale((prev) => Math.min(prev + 0.2, 3.5));
-    } else {
-      setScale((prev) => {
-        const next = Math.max(prev - 0.2, 1);
-        if (next === 1) updatePosition({ x: 0, y: 0 });
-        return next;
-      });
-    }
+    const delta = e.deltaY < 0 ? 0.2 : -0.2;
+    setScale((prev) => {
+      const next = Math.min(Math.max(prev + delta, 1), 3.5);
+      if (next === 1) {
+        updatePosition({ x: 0, y: 0 }, 1);
+      } else {
+        updatePosition(positionRef.current, next);
+      }
+      return next;
+    });
   };
 
   // Mouse Drag handlers with global window listeners for smooth panning
@@ -186,7 +217,9 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
       const newScale = Math.min(Math.max(initialTouchScale.current * factor, 1), 3.5);
       setScale(newScale);
       if (newScale === 1) {
-        updatePosition({ x: 0, y: 0 });
+        updatePosition({ x: 0, y: 0 }, 1);
+      } else {
+        updatePosition(positionRef.current, newScale);
       }
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
       e.preventDefault();
@@ -200,7 +233,7 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
       updatePosition({
         x: e.touches[0].clientX - dragStart.current.x,
         y: e.touches[0].clientY - dragStart.current.y,
-      });
+      }, scale);
     }
   };
 
@@ -222,7 +255,7 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
     <div
       onClick={handleBackdropClick}
       onWheel={handleWheel}
-      className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none cursor-zoom-out"
+      className="fixed inset-0 z-[200] h-[100dvh] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-4 select-none cursor-zoom-out"
     >
       {/* Top Bar Controls */}
       <div
@@ -241,12 +274,51 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
 
       {/* Main Image Container */}
       <div
-        className="relative max-w-5xl max-h-[85vh] w-full flex items-center justify-center overflow-hidden p-2"
+        className="relative max-w-5xl max-h-[75dvh] sm:max-h-[82dvh] w-full flex items-center justify-center overflow-hidden p-2"
       >
+        {/* Loading Spinner */}
+        {imageStatus === "loading" && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/80 pointer-events-none">
+            <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+            <span className="text-xs font-semibold tracking-wide text-gray-300">Loading diagram...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {imageStatus === "error" && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex flex-col items-center justify-center gap-3 p-6 sm:p-8 text-center bg-gray-900/95 dark:bg-gray-950/95 text-white rounded-2xl border border-white/10 shadow-2xl max-w-sm mx-4 cursor-default"
+          >
+            <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-gray-100">Unable to load diagram</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">The diagram image could not be loaded. Please check your connection.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setImageStatus("loading");
+                if (imageRef.current) {
+                  imageRef.current.src = `${src}#retry=${Date.now()}`;
+                }
+              }}
+              className="mt-2 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 active:scale-95 text-xs font-bold text-white shadow-md transition-all cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </div>
+        )}
+
         <img
           ref={imageRef}
           src={src}
           alt={alt}
+          onLoad={() => setImageStatus("loaded")}
+          onError={() => setImageStatus("error")}
           onClick={handleImageClick}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
@@ -257,56 +329,61 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
             transition: isDragging ? "none" : "transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)",
             cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
           }}
-          className="max-h-[80vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl bg-white dark:bg-gray-900 border border-gray-200/20 dark:border-gray-800 pointer-events-auto select-none"
+          className={`max-h-[72dvh] sm:max-h-[78dvh] w-auto max-w-full object-contain rounded-2xl shadow-2xl bg-white dark:bg-gray-900 border border-gray-200/20 dark:border-gray-800 pointer-events-auto select-none ${
+            imageStatus === "loaded" ? "opacity-100" : "opacity-0 absolute pointer-events-none"
+          } transition-opacity duration-200`}
           draggable={false}
         />
       </div>
 
       {/* Floating Bottom Control Bar */}
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="absolute bottom-6 flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-900/90 dark:bg-gray-800/90 text-white backdrop-blur-md border border-white/10 shadow-2xl z-10 cursor-default"
-      >
-        <button
-          type="button"
-          onClick={handleZoomOut}
-          disabled={scale <= 1}
-          aria-label="Zoom Out"
-          className="p-2 rounded-xl hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+      {imageStatus === "loaded" && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-4 sm:bottom-6 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl bg-gray-900/90 dark:bg-gray-800/90 text-white backdrop-blur-md border border-white/10 shadow-2xl z-10 cursor-default"
         >
-          <ZoomOut className="w-4 h-4" />
-        </button>
+          <button
+            type="button"
+            onClick={handleZoomOut}
+            disabled={scale <= 1}
+            aria-label="Zoom Out"
+            className="p-2 rounded-xl hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </button>
 
-        <span className="text-xs font-mono font-bold px-2 min-w-[3.5rem] text-center text-gray-300">
-          {Math.round(scale * 100)}%
-        </span>
+          <span className="text-xs font-mono font-bold px-2 min-w-[3.5rem] text-center text-gray-300">
+            {Math.round(scale * 100)}%
+          </span>
 
-        <button
-          type="button"
-          onClick={handleZoomIn}
-          disabled={scale >= 3.5}
-          aria-label="Zoom In"
-          className="p-2 rounded-xl hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
-        >
-          <ZoomIn className="w-4 h-4" />
-        </button>
+          <button
+            type="button"
+            onClick={handleZoomIn}
+            disabled={scale >= 3.5}
+            aria-label="Zoom In"
+            className="p-2 rounded-xl hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </button>
 
-        {scale > 1 && (
-          <>
-            <div className="h-4 w-px bg-white/20 mx-1" />
-            <button
-              type="button"
-              onClick={handleReset}
-              aria-label="Reset Zoom"
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-white/10 active:scale-95 text-xs font-semibold text-orange-400 transition-all cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset</span>
-            </button>
-          </>
-        )}
-      </div>
+          {scale > 1 && (
+            <>
+              <div className="h-4 w-px bg-white/20 mx-1" />
+              <button
+                type="button"
+                onClick={handleReset}
+                aria-label="Reset Zoom"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-white/10 active:scale-95 text-xs font-semibold text-orange-400 transition-all cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset</span>
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>,
     document.body
   );
+
 }
