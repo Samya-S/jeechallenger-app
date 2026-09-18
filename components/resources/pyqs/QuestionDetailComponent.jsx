@@ -443,29 +443,6 @@ export default function QuestionDetailComponent({ question }) {
               <MarkdownMathRenderer content={question.solution || question.solution_text || "Solution will be uploaded soon."} />
             </div>
 
-            {/* Solution Diagrams */}
-            {question.solution_diagram_urls && question.solution_diagram_urls.length > 0 && (
-              <div className="pt-4 space-y-3">
-                <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Solution Diagrams & Graphs
-                </h4>
-                <div className="flex flex-wrap items-start gap-4">
-                  {question.solution_diagram_urls.map((imgUrl, i) => (
-                    <div
-                      key={i}
-                      onClick={() => setZoomedImage(imgUrl)}
-                      className="relative rounded-2xl border border-gray-200 dark:border-gray-700 p-3 bg-white dark:bg-gray-800 shadow-md max-w-lg cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
-                    >
-                      <img
-                        src={imgUrl}
-                        alt={`Solution Diagram ${i + 1}`}
-                        className="max-h-80 w-auto object-contain rounded-xl mx-auto"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
