@@ -52,6 +52,15 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
     updatePosition({ x: 0, y: 0 });
   }, [updatePosition]);
 
+  // Close on backdrop / outside click (ignoring drag/pan releases)
+  const handleBackdropClick = useCallback(() => {
+    if (hasDragged.current) {
+      hasDragged.current = false;
+      return;
+    }
+    onClose();
+  }, [onClose]);
+
   // Toggle 1x / 2x zoom on image click
   const handleImageClick = (e) => {
     e.stopPropagation();
@@ -211,7 +220,7 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
 
   return createPortal(
     <div
-      onClick={onClose}
+      onClick={handleBackdropClick}
       onWheel={handleWheel}
       className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none cursor-zoom-out"
     >
@@ -232,7 +241,6 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
 
       {/* Main Image Container */}
       <div
-        onClick={(e) => e.stopPropagation()}
         className="relative max-w-5xl max-h-[85vh] w-full flex items-center justify-center overflow-hidden p-2"
       >
         <img
