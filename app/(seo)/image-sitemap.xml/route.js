@@ -346,18 +346,6 @@ export async function GET() {
                 });
             }
 
-            if (Array.isArray(q.solution_diagram_urls)) {
-                q.solution_diagram_urls.forEach((imgUrl, i) => {
-                    if (imgUrl && typeof imgUrl === 'string') {
-                        images.push({
-                            url: imgUrl,
-                            title: `${ogTitle} - Solution Diagram ${i + 1}`,
-                            caption: `Step-by-step solution derivation figure for ${ogTitle}`
-                        });
-                    }
-                });
-            }
-
             return {
                 loc: `${siteUrl}/question/${q.slug}`,
                 images
