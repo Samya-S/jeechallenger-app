@@ -540,15 +540,34 @@ function PaperDetailContent({ paperData }) {
                   {/* Question Body */}
                   <div className="p-5 md:p-7 space-y-6">
                     {/* Linked Passage (for COMPREHENSION questions) */}
-                    {q.linked_passage_text && (
+                    {(q.linked_passage_text || (q.linked_passage_diagram_urls && q.linked_passage_diagram_urls.length > 0)) && (
                       <div className="p-4 md:p-5 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
                         <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                           <FileText className="w-4 h-4" />
                           <span>Comprehension Passage</span>
                         </div>
-                        <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
-                          <MarkdownMathRenderer content={q.linked_passage_text} />
-                        </div>
+                        {q.linked_passage_text && (
+                          <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                            <MarkdownMathRenderer content={q.linked_passage_text} />
+                          </div>
+                        )}
+                        {q.linked_passage_diagram_urls && q.linked_passage_diagram_urls.length > 0 && (
+                          <div className="flex flex-wrap items-start gap-4 pt-1">
+                            {q.linked_passage_diagram_urls.map((imgUrl, i) => (
+                              <div
+                                key={i}
+                                onClick={() => setZoomedImage(imgUrl)}
+                                className="relative rounded-xl border border-orange-200 dark:border-orange-900/40 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                              >
+                                <img
+                                  src={imgUrl}
+                                  alt={`Passage Diagram ${i + 1}`}
+                                  className="max-h-72 w-auto object-contain rounded-lg mr-auto"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
 

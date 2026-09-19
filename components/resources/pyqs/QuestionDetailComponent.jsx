@@ -220,15 +220,34 @@ export default function QuestionDetailComponent({ question }) {
           <div className="p-6 md:p-8 space-y-6">
             
             {/* Linked Passage (for COMPREHENSION questions) */}
-            {question.linked_passage_text && (
+            {(question.linked_passage_text || (question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0)) && (
               <div className="p-4 md:p-5 rounded-2xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                   <FileText className="w-4 h-4" />
                   <span>Comprehension Passage</span>
                 </div>
-                <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
-                  <MarkdownMathRenderer content={question.linked_passage_text} />
-                </div>
+                {question.linked_passage_text && (
+                  <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                    <MarkdownMathRenderer content={question.linked_passage_text} />
+                  </div>
+                )}
+                {question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0 && (
+                  <div className="flex flex-wrap items-start gap-4 pt-1">
+                    {question.linked_passage_diagram_urls.map((imgUrl, i) => (
+                      <div
+                        key={i}
+                        onClick={() => setZoomedImage(imgUrl)}
+                        className="relative rounded-2xl border border-orange-200 dark:border-orange-900/40 p-2.5 bg-white dark:bg-gray-800 shadow-sm max-w-lg cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`Passage Diagram ${i + 1}`}
+                          className="max-h-72 w-auto object-contain rounded-xl mx-auto"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
