@@ -333,6 +333,18 @@ export async function GET() {
                 });
             }
 
+            if (Array.isArray(q.linked_passage_diagram_urls)) {
+                q.linked_passage_diagram_urls.forEach((imgUrl, i) => {
+                    if (imgUrl && typeof imgUrl === 'string') {
+                        images.push({
+                            url: imgUrl,
+                            title: `${ogTitle} - Passage Diagram ${i + 1}`,
+                            caption: `Passage diagram for ${ogTitle}`
+                        });
+                    }
+                });
+            }
+
             if (q.options && typeof q.options === 'object') {
                 ['A', 'B', 'C', 'D'].forEach((key) => {
                     const opt = q.options[key];
