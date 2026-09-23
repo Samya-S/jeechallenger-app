@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
         </NextAuthProvider>
 
         {/* Manage ads loading and block detection conditionally based on route */}
-        {/* <AdManager /> */}
+        <AdManager />
         <GoogleAnalytics gaId="G-6YPF169T9S" />
       </body>
     </html>

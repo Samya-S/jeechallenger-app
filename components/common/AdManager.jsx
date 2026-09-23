@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { isAdExcluded } from '@/config/ad-config';
+import { isAdExcluded, AD_CONFIG } from '@/config/ad-config';
 
 // Module-scoped flag: coordinates smooth navigation from AdBlock modal to excluded pages
 let isNavigatingFromAdBlockModal = false;
@@ -13,7 +13,12 @@ let isNavigatingFromAdBlockModal = false;
  * Handles injection of ad script tags (Monetag and Google AdSense)
  */
 function AdScriptLoader({ pathname }) {
-  if (isAdExcluded(pathname)) {
+  if (!AD_CONFIG.enabled || isAdExcluded(pathname)) {
+    return null;
+  }
+
+  const { monetag, googleAdSense } = AD_CONFIG.providers;
+  if (!monetag && !googleAdSense) {
     return null;
   }
 
@@ -26,23 +31,27 @@ function AdScriptLoader({ pathname }) {
   return (
     <>
       {/* Monetag Smart Tag */}
-      <Script
-        id="monetag-smart-tag"
-        src="https://quge5.com/88/tag.min.js"
-        data-zone="259240"
-        strategy="afterInteractive"
-        data-cfasync="false"
-        onError={handleScriptError}
-      />
+      {monetag && (
+        <Script
+          id="monetag-smart-tag"
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="259240"
+          strategy="afterInteractive"
+          data-cfasync="false"
+          onError={handleScriptError}
+        />
+      )}
 
       {/* Google AdSense */}
-      <Script
-        id="google-adsense"
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
-        strategy="lazyOnload"
-        crossOrigin="anonymous"
-        onError={handleScriptError}
-      />
+      {googleAdSense && (
+        <Script
+          id="google-adsense"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5566043353022333"
+          strategy="lazyOnload"
+          crossOrigin="anonymous"
+          onError={handleScriptError}
+        />
+      )}
     </>
   );
 }
@@ -52,23 +61,30 @@ function AdScriptLoader({ pathname }) {
  * the blocking overlay once the user has cleared/closed the Donation Modal.
  */
 function AdBlockDetector({ pathname, isModalCleared }) {
+  const isDetectionEnabled =
+    AD_CONFIG.enabled &&
+    AD_CONFIG.features.adBlockDetector &&
+    (AD_CONFIG.providers.monetag || AD_CONFIG.providers.googleAdSense);
+
   // Cache the detection result across navigation in the same session.
   // null = not checked, true = adblocker found, false = no adblocker.
   const [adBlockStatus, setAdBlockStatus] = useState(null);
 
   // Listen for script error events dispatched by AdScriptLoader
   useEffect(() => {
+    if (!isDetectionEnabled) return;
+
     const handleAdBlockEvent = () => {
       setAdBlockStatus(true);
     };
 
     window.addEventListener('adBlockDetected', handleAdBlockEvent);
     return () => window.removeEventListener('adBlockDetected', handleAdBlockEvent);
-  }, []);
+  }, [isDetectionEnabled]);
 
   useEffect(() => {
-    // If ads are excluded on this route, don't perform any check.
-    if (isAdExcluded(pathname)) {
+    // If detection is turned off or ads are excluded on this route, don't perform any check.
+    if (!isDetectionEnabled || isAdExcluded(pathname)) {
       return;
     }
 
@@ -80,18 +96,22 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     const checkAdBlocker = async () => {
       try {
         // 1. Universal Network Probe:
-        // Test essential ad scripts with Promise.allSettled.
-        // Ad blockers (including Brave Shields, uBlock, AdBlock, AdGuard) intercept
-        // and reject one or both of these ad network domains.
-        const networkResults = await Promise.allSettled([
-          fetch("https://quge5.com/88/tag.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" }),
-          fetch("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: "HEAD", mode: "no-cors", cache: "no-store" })
-        ]);
+        // Only probe ad domains for currently enabled providers
+        const probeList = [];
+        if (AD_CONFIG.providers.monetag) {
+          probeList.push(fetch("https://quge5.com/88/tag.min.js", { method: "HEAD", mode: "no-cors", cache: "no-store" }));
+        }
+        if (AD_CONFIG.providers.googleAdSense) {
+          probeList.push(fetch("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: "HEAD", mode: "no-cors", cache: "no-store" }));
+        }
 
-        const isNetworkBlocked = networkResults.some((res) => res.status === 'rejected');
-        if (isNetworkBlocked) {
-          setAdBlockStatus(true);
-          return;
+        if (probeList.length > 0) {
+          const networkResults = await Promise.allSettled(probeList);
+          const isNetworkBlocked = networkResults.some((res) => res.status === 'rejected');
+          if (isNetworkBlocked) {
+            setAdBlockStatus(true);
+            return;
+          }
         }
 
         // 2. Universal Cosmetic Filter Probe:
@@ -130,14 +150,15 @@ function AdBlockDetector({ pathname, isModalCleared }) {
     // Run the check quietly in the background after a short delay
     const timer = setTimeout(checkAdBlocker, 400);
     return () => clearTimeout(timer);
-  }, [pathname, adBlockStatus]);
+  }, [pathname, adBlockStatus, isDetectionEnabled]);
 
   // Determine if we should show the block overlay:
   // ONLY freeze and show the overlay if:
-  // 1. Path is not excluded
-  // 2. An ad blocker was detected
-  // 3. AND the user has dismissed/cleared the donation modal (respecting the reading experience)
-  const shouldBlock = !isAdExcluded(pathname) && adBlockStatus === true && isModalCleared;
+  // 1. Detection is active
+  // 2. Path is not excluded
+  // 3. An ad blocker was detected
+  // 4. AND the user has dismissed/cleared the donation modal
+  const shouldBlock = isDetectionEnabled && !isAdExcluded(pathname) && adBlockStatus === true && isModalCleared;
 
   const modalRef = useRef(null);
   const observerRef = useRef(null);
@@ -182,7 +203,7 @@ function AdBlockDetector({ pathname, isModalCleared }) {
 
     const checkAndEnforce = () => {
       if (isEnforcing || isNavigatingRef.current) return;
-      if (isAdExcluded(pathname) || (typeof window !== 'undefined' && isAdExcluded(window.location.pathname))) return;
+      if (!isDetectionEnabled || isAdExcluded(pathname) || (typeof window !== 'undefined' && isAdExcluded(window.location.pathname))) return;
       isEnforcing = true;
 
       try {
@@ -255,7 +276,7 @@ function AdBlockDetector({ pathname, isModalCleared }) {
         document.head.removeChild(existingStyle);
       }
     };
-  }, [shouldBlock, pathname]);
+  }, [shouldBlock, pathname, isDetectionEnabled]);
 
   const handleLegitimateLeave = () => {
     isNavigatingRef.current = true;
@@ -331,6 +352,9 @@ function AdBlockDetector({ pathname, isModalCleared }) {
  */
 export default function AdManager() {
   const pathname = usePathname();
+  const hasActiveAds =
+    AD_CONFIG.enabled &&
+    (AD_CONFIG.providers.monetag || AD_CONFIG.providers.googleAdSense);
   const isExcluded = isAdExcluded(pathname);
   const [isModalCleared, setIsModalCleared] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -358,7 +382,7 @@ export default function AdManager() {
   // popstate covers the browser Back/Forward buttons (which bypass pushState).
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (isExcluded) return;
+    if (!hasActiveAds || isExcluded) return;
 
     const originalPushState = history.pushState.bind(history);
 
@@ -393,8 +417,12 @@ export default function AdManager() {
       history.pushState = originalPushState;
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [isExcluded]);
+  }, [hasActiveAds, isExcluded]);
 
+  // If ads are disabled globally or no provider & detector is active, render nothing
+  if (!AD_CONFIG.enabled || (!hasActiveAds && !AD_CONFIG.features.adBlockDetector)) {
+    return null;
+  }
 
   return (
     <>
