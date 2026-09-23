@@ -1,4 +1,24 @@
-// Configuration for ad paths and exclusions
+// Configuration for ads, providers, and path exclusions
+
+/**
+ * Granular boolean toggles for ad providers and features.
+ * Toggle individual flags below to enable/disable specific ad networks or detection tools.
+ */
+export const AD_CONFIG = {
+  // Master toggle: set to false to completely shut off all ad loading & detection site-wide
+  enabled: true,
+
+  // Provider-specific toggles: control which ad networks are allowed to load
+  providers: {
+    googleAdSense: true, // Google AdSense script (ca-pub-5566043353022333)
+    monetag: true,       // Monetag smart tag (zone 259240)
+  },
+
+  // Feature toggles: control ad-related background mechanisms
+  features: {
+    adBlockDetector: true, // Adblock detection probes & blocking overlay modal
+  },
+};
 
 // List of path prefixes where ads should NOT be loaded and AdBlock warning should NOT be shown
 export const EXCLUDED_AD_PATHS = [
