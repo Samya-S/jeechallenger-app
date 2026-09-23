@@ -28,6 +28,8 @@ export const EXCLUDED_AD_PATHS = [
   '/ai-tutor',
   '/syllabus-tracker',
   '/chemistry/periodic-table',
+  '/previous-year-questions',
+  '/paper',
 
   '/donate',
   '/disclaimer',
