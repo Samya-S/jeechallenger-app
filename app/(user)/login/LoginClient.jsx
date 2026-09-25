@@ -34,16 +34,11 @@ export default function LoginClient() {
   }, [searchParams]);
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 w-full relative overflow-hidden bg-gray-50 dark:bg-gray-950">
-
-
-
+    <div className="flex items-center justify-center px-4 py-12 sm:py-16 w-full bg-slate-100 dark:bg-[#090d16]">
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8 sm:p-10 relative overflow-hidden flex flex-col items-center">
-
-
+        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-8 sm:p-10 relative overflow-hidden flex flex-col items-center">
           <div className="text-center mb-8 w-full">
-            <div className="w-20 h-20 mx-auto mb-6 relative rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
+            <div className="w-20 h-20 mx-auto mb-6 relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-gray-800">
               <Image
                 src="/images/jcicon.jpg"
                 alt="JEE Challenger Icon"
@@ -77,7 +72,7 @@ export default function LoginClient() {
             </p>
           </div>
 
-          <div className="text-center mt-8 w-full border-t border-gray-100 dark:border-gray-800 pt-6">
+          <div className="text-center mt-8 w-full border-t border-slate-200 dark:border-gray-800 pt-6">
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               By signing in, you agree to our{" "}
               <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline">
