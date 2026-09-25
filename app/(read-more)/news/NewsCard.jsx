@@ -15,7 +15,7 @@ function NewsCard({ article }) {
   const formattedDate = formatDate(article.publishedAt);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden group h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden group h-full flex flex-col text-left">
       <div className="relative h-48 w-full overflow-hidden flex-shrink-0">
         <Image
           src={article.image}
@@ -54,7 +54,7 @@ function NewsCard({ article }) {
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex mx-auto items-center text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium transition-all duration-200 group/link mt-auto flex-shrink-0"
+          className="inline-flex self-start items-center text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium transition-all duration-200 group/link mt-auto flex-shrink-0"
         >
           Read more
           <svg
