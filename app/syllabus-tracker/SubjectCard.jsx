@@ -1,130 +1,135 @@
 'use client';
 
 import React, { memo } from 'react';
+import { ChevronDown, Atom, FlaskConical, Calculator } from 'lucide-react';
 
-/**
- * SubjectCard Component - Displays subject progress with visual progress bar
- * @param {Object} props
- * @param {string} props.subject - Subject key (physics, chemistry, mathematics)
- * @param {Object} props.subjectData - Subject data including name, color, chapters
- * @param {Object} props.stats - Progress statistics
- * @param {boolean} props.expanded - Whether the card is expanded
- * @param {Function} props.onToggle - Toggle expansion handler
- */
-const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle }) => {
-  const { name, color } = subjectData;
-  const { 
-    percentage, 
-    completedTasks, 
-    totalTasks, 
-    chaptersCompleted, 
+const SUBJECT_THEME = {
+  physics: {
+    icon: Atom,
+    iconBg: 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border-blue-200/80 dark:border-blue-800/60',
+    bar: 'bg-blue-600 dark:bg-blue-500',
+    badge: 'text-blue-600 dark:text-blue-400',
+  },
+  chemistry: {
+    icon: FlaskConical,
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border-emerald-200/80 dark:border-emerald-800/60',
+    bar: 'bg-emerald-600 dark:bg-emerald-500',
+    badge: 'text-emerald-600 dark:text-emerald-400',
+  },
+  mathematics: {
+    icon: Calculator,
+    iconBg: 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border-purple-200/80 dark:border-purple-800/60',
+    bar: 'bg-purple-600 dark:bg-purple-500',
+    badge: 'text-purple-600 dark:text-purple-400',
+  },
+};
+
+const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle, filteredCount }) => {
+  const { name } = subjectData;
+  const {
+    percentage,
+    completedTasks,
+    totalTasks,
+    chaptersCompleted,
     totalChapters,
     theoryDone,
     pyqsDone,
-    revisionDone
+    revisionDone,
   } = stats;
 
-  // Determine color class for progress bar based on percentage
-  const getProgressColor = () => {
-    if (percentage >= 75) return 'bg-green-500';
-    if (percentage >= 50) return 'bg-blue-500';
-    if (percentage >= 25) return 'bg-yellow-500';
-    return 'bg-red-400';
-  };
+  const theme = SUBJECT_THEME[subject] || SUBJECT_THEME.physics;
+  const IconComponent = theme.icon;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-600">
-      {/* Header Section */}
-      <div 
-        className="p-4 sm:p-6 cursor-pointer select-none hover:bg-gray-50/50 dark:hover:bg-gray-700/30"
-        onClick={onToggle}
-      >
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${color} shadow-lg ring-2 ring-white dark:ring-gray-800`}></div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+    <div
+      onClick={onToggle}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+      className="p-5 sm:p-6 cursor-pointer select-none flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/70 dark:hover:bg-[#151e30] transition-colors"
+    >
+      {/* Left: Subject Icon, Name, and Progress Bar */}
+      <div className="flex items-center gap-4 min-w-0 flex-1">
+        <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 ${theme.iconBg}`}>
+          <IconComponent className="w-6 h-6" />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               {name}
             </h2>
-          </div>
-          <button 
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-1.5 sm:p-2 touch-manipulation"
-            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            aria-label={expanded ? 'Collapse' : 'Expand'}
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5 sm:h-6 sm:w-6" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M19 9l-7 7-7-7" 
-              />
-            </svg>
-          </button>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-3 sm:mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Overall Progress
-            </span>
-            <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+            <span className={`text-sm font-bold ${theme.badge}`}>
               {percentage}%
             </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              ({completedTasks}/{totalTasks} tasks)
+            </span>
+            {typeof filteredCount === 'number' && filteredCount !== totalChapters && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-700">
+                Showing {filteredCount} of {totalChapters}
+              </span>
+            )}
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
-            <div 
-              className={`h-full ${getProgressColor()} rounded-full shadow-sm`}
+
+          <div className="mt-2 w-full max-w-md bg-slate-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+            <div
+              className={`h-full ${theme.bar} rounded-full transition-all duration-300`}
               style={{ width: `${percentage}%` }}
-            ></div>
+            />
           </div>
         </div>
+      </div>
 
-        {/* Statistics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-3 sm:mt-4">
-          <div className="text-center bg-purple-50 dark:bg-purple-900/20 rounded-lg p-2 sm:p-3 hover:bg-purple-100/70 dark:hover:bg-purple-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">
+      {/* Right: Compact Stat Pills + Expand Chevron */}
+      <div className="flex items-center justify-between lg:justify-end gap-3 sm:gap-4 shrink-0">
+        <div className="grid grid-cols-4 gap-2 sm:gap-2.5 text-center">
+          <div className="px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+            <div className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
               {chaptersCompleted}/{totalChapters}
             </div>
-            <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
+            <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
               Chapters
             </div>
           </div>
-          <div className="text-center bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-3 hover:bg-blue-100/70 dark:hover:bg-blue-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+            <div className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400">
               {theoryDone}
             </div>
-            <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
-              Theory Done
+            <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+              Theory
             </div>
           </div>
-          <div className="text-center bg-orange-50 dark:bg-orange-900/20 rounded-lg p-2 sm:p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-orange-600 dark:text-orange-400">
+          <div className="px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+            <div className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400">
               {pyqsDone}
             </div>
-            <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
-              PYQs Done
+            <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+              PYQs
             </div>
           </div>
-          <div className="text-center bg-green-50 dark:bg-green-900/20 rounded-lg p-2 sm:p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30">
-            <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
+          <div className="px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+            <div className="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400">
               {revisionDone}
             </div>
-            <div className="text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 mt-1">
-              Revision Done
+            <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+              Revision
             </div>
           </div>
         </div>
 
-        {/* Tasks Progress */}
-        <div className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-          {completedTasks} of {totalTasks} tasks completed
+        <div
+          className={`w-9 h-9 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-transform duration-200 shrink-0 ${
+            expanded ? 'rotate-180' : ''
+          }`}
+          aria-label={expanded ? 'Collapse' : 'Expand'}
+        >
+          <ChevronDown className="w-4 h-4" />
         </div>
       </div>
     </div>
@@ -134,3 +139,4 @@ const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle }) =
 SubjectCard.displayName = 'SubjectCard';
 
 export default SubjectCard;
+

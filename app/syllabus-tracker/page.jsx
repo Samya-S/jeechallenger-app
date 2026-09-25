@@ -71,7 +71,7 @@ export default function SyllabusTrackerPage() {
       />
       
       <Suspense fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="py-24 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center [main:has(&)]:min-h-0">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
       }>

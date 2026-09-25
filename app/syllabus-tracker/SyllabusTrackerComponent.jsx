@@ -1,8 +1,22 @@
 'use client';
 
-import React, { useState, useMemo, useSyncExternalStore, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useSyncExternalStore, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { Cloud, CloudOff, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  Cloud,
+  CloudOff,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Search,
+  X,
+  Share2,
+  Download,
+  Upload,
+  RotateCcw,
+  ChevronsDownUp,
+  ChevronsUpDown,
+} from 'lucide-react';
 import { syllabusData } from '@/data/syllabus-data';
 import {
   subscribeProgressData,
@@ -15,7 +29,7 @@ import {
   importProgress,
   saveProgressData,
   getAnonymousProgressData,
-  deleteAnonymousProgressData
+  deleteAnonymousProgressData,
 } from './progressUtils';
 import { mergeProgress, isSameProgress, isEmptyProgress } from './syncUtils';
 import SubjectCard from './SubjectCard';
@@ -42,6 +56,14 @@ function useProgressDataFromStorage(userId) {
   }, [snapshot]);
 }
 
+const getChapterStatus = (progress) => {
+  if (!progress) return 'not-started';
+  const count = (progress.theory ? 1 : 0) + (progress.pyqs ? 1 : 0) + (progress.revision ? 1 : 0);
+  if (count === 3) return 'completed';
+  if (count > 0) return 'in-progress';
+  return 'not-started';
+};
+
 const SyllabusTrackerComponent = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -60,10 +82,14 @@ const SyllabusTrackerComponent = () => {
   );
 
   const [expandedSubjects, setExpandedSubjects] = useState({
-    physics: false,
+    physics: true,
     chemistry: false,
-    mathematics: false
+    mathematics: false,
   });
+
+  // Search & Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'not-started' | 'in-progress' | 'completed'
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -141,24 +167,19 @@ const SyllabusTrackerComponent = () => {
         const isCloudEmpty = isEmptyProgress(cloudProgress);
 
         if (isLocalEmpty && !isCloudEmpty) {
-          // Pull from cloud
           saveProgressData(userId, cloudProgress);
           setSyncInitialized(true);
           setSyncStatus('synced');
         } else if (!isLocalEmpty && isCloudEmpty) {
-          // Push to cloud
           saveProgressData(userId, localData);
           // eslint-disable-next-line react-hooks/immutability
           await pushToCloud(localData);
           if (claimingAnonymous) deleteAnonymousProgressData();
           setSyncInitialized(true);
         } else if (!isLocalEmpty && !isCloudEmpty && !isSameProgress(localData, cloudProgress)) {
-          // Conflict!
           setConflictData({ local: localData, cloud: cloudProgress, claimingAnonymous });
           setShowConflictModal(true);
-          // Wait for user resolution to setSyncInitialized
         } else {
-          // Same data or both empty
           if (claimingAnonymous) {
             saveProgressData(userId, localData);
             deleteAnonymousProgressData();
@@ -167,10 +188,10 @@ const SyllabusTrackerComponent = () => {
           setSyncStatus('synced');
         }
       } catch (error) {
-        console.error("Initial sync failed", error);
+        console.error('Initial sync failed', error);
         if (isMounted) {
           setSyncStatus('error');
-          isInitializingSyncRef.current = false; // Allow retry
+          isInitializingSyncRef.current = false;
         }
       } finally {
         if (isMounted) setIsInitializingSync(false);
@@ -179,7 +200,9 @@ const SyllabusTrackerComponent = () => {
 
     performInitialSync();
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [isAuthenticated, syncEnabled, syncInitialized, userId, progressData]);
 
   const handleConflictResolve = async (resolution) => {
@@ -205,7 +228,7 @@ const SyllabusTrackerComponent = () => {
 
       setSyncInitialized(true);
     } catch (error) {
-      console.error("Failed to resolve conflict", error);
+      console.error('Failed to resolve conflict', error);
       setSyncStatus('error');
     }
   };
@@ -214,7 +237,7 @@ const SyllabusTrackerComponent = () => {
     const res = await fetch('/api/syllabus-tracker/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ progress: data })
+      body: JSON.stringify({ progress: data }),
     });
     if (!res.ok) throw new Error('Sync push failed');
     setSyncStatus('synced');
@@ -226,8 +249,8 @@ const SyllabusTrackerComponent = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSyncStatus('syncing');
     const timer = setTimeout(() => {
-      pushToCloud(progressData).catch(err => {
-        console.error("Auto-sync failed", err);
+      pushToCloud(progressData).catch((err) => {
+        console.error('Auto-sync failed', err);
         setSyncStatus('error');
       });
     }, 1000);
@@ -235,16 +258,25 @@ const SyllabusTrackerComponent = () => {
     return () => clearTimeout(timer);
   }, [progressData, isAuthenticated, syncEnabled, syncInitialized]);
 
-
   const handleToggle = (subject, chapterId, taskType, completed) => {
     updateChapterProgress(userId, subject, chapterId, taskType, completed);
   };
 
   const toggleSubject = (subject) => {
-    setExpandedSubjects(prev => ({
+    setExpandedSubjects((prev) => ({
       ...prev,
-      [subject]: !prev[subject]
+      [subject]: !prev[subject],
     }));
+  };
+
+  const allExpanded = expandedSubjects.physics && expandedSubjects.chemistry && expandedSubjects.mathematics;
+  const handleToggleExpandAll = () => {
+    const next = !allExpanded;
+    setExpandedSubjects({
+      physics: next,
+      chemistry: next,
+      mathematics: next,
+    });
   };
 
   const handleResetAll = async () => {
@@ -282,161 +314,456 @@ const SyllabusTrackerComponent = () => {
     }
   };
 
+  // Compute global status counts & task totals across the active subject filter
+  const statusSummary = useMemo(() => {
+    let all = 0;
+    let notStarted = 0;
+    let inProgress = 0;
+    let completed = 0;
+    let totalTheory = 0;
+    let totalPyqs = 0;
+    let totalRevision = 0;
+
+    Object.entries(syllabusData).forEach(([subjectKey, subjectObj]) => {
+      const subjProgress = progressData[subjectKey] || {};
+      subjectObj.chapters.forEach((ch) => {
+        const p = subjProgress[ch.id];
+        if (p?.theory) totalTheory++;
+        if (p?.pyqs) totalPyqs++;
+        if (p?.revision) totalRevision++;
+
+        all++;
+        const st = getChapterStatus(p);
+        if (st === 'completed') completed++;
+        else if (st === 'in-progress') inProgress++;
+        else notStarted++;
+      });
+    });
+
+    return {
+      all,
+      'not-started': notStarted,
+      'in-progress': inProgress,
+      completed,
+      totalTheory,
+      totalPyqs,
+      totalRevision,
+    };
+  }, [progressData]);
+
+  // Filter chapters per subject
+  const filteredSubjects = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+
+    return Object.entries(syllabusData)
+      .map(([subjectKey, subjectObj]) => {
+        const subjProgress = progressData[subjectKey] || {};
+        const filteredChapters = subjectObj.chapters.filter((ch) => {
+          const matchesQuery =
+            !q ||
+            ch.name.toLowerCase().includes(q) ||
+            (ch.unit && ch.unit.toLowerCase().includes(q));
+          if (!matchesQuery) return false;
+
+          if (statusFilter === 'all') return true;
+          const st = getChapterStatus(subjProgress[ch.id]);
+          return st === statusFilter;
+        });
+
+        return {
+          subjectKey,
+          subjectData: subjectObj,
+          filteredChapters,
+          stats: calculateSubjectProgress(subjectKey, subjectObj.chapters, progressData),
+        };
+      })
+      .filter((item) => item.filteredChapters.length > 0);
+  }, [searchQuery, statusFilter, progressData]);
+
+  const isFiltering = searchQuery.trim() !== '' || statusFilter !== 'all';
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-8 pt-4 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="bg-slate-100 dark:bg-[#090d16] text-left [main:has(&)]:min-h-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <Breadcrumbs
           crumbs={[
-            { label: 'JEE Syllabus Tracker', href: '/syllabus-tracker' }
+            { label: 'JEE Syllabus Tracker', href: '/syllabus-tracker' },
           ]}
-          className="pb-12"
+          className="mb-6"
         />
 
-        {/* Header Section */}
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 px-2">
-            JEE Syllabus Tracker
-          </h1>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 px-4">
-            Track your preparation progress across Physics, Chemistry, and Mathematics
-          </p>
-
-          {/* Overall Progress Card */}
-          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-2xl max-w-2xl mx-auto border border-blue-400/20 hover:shadow-2xl">
-            <h2 className="text-white text-lg sm:text-xl font-bold mb-3 flex items-center justify-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              Overall Progress
-            </h2>
-            <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-5 shadow-lg border border-gray-200 dark:border-gray-700">
-              <div className="flex justify-between items-center mb-2 sm:mb-3">
-                <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Total Completion
-                </span>
-                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {overallStats.percentage}%
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 sm:h-5 overflow-hidden shadow-inner">
-                <div
-                  className="h-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-full shadow-lg"
-                  style={{ width: `${overallStats.percentage}%` }}
-                ></div>
-              </div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-3 text-center">
-                {overallStats.completedTasks} of {overallStats.totalTasks} tasks completed
-              </p>
-            </div>
+        {/* Top Header + Action Toolbar */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+              JEE Syllabus Tracker
+            </h1>
+            <p className="mt-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Track your preparation progress across Physics, Chemistry, and Mathematics
+            </p>
           </div>
 
-          {/* Cloud Sync Status Card */}
-          <div className="max-w-2xl mx-auto mt-4">
+          {/* Utility Toolbar: Cloud Sync + Share / Export / Import / Reset */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Cloud Sync Pill */}
             {!isAuthenticated ? (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/50 shadow-sm flex flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 dark:bg-blue-800 rounded-full p-2">
-                    <Cloud className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">Backup to the Cloud</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">Log in to sync your progress across devices.</p>
-                  </div>
-                </div>
-                <Link href={`/login?returnUrl=${encodedReturnUrl}`} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors whitespace-nowrap shadow-sm">
-                  Sign In
-                </Link>
-              </div>
+              <Link
+                href={`/login?returnUrl=${encodedReturnUrl}`}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 text-xs font-semibold text-gray-700 dark:text-gray-200 shadow-2xs transition-colors"
+                title="Log in to sync your progress across devices"
+              >
+                <Cloud className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span>Sign in to Cloud Sync</span>
+              </Link>
             ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className={`rounded-full p-2 ${syncEnabled ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}>
-                    {syncEnabled ? (
-                      <Cloud className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    ) : (
-                      <CloudOff className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                    )}
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">Cloud Sync</h3>
-                    <div className="text-xs font-medium flex items-center gap-1.5 mt-0.5">
-                      {!syncEnabled ? (
-                        <span className="text-gray-500">Off - Saving locally only</span>
-                      ) : syncStatus === 'syncing' ? (
-                        <span className="text-blue-500 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Syncing...</span>
-                      ) : syncStatus === 'error' ? (
-                        <span className="text-red-500 flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Sync failed</span>
-                      ) : (
-                        <span className="text-green-500 flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Synced</span>
-                      )}
-                    </div>
-                  </div>
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 shadow-2xs">
+                <div className="flex items-center gap-1.5 text-xs font-semibold">
+                  {!syncEnabled ? (
+                    <>
+                      <CloudOff className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-gray-500 dark:text-gray-400">Sync Off</span>
+                    </>
+                  ) : syncStatus === 'syncing' ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 text-blue-500 animate-spin" />
+                      <span className="text-blue-600 dark:text-blue-400">Syncing...</span>
+                    </>
+                  ) : syncStatus === 'error' ? (
+                    <>
+                      <AlertCircle className="w-3.5 h-3.5 text-red-500" />
+                      <span className="text-red-600 dark:text-red-400">Sync Error</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="text-emerald-600 dark:text-emerald-400">Cloud Synced</span>
+                    </>
+                  )}
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked={syncEnabled} onChange={handleToggleSync} disabled={isInitializingSync} />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={syncEnabled}
+                    onChange={handleToggleSync}
+                    disabled={isInitializingSync}
+                  />
+                  <div className="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
                 </label>
               </div>
             )}
+
+            {/* Share Button */}
+            <button
+              type="button"
+              onClick={() => setShowShareModal(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Share Progress</span>
+            </button>
+
+            {/* Export Button */}
+            <button
+              type="button"
+              onClick={handleExport}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
+              title="Export Progress JSON"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export</span>
+            </button>
+
+            {/* Import Button */}
+            <label
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
+              title="Import Progress JSON"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Import</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+            </label>
+
+            {/* Reset Button */}
+            <button
+              type="button"
+              onClick={() => setShowResetConfirm(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-red-300 dark:hover:border-red-800/80 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs transition-colors cursor-pointer"
+              title="Reset All Progress"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset</span>
+            </button>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-          <button
-            onClick={() => setShowShareModal(true)}
-            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 dark:from-purple-500 dark:to-pink-500 dark:hover:from-purple-600 dark:hover:to-pink-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg touch-manipulation"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-            </svg>
-            <span className="sm:hidden">Share</span>
-            <span className="hidden sm:inline">Share Progress</span>
-          </button>
+        {/* Overview Bento Card: Overall Progress + Task Breakdown */}
+        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            {/* Left: Overall Completion */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
+                    Overall Progress
+                  </span>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-1">
+                    {overallStats.percentage}%
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    {overallStats.completedTasks} / {overallStats.totalTasks}
+                  </span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400">
+                    tasks completed
+                  </span>
+                </div>
+              </div>
 
-          <button
-            onClick={handleExport}
-            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg touch-manipulation"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-            <span className="sm:hidden">Export</span>
-            <span className="hidden sm:inline">Export Progress</span>
-          </button>
+              <div className="w-full bg-slate-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 rounded-full transition-all duration-300"
+                  style={{ width: `${overallStats.percentage}%` }}
+                />
+              </div>
 
-          <label className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md hover:shadow-lg touch-manipulation">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
-            <span className="sm:hidden">Import</span>
-            <span className="hidden sm:inline">Import Progress</span>
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-          </label>
+              {/* Task Type Totals Row */}
+              <div className="grid grid-cols-3 gap-2.5 pt-1">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+                  <div className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400">
+                    {statusSummary.totalTheory}/88
+                  </div>
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    Theory Done
+                  </div>
+                </div>
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+                  <div className="text-base sm:text-lg font-bold text-orange-600 dark:text-orange-400">
+                    {statusSummary.totalPyqs}/88
+                  </div>
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    PYQs Done
+                  </div>
+                </div>
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+                  <div className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                    {statusSummary.totalRevision}/88
+                  </div>
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    Revision Done
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <button
-            onClick={() => setShowResetConfirm(true)}
-            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg touch-manipulation"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-            </svg>
-            <span className="sm:hidden">Reset</span>
-            <span className="hidden sm:inline">Reset All</span>
-          </button>
+            {/* Right: 3 Subject Progress Cards */}
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {Object.entries(syllabusData).map(([subjectKey, subjectObj]) => {
+                const st = calculateSubjectProgress(subjectKey, subjectObj.chapters, progressData);
+                const accentBar =
+                  subjectKey === 'physics'
+                    ? 'bg-blue-600'
+                    : subjectKey === 'chemistry'
+                    ? 'bg-emerald-600'
+                    : 'bg-purple-600';
+                const accentText =
+                  subjectKey === 'physics'
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : subjectKey === 'chemistry'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-purple-600 dark:text-purple-400';
+
+                return (
+                  <div
+                    key={subjectKey}
+                    className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 text-left flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                          {subjectObj.name}
+                        </span>
+                        <span className={`text-sm font-extrabold ${accentText}`}>
+                          {st.percentage}%
+                        </span>
+                      </div>
+                      <div className="mt-2 w-full bg-slate-200/80 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className={`h-full ${accentBar} rounded-full transition-all duration-300`}
+                          style={{ width: `${st.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                      <span>
+                        <strong className="text-gray-800 dark:text-gray-200">
+                          {st.chaptersCompleted}/{st.totalChapters}
+                        </strong>{' '}
+                        chapters
+                      </span>
+                      <span>{st.completedTasks}/{st.totalTasks} tasks</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
+
+        {/* Search & 4-Stage Status Filter Control Bar */}
+        <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-4 mb-6">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search chapters or units (e.g. Thermodynamics, Optics, Organic)..."
+                className="w-full pl-10 pr-9 py-2.5 bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-gray-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 text-sm text-gray-900 dark:text-white placeholder-gray-400 transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* 4-Stage Status Filter Pills + Expand/Collapse All */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { key: 'all', label: 'All' },
+                { key: 'not-started', label: 'Not Started' },
+                { key: 'in-progress', label: 'In Progress' },
+                { key: 'completed', label: 'Completed' },
+              ].map((tab) => {
+                const active = statusFilter === tab.key;
+                const count = statusSummary[tab.key];
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setStatusFilter(tab.key)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-solid transition-all cursor-pointer ${
+                      active
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                        : 'bg-slate-50 dark:bg-[#0d1320] text-gray-600 dark:text-gray-300 border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span
+                      className={`px-1.5 py-0.5 rounded-md text-[11px] ${
+                        active
+                          ? 'bg-white/20 text-white'
+                          : 'bg-slate-200/70 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+
+              {!isFiltering && (
+                <button
+                  type="button"
+                  onClick={handleToggleExpandAll}
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-300 bg-slate-50 dark:bg-[#0d1320] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 transition-colors cursor-pointer ml-1"
+                >
+                  {allExpanded ? (
+                    <>
+                      <ChevronsDownUp className="w-3.5 h-3.5" />
+                      <span>Collapse All</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronsUpDown className="w-3.5 h-3.5" />
+                      <span>Expand All</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Empty State when filters/search match 0 chapters */}
+        {filteredSubjects.length === 0 ? (
+          <div className="bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-gray-800 p-12 text-center">
+            <p className="text-base font-semibold text-gray-900 dark:text-white">
+              No chapters match your current filters
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Try searching for a different keyword or switching the status filter.
+            </p>
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors cursor-pointer"
+            >
+              Reset all filters
+            </button>
+          </div>
+        ) : (
+          /* Subject Sections */
+          <div className="space-y-5">
+            {filteredSubjects.map(({ subjectKey, subjectData, filteredChapters, stats }) => {
+              const isExpanded = isFiltering ? true : expandedSubjects[subjectKey];
+              const subjectProgressData = progressData[subjectKey] || {};
+
+              return (
+                <div
+                  key={subjectKey}
+                  className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden"
+                >
+                  <SubjectCard
+                    subject={subjectKey}
+                    subjectData={subjectData}
+                    stats={stats}
+                    expanded={isExpanded}
+                    onToggle={() => toggleSubject(subjectKey)}
+                    filteredCount={filteredChapters.length}
+                  />
+
+                  {isExpanded && (
+                    <div className="p-4 sm:p-6 pt-0 sm:pt-2 border-t border-slate-200/80 dark:border-gray-800 bg-slate-50/50 dark:bg-[#0d1320]/50">
+                      <ChapterList
+                        subject={subjectKey}
+                        chapters={filteredChapters}
+                        progressData={subjectProgressData}
+                        onToggle={handleToggle}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         <SyncConflictModal
           isOpen={showConflictModal}
           onResolve={handleConflictResolve}
         />
 
-        {/* Share Progress Modal */}
         <ShareProgressModal
           isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
@@ -448,30 +775,30 @@ const SyllabusTrackerComponent = () => {
         {/* Reset Confirmation Modal */}
         {showResetConfirm && (
           <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
-                <div className="bg-red-100 dark:bg-red-900/30 rounded-full p-2 sm:p-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
+            <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-gray-800">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-red-100 dark:bg-red-900/30 rounded-xl p-2.5">
+                  <RotateCcw className="h-5 w-5 text-red-600 dark:text-red-400" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                   Confirm Reset
                 </h3>
               </div>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                 Are you sure you want to reset all progress? This action cannot be undone and all your tracked data will be permanently deleted.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
+                  type="button"
                   onClick={handleResetAll}
-                  className="flex-1 px-4 py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold touch-manipulation"
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold cursor-pointer"
                 >
                   Yes, Reset
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowResetConfirm(false)}
-                  className="flex-1 px-4 py-2.5 sm:py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg text-sm sm:text-base font-semibold touch-manipulation"
+                  className="flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl text-sm font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -479,65 +806,10 @@ const SyllabusTrackerComponent = () => {
             </div>
           </div>
         )}
-
-        {/* Subject Cards */}
-        <div className="space-y-6">
-          {Object.entries(syllabusData).map(([subject, subjectData]) => {
-            const stats = calculateSubjectProgress(subject, subjectData.chapters, progressData);
-            const subjectProgressData = progressData[subject] || {};
-
-            return (
-              <div key={subject}>
-                {/* Subject Summary Card */}
-                <SubjectCard
-                  subject={subject}
-                  subjectData={subjectData}
-                  stats={stats}
-                  expanded={expandedSubjects[subject]}
-                  onToggle={() => toggleSubject(subject)}
-                />
-
-                {/* Expanded Chapter List */}
-                {expandedSubjects[subject] && (
-                  <div className="mt-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 animate-slideDown">
-                    <div className="mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></span>
-                        {subjectData.name} Chapters
-                      </h3>
-                      <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                        Track your progress for each chapter by marking Theory, PYQs, and Revision as complete.
-                      </p>
-                    </div>
-                    <ChapterList
-                      subject={subject}
-                      chapters={subjectData.chapters}
-                      progressData={subjectProgressData}
-                      onToggle={handleToggle}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Motivational Footer */}
-        <div className="mt-8 sm:mt-12 max-w-3xl mx-auto">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border border-blue-400/20">
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3 flex items-center justify-center gap-2">
-              Keep Going!
-              <span className="animate-bounce">🚀</span>
-            </h3>
-            <p className="text-white text-base sm:text-lg font-medium text-center">
-              Consistency is the key to cracking JEE. Track your progress daily and stay motivated!
-            </p>
-          </div>
-        </div>
-
       </div>
     </div>
   );
 };
 
 export default SyllabusTrackerComponent;
+
