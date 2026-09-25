@@ -567,53 +567,99 @@ const SyllabusTrackerComponent = () => {
               </div>
             </div>
 
-            {/* Right: 3 Subject Progress Cards */}
+            {/* Right: 3 Subject Progress Cards with Open-Bottom Circular Arc */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {Object.entries(syllabusData).map(([subjectKey, subjectObj]) => {
                 const st = calculateSubjectProgress(subjectKey, subjectObj.chapters, progressData);
-                const accentBar =
+                const radius = 36;
+                const circumference = 2 * Math.PI * radius;
+                const arcDegrees = 240; // 240deg arc leaves a 120deg gap at the bottom
+                const startAngle = 270 - arcDegrees / 2; // 150deg keeps the arc symmetric around top center
+                const arcLength = circumference * (arcDegrees / 360);
+                const filledLength = (st.percentage / 100) * arcLength;
+
+                const accentStroke =
                   subjectKey === 'physics'
-                    ? 'bg-blue-600'
+                    ? 'text-blue-600 dark:text-blue-500'
                     : subjectKey === 'chemistry'
-                    ? 'bg-emerald-600'
-                    : 'bg-purple-600';
-                const accentText =
+                      ? 'text-emerald-600 dark:text-emerald-500'
+                      : 'text-purple-600 dark:text-purple-500';
+                const accentFill =
                   subjectKey === 'physics'
-                    ? 'text-blue-600 dark:text-blue-400'
+                    ? 'fill-blue-600 dark:fill-blue-400'
                     : subjectKey === 'chemistry'
-                    ? 'text-emerald-600 dark:text-emerald-400'
-                    : 'text-purple-600 dark:text-purple-400';
+                      ? 'fill-emerald-600 dark:fill-emerald-400'
+                      : 'fill-purple-600 dark:fill-purple-400';
 
                 return (
                   <div
                     key={subjectKey}
-                    className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 text-left flex flex-col justify-between"
+                    className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 flex flex-col items-center justify-between"
                   >
-                    <div>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-bold text-gray-900 dark:text-white">
-                          {subjectObj.name}
-                        </span>
-                        <span className={`text-sm font-extrabold ${accentText}`}>
-                          {st.percentage}%
-                        </span>
-                      </div>
-                      <div className="mt-2 w-full bg-slate-200/80 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
-                        <div
-                          className={`h-full ${accentBar} rounded-full transition-all duration-300`}
-                          style={{ width: `${st.percentage}%` }}
+                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                      {subjectObj.name}
+                    </span>
+
+                    {/* Open-Bottom Circular Arc Gauge (240deg) */}
+                    <div className="relative w-32 h-26 my-1 flex items-center justify-center">
+                      <svg
+                        viewBox="0 0 100 84"
+                        className="w-full h-full overflow-visible"
+                      >
+                        {/* Background Arc Track */}
+                        <circle
+                          cx="50"
+                          cy="46"
+                          r={radius}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${arcLength} ${circumference}`}
+                          transform={`rotate(${startAngle} 50 46)`}
+                          className="text-slate-200 dark:text-gray-800"
                         />
-                      </div>
+                        {/* Active Progress Arc */}
+                        <circle
+                          cx="50"
+                          cy="46"
+                          r={radius}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${filledLength} ${circumference}`}
+                          transform={`rotate(${startAngle} 50 46)`}
+                          className={`${accentStroke} transition-all duration-300`}
+                        />
+                        {/* Exact Center of Circle (x=50, y=44): Percentage */}
+                        <text
+                          x="50"
+                          y="44"
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          className={`text-[18px] font-extrabold ${accentFill}`}
+                        >
+                          {st.percentage}%
+                        </text>
+                        {/* Inside Open Bottom Gap of Circle (x=50, y=71): X/Y tasks */}
+                        <text
+                          x="50"
+                          y="71"
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          className="text-[9.5px] font-semibold fill-gray-500 dark:fill-gray-400"
+                        >
+                          {st.completedTasks}/{st.totalTasks} tasks
+                        </text>
+                      </svg>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <span>
-                        <strong className="text-gray-800 dark:text-gray-200">
-                          {st.chaptersCompleted}/{st.totalChapters}
-                        </strong>{' '}
-                        chapters
-                      </span>
-                      <span>{st.completedTasks}/{st.totalTasks} tasks</span>
+                    <div className="w-full pt-2.5 border-t border-slate-200/80 dark:border-gray-800 text-center text-xs text-gray-500 dark:text-gray-400">
+                      <strong className="text-gray-800 dark:text-gray-200">
+                        {st.chaptersCompleted}/{st.totalChapters}
+                      </strong>{' '}
+                      chapters done
                     </div>
                   </div>
                 );
@@ -662,19 +708,17 @@ const SyllabusTrackerComponent = () => {
                     key={tab.key}
                     type="button"
                     onClick={() => setStatusFilter(tab.key)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-solid transition-all cursor-pointer ${
-                      active
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-solid transition-all cursor-pointer ${active
                         ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
                         : 'bg-slate-50 dark:bg-[#0d1320] text-gray-600 dark:text-gray-300 border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700'
-                    }`}
+                      }`}
                   >
                     <span>{tab.label}</span>
                     <span
-                      className={`px-1.5 py-0.5 rounded-md text-[11px] ${
-                        active
+                      className={`px-1.5 py-0.5 rounded-md text-[11px] ${active
                           ? 'bg-white/20 text-white'
                           : 'bg-slate-200/70 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-                      }`}
+                        }`}
                     >
                       {count}
                     </span>
