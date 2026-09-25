@@ -51,10 +51,10 @@ export default function LoginPage() {
           ],
         }}
       />
-      <div className="min-h-[100dvh] w-full flex flex-col">
+      <div className="w-full bg-slate-100 dark:bg-[#090d16] [main:has(&)]:min-h-0">
         <Suspense
           fallback={
-            <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+            <div className="py-24 flex flex-col items-center justify-center space-y-4">
               <FaSpinner className="animate-spin text-blue-500 text-4xl" />
               <p className="text-gray-600 dark:text-gray-400">Loading...</p>
             </div>

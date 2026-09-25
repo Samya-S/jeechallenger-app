@@ -37,16 +37,16 @@ const ProfileContent = () => {
 
   if (loading) {
     return (
-      <div className="h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
+      <div className="py-24 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center [main:has(&)]:min-h-0">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black flex flex-col text-left">
+    <div className="bg-slate-100 dark:bg-[#090d16] flex flex-col text-left [main:has(&)]:min-h-0">
       {/* Profile Content */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <div className="max-w-4xl mx-auto">
 
           {/* Back Button */}
@@ -61,8 +61,8 @@ const ProfileContent = () => {
           )}
 
           {/* Profile Header */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
-            <div className="flex items-center space-x-4">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl sm:rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
+            <div className="flex items-center space-x-4 sm:space-x-5">
               {user.image ? (
                 <Image
                   src={user.image}
@@ -71,7 +71,7 @@ const ProfileContent = () => {
                   height={80}
                   loader={profileImageLoader}
                   unoptimized
-                  className="w-20 h-20 rounded-full border-4 border-blue-500 object-cover shadow-lg"
+                  className="w-20 h-20 rounded-full border-2 border-blue-500 object-cover shadow-sm"
                 />
               ) : (
                 <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -103,7 +103,7 @@ const ProfileContent = () => {
           </div>
 
           {/* Account Settings */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl sm:rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
               <FaCog className="text-gray-500" />
               <span>Account Settings</span>
@@ -117,13 +117,13 @@ const ProfileContent = () => {
                   <span>Personal Information</span>
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 rounded-xl">
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Name</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{user.name}</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 rounded-xl">
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Email</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
@@ -142,7 +142,7 @@ const ProfileContent = () => {
                   <Link
                     href="/privacy-policy"
                     target="_blank"
-                    className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                    className="flex items-center justify-between w-full p-3.5 bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 rounded-xl transition-colors cursor-pointer"
                   >
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Privacy Policy</p>
@@ -153,7 +153,7 @@ const ProfileContent = () => {
                   <Link
                     href="/terms-of-service"
                     target="_blank"
-                    className="flex items-center justify-between w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                    className="flex items-center justify-between w-full p-3.5 bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 rounded-xl transition-colors cursor-pointer"
                   >
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Terms of Service</p>
@@ -165,7 +165,7 @@ const ProfileContent = () => {
               </div>
 
               {/* Preferences */}
-              <div className="space-y-4">
+              <div className="space-y-4 md:col-span-2">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3 flex items-center space-x-2">
                   <FaPalette className="text-orange-500" />
                   <span>Preferences</span>
@@ -173,13 +173,13 @@ const ProfileContent = () => {
                 <div className="space-y-3">
                   <div
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg cursor-pointer"
+                    className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 rounded-xl transition-colors cursor-pointer"
                   >
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Theme</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Dark/Light mode</p>
                     </div>
-                    <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                    <button className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                       {theme === "dark" ? "Dark" : "Light"}
                     </button>
                   </div>
@@ -194,7 +194,7 @@ const ProfileContent = () => {
                 <span>Account Actions</span>
               </h3>
               <div className="space-y-4">
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/60 rounded-xl">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-red-700 dark:text-red-300">
                       Permanent Account Deletion
@@ -226,7 +226,7 @@ const ProfileContent = () => {
 const ProfileComponent = () => {
   return (
     <Suspense fallback={
-      <div className="h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
+      <div className="py-24 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center [main:has(&)]:min-h-0">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     }>
