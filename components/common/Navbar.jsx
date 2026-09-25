@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -13,8 +13,12 @@ import { useTheme } from "@teispace/next-themes";
 
 export default function NavBar() {
   const [showMobileNav, setShowMobileNav] = useState(false);
-  const [dropdownState, setDropdownState] = useState({});
+  const [activeDesktopDropdown, setActiveDesktopDropdown] = useState(null);
+  const [mobileDropdownState, setMobileDropdownState] = useState({});
   const [isScrolled, setIsScrolled] = useState(false);
+  const closeTimeoutRef = useRef(null);
+  const navRef = useRef(null);
+
   const { theme, resolvedTheme, setTheme } = useTheme();
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -38,27 +42,98 @@ export default function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const openDesktopDropdown = (key) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveDesktopDropdown(key);
+  };
+
+  const closeDesktopDropdownWithDelay = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveDesktopDropdown(null);
+    }, 150);
+  };
+
+  const closeDesktopDropdownImmediately = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveDesktopDropdown(null);
+  };
+
+  const toggleDesktopDropdown = (key) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveDesktopDropdown((prev) => (prev === key ? null : key));
+  };
+
   const toggleMobileNav = () => {
     setShowMobileNav(!showMobileNav);
   };
 
-  const toggleDropdown = (index) => {
-    setDropdownState((prevState) => {
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = false;
-        return acc;
-      }, {});
-      return {
-        ...newState,
-        [index]: !prevState[index],
-      };
-    });
+  const toggleMobileDropdown = (index) => {
+    setMobileDropdownState((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
   };
 
   const closeMobileNav = () => {
     setShowMobileNav(false);
-    setDropdownState({});
+    setMobileDropdownState({});
   };
+
+  // Close desktop and mobile menus on route change during render
+  const [prevPath, setPrevPath] = useState(fullCurrentPath);
+  if (prevPath !== fullCurrentPath) {
+    setPrevPath(fullCurrentPath);
+    if (activeDesktopDropdown !== null) {
+      setActiveDesktopDropdown(null);
+    }
+    if (showMobileNav) {
+      setShowMobileNav(false);
+    }
+    if (Object.keys(mobileDropdownState).length > 0) {
+      setMobileDropdownState({});
+    }
+  }
+
+  // Handle escape key and click outside for desktop dropdown
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        closeDesktopDropdownImmediately();
+        if (showMobileNav) {
+          closeMobileNav();
+        }
+      }
+    };
+
+    const handleClickOutside = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        closeDesktopDropdownImmediately();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, [showMobileNav]);
 
 
 
@@ -80,6 +155,7 @@ export default function NavBar() {
 
   return (
     <nav
+      ref={navRef}
       className={`${Styles.navbar} ${isScrolled ? Styles.navbarScrolled : ''}`}
       role="navigation"
       aria-label="Main navigation"
@@ -101,24 +177,26 @@ export default function NavBar() {
                   href={item.url}
                   role="menuitem"
                   aria-label={`Go to ${item.title} page`}
+                  onClick={closeDesktopDropdownImmediately}
                 >
                   {item.title}
                 </Link>
               </li>
             );
           } else if (item.type === "dropdown") {
+            const isOpen = activeDesktopDropdown === index;
             return (
               <li
                 key={index}
                 className={Styles.li}
                 role="none"
-                onMouseLeave={() => toggleDropdown(index)}
+                onMouseEnter={() => openDesktopDropdown(index)}
+                onMouseLeave={closeDesktopDropdownWithDelay}
               >
                 <button
                   className={Styles.columnsDropdown}
-                  onMouseEnter={() => toggleDropdown(index)}
-                  onClick={() => toggleDropdown(index)}
-                  aria-expanded={dropdownState[index]}
+                  onClick={() => toggleDesktopDropdown(index)}
+                  aria-expanded={isOpen}
                   aria-haspopup="true"
                   aria-label={`Open dropdown for ${item.title} options`}
                   role="menuitem"
@@ -127,7 +205,7 @@ export default function NavBar() {
                   <span
                     className={Styles.columnsDropdownArrow}
                     style={{
-                      transform: dropdownState[index] ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                     }}
                   >
                     <FaCaretDown />
@@ -136,9 +214,9 @@ export default function NavBar() {
                 <div
                   className={Styles.columnsDropdownContent}
                   style={{
-                    opacity: dropdownState[index] ? 1 : 0,
-                    visibility: dropdownState[index] ? 'visible' : 'hidden',
-                    transform: dropdownState[index] ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'
+                    opacity: isOpen ? 1 : 0,
+                    visibility: isOpen ? 'visible' : 'hidden',
+                    transform: isOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'
                   }}
                   role="menu"
                   aria-label={`${item.title} submenu`}
@@ -150,6 +228,7 @@ export default function NavBar() {
                           href={subitem.url}
                           role="menuitem"
                           aria-label={`Go to ${subitem.title} page`}
+                          onClick={closeDesktopDropdownImmediately}
                         >
                           {subitem.title}
                         </Link>
@@ -170,71 +249,89 @@ export default function NavBar() {
           {status === "loading" ? (
             <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
           ) : status === "authenticated" ? (
-            <div
-              className={Styles.li}
-              role="none"
-              onMouseLeave={() => toggleDropdown('user')}
-            >
-              <button
-                className={Styles.columnsDropdown}
-                onMouseEnter={() => toggleDropdown('user')}
-                onClick={() => toggleDropdown('user')}
-                aria-expanded={dropdownState['user']}
-                style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-              >
-                {session?.user?.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt={session.user.name || "User"}
-                    width={32}
-                    height={32}
-                    loader={profileImageLoader}
-                    unoptimized
-                    className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 object-cover"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center border border-blue-200 dark:border-blue-800">
-                    <FaUser className="text-blue-600 dark:text-blue-400" />
-                  </div>
-                )}
-                <span
-                  className={Styles.columnsDropdownArrow}
-                  style={{
-                    transform: dropdownState['user'] ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
+            (() => {
+              const isUserOpen = activeDesktopDropdown === 'user';
+              return (
+                <div
+                  className={Styles.li}
+                  role="none"
+                  onMouseEnter={() => openDesktopDropdown('user')}
+                  onMouseLeave={closeDesktopDropdownWithDelay}
                 >
-                  <FaCaretDown />
-                </span>
-              </button>
-              <div
-                className={Styles.columnsDropdownContent}
-                style={{
-                  opacity: dropdownState['user'] ? 1 : 0,
-                  visibility: dropdownState['user'] ? 'visible' : 'hidden',
-                  transform: dropdownState['user'] ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)',
-                  right: 0,
-                  left: 'auto',
-                  minWidth: '150px'
-                }}
-              >
-                <ul>
-                  <li className={Styles.columnsDropdownContentli}>
-                    <Link href={`/profile${pathname === '/' ? '' : `?returnUrl=${encodedReturnUrl}`}`}>
-                      Profile
-                    </Link>
-                  </li>
-                  <li className={Styles.columnsDropdownContentli}>
-                    <button
-                      onClick={() => signOut({ callbackUrl: fullCurrentPath })}
-                      className={Styles.signOutDesktop}
+                  <button
+                    className={Styles.columnsDropdown}
+                    onClick={() => toggleDesktopDropdown('user')}
+                    aria-expanded={isUserOpen}
+                    aria-haspopup="true"
+                    aria-label="Open user menu"
+                    role="menuitem"
+                    style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    {session?.user?.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "User"}
+                        width={32}
+                        height={32}
+                        loader={profileImageLoader}
+                        unoptimized
+                        className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                        <FaUser className="text-blue-600 dark:text-blue-400" />
+                      </div>
+                    )}
+                    <span
+                      className={Styles.columnsDropdownArrow}
+                      style={{
+                        transform: isUserOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      }}
                     >
-                      <FaSignOutAlt />
-                      Sign Out
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+                      <FaCaretDown />
+                    </span>
+                  </button>
+                  <div
+                    className={Styles.columnsDropdownContent}
+                    style={{
+                      opacity: isUserOpen ? 1 : 0,
+                      visibility: isUserOpen ? 'visible' : 'hidden',
+                      transform: isUserOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)',
+                      right: 0,
+                      left: 'auto',
+                      minWidth: '150px'
+                    }}
+                    role="menu"
+                    aria-label="User account menu"
+                  >
+                    <ul>
+                      <li className={Styles.columnsDropdownContentli} role="none">
+                        <Link 
+                          href={`/profile${pathname === '/' ? '' : `?returnUrl=${encodedReturnUrl}`}`}
+                          onClick={closeDesktopDropdownImmediately}
+                          role="menuitem"
+                        >
+                          Profile
+                        </Link>
+                      </li>
+                      <li className={Styles.columnsDropdownContentli} role="none">
+                        <button
+                          onClick={() => {
+                            closeDesktopDropdownImmediately();
+                            signOut({ callbackUrl: fullCurrentPath });
+                          }}
+                          className={Styles.signOutDesktop}
+                          role="menuitem"
+                        >
+                          <FaSignOutAlt />
+                          Sign Out
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              );
+            })()
           ) : (
             <Link
               href={loginHref}
@@ -296,14 +393,15 @@ export default function NavBar() {
                   </li>
                 );
               } else if (item.type === 'dropdown') {
+                const isMobileOpen = Boolean(mobileDropdownState[index]);
                 return (
                   <li key={index} className={Styles.mobileDropdown} role="none">
                     <button
                       onClick={(event) => {
                         event.preventDefault();
-                        toggleDropdown(index);
+                        toggleMobileDropdown(index);
                       }}
-                      aria-expanded={dropdownState[index]}
+                      aria-expanded={isMobileOpen}
                       aria-haspopup="true"
                       aria-label={`Open dropdown for ${item.title} options`}
                       role="menuitem"
@@ -316,7 +414,7 @@ export default function NavBar() {
                       <span
                         className={Styles.mobileDropdownArrow}
                         style={{
-                          transform: dropdownState[index] ? 'rotate(180deg)' : 'rotate(0deg)',
+                          transform: isMobileOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                         }}
                       >
                         <FaCaretDown />
@@ -324,7 +422,7 @@ export default function NavBar() {
                     </button>
                     <div
                       className={Styles.columnsDropdownMobile}
-                      style={{ maxHeight: dropdownState[index] ? '500px' : '0' }}
+                      style={{ maxHeight: isMobileOpen ? '500px' : '0' }}
                       role="menu"
                       aria-label={`${item.title} submenu`}
                     >
