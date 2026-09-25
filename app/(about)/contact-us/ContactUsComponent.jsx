@@ -1,7 +1,11 @@
 "use client";
-import { submitContactUsForm } from "@/server/contact-actions";
+
 import { useState } from "react";
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { Mail, Send, Clock, Sparkles, CheckCircle2, AlertCircle, ArrowUpRight } from "lucide-react";
+import { FaTelegram } from "react-icons/fa";
+import { submitContactUsForm } from "@/server/contact-actions";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 
 const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {
@@ -42,183 +46,249 @@ const ContactUsComponent = () => {
         setFormData({ name: "", email: "", message: "" });
         setIsSubmitted(true);
         setIsError(false);
-        setTimeout(() => setIsSubmitted(false), 10000); // Reset confirmation message after 10 seconds
+        setTimeout(() => setIsSubmitted(false), 10000);
       } else {
         setErrorMessage("Oops! Something went wrong. Please try again.");
         setIsError(true);
         setIsSubmitted(false);
-        setTimeout(() => setIsError(false), 10000); // Reset confirmation message after 10 seconds
+        setTimeout(() => setIsError(false), 10000);
       }
     } catch (error) {
       setErrorMessage("Network error. Please try again later.");
       setIsError(true);
       setIsSubmitted(false);
-      setTimeout(() => setIsError(false), 10000); // Reset confirmation message after 10 seconds
+      setTimeout(() => setIsError(false), 10000);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white pb-16 pt-4">
+    <div className="bg-slate-100 dark:bg-[#090d16] text-left [main:has(&)]:min-h-0">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+        {/* Standard Breadcrumb - No hero banner */}
         <Breadcrumbs
           crumbs={[
             { label: "Contact Us", href: "/contact-us" }
           ]} 
-          hasBanner={true}
-          className="pb-12"
+          className="mb-6"
         />
 
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Get in Touch
-          </h1>
-          <p className="text-xl md:text-2xl text-blue-100 mb-6">
-            Have questions, suggestions, or feedback? We&lsquo;d love to hear from you!
-          </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto rounded-full"></div>
-        </div>
-      </section>
-
-      {/* Contact Form Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+        {/* Connected Card: Left Info Panel + Right Message Form */}
+        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+          
+          {/* Left Panel: Context & Direct Reachout */}
+          <div className="lg:col-span-5 bg-slate-50 dark:bg-[#0d1320] p-6 sm:p-10 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-gray-800 flex flex-col justify-between space-y-8">
+            <div className="space-y-6">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold border border-blue-200/80 dark:border-blue-800/60 mb-3">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>We&apos;re here to help</span>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Send us a Message
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  We&lsquo;ll get back to you as soon as possible
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  Get in Touch
+                </h1>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                  Have questions about study materials, feature suggestions, paper error reports, or feedback? Drop us a note anytime.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Direct Channels */}
+              <div className="space-y-3.5">
+                {/* Email Card */}
+                <a
+                  href="mailto:jeechallenger@gmail.com"
+                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
+                        Direct Email
+                      </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                    </div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                      jeechallenger@gmail.com
+                    </p>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5">
+                      Fastest channel for official inquiries
+                    </span>
+                  </div>
+                </a>
+
+                {/* Telegram Channel Card */}
+                <a
+                  href="https://t.me/+oOnj4y_ZYqYyZjA1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-sky-500/60 dark:hover:border-sky-500/60 transition-all shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <FaTelegram className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
+                        Telegram Channel
+                      </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-sky-500 transition-colors" />
+                    </div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors truncate">
+                      Join our Telegram Channel
+                    </p>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5">
+                      Instant discussions, paper updates &amp; resources
+                    </span>
+                  </div>
+                </a>
+
+                {/* Response Time Info - Clean inline text, no border box */}
+                <div className="flex items-center gap-2 pt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <Clock className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>
+                    We typically review and respond within <strong className="whitespace-nowrap font-medium text-gray-700 dark:text-gray-300">24–48 hours</strong>.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Links */}
+            <div className="pt-4 border-t border-slate-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400">
+              <span>Looking for policies? Read our </span>
+              <Link href="/privacy-policy" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Privacy Policy</Link>
+              <span> and </span>
+              <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Terms</Link>.
+            </div>
+          </div>
+
+          {/* Right Panel: Interactive Message Form */}
+          <div className="lg:col-span-7 p-6 sm:p-10 bg-white dark:bg-[#111827] flex flex-col justify-between">
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  Send us a Message
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Fill in your details below and we&apos;ll get back to you as soon as possible.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
-                    Name <span className="text-red-500">*</span>
+                  <label htmlFor="name" className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                    Your Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="name"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200"
+                    type="text"
                     name="name"
-                    placeholder="What's your name? Let us know!"
+                    placeholder="e.g. Rahul Sharma"
                     value={formData.name}
                     onChange={handleChange}
                     required
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-gray-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 dark:text-white placeholder-gray-400 text-sm transition-colors"
                   />
                 </div>
 
+                {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
-                    Email <span className="text-red-500">*</span>
+                  <label htmlFor="email" className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                    Email Address <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="email"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${
-                      formData.email && !validateEmail(formData.email)
-                        ? "border-red-500 dark:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
-                    }`}
                     type="email"
                     name="email"
-                    placeholder="Your email, so we can reach out!"
+                    placeholder="e.g. rahul@example.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#090d16] border rounded-xl focus:outline-none dark:text-white placeholder-gray-400 text-sm transition-colors ${
+                      formData.email && !validateEmail(formData.email)
+                        ? "border-red-500 dark:border-red-500 focus:border-red-500"
+                        : "border-slate-200 dark:border-gray-800 focus:border-blue-500 dark:focus:border-blue-400"
+                    }`}
                   />
                   {formData.email && !validateEmail(formData.email) && (
-                    <p className="mt-1 text-xs text-red-500 dark:text-red-400 text-left">
+                    <p className="mt-1.5 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
                       Please enter a valid email address.
                     </p>
                   )}
                 </div>
 
+                {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
+                  <label htmlFor="message" className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
                     Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="message"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 resize-none"
                     name="message"
-                    placeholder="What's on your mind? We're all ears!"
+                    rows={5}
+                    placeholder="Tell us what's on your mind or how we can assist you..."
                     value={formData.message}
                     onChange={handleChange}
-                    rows={6}
                     required
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-gray-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 dark:text-white placeholder-gray-400 text-sm transition-colors resize-none custom-scrollbar"
                   />
                 </div>
 
+                {/* Submit CTA */}
                 <button 
                   type="submit" 
                   disabled={isLoading || !isFormValid}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:enabled:from-blue-700 hover:enabled:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:enabled:scale-105 shadow-md hover:enabled:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm hover:shadow transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isLoading ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Sending...
-                    </span>
+                      Sending Message...
+                    </>
                   ) : (
-                    <span className="flex items-center justify-center">
-                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                      </svg>
-                      Send Message
-                    </span>
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Send Message</span>
+                    </>
                   )}
                 </button>
               </form>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">
-                Fields marked with <span className="text-red-500">*</span> are required.
-              </p>
-
-              {/* Success Message */}
+              {/* Status Notifications */}
               {isSubmitted && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 rounded-lg">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-600 dark:text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <p className="text-green-800 dark:text-green-300 font-medium">
-                      {responseMessage || "Woohoo! Your message is on its way. Thank you!"}
-                    </p>
-                  </div>
+                <div className="mt-4 p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <p className="text-xs sm:text-sm font-medium">
+                    {responseMessage || "Woohoo! Your message is on its way. Thank you!"}
+                  </p>
                 </div>
               )}
 
-              {/* Error Message */}
               {isError && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-700 rounded-lg">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-red-600 dark:text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-red-800 dark:text-red-300 font-medium">
-                      {errorMessage || "Oops! Something went wrong. Please try again."}
-                    </p>
-                  </div>
+                <div className="mt-4 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 flex items-center gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+                  <p className="text-xs sm:text-sm font-medium">
+                    {errorMessage || "Oops! Something went wrong. Please try again."}
+                  </p>
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Scroll to Top Button */}
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-6 text-center">
+              We respect your privacy. Your information is never sold or shared with third parties.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
       <ScrollToTopButton 
         gradientColors="from-blue-600 to-purple-600" 
         hoverColors="hover:from-blue-700 hover:to-purple-700" 
