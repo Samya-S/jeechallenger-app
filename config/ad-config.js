@@ -6,7 +6,7 @@
  */
 export const AD_CONFIG = {
   // Master toggle: set to false to completely shut off all ad loading & detection site-wide
-  enabled: true,
+  enabled: false,
 
   // Provider-specific toggles: control which ad networks are allowed to load
   providers: {
