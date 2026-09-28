@@ -18,9 +18,9 @@ export default function ConditionalLayout({ children }) {
     <TelegramGateProvider>
       {!isAITutorPage && (
         <Suspense fallback={
-          <div className="h-[4.5rem] w-full flex items-center justify-between px-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 z-50 fixed top-0">
-            <div className="font-bold text-lg">JEE Challenger</div>
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <div className="h-16 w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/60 z-50 sticky top-0">
+            <div className="text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">JEE Challenger</div>
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
           </div>
         }>
           <Navbar />
