@@ -333,35 +333,10 @@ iframe {
   position: relative;
 }
 
-/* Add proper spacing for fixed navbar */
+/* Main content spacing for sticky navbar */
 main {
-  padding-top: 4.5rem; /* Matches navbar height */
-  min-height: 100vh; /* Prevent CLS from short content */
+  min-height: calc(100vh - 4rem);
   will-change: auto;
-}
-
-/* Responsive spacing for different screen sizes */
-@media screen and (max-width: 900px) {
-  main {
-    padding-top: 4rem; /* Slightly less on mobile */
-  }
-}
-
-@media screen and (max-width: 640px) {
-  main {
-    padding-top: 4rem;
-  }
-}
-
-/* Reserve space for navbar to prevent CLS */
-.navbar-spacer {
-  height: 4.5rem;
-}
-
-@media screen and (max-width: 900px) {
-  .navbar-spacer {
-    height: 4rem;
-  }
 }
 
 /* Blog markdown: remove extra bottom space inside blockquotes */
