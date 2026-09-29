@@ -163,7 +163,7 @@ export const ChapterList = ({ subject, chapters, progressData, onToggle }) => {
   }, {});
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       {Object.entries(groupedChapters).map(([unit, unitChapters]) => {
         const completedInUnit = unitChapters.filter((ch) => {
           const p = progressData[ch.id];

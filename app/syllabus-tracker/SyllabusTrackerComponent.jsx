@@ -82,7 +82,7 @@ const SyllabusTrackerComponent = () => {
   );
 
   const [expandedSubjects, setExpandedSubjects] = useState({
-    physics: true,
+    physics: false,
     chemistry: false,
     mathematics: false,
   });
@@ -269,15 +269,6 @@ const SyllabusTrackerComponent = () => {
     }));
   };
 
-  const allExpanded = expandedSubjects.physics && expandedSubjects.chemistry && expandedSubjects.mathematics;
-  const handleToggleExpandAll = () => {
-    const next = !allExpanded;
-    setExpandedSubjects({
-      physics: next,
-      chemistry: next,
-      mathematics: next,
-    });
-  };
 
   const handleResetAll = async () => {
     resetAllProgress(userId);
@@ -382,6 +373,26 @@ const SyllabusTrackerComponent = () => {
 
   const isFiltering = searchQuery.trim() !== '' || statusFilter !== 'all';
 
+  const visibleSubjectKeys = useMemo(
+    () => filteredSubjects.map((s) => s.subjectKey),
+    [filteredSubjects]
+  );
+
+  const allExpanded =
+    visibleSubjectKeys.length > 0 &&
+    visibleSubjectKeys.every((key) => expandedSubjects[key]);
+
+  const handleToggleExpandAll = () => {
+    const next = !allExpanded;
+    setExpandedSubjects((prev) => {
+      const updated = { ...prev };
+      visibleSubjectKeys.forEach((key) => {
+        updated[key] = next;
+      });
+      return updated;
+    });
+  };
+
   const handleClearFilters = () => {
     setSearchQuery('');
     setStatusFilter('all');
@@ -421,7 +432,17 @@ const SyllabusTrackerComponent = () => {
                 <span>Sign in to Cloud Sync</span>
               </Link>
             ) : (
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 shadow-2xs">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={syncEnabled}
+                onClick={handleToggleSync}
+                disabled={isInitializingSync}
+                title={syncEnabled ? "Click to turn off cloud sync" : "Click to turn on cloud sync"}
+                className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 shadow-2xs transition-all cursor-pointer select-none ${
+                  isInitializingSync ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
                 <div className="flex items-center gap-1.5 text-xs font-semibold">
                   {!syncEnabled ? (
                     <>
@@ -445,17 +466,21 @@ const SyllabusTrackerComponent = () => {
                     </>
                   )}
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={syncEnabled}
-                    onChange={handleToggleSync}
-                    disabled={isInitializingSync}
+
+                {/* Toggle track and knob */}
+                <div
+                  aria-hidden="true"
+                  className={`w-8 h-[18px] rounded-full transition-colors relative shrink-0 ${
+                    syncEnabled ? 'bg-blue-600' : 'bg-slate-200 dark:bg-gray-700'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-[2px] left-[2px] bg-white rounded-full h-3.5 w-3.5 shadow-xs transition-transform duration-200 ease-in-out ${
+                      syncEnabled ? 'translate-x-[14px]' : 'translate-x-0'
+                    }`}
                   />
-                  <div className="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                </label>
-              </div>
+                </div>
+              </button>
             )}
 
             {/* Share Button */}
@@ -726,25 +751,23 @@ const SyllabusTrackerComponent = () => {
                 );
               })}
 
-              {!isFiltering && (
-                <button
-                  type="button"
-                  onClick={handleToggleExpandAll}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-300 bg-slate-50 dark:bg-[#0d1320] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 transition-colors cursor-pointer ml-1"
-                >
-                  {allExpanded ? (
-                    <>
-                      <ChevronsDownUp className="w-3.5 h-3.5" />
-                      <span>Collapse All</span>
-                    </>
-                  ) : (
-                    <>
-                      <ChevronsUpDown className="w-3.5 h-3.5" />
-                      <span>Expand All</span>
-                    </>
-                  )}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleToggleExpandAll}
+                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-300 bg-slate-50 dark:bg-[#0d1320] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 transition-colors cursor-pointer ml-1"
+              >
+                {allExpanded ? (
+                  <>
+                    <ChevronsDownUp className="w-3.5 h-3.5" />
+                    <span>Collapse All</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronsUpDown className="w-3.5 h-3.5" />
+                    <span>Expand All</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -770,7 +793,7 @@ const SyllabusTrackerComponent = () => {
           /* Subject Sections */
           <div className="space-y-5">
             {filteredSubjects.map(({ subjectKey, subjectData, filteredChapters, stats }) => {
-              const isExpanded = isFiltering ? true : expandedSubjects[subjectKey];
+              const isExpanded = !!expandedSubjects[subjectKey];
               const subjectProgressData = progressData[subjectKey] || {};
 
               return (
@@ -788,7 +811,7 @@ const SyllabusTrackerComponent = () => {
                   />
 
                   {isExpanded && (
-                    <div className="p-4 sm:p-6 pt-0 sm:pt-2 border-t border-slate-200/80 dark:border-gray-800 bg-slate-50/50 dark:bg-[#0d1320]/50">
+                    <div className="p-4 sm:p-6 pt-4 sm:pt-5 border-t border-slate-200/80 dark:border-gray-800 bg-slate-50/50 dark:bg-[#0d1320]/50">
                       <ChapterList
                         subject={subjectKey}
                         chapters={filteredChapters}
