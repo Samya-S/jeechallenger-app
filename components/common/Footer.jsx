@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb, FaHeart } from "react-icons/fa";
+import { FaTelegram, FaInstagram, FaYoutube, FaEnvelope, FaGithub, FaChalkboardTeacher, FaNewspaper, FaChartLine, FaLightbulb, FaTable } from "react-icons/fa";
 // import GoogleAdsUnit from "@/components/ui/GoogleAdsUnit";
 
 const Footer = () => {
@@ -58,6 +58,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/chemistry/periodic-table" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
+                  <FaTable className="text-sm" />
+                  Periodic Table
+                </Link>
+              </li>
+              <li>
                 <Link href="/blogs" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
                   <FaLightbulb className="text-sm" />
                   Articles & Tips
@@ -69,42 +75,36 @@ const Footer = () => {
                   Latest News
                 </Link>
               </li>
-              <li>
-                <Link href="/donate" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors inline-flex items-center gap-1.5">
-                  <FaHeart className="text-sm" />
-                  Support Us
-                </Link>
-              </li>
             </ul>
           </div>
 
-          {/* Platforms & Official Links */}
+          {/* Legal & Support */}
           <div className="order-3">
-            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Platforms & Official Links</p>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Legal & Support</p>
             <ul className="space-y-2">
               <li>
-                <Link href="/more-platforms/unacademy" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  Unacademy
+                <Link href="/privacy-policy" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/more-platforms/physicswallah" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  Physics Wallah
+                <Link href="/terms-of-service" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/more-platforms/apnikaksha" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  Apni Kaksha
+                <Link href="/disclaimer" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Disclaimer
                 </Link>
               </li>
               <li>
-                <Link href="/jee-main" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  JEE Main Links
+                <Link href="/contact-us" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/jee-advanced" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-                  JEE Advanced Links
+                <Link href="/donate" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                  Support Us
                 </Link>
               </li>
             </ul>
@@ -149,37 +149,6 @@ const Footer = () => {
             <span className="font-medium">JEE Challenger</span>
           </p>
           <p className="text-sm mt-2">All Rights Reserved</p>
-
-          {/* Legal Links */}
-          <div className="flex justify-center gap-2 mt-4 text-sm flex-wrap">
-            <Link
-              href="/disclaimer"
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-            >
-              Disclaimer
-            </Link>
-            <span className="text-gray-400 dark:text-gray-600">•</span>
-            <Link
-              href="/privacy-policy"
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <span className="text-gray-400 dark:text-gray-600">•</span>
-            <Link
-              href="/terms-of-service"
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-            >
-              Terms of Service
-            </Link>
-            <span className="text-gray-400 dark:text-gray-600">•</span>
-            <Link
-              href="/contact-us"
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
 
           {/* Source Code Link */}
           <div className="flex justify-center mt-4">

@@ -60,7 +60,6 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Physics Resources**: Complete study materials and reference books.
 - **Chemistry Resources**: Comprehensive chemistry study guides.
 - **Mathematics Resources**: Extensive math preparation materials.
-- **Additional Platforms**: Integration with Unacademy, Physics Wallah, and Apni Kaksha.
 
 
 ### 📝 Previous Year Questions
@@ -123,13 +122,6 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - Reading progress tracking with table of contents
 - Social sharing integration
 - SEO optimized with structured data
-
-
-### 🔗 Platform Integrations
-
-- **Unacademy**: Direct links to Unacademy JEE courses
-- **Physics Wallah**: Access to PW study materials
-- **Apni Kaksha**: Additional study resources
 
 
 ## Technologies Used
@@ -294,7 +286,6 @@ jeechallenger-app/
 │   │   ├── auth/               # NextAuth API endpoints
 │   │   ├── pyqs/               # Reverse proxy to Go PYQ microservice
 │   │   └── syllabus-tracker/   # Syllabus tracker sync API
-│   ├── more-platforms/         # External platform links
 │   └── syllabus-tracker/       # Progress tracking system
 ├── components/                 # Reusable React components
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
