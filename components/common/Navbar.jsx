@@ -372,7 +372,7 @@ export default function NavBar() {
           />
 
           {/* Mobile Menu Panel */}
-          <div className="relative z-10 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+          <div className="relative z-10 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-2xl flex flex-col max-h-[92vh] overflow-hidden text-left">
             {/* Header bar inside drawer */}
             <div className="h-16 px-4 sm:px-6 flex items-center justify-between border-b border-gray-200/80 dark:border-gray-800 shrink-0">
               <Link
@@ -397,7 +397,7 @@ export default function NavBar() {
             </div>
 
             {/* Scrollable Navigation Menu */}
-            <div className="overflow-y-auto px-4 py-6 space-y-4 flex-1">
+            <div className="overflow-y-auto px-4 py-6 space-y-4 flex-1 text-left">
               <nav className="flex flex-col space-y-1">
                 {NavbarItems.map((item, index) => {
                   if (item.type === "link") {
@@ -468,7 +468,7 @@ export default function NavBar() {
 
                         {/* Expandable Accordion Sub-links */}
                         {isMobileOpen && (
-                          <div className="pl-10 pr-4 py-1 space-y-1 border-l-2 border-blue-500/50 ml-4 mb-2">
+                          <div className="pl-10 pr-4 py-1 space-y-1 border-l-2 border-blue-500/50 ml-4 mb-2 text-left">
                             {item.items.map((subitem, subindex) => {
                               const isSubActive = pathname === subitem.url;
                               return (
@@ -476,7 +476,7 @@ export default function NavBar() {
                                   key={subindex}
                                   href={subitem.url}
                                   onClick={() => setShowMobileNav(false)}
-                                  className={`block py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
+                                  className={`block py-2.5 px-3 rounded-lg text-sm font-medium text-left transition-colors ${
                                     isSubActive
                                       ? "text-blue-600 dark:text-blue-400 font-semibold"
                                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
