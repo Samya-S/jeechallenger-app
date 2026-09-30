@@ -1,6 +1,5 @@
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PeriodicTableExplorer from "@/app/(resources)/chemistry/periodic-table/PeriodicTableExplorer";
-import RelatedConverters from "@/components/common/RelatedConverters";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { ogImageMeta } from '@/utils/og-metadata';
 

@@ -1,6 +1,5 @@
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import UnitConverter from "@/components/common/UnitConverter";
-import RelatedConverters from "@/components/common/RelatedConverters";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { ogImageMeta } from '@/utils/og-metadata';
 
@@ -37,7 +36,7 @@ export default function UnitConverterPage() {
   return (
     <div className="min-h-screen pb-20">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 pb-24 pt-4">
+      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-900 dark:to-purple-900 pb-16 sm:pb-20 pt-4">
         <Breadcrumbs
           crumbs={[
             { label: 'Resources', href: '/resources' },
@@ -63,10 +62,9 @@ export default function UnitConverterPage() {
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl mix-blend-overlay"></div>
       </div>
 
-      {/* Main Content (Negative margin to pull it up into the banner) */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
+      {/* Main Content */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <UnitConverter subject="physics" />
-        <RelatedConverters currentSubject="physics" />
       </div>
 
       <ScrollToTopButton 
