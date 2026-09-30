@@ -23,7 +23,7 @@ const GoogleAuthButton = ({ returnUrl = "/", onLoginError }) => {
         <button
           onClick={handleLogin}
           disabled={isLoading}
-          className="w-full max-w-sm flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
+          className="w-full max-w-sm flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 dark:bg-gray-700/80 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-100 font-medium py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
         >
           {isLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>

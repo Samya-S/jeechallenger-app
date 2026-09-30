@@ -117,10 +117,10 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="relative w-full max-w-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[85vh] text-left">
+      <div className="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col max-h-[85vh] text-left">
 
         {/* ── Fixed Header ── */}
-        <div className="px-6 pt-6 pb-5 border-b border-gray-200 dark:border-gray-700 flex items-start justify-between gap-4 shrink-0">
+        <div className="px-6 pt-6 pb-5 border-b border-slate-200 dark:border-gray-800 flex items-start justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 shrink-0 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800">
               <Bug className="w-5 h-5 text-red-500" />
@@ -232,7 +232,7 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
                     />
                   </button>
                   {isDropdownOpen && (
-                    <ul className="absolute z-10 mt-1.5 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl p-1.5 space-y-1">
+                    <ul className="absolute z-10 mt-1.5 w-full bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl shadow-xl ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-1.5 space-y-1">
                       {ISSUE_TYPES.map((type) => (
                         <li key={type}>
                           <button

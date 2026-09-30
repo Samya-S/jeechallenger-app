@@ -34,9 +34,9 @@ export default function LoginClient() {
   }, [searchParams]);
 
   return (
-    <div className="flex items-center justify-center px-4 py-12 sm:py-16 w-full bg-slate-100 dark:bg-[#090d16]">
+    <div className="flex items-center justify-center px-4 py-12 sm:py-16 w-full">
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-8 sm:p-10 relative overflow-hidden flex flex-col items-center">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-8 sm:p-10 relative overflow-hidden flex flex-col items-center">
           <div className="text-center mb-8 w-full">
             <div className="w-20 h-20 mx-auto mb-6 relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-gray-800">
               <Image
@@ -72,7 +72,7 @@ export default function LoginClient() {
             </p>
           </div>
 
-          <div className="text-center mt-8 w-full border-t border-slate-200 dark:border-gray-800 pt-6">
+          <div className="text-center mt-8 w-full border-t border-gray-200 dark:border-gray-800 pt-6">
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               By signing in, you agree to our{" "}
               <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline">

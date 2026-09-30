@@ -101,7 +101,7 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC,
 
         {/* Inline Mobile TOC Content */}
         {showTOC && (
-          <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="mb-8 p-6 bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 shadow-md shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
             <nav className="space-y-2 text-left">
               {tableOfContents.map((heading, index) => (
                 <a
@@ -165,7 +165,7 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC,
 
           {/* Sheet Container */}
           <div
-            className={`relative z-10 bg-white dark:bg-gray-800 rounded-t-3xl shadow-2xl border-t border-gray-200 dark:border-gray-700 max-h-[75vh] flex flex-col ${
+            className={`relative z-10 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl border-t border-slate-200 dark:border-gray-800 max-h-[75vh] flex flex-col ${
               isClosing ? styles.slideDown : styles.slideUp
             }`}
             role="dialog"
@@ -176,7 +176,7 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC,
             <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto my-3 flex-shrink-0" />
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pb-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex items-center justify-between px-6 pb-3 border-b border-slate-200 dark:border-gray-800 flex-shrink-0">
               <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
                 <Menu size={18} className="text-blue-600 dark:text-blue-400" />
                 <span>Table of Contents</span>
@@ -232,8 +232,8 @@ export function DesktopTOC({ tableOfContents, activeHeading, handleClick }) {
   return (
     <aside className="hidden lg:block w-64 flex-shrink-0">
       <div className="sticky top-24">
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
+          <div className="p-6 pb-4 border-b border-slate-200 dark:border-gray-800">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <Menu size={20} />
               Table of Contents

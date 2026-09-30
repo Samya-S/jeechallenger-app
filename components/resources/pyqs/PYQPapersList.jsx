@@ -58,7 +58,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3, 4, 5, 6].map((n) => (
-          <div key={n} className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4 animate-pulse">
+          <div key={n} className="bg-white dark:bg-gray-900 p-6 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] space-y-4 animate-pulse">
             <div className="h-5 bg-gray-200 dark:bg-gray-800 rounded w-3/4"></div>
             <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2"></div>
             <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
@@ -70,7 +70,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
 
   if (papers.length === 0) {
     return (
-      <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+      <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 p-8 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
         <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Papers Found</h3>
         <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
@@ -89,7 +89,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
           return (
             <div
               key={paper._id || paper.slug}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-xl transition-all"
+              className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 flex flex-col justify-between hover:shadow-xl transition-all"
             >
               <div className="space-y-4">
                 {/* Badges */}
@@ -143,7 +143,7 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
 
       {/* Pagination Bar */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between gap-4 pt-8 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between gap-4 pt-4">
           <button
             type="button"
             disabled={page <= 1}

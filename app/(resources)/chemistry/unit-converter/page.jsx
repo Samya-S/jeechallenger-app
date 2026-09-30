@@ -35,7 +35,7 @@ export const metadata = {
 
 export default function ChemistryUnitConverterPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
+    <div className="min-h-screen pb-20">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-700 to-teal-700 dark:from-green-900 dark:to-teal-900 pb-24 pt-4">
         <Breadcrumbs

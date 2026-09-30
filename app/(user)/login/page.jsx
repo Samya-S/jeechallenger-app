@@ -51,7 +51,7 @@ export default function LoginPage() {
           ],
         }}
       />
-      <div className="w-full bg-slate-100 dark:bg-[#090d16] [main:has(&)]:min-h-0">
+      <div className="w-full [main:has(&)]:min-h-0">
         <Suspense
           fallback={
             <div className="py-24 flex flex-col items-center justify-center space-y-4">

@@ -31,7 +31,7 @@ const MorePlatformsComponent = () => {
       <div className="max-w-7xl mx-auto">
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
               <div className="p-6 flex flex-col flex-grow">
                 <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
                   <Image
@@ -61,7 +61,7 @@ const MorePlatformsComponent = () => {
               </div>
             </div>
 
-            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
               <div className="p-6 flex flex-col flex-grow">
                 <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
                   <Image
@@ -91,7 +91,7 @@ const MorePlatformsComponent = () => {
               </div>
             </div>
 
-            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
               <div className="p-6 flex flex-col flex-grow">
                 <div className="relative w-full mb-4" style={{ aspectRatio: '2/1' }}>
                   <Image

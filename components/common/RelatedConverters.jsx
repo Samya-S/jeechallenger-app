@@ -37,9 +37,9 @@ export default function RelatedConverters({ currentSubject }) {
   return (
     <div className="mt-12 pb-8">
       <div className="flex items-center justify-center gap-4 mb-8">
-        <div className="h-px bg-gray-200 dark:bg-gray-700 w-16"></div>
+        <div className="h-px bg-gray-200 dark:bg-gray-800 w-16"></div>
         <h3 className="text-lg font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Also Check Out</h3>
-        <div className="h-px bg-gray-200 dark:bg-gray-700 w-16"></div>
+        <div className="h-px bg-gray-200 dark:bg-gray-800 w-16"></div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -49,7 +49,7 @@ export default function RelatedConverters({ currentSubject }) {
             <Link
               key={key}
               href={data.href}
-              className={`group flex items-center p-5 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 ${data.hoverBg}`}
+              className={`group flex items-center p-5 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] hover:shadow-xl transition-all duration-300 ${data.hoverBg}`}
             >
               <div className={`p-4 rounded-2xl ${data.iconBg} mr-5 transition-transform group-hover:scale-110`}>
                 <Icon className={`w-7 h-7 ${data.textColor}`} />

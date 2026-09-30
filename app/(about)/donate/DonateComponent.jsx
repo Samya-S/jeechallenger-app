@@ -21,7 +21,7 @@ const DonateComponent = () => {
   };
 
   return (
-    <div className="bg-slate-100 dark:bg-[#090d16] text-left [main:has(&)]:min-h-0">
+    <div className="text-left [main:has(&)]:min-h-0">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <Breadcrumbs
           crumbs={[
@@ -31,10 +31,10 @@ const DonateComponent = () => {
         />
 
         {/* Connected Split-Panel Card */}
-        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden grid grid-cols-1 lg:grid-cols-12">
           
           {/* Left Panel: Mission & Motivation */}
-          <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-white dark:bg-[#111827]">
+          <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-white dark:bg-gray-900">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold border border-blue-200/80 dark:border-blue-800/60 mb-4">
                 <Heart className="w-3.5 h-3.5" />
@@ -68,7 +68,7 @@ const DonateComponent = () => {
           {/* Right Panel: QR Code & UPI Payment */}
           <div className="lg:col-span-5 bg-slate-50 dark:bg-[#0d1320] p-6 sm:p-10 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-gray-800 flex flex-col items-center justify-center text-center">
             {/* QR Code */}
-            <div className="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-700">
+            <div className="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800">
               <Image
                 src="/images/donation-qr.png"
                 alt="Support us with UPI"
@@ -87,7 +87,7 @@ const DonateComponent = () => {
             <button
               type="button"
               onClick={handleCopyUpi}
-              className="mt-2.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 shadow-2xs text-xs font-medium text-gray-600 dark:text-gray-300 transition-colors cursor-pointer"
+              className="mt-2.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 shadow-2xs text-xs font-medium text-gray-600 dark:text-gray-300 transition-colors cursor-pointer"
               title="Copy UPI ID"
             >
               <span className="font-mono text-gray-900 dark:text-white">{UPI_ID}</span>
@@ -120,4 +120,4 @@ const DonateComponent = () => {
   );
 };
 
-export default DonateComponent;
+export default DonateComponent;

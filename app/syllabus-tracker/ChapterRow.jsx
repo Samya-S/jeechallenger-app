@@ -35,7 +35,7 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
       className={`group flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3.5 transition-colors border-b last:border-b-0 border-slate-200/80 dark:border-gray-800/80 ${
         isFullyCompleted
           ? 'bg-emerald-50/40 dark:bg-emerald-950/15 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/25'
-          : 'bg-white dark:bg-[#111827] hover:bg-slate-50/80 dark:hover:bg-[#151e30]'
+          : 'bg-white dark:bg-gray-900 hover:bg-slate-50/80 dark:hover:bg-[#151e30]'
       }`}
     >
       {/* Left: Status Icon + Chapter Name + Practice PYQs Link */}
@@ -88,7 +88,7 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
             className={`w-3.5 h-3.5 rounded flex items-center justify-center border border-solid transition-colors ${
               progress.theory
                 ? 'bg-white/20 border-transparent text-white'
-                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-[#111827]'
+                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-900'
             }`}
           >
             {progress.theory && <Check className="w-2.5 h-2.5 stroke-[3]" />}
@@ -111,7 +111,7 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
             className={`w-3.5 h-3.5 rounded flex items-center justify-center border border-solid transition-colors ${
               progress.pyqs
                 ? 'bg-white/20 border-transparent text-white'
-                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-[#111827]'
+                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-900'
             }`}
           >
             {progress.pyqs && <Check className="w-2.5 h-2.5 stroke-[3]" />}
@@ -134,7 +134,7 @@ const ChapterRow = memo(({ chapter, subject, progress, onToggle }) => {
             className={`w-3.5 h-3.5 rounded flex items-center justify-center border border-solid transition-colors ${
               progress.revision
                 ? 'bg-white/20 border-transparent text-white'
-                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-[#111827]'
+                : 'border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-900'
             }`}
           >
             {progress.revision && <Check className="w-2.5 h-2.5 stroke-[3]" />}
@@ -173,7 +173,7 @@ export const ChapterList = ({ subject, chapters, progressData, onToggle }) => {
         return (
           <div
             key={unit}
-            className="rounded-2xl overflow-hidden border border-slate-200 dark:border-gray-800 bg-white dark:bg-[#111827]"
+            className="rounded-2xl overflow-hidden border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900"
           >
             {/* Unit Header */}
             <div className="bg-slate-50 dark:bg-[#0d1320] px-4 py-2.5 border-b border-slate-200 dark:border-gray-800 flex items-center justify-between">

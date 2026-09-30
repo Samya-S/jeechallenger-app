@@ -109,7 +109,7 @@ export default function QuestionDetailComponent({ question }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-6 sm:py-10">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-6 sm:py-10">
       <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
         
         {/* Navigation & Breadcrumbs Row */}
@@ -132,10 +132,10 @@ export default function QuestionDetailComponent({ question }) {
         </div>
 
         {/* Main Question Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
           
           {/* Card Header & Metadata */}
-          <div className="p-4 sm:p-6 md:p-8 bg-gray-50/80 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800">
+          <div className="p-4 sm:p-6 md:p-8 bg-gray-50/80 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-start justify-between gap-3 mb-3">
               {/* Metadata Badges */}
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -203,7 +203,7 @@ export default function QuestionDetailComponent({ question }) {
                   onClick={() => setIsReportOpen(true)}
                   title="Report a bug in this question"
                   aria-label="Report a bug"
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-solid border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 shadow-sm transition-colors duration-100 cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-solid border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 shadow-sm transition-colors duration-100 cursor-pointer whitespace-nowrap"
                 >
                   <Bug className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Report Bug</span>
@@ -276,7 +276,7 @@ export default function QuestionDetailComponent({ question }) {
                   <div
                     key={i}
                     onClick={() => setZoomedImage(imgUrl)}
-                    className="relative rounded-2xl border border-gray-200 dark:border-gray-700 p-3 bg-white dark:bg-gray-800 shadow-md max-w-lg cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
+                    className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800 shadow-md max-w-lg cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
                   >
                     <img
                       src={imgUrl}
@@ -325,7 +325,7 @@ export default function QuestionDetailComponent({ question }) {
                             {opt.diagram_url && (
                               <div
                                 onClick={() => setZoomedImage(opt.diagram_url)}
-                                className={`relative ${opt.text ? "mt-3" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
+                                className={`relative ${opt.text ? "mt-3" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
                               >
                                 <img
                                   src={opt.diagram_url}
@@ -435,7 +435,7 @@ export default function QuestionDetailComponent({ question }) {
                     return (
                       <span
                         key={i}
-                        className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold border bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700"
+                        className="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold border bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-800"
                       >
                         {badge.label}
                       </span>
@@ -448,7 +448,7 @@ export default function QuestionDetailComponent({ question }) {
         </div>
 
         {/* Step-by-Step KaTeX Solution Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
           {/* Solution Banner Header */}
           <div className="p-4 sm:p-5 bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center gap-2.5">
             <h2 className="text-base sm:text-lg font-bold tracking-tight">
@@ -473,7 +473,7 @@ export default function QuestionDetailComponent({ question }) {
                 href={`/question/${question.navigation.prev.slug}`}
                 title={question.navigation.prev.title}
                 aria-label={`Previous question: ${question.navigation.prev.title}`}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-solid border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-800 shadow-sm transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4 shrink-0" />
                 <span>Previous</span>
@@ -482,7 +482,7 @@ export default function QuestionDetailComponent({ question }) {
               <button
                 type="button"
                 disabled
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-gray-100/70 dark:bg-gray-800/40 border border-solid border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 opacity-50 cursor-not-allowed select-none"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 opacity-40 cursor-not-allowed select-none shadow-sm"
               >
                 <ChevronLeft className="w-4 h-4 shrink-0" />
                 <span>Previous</span>
@@ -494,7 +494,7 @@ export default function QuestionDetailComponent({ question }) {
                 href={`/question/${question.navigation.next.slug}`}
                 title={question.navigation.next.title}
                 aria-label={`Next question: ${question.navigation.next.title}`}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-solid border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-800 shadow-sm transition-all cursor-pointer ml-auto"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all cursor-pointer ml-auto"
               >
                 <span>Next</span>
                 <ChevronRight className="w-4 h-4 shrink-0" />
@@ -503,7 +503,7 @@ export default function QuestionDetailComponent({ question }) {
               <button
                 type="button"
                 disabled
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-gray-100/70 dark:bg-gray-800/40 border border-solid border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 opacity-50 cursor-not-allowed select-none ml-auto"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 opacity-40 cursor-not-allowed select-none shadow-sm ml-auto"
               >
                 <span>Next</span>
                 <ChevronRight className="w-4 h-4 shrink-0" />

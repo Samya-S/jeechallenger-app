@@ -5,7 +5,7 @@ import { ShieldAlert, Scale, FileText, Mail, CheckCircle2, AlertTriangle, Info }
 
 const DisclaimerComponent = () => {
 	return (
-		<div className="min-h-screen bg-white dark:bg-[#090d16] text-left">
+		<div className="min-h-screen text-left">
 			<div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-16">
 				{/* Breadcrumbs - No banner, no 'Legal' keyword */}
 				<Breadcrumbs
@@ -15,13 +15,13 @@ const DisclaimerComponent = () => {
 					className="mb-6"
 				/>
 
-				{/* Document Switcher & Meta Header (Option 3: Single-Surface Editorial, no outer card box) */}
-				<div>
+				{/* Document Container Card */}
+				<div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 sm:p-10">
 					{/* Top Document Header */}
 					<div className="pb-8 border-b border-gray-200 dark:border-gray-800">
 						<div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 							{/* Legal Document Switcher Pills */}
-							<div className="inline-flex items-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800 text-xs sm:text-sm font-medium">
+							<div className="inline-flex items-center p-1 rounded-xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 text-xs sm:text-sm font-medium">
 								<Link
 									href="/privacy-policy"
 									className="px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -34,12 +34,12 @@ const DisclaimerComponent = () => {
 								>
 									Terms of Service
 								</Link>
-								<span className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm font-semibold">
+								<span className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow-sm font-semibold">
 									Disclaimer
 								</span>
 							</div>
 
-							<span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-900 px-3 py-1 rounded-full border border-gray-200 dark:border-gray-800">
+							<span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 bg-slate-50 dark:bg-[#0d1320] px-3 py-1 rounded-full border border-slate-200 dark:border-gray-800">
 								Last Updated: August 2026
 							</span>
 						</div>
@@ -327,7 +327,7 @@ const DisclaimerComponent = () => {
 
 						{/* Final Acknowledgment Box */}
 						<div className="pt-6 border-t border-gray-200 dark:border-gray-800">
-							<div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+							<div className="bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 rounded-2xl p-6">
 								<h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-4">
 									By using JEE Challenger, you acknowledge that:
 								</h3>

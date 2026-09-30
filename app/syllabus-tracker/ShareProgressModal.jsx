@@ -146,7 +146,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 animate-fadeIn">
-      <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-fit shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-fit shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">

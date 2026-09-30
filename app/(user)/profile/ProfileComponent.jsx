@@ -37,14 +37,14 @@ const ProfileContent = () => {
 
   if (loading) {
     return (
-      <div className="py-24 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center [main:has(&)]:min-h-0">
+      <div className="py-24 flex items-center justify-center [main:has(&)]:min-h-0">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-100 dark:bg-[#090d16] flex flex-col text-left [main:has(&)]:min-h-0">
+    <div className="flex flex-col text-left [main:has(&)]:min-h-0">
       {/* Profile Content */}
       <div className="flex-1 px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <div className="max-w-4xl mx-auto">
@@ -61,7 +61,7 @@ const ProfileContent = () => {
           )}
 
           {/* Profile Header */}
-          <div className="bg-white dark:bg-[#111827] rounded-2xl sm:rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 sm:p-8 mb-6">
             <div className="flex items-center space-x-4 sm:space-x-5">
               {user.image ? (
                 <Image
@@ -103,7 +103,7 @@ const ProfileContent = () => {
           </div>
 
           {/* Account Settings */}
-          <div className="bg-white dark:bg-[#111827] rounded-2xl sm:rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 sm:p-8">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
               <FaCog className="text-gray-500" />
               <span>Account Settings</span>
@@ -226,7 +226,7 @@ const ProfileContent = () => {
 const ProfileComponent = () => {
   return (
     <Suspense fallback={
-      <div className="py-24 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center [main:has(&)]:min-h-0">
+      <div className="py-24 flex items-center justify-center [main:has(&)]:min-h-0">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     }>

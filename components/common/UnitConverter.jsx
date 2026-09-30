@@ -22,14 +22,14 @@ const CustomDropdown = ({ value, onChange, options, theme }) => {
     <div className="relative w-full mt-2" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 p-3 outline-none transition-colors ${theme.focusRing}`}
+        className={`w-full flex items-center justify-between bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 p-3 outline-none transition-colors ${theme.focusRing}`}
       >
         <span className="truncate">{value}</span>
         <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+        <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
           {options.map((opt) => (
             <button
               key={opt}
@@ -39,7 +39,7 @@ const CustomDropdown = ({ value, onChange, options, theme }) => {
               }}
               className={`w-full text-left px-4 py-3 text-sm transition-colors ${value === opt
                 ? `${theme.activeOptionBg} ${theme.text} font-semibold`
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 }`}
             >
               {opt}
@@ -179,10 +179,10 @@ export default function UnitConverter({ subject = "physics" }) {
 
   return (
     <div className="max-w-4xl mx-auto w-full">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
 
         {/* Category Tabs */}
-        <div className="bg-gray-50 dark:bg-gray-900/50 p-6 border-b border-gray-100 dark:border-gray-700 rounded-t-3xl">
+        <div className="bg-slate-50 dark:bg-[#0d1320] p-6 border-b border-slate-200 dark:border-gray-800 rounded-t-3xl">
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((cat) => (
               <button
@@ -190,7 +190,7 @@ export default function UnitConverter({ subject = "physics" }) {
                 onClick={() => setCategory(cat)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${category === cat
                   ? `${theme.bg} text-white shadow-md ${theme.shadow} scale-105`
-                  : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105"
+                  : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105"
                   }`}
               >
                 {cat}
@@ -211,7 +211,7 @@ export default function UnitConverter({ subject = "physics" }) {
                   type="number"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 text-gray-900 dark:text-white`}
+                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 text-gray-900 dark:text-white`}
                   placeholder="0"
                 />
               </div>
@@ -241,7 +241,7 @@ export default function UnitConverter({ subject = "physics" }) {
                   type="text"
                   readOnly
                   value={outputValue}
-                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 ${theme.text}`}
+                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 ${theme.text}`}
                   placeholder="0"
                 />
               </div>

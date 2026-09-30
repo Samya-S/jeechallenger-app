@@ -73,7 +73,7 @@ const JeeAdvancedComponent = () => {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Past Question Papers */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
               <div className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@ const JeeAdvancedComponent = () => {
             </div>
 
             {/* Syllabus */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
               <div className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@ const JeeAdvancedComponent = () => {
             </div>
 
             {/* Previous Years Reports */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
               <div className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ const JeeAdvancedComponent = () => {
         {/* Previous Year Questions Section */}
         <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] overflow-hidden border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
               <div className="flex flex-col md:flex-row items-stretch">
                 <div className="p-8 md:p-10 md:w-2/3 flex flex-col justify-center text-left">
                   <div className="flex items-center space-x-3 mb-4">

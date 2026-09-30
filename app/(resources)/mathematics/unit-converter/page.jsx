@@ -35,7 +35,7 @@ export const metadata = {
 
 export default function MathematicsUnitConverterPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
+    <div className="min-h-screen pb-20">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 dark:from-purple-900 dark:to-pink-900 pb-24 pt-4">
         <Breadcrumbs

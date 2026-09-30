@@ -154,7 +154,7 @@ function PreviousYearQuestionsContent() {
   }, [filters, page, limit, activeTab]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-700 to-red-700 dark:from-orange-950 dark:via-orange-900 dark:to-red-950 pb-20 pt-4">
         <Breadcrumbs
@@ -209,7 +209,7 @@ function PreviousYearQuestionsContent() {
                 {[1, 2, 3, 4].map((n) => (
                   <div
                     key={n}
-                    className="bg-white dark:bg-gray-900 rounded-2xl p-6 md:p-8 border border-gray-200 dark:border-gray-800 space-y-4 animate-pulse shadow-md"
+                    className="bg-white dark:bg-gray-900 rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-gray-800 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] space-y-4 animate-pulse"
                   >
                     <div className="flex gap-2">
                       <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
@@ -225,7 +225,7 @@ function PreviousYearQuestionsContent() {
                 ))}
               </div>
             ) : questions.length === 0 ? (
-              <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 shadow-sm">
+              <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 p-8 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                 <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Questions Found</h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto mb-6">
@@ -251,7 +251,7 @@ function PreviousYearQuestionsContent() {
 
                 {/* Pagination Bar */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between gap-4 pt-8 border-t border-gray-200 dark:border-gray-800">
+                  <div className="flex items-center justify-between gap-4 pt-4">
                     <button
                       type="button"
                       disabled={page <= 1}

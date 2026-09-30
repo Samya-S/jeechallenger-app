@@ -48,7 +48,7 @@ function BlogCard({ post, featured = false }) {
             {post.excerpt}
           </p>
 
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <Calendar size={14} />
               <time dateTime={post.date}>{formatDate(post.date)}</time>
@@ -65,7 +65,7 @@ function BlogCard({ post, featured = false }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group block h-full rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
+      className="group block h-full rounded-2xl bg-white dark:bg-gray-900 shadow-md shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 overflow-hidden"
     >
       <div className="p-6 h-full flex flex-col text-left">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -95,7 +95,7 @@ function BlogCard({ post, featured = false }) {
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <Calendar size={14} />
             <time dateTime={post.date}>{formatDate(post.date)}</time>

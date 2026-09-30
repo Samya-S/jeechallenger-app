@@ -24,7 +24,7 @@ const CustomDropdown = ({ value, onChange, options }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-48 flex items-center justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-700 border border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 py-2 px-4 rounded-xl text-xs font-bold outline-none cursor-pointer text-gray-800 dark:text-white transition-all duration-150 ${isOpen ? "ring-2 ring-green-500/50 border-green-500" : "focus:ring-2 focus:ring-green-500/30"
+        className={`w-48 flex items-center justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-800 border border-gray-200 hover:border-gray-300 dark:border-gray-700/80 dark:hover:border-gray-600 py-2 px-4 rounded-xl text-xs font-bold outline-none cursor-pointer text-gray-800 dark:text-white transition-all duration-150 ${isOpen ? "ring-2 ring-green-500/50 border-green-500" : "focus:ring-2 focus:ring-green-500/30"
           }`}
       >
         <span className="truncate mr-2">{options[value]}</span>
@@ -35,7 +35,7 @@ const CustomDropdown = ({ value, onChange, options }) => {
       </button>
       {isOpen && (
         <div
-          className="absolute right-0 z-30 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
+          className="absolute right-0 z-30 w-full mt-2 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl shadow-xl ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden"
           style={{
             animation: "customDropdownOpen 120ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
             transformOrigin: "top right"
@@ -175,7 +175,7 @@ export default function PeriodicTableExplorer() {
     const isSelected = selectedElement?.number === el.number;
     const highlightClass = isSelected 
       ? "ring-2 ring-green-500 dark:ring-green-400 border-green-500 dark:border-green-400 shadow-xl scale-105 z-10" 
-      : "";
+      : "hover:ring-2 hover:ring-green-500 dark:hover:ring-green-400 hover:border-green-500 dark:hover:border-green-400 hover:shadow-lg hover:scale-105 hover:z-10";
 
     if (heatmapMode === "category") {
       return `${CATEGORIES[el.category].color} ${highlightClass}`;
@@ -234,7 +234,7 @@ export default function PeriodicTableExplorer() {
         key={element.number}
         onClick={() => setSelectedElement(element)}
         style={getHeatmapColorStyle(element)}
-        className={`flex flex-col justify-between p-1.5 aspect-square border rounded-xl transition-all duration-300 relative group cursor-pointer ${getElementStyle(element)}`}
+        className={`flex flex-col justify-between p-1.5 aspect-square border rounded-xl transition-all duration-150 relative group cursor-pointer ${getElementStyle(element)}`}
       >
         {/* Top Row: Atomic Number & Mass (Heatmap value if applicable) */}
         <div className="w-full flex justify-between items-start text-[8px] font-semibold text-gray-500 dark:text-gray-400">
@@ -271,7 +271,7 @@ export default function PeriodicTableExplorer() {
   return (
     <div className="w-full text-gray-900 dark:text-white flex flex-col items-center">
       {/* Control Panel / Toolbar */}
-      <div className="w-full max-w-7xl px-4 mb-8 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-md border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-6 items-center justify-between">
+      <div className="w-full max-w-7xl px-4 mb-8 bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row gap-6 items-center justify-between">
 
         {/* Search */}
         <div className="relative w-full md:max-w-md">
@@ -281,7 +281,7 @@ export default function PeriodicTableExplorer() {
             placeholder="Search by Symbol, Name or Number (e.g. Fe, Iron, 26)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 pl-12 pr-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm"
+            className="w-full bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 pl-12 pr-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
           />
           {searchQuery && (
             <button
@@ -307,7 +307,7 @@ export default function PeriodicTableExplorer() {
           </div>
 
           {/* Block Selection */}
-          <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900 p-1 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/80 p-1 rounded-xl border border-gray-200 dark:border-gray-700/80">
             <Layers className="w-3.5 h-3.5 text-green-500 ml-1.5" />
             <span className="text-[10px] font-bold text-gray-400 uppercase mr-1">Block:</span>
             {BLOCKS.map((block) => (
@@ -316,7 +316,7 @@ export default function PeriodicTableExplorer() {
                 onClick={() => setActiveBlock(activeBlock === block ? null : block)}
                 className={`w-7 h-7 flex items-center justify-center text-xs font-black rounded-lg transition-all ${activeBlock === block
                   ? "bg-green-600 text-white shadow-md shadow-green-500/20 scale-105"
-                  : "hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-500"
+                  : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
                   }`}
               >
                 {block}
@@ -327,7 +327,7 @@ export default function PeriodicTableExplorer() {
           {/* Mode Switch (Grid vs List on Mobile) */}
           <button
             onClick={() => setIsMobileListMode(!isMobileListMode)}
-            className="md:hidden flex items-center gap-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 py-2 px-3 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300"
+            className="md:hidden flex items-center gap-2 bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 py-2 px-3 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300"
           >
             <RefreshCw className="w-4 h-4 text-green-500" />
             <span>{isMobileListMode ? "Grid View" : "List View"}</span>
@@ -523,7 +523,7 @@ export default function PeriodicTableExplorer() {
               <button
                 key={el.number}
                 onClick={() => setSelectedElement(el)}
-                className={`w-full flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:scale-[1.01] transition-all text-left cursor-pointer`}
+                className={`w-full flex items-center justify-between p-4 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-2xl shadow-sm hover:ring-2 hover:ring-green-500 dark:hover:ring-green-400 hover:border-green-500 dark:hover:border-green-400 hover:scale-[1.01] transition-all text-left cursor-pointer`}
               >
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-xl border flex flex-col items-center justify-center ${CATEGORIES[el.category].color}`}>

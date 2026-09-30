@@ -17,7 +17,7 @@ const PYQandMoreSection = () => {
         {/* Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Previous Year Questions */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden flex flex-col">
             <div className="p-6 text-center flex flex-col h-full">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@ const PYQandMoreSection = () => {
           </div>
 
           {/* AI Tutor */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden flex flex-col">
             <div className="p-6 text-center flex flex-col h-full">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 640 512">
@@ -65,7 +65,7 @@ const PYQandMoreSection = () => {
           </div>
 
           {/* More Study Materials */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden flex flex-col">
             <div className="p-6 text-center flex flex-col h-full">
               <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
