@@ -113,7 +113,7 @@ export default function ShareButtons({ shareUrl: shareUrlProp, shareTitle, inlin
 
   // Desktop version (full section with all platform buttons)
   return (
-    <div className="hidden lg:block mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <div className="hidden lg:block mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
       <div className="flex items-center gap-4 flex-wrap">
         <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
           <Share2 size={18} />

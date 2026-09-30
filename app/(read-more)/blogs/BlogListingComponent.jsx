@@ -98,7 +98,7 @@ export default function BlogListingComponent({ articles }) {
   const articleCount = useMemo(() => articles.length, [articles]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-900 dark:via-blue-800 dark:to-cyan-900">
         <div
@@ -154,7 +154,7 @@ export default function BlogListingComponent({ articles }) {
               placeholder="Search articles by title, topic, category, or keywords..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 dark:text-white placeholder-gray-500"
+              className="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 dark:text-white placeholder-gray-500"
             />
           </div>
 
@@ -167,7 +167,7 @@ export default function BlogListingComponent({ articles }) {
                 onClick={() => handleCategoryChange(category)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedCategory === category
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                  : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-slate-200 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-500'
                   }`}
               >
                 {category}
@@ -210,7 +210,7 @@ export default function BlogListingComponent({ articles }) {
 
             {/* Pagination Bar */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between gap-4 pt-10 mt-12 border-t border-gray-200 dark:border-gray-800">
+              <div className="flex items-center justify-between gap-4 mt-12">
                 <button
                   type="button"
                   disabled={currentPage <= 1}
@@ -286,7 +286,7 @@ export default function BlogListingComponent({ articles }) {
                   href="/resources"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold px-8 py-4 rounded-xl transition-all border border-gray-300 dark:border-gray-700"
+                  className="inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold px-8 py-4 rounded-xl transition-all border border-gray-300 dark:border-gray-800"
                 >
                   <BookOpen size={20} />
                   Browse Study Materials

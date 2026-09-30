@@ -23,7 +23,7 @@ const TelegramGateModal = ({ isOpen, targetUrl, onClose }) => {
       />
 
       {/* Modal */}
-      <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 sm:p-8 max-w-md w-full mx-auto shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-auto shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
         {/* Close button */}
         <button
           onClick={onClose}

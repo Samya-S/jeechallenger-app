@@ -331,7 +331,7 @@ function PaperDetailContent({ paperData }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-6 sm:py-10 text-left">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-6 sm:py-10 text-left">
       <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
         
         {/* Navigation & Breadcrumbs Row */}
@@ -354,13 +354,13 @@ function PaperDetailContent({ paperData }) {
         </div>
 
         {/* Paper Header Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-4">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 md:p-8 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paperData.exam_type)}`}>
                 {paperData.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main"}
               </span>
-              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-800">
                 {paperData.exam_year}
               </span>
             </div>
@@ -417,7 +417,7 @@ function PaperDetailContent({ paperData }) {
         </div>
 
         {/* Responsive Two-Tier Subject & Section Switcher */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-lg border border-gray-200 dark:border-gray-800 space-y-3">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] space-y-3">
           {/* Tier 1: Subject Tabs */}
           <div className="flex flex-wrap items-center gap-2">
             {subjects.map((sub) => {
@@ -480,7 +480,7 @@ function PaperDetailContent({ paperData }) {
         {/* Questions Feed in Active Section */}
         <div className="space-y-6">
           {sectionQuestions.length === 0 ? (
-            <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 shadow-sm">
+            <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 p-8 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
               <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">No Questions Found</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -499,10 +499,10 @@ function PaperDetailContent({ paperData }) {
               return (
                 <div
                   key={q._id || q.slug}
-                  className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden text-left"
+                  className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left"
                 >
                   {/* Question Header */}
-                  <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
+                  <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
                         Q{q.question_number}
@@ -511,7 +511,7 @@ function PaperDetailContent({ paperData }) {
                         <span className="hidden sm:inline">{q.subject}</span>
                         <span className="sm:hidden">{SUBJECT_SHORT_NAMES[q.subject] || q.subject}</span>
                       </span>
-                      <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800">
                         {q.chapter}
                       </span>
                     </div>
@@ -529,7 +529,7 @@ function PaperDetailContent({ paperData }) {
                         </span>
                       )}
                       {q.difficulty && (
-                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"}`}>
+                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800"}`}>
                           <span className="hidden sm:inline">{q.difficulty}</span>
                           <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[q.difficulty] || q.difficulty}</span>
                         </span>
@@ -582,7 +582,7 @@ function PaperDetailContent({ paperData }) {
                           <div
                             key={i}
                             onClick={() => setZoomedImage(imgUrl)}
-                            className="relative rounded-xl border border-gray-200 dark:border-gray-700 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                            className="relative rounded-xl border border-gray-200 dark:border-gray-800 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
                           >
                             <img
                               src={imgUrl}
@@ -606,7 +606,7 @@ function PaperDetailContent({ paperData }) {
                             : ansState.selectedOption === key;
                           const isCorrectAnswer = ansState.checkedState?.correctAnswers?.includes(key);
 
-                          let optionStyle = "border-gray-200 dark:border-gray-700 hover:border-orange-500/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20";
+                          let optionStyle = "border-gray-200 dark:border-gray-800 hover:border-orange-500/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20";
                           let badge = null;
 
                           if (isSelected && !ansState.checkedState) {
@@ -675,7 +675,7 @@ function PaperDetailContent({ paperData }) {
                                       e.stopPropagation();
                                       setZoomedImage(opt.diagram_url);
                                     }}
-                                    className={`relative ${opt.text ? "mt-2" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
+                                    className={`relative ${opt.text ? "mt-2" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
                                   >
                                     <img
                                       src={opt.diagram_url}
@@ -710,7 +710,7 @@ function PaperDetailContent({ paperData }) {
                             }))
                           }
                           placeholder="e.g. 12.5"
-                          className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     )}
@@ -783,7 +783,7 @@ function PaperDetailContent({ paperData }) {
                           onClick={() => setReportingQuestion(q)}
                           title="Report a bug in this question"
                           aria-label="Report a bug"
-                          className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 transition-colors duration-100 cursor-pointer"
+                          className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-800 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 transition-colors duration-100 cursor-pointer"
                         >
                           <Bug className="w-4 h-4" />
                         </button>

@@ -84,7 +84,7 @@ export default function NewsComponent({ articles, error }) {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 px-8 py-12 max-w-2xl mx-auto">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] px-8 py-12 max-w-2xl mx-auto">
               <div className="flex flex-col items-center space-y-6">
                 <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                   <svg className="w-8 h-8 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -67,7 +67,7 @@ const JeeMainComponent = () => {
         {/* Previous Year Questions Section */}
         <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] overflow-hidden border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
               <div className="flex flex-col md:flex-row items-stretch">
                 <div className="p-8 md:p-10 md:w-2/3 flex flex-col justify-center text-left">
                   <div className="flex items-center space-x-3 mb-4">

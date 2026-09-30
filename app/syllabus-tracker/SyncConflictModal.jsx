@@ -8,7 +8,7 @@ export default function SyncConflictModal({ isOpen, onResolve }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
         
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-amber-100 dark:bg-amber-900/30 rounded-full p-3">
@@ -49,7 +49,7 @@ export default function SyncConflictModal({ isOpen, onResolve }) {
           {/* Option 2: Keep Local */}
           <button
             onClick={() => onResolve('local')}
-            className="w-full text-left p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors group"
+            className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
           >
             <div className="flex items-start gap-3">
               <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-2 mt-0.5 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
@@ -69,7 +69,7 @@ export default function SyncConflictModal({ isOpen, onResolve }) {
           {/* Option 3: Keep Cloud */}
           <button
             onClick={() => onResolve('cloud')}
-            className="w-full text-left p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-pink-500 dark:hover:border-pink-500 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors group"
+            className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:border-pink-500 dark:hover:border-pink-500 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
           >
             <div className="flex items-start gap-3">
               <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-2 mt-0.5 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/50 transition-colors">

@@ -399,7 +399,7 @@ const SyllabusTrackerComponent = () => {
   };
 
   return (
-    <div className="bg-slate-100 dark:bg-[#090d16] text-left [main:has(&)]:min-h-0">
+    <div className="text-left [main:has(&)]:min-h-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <Breadcrumbs
           crumbs={[
@@ -425,7 +425,7 @@ const SyllabusTrackerComponent = () => {
             {!isAuthenticated ? (
               <Link
                 href={`/login?returnUrl=${encodedReturnUrl}`}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 text-xs font-semibold text-gray-700 dark:text-gray-200 shadow-2xs transition-colors"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 text-xs font-semibold text-gray-700 dark:text-gray-200 shadow-2xs transition-colors"
                 title="Log in to sync your progress across devices"
               >
                 <Cloud className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -439,7 +439,7 @@ const SyllabusTrackerComponent = () => {
                 onClick={handleToggleSync}
                 disabled={isInitializingSync}
                 title={syncEnabled ? "Click to turn off cloud sync" : "Click to turn on cloud sync"}
-                className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 shadow-2xs transition-all cursor-pointer select-none ${
+                className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 shadow-2xs transition-all cursor-pointer select-none ${
                   isInitializingSync ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -497,7 +497,7 @@ const SyllabusTrackerComponent = () => {
             <button
               type="button"
               onClick={handleExport}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
               title="Export Progress JSON"
             >
               <Download className="w-3.5 h-3.5" />
@@ -506,7 +506,7 @@ const SyllabusTrackerComponent = () => {
 
             {/* Import Button */}
             <label
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
               title="Import Progress JSON"
             >
               <Upload className="w-3.5 h-3.5" />
@@ -523,7 +523,7 @@ const SyllabusTrackerComponent = () => {
             <button
               type="button"
               onClick={() => setShowResetConfirm(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111827] border border-solid border-slate-200 dark:border-gray-800 hover:border-red-300 dark:hover:border-red-800/80 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-red-300 dark:hover:border-red-800/80 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs transition-colors cursor-pointer"
               title="Reset All Progress"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -533,7 +533,7 @@ const SyllabusTrackerComponent = () => {
         </div>
 
         {/* Overview Bento Card: Overall Progress + Task Breakdown */}
-        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* Left: Overall Completion */}
             <div className="lg:col-span-5 space-y-4">
@@ -694,7 +694,7 @@ const SyllabusTrackerComponent = () => {
         </div>
 
         {/* Search & 4-Stage Status Filter Control Bar */}
-        <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-4 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-4 mb-6">
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -774,7 +774,7 @@ const SyllabusTrackerComponent = () => {
 
         {/* Empty State when filters/search match 0 chapters */}
         {filteredSubjects.length === 0 ? (
-          <div className="bg-white dark:bg-[#111827] rounded-3xl border border-slate-200 dark:border-gray-800 p-12 text-center">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 p-12 text-center">
             <p className="text-base font-semibold text-gray-900 dark:text-white">
               No chapters match your current filters
             </p>
@@ -799,7 +799,7 @@ const SyllabusTrackerComponent = () => {
               return (
                 <div
                   key={subjectKey}
-                  className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden"
+                  className="bg-white dark:bg-gray-900 rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden"
                 >
                   <SubjectCard
                     subject={subjectKey}
@@ -842,7 +842,7 @@ const SyllabusTrackerComponent = () => {
         {/* Reset Confirmation Modal */}
         {showResetConfirm && (
           <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-white dark:bg-[#111827] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-gray-800">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-gray-800">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-red-100 dark:bg-red-900/30 rounded-xl p-2.5">
                   <RotateCcw className="h-5 w-5 text-red-600 dark:text-red-400" />

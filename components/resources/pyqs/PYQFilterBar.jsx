@@ -218,7 +218,7 @@ export default function PYQFilterBar({
     !!filters.tag;
 
   return (
-    <div className="relative z-20 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6 mb-8 transition-all">
+    <div className="relative z-20 bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-4 md:p-6 mb-8 transition-all">
       {/* Top Mode Switcher & Counter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-gray-800">
         <div className="flex p-1 bg-gray-100 dark:bg-gray-800/90 rounded-xl w-full sm:w-auto">
@@ -256,7 +256,7 @@ export default function PYQFilterBar({
               <span className="w-24 h-3.5 bg-gray-200 dark:bg-gray-700 rounded" />
             </div>
           ) : (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100/90 dark:bg-gray-800/70 border border-gray-200/70 dark:border-gray-700/60 text-gray-600 dark:text-gray-400">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100/90 dark:bg-gray-800/70 border border-gray-200/70 dark:border-gray-800/60 text-gray-600 dark:text-gray-400">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
               <span>
                 Found{" "}
@@ -314,7 +314,7 @@ export default function PYQFilterBar({
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search topics, questions, or formulas..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               />
             </div>
 

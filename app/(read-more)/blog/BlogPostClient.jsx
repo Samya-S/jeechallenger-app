@@ -23,7 +23,7 @@ export default function BlogPostClient({ content, breadcrumbs, header, children 
     <>
       <ReadingProgressBar progress={readingProgress} />
 
-      <article className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <article className="min-h-screen">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="flex gap-8 relative">
             {/* Main Content */}

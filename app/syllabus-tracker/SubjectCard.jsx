@@ -71,7 +71,7 @@ const SubjectCard = memo(({ subject, subjectData, stats, expanded, onToggle, fil
               ({completedTasks}/{totalTasks} tasks)
             </span>
             {typeof filteredCount === 'number' && filteredCount !== totalChapters && (
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-700">
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-800">
                 Showing {filteredCount} of {totalChapters}
               </span>
             )}

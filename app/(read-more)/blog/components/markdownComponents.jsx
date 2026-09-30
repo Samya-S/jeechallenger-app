@@ -134,13 +134,13 @@ export const getMarkdownComponents = () => ({
   },
   pre: ({ children }) => {
     return (
-      <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl overflow-x-auto border border-gray-200 dark:border-gray-700 my-6">
+      <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl overflow-x-auto border border-gray-200 dark:border-gray-800 my-6">
         {children}
       </pre>
     );
   },
   hr: () => {
-    return <hr className="border-gray-300 dark:border-gray-700 my-10" />;
+    return <hr className="border-gray-300 dark:border-gray-800 my-10" />;
   },
   a: ({ href, children }) => {
     // Keep anchor links (TOC links) on same page
@@ -164,7 +164,7 @@ export const getMarkdownComponents = () => ({
     );
   },
   table: ({ children }) => (
-    <div className="overflow-x-auto my-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    <div className="overflow-x-auto my-8 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
       <table className="w-full border-collapse text-sm md:text-base">
         {children}
       </table>
@@ -191,7 +191,7 @@ export const getMarkdownComponents = () => ({
     </th>
   ),
   td: ({ children }) => (
-    <td className="px-4 py-3 text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 last:border-r-0 align-middle">
+    <td className="px-4 py-3 text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-800 last:border-r-0 align-middle">
       {children}
     </td>
   ),

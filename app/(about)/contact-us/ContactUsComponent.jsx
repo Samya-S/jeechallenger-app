@@ -64,7 +64,7 @@ const ContactUsComponent = () => {
   };
 
   return (
-    <div className="bg-slate-100 dark:bg-[#090d16] text-left [main:has(&)]:min-h-0">
+    <div className="text-left [main:has(&)]:min-h-0">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         {/* Standard Breadcrumb - No hero banner */}
         <Breadcrumbs
@@ -75,7 +75,7 @@ const ContactUsComponent = () => {
         />
 
         {/* Connected Card: Left Info Panel + Right Message Form */}
-        <div className="bg-white dark:bg-[#111827] rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden grid grid-cols-1 lg:grid-cols-12">
           
           {/* Left Panel: Context & Direct Reachout */}
           <div className="lg:col-span-5 bg-slate-50 dark:bg-[#0d1320] p-6 sm:p-10 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-gray-800 flex flex-col justify-between space-y-8">
@@ -98,7 +98,7 @@ const ContactUsComponent = () => {
                 {/* Email Card */}
                 <a
                   href="mailto:jeechallenger@gmail.com"
-                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all shadow-sm"
+                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all shadow-sm"
                 >
                   <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <Mail className="w-5 h-5" />
@@ -124,7 +124,7 @@ const ContactUsComponent = () => {
                   href="https://t.me/+oOnj4y_ZYqYyZjA1"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-gray-800 hover:border-sky-500/60 dark:hover:border-sky-500/60 transition-all shadow-sm"
+                  className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-sky-500/60 dark:hover:border-sky-500/60 transition-all shadow-sm"
                 >
                   <div className="w-10 h-10 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-500 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <FaTelegram className="w-5 h-5" />
@@ -165,7 +165,7 @@ const ContactUsComponent = () => {
           </div>
 
           {/* Right Panel: Interactive Message Form */}
-          <div className="lg:col-span-7 p-6 sm:p-10 bg-white dark:bg-[#111827] flex flex-col justify-between">
+          <div className="lg:col-span-7 p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-between">
             <div>
               <div className="mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">

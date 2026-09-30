@@ -15,7 +15,7 @@ function NewsCard({ article }) {
   const formattedDate = formatDate(article.publishedAt);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden group h-full flex flex-col text-left">
+    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden group h-full flex flex-col text-left">
       <div className="relative h-48 w-full overflow-hidden flex-shrink-0">
         <Image
           src={article.image}
