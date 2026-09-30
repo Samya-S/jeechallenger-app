@@ -50,8 +50,11 @@ export default function NavBar() {
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 8);
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollY > 20);
     };
+
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -139,23 +142,38 @@ export default function NavBar() {
     }));
   };
 
+  const isFloating = isScrolled && !showMobileNav;
+
   return (
     <header
       ref={navRef}
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-gray-800 shadow-sm"
-          : "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/60"
+      className={`sticky top-0 z-50 w-full transition-[padding] duration-300 ease-out ${
+        isFloating
+          ? "pointer-events-none pt-2 px-3 sm:pt-3 sm:px-6 lg:px-8"
+          : "pointer-events-auto pt-0 px-0"
       }`}
     >
-      <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div
+        className={`w-full mx-auto flex items-center justify-between pointer-events-auto transform-gpu transition-all duration-300 ease-out border ${
+          isFloating
+            ? "max-w-7xl h-14 px-3.5 sm:px-6 rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-gray-200/80 dark:border-gray-800 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] ring-1 ring-black/5 dark:ring-0"
+            : `max-w-full h-16 px-4 sm:px-6 lg:px-8 rounded-none ${
+                showMobileNav
+                  ? "bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 border-t-transparent border-x-transparent"
+                  : "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-transparent border-b-gray-200/60 dark:border-b-gray-800/80"
+              } shadow-none ring-0`
+        }`}
+      >
         {/* Brand / Logo */}
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="group flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight"
+            className="group flex items-center gap-2 text-lg sm:text-2xl font-bold tracking-tight"
             aria-label="JEE Challenger Homepage"
-            onClick={closeDesktopDropdownImmediately}
+            onClick={() => {
+              closeDesktopDropdownImmediately();
+              setShowMobileNav(false);
+            }}
           >
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
               JEE Challenger
@@ -226,7 +244,7 @@ export default function NavBar() {
                       role="menu"
                       aria-label={`${item.title} submenu`}
                     >
-                      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200/90 dark:border-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/5 p-1.5 backdrop-blur-xl flex flex-col gap-1">
+                      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200/90 dark:border-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-0 p-1.5 backdrop-blur-xl flex flex-col gap-1">
                         {item.items.map((subitem, subindex) => {
                           const isSubActive = pathname === subitem.url;
                           return (
@@ -308,7 +326,7 @@ export default function NavBar() {
                     className="absolute right-0 top-full pt-1 w-52 z-50 animate-in fade-in zoom-in-95 duration-150"
                     role="menu"
                   >
-                    <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200/90 dark:border-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/5 p-1.5 backdrop-blur-xl flex flex-col gap-1">
+                    <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200/90 dark:border-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-0 p-1.5 backdrop-blur-xl flex flex-col gap-1">
                       <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
                         <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                           {session.user?.name || "Student"}
@@ -354,50 +372,52 @@ export default function NavBar() {
             onClick={() => setShowMobileNav(!showMobileNav)}
             aria-expanded={showMobileNav}
             aria-label={showMobileNav ? "Close navigation menu" : "Open navigation menu"}
-            className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-colors"
           >
-            {showMobileNav ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <span
+              className={`w-5 h-0.5 bg-current rounded-full transform transition-all duration-300 ease-in-out ${
+                showMobileNav ? "rotate-45 translate-y-2" : ""
+              }`}
+            />
+            <span
+              className={`w-5 h-0.5 bg-current rounded-full transition-all duration-300 ease-in-out ${
+                showMobileNav ? "opacity-0 scale-0" : "opacity-100 scale-100"
+              }`}
+            />
+            <span
+              className={`w-5 h-0.5 bg-current rounded-full transform transition-all duration-300 ease-in-out ${
+                showMobileNav ? "-rotate-45 -translate-y-2" : ""
+              }`}
+            />
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer & Backdrop - Portaled to document.body to avoid stacking context & backdrop-filter clipping */}
-      {mounted && showMobileNav && createPortal(
-        <div className="lg:hidden fixed inset-0 z-[9999] flex flex-col animate-in fade-in duration-200">
-          {/* Backdrop Overlay */}
+      {/* Mobile Drawer & Backdrop - Portaled to document.body */}
+      {mounted && createPortal(
+        <div
+          className="lg:hidden fixed inset-0 z-40 pointer-events-none"
+          aria-hidden={!showMobileNav}
+        >
+          {/* Backdrop Overlay - strictly below navbar */}
           <div
-            className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-opacity"
+            className={`fixed top-16 inset-x-0 bottom-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+              showMobileNav ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
             onClick={() => setShowMobileNav(false)}
             aria-hidden="true"
           />
 
-          {/* Mobile Menu Panel */}
-          <div className="relative z-10 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-2xl flex flex-col max-h-[92vh] overflow-hidden text-left">
-            {/* Header bar inside drawer */}
-            <div className="h-16 px-4 sm:px-6 flex items-center justify-between border-b border-gray-200/80 dark:border-gray-800 shrink-0">
-              <Link
-                href="/"
-                className="text-xl sm:text-2xl font-bold tracking-tight"
-                onClick={() => setShowMobileNav(false)}
-              >
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  JEE Challenger
-                </span>
-              </Link>
-              <div className="flex items-center gap-2">
-                <ThemeToggle />
-                <button
-                  onClick={() => setShowMobileNav(false)}
-                  aria-label="Close navigation menu"
-                  className="p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
+          {/* Mobile Menu Panel - Adapts to content height up to max viewport height with curved bottom */}
+          <div
+            className={`fixed top-16 inset-x-0 max-h-[calc(100dvh-4rem)] z-45 bg-white dark:bg-gray-900 border-b border-gray-200/90 dark:border-gray-800 shadow-2xl rounded-b-3xl flex flex-col overflow-hidden text-left transform-gpu transition-all duration-300 ease-in-out ${
+              showMobileNav
+                ? "translate-y-0 opacity-100 pointer-events-auto"
+                : "-translate-y-4 opacity-0 pointer-events-none"
+            }`}
+          >
             {/* Scrollable Navigation Menu */}
-            <div className="overflow-y-auto px-4 py-6 space-y-4 flex-1 text-left">
+            <div className="overflow-y-auto overscroll-contain px-4 pt-4 pb-6 space-y-4 flex-1 text-left">
               <nav className="flex flex-col space-y-1">
                 {NavbarItems.map((item, index) => {
                   if (item.type === "link") {
@@ -466,9 +486,15 @@ export default function NavBar() {
                           />
                         </button>
 
-                        {/* Expandable Accordion Sub-links */}
-                        {isMobileOpen && (
-                          <div className="pl-10 pr-4 py-1 space-y-1 border-l-2 border-blue-500/50 ml-4 mb-2 text-left">
+                        {/* Expandable Accordion Sub-links with smooth height & opacity transition */}
+                        <div
+                          className={`grid transition-all duration-200 ease-out pl-6 sm:pl-10 pr-4 border-l-2 border-blue-500/50 ml-4 ${
+                            isMobileOpen
+                              ? "grid-rows-[1fr] opacity-100 py-1 mb-2"
+                              : "grid-rows-[0fr] opacity-0 py-0 mb-0 pointer-events-none"
+                          }`}
+                        >
+                          <div className="overflow-hidden space-y-1">
                             {item.items.map((subitem, subindex) => {
                               const isSubActive = pathname === subitem.url;
                               return (
@@ -487,7 +513,7 @@ export default function NavBar() {
                               );
                             })}
                           </div>
-                        )}
+                        </div>
                       </div>
                     );
                   }
