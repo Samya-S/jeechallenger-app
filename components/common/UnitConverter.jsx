@@ -1,8 +1,43 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { ArrowLeftRight, Activity, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowLeftRight,
+  Activity,
+  ChevronDown,
+  Atom,
+  FlaskConical,
+  Calculator,
+} from "lucide-react";
 
 import { conversionData } from "@/data/resources/unit-conversion-data";
+
+const SUBJECTS = [
+  {
+    id: "physics",
+    name: "Physics",
+    icon: Atom,
+    href: "/physics/unit-converter",
+    activeClass: "bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-1 ring-blue-500/30",
+    hoverClass: "hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400",
+  },
+  {
+    id: "chemistry",
+    name: "Chemistry",
+    icon: FlaskConical,
+    href: "/chemistry/unit-converter",
+    activeClass: "bg-emerald-600 text-white shadow-md shadow-emerald-500/25 ring-1 ring-emerald-500/30",
+    hoverClass: "hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400",
+  },
+  {
+    id: "mathematics",
+    name: "Mathematics",
+    icon: Calculator,
+    href: "/mathematics/unit-converter",
+    activeClass: "bg-purple-600 text-white shadow-md shadow-purple-500/25 ring-1 ring-purple-500/30",
+    hoverClass: "hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400",
+  },
+];
 
 const CustomDropdown = ({ value, onChange, options, theme }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,26 +56,29 @@ const CustomDropdown = ({ value, onChange, options, theme }) => {
   return (
     <div className="relative w-full mt-2" ref={dropdownRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full flex items-center justify-between bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 p-3 outline-none transition-colors ${theme.focusRing}`}
       >
-        <span className="truncate">{value}</span>
-        <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
+        <span className="truncate font-medium">{value}</span>
+        <ChevronDown className="w-4 h-4 text-gray-500 shrink-0 ml-2" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+        <div className="absolute z-30 w-full mt-1 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
           {options.map((opt) => (
             <button
+              type="button"
               key={opt}
               onClick={() => {
                 onChange(opt);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-4 py-3 text-sm transition-colors ${value === opt
-                ? `${theme.activeOptionBg} ${theme.text} font-semibold`
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                value === opt
+                  ? `${theme.activeOptionBg} ${theme.text} font-semibold`
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              }`}
             >
               {opt}
             </button>
@@ -52,28 +90,70 @@ const CustomDropdown = ({ value, onChange, options, theme }) => {
 };
 
 export default function UnitConverter({ subject = "physics" }) {
-  
+  const currentSubjectId = subject.toLowerCase();
+
   // Define subject configurations
   const subjectConfig = useMemo(() => {
-    switch (subject.toLowerCase()) {
+    switch (currentSubjectId) {
       case "chemistry":
         return {
           themeColor: "green",
-          categories: ["Mass", "Temperature", "Pressure", "Volume", "Density", "Energy", "Molarity", "Dipole Moment", "Radioactivity", "Frequency"]
+          categories: [
+            "Mass",
+            "Temperature",
+            "Pressure",
+            "Volume",
+            "Density",
+            "Energy",
+            "Molarity",
+            "Dipole Moment",
+            "Radioactivity",
+            "Frequency",
+          ],
         };
       case "mathematics":
         return {
           themeColor: "purple",
-          categories: ["Length", "Area", "Volume", "Angle", "Solid Angle", "Time", "Velocity", "Angular Velocity", "Proportion"]
+          categories: [
+            "Length",
+            "Area",
+            "Volume",
+            "Angle",
+            "Solid Angle",
+            "Time",
+            "Velocity",
+            "Angular Velocity",
+            "Proportion",
+          ],
         };
       case "physics":
       default:
         return {
           themeColor: "blue",
-          categories: ["Length", "Mass", "Time", "Velocity", "Angle", "Angular Velocity", "Solid Angle", "Temperature", "Force", "Energy", "Power", "Pressure", "Density", "Charge", "Magnetic Field", "Magnetic Flux", "Capacitance", "Radioactivity", "Frequency"]
+          categories: [
+            "Length",
+            "Mass",
+            "Time",
+            "Velocity",
+            "Angle",
+            "Angular Velocity",
+            "Solid Angle",
+            "Temperature",
+            "Force",
+            "Energy",
+            "Power",
+            "Pressure",
+            "Density",
+            "Charge",
+            "Magnetic Field",
+            "Magnetic Flux",
+            "Capacitance",
+            "Radioactivity",
+            "Frequency",
+          ],
         };
     }
-  }, [subject]);
+  }, [currentSubjectId]);
 
   // Theme tokens
   const theme = useMemo(() => {
@@ -122,7 +202,7 @@ export default function UnitConverter({ subject = "physics" }) {
   const categories = useMemo(() => {
     const all = Object.keys(conversionData);
     const allowed = subjectConfig.categories;
-    return all.filter(c => allowed.includes(c));
+    return all.filter((c) => allowed.includes(c));
   }, [subjectConfig]);
 
   const [category, setCategory] = useState(categories[0] || "Length");
@@ -130,6 +210,13 @@ export default function UnitConverter({ subject = "physics" }) {
   const [toUnit, setToUnit] = useState("");
   const [inputValue, setInputValue] = useState("1");
   const [outputValue, setOutputValue] = useState("");
+
+  // Sync category if current category isn't valid for this subject
+  useEffect(() => {
+    if (!categories.includes(category)) {
+      setCategory(categories[0] || "");
+    }
+  }, [categories, category]);
 
   // Update default units when category changes
   useEffect(() => {
@@ -139,7 +226,7 @@ export default function UnitConverter({ subject = "physics" }) {
     setToUnit(units[1] || units[0]);
   }, [category]);
 
-
+  // Compute conversion
   useEffect(() => {
     const val = parseFloat(inputValue);
     if (isNaN(val)) {
@@ -158,9 +245,8 @@ export default function UnitConverter({ subject = "physics" }) {
     }
 
     const baseValue = (val + fromData.c) * fromData.m;
-    const finalValue = (baseValue / toData.m) - toData.c;
+    const finalValue = baseValue / toData.m - toData.c;
 
-    // Format to avoid super long decimals but keep scientific notation if very small/large
     if (finalValue === 0) {
       setOutputValue("0");
     } else if (Math.abs(finalValue) < 1e-6 || Math.abs(finalValue) > 1e6) {
@@ -175,23 +261,52 @@ export default function UnitConverter({ subject = "physics" }) {
     setToUnit(fromUnit);
   };
 
-  if (!category) return null;
-
   return (
     <div className="max-w-4xl mx-auto w-full">
-      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
+      {/* ========================================================================= */}
+      {/* Subject Quick Selector Bar - Centered on Banner Border                    */}
+      {/* ========================================================================= */}
+      <div className="flex justify-center -translate-y-1/2 relative z-20 mb-2 sm:mb-4">
+        <div className="inline-flex items-center p-1.5 rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-slate-200/90 dark:border-gray-800 shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] gap-1.5 sm:gap-2">
+          {SUBJECTS.map((sub) => {
+            const Icon = sub.icon;
+            const isActive = currentSubjectId === sub.id;
+            return (
+              <Link
+                key={sub.id}
+                href={sub.href}
+                scroll={false}
+                className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                  isActive
+                    ? `${sub.activeClass} scale-[1.02] font-bold`
+                    : `text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white ${sub.hoverClass}`
+                }`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{sub.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
+      {/* ========================================================================= */}
+      {/* Main Converter Card                                                       */}
+      {/* ========================================================================= */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
         {/* Category Tabs */}
-        <div className="bg-slate-50 dark:bg-[#0d1320] p-6 border-b border-slate-200 dark:border-gray-800 rounded-t-3xl">
-          <div className="flex flex-wrap justify-center gap-3">
+        <div className="bg-slate-50 dark:bg-[#0d1320] p-5 sm:p-6 border-b border-slate-200 dark:border-gray-800 rounded-t-3xl">
+          <div className="flex flex-wrap justify-center gap-2.5">
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${category === cat
-                  ? `${theme.bg} text-white shadow-md ${theme.shadow} scale-105`
-                  : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105"
-                  }`}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                  category === cat
+                    ? `${theme.bg} text-white shadow-md ${theme.shadow} scale-105`
+                    : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-slate-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105"
+                }`}
               >
                 {cat}
               </button>
@@ -200,65 +315,78 @@ export default function UnitConverter({ subject = "physics" }) {
         </div>
 
         {/* Converter Body */}
-        <div className="p-6 md:p-8">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
-
-            {/* FROM Column */}
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">From</label>
-              <div className="relative">
-                <input
-                  type="number"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 text-gray-900 dark:text-white`}
-                  placeholder="0"
+        {category && conversionData[category] && (
+          <div className="p-6 md:p-8">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
+              {/* FROM Column */}
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                  From
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${
+                      theme.focusRing.split(" ")[1]
+                    } transition-colors p-0 pb-2 text-gray-900 dark:text-white`}
+                    placeholder="0"
+                  />
+                </div>
+                <CustomDropdown
+                  value={fromUnit}
+                  onChange={setFromUnit}
+                  options={Object.keys(conversionData[category].units)}
+                  theme={theme}
                 />
               </div>
-              <CustomDropdown
-                value={fromUnit}
-                onChange={setFromUnit}
-                options={Object.keys(conversionData[category].units)}
-                theme={theme}
-              />
-            </div>
 
-            {/* SWAP Button */}
-            <div className="flex justify-center md:pt-6">
-              <button
-                onClick={handleSwap}
-                className={`p-4 rounded-full ${theme.swapBg} ${theme.text} ${theme.swapHover} transition-colors group`}
-              >
-                <ArrowLeftRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              </button>
-            </div>
+              {/* SWAP Button */}
+              <div className="flex justify-center md:pt-6">
+                <button
+                  type="button"
+                  onClick={handleSwap}
+                  aria-label="Swap units"
+                  className={`p-4 rounded-full ${theme.swapBg} ${theme.text} ${theme.swapHover} transition-colors group`}
+                >
+                  <ArrowLeftRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                </button>
+              </div>
 
-            {/* TO Column */}
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">To</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  readOnly
-                  value={outputValue}
-                  className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${theme.focusRing.split(' ')[1]} transition-colors p-0 pb-2 ${theme.text}`}
-                  placeholder="0"
+              {/* TO Column */}
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                  To
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    readOnly
+                    value={outputValue}
+                    className={`w-full text-3xl font-bold bg-transparent border-0 border-b-2 border-slate-200 dark:border-gray-800 focus:ring-0 ${
+                      theme.focusRing.split(" ")[1]
+                    } transition-colors p-0 pb-2 ${theme.text}`}
+                    placeholder="0"
+                  />
+                </div>
+                <CustomDropdown
+                  value={toUnit}
+                  onChange={setToUnit}
+                  options={Object.keys(conversionData[category].units)}
+                  theme={theme}
                 />
               </div>
-              <CustomDropdown
-                value={toUnit}
-                onChange={setToUnit}
-                options={Object.keys(conversionData[category].units)}
-                theme={theme}
-              />
             </div>
           </div>
-        </div>
+        )}
 
         {/* Footer info */}
-        <div className={`${theme.footerBg} p-4 text-center border-t ${theme.footerBorder} flex items-center justify-center gap-2 rounded-b-3xl`}>
-          <Activity className={`w-4 h-4 ${theme.text.split(' ')[0]}`} />
-          <span className={`text-sm ${theme.text}`}>
+        <div
+          className={`${theme.footerBg} p-4 text-center border-t ${theme.footerBorder} flex items-center justify-center gap-2 rounded-b-3xl`}
+        >
+          <Activity className={`w-4 h-4 ${theme.text.split(" ")[0]}`} />
+          <span className={`text-xs sm:text-sm ${theme.text} font-medium`}>
             Instant, high-precision scientific conversions
           </span>
         </div>
