@@ -1,9 +1,8 @@
 import { getToken } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
 
-// Always dynamic - never cache auth or API responses
+// Dynamic route evaluation - edge cache managed via Cache-Control headers
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 // Allow up to 60s for Go backend responses
 export const maxDuration = 60;
@@ -56,14 +55,25 @@ export async function processRequest(req, { params }) {
     const response = await fetch(targetUrl, fetchOptions);
     const responseBody = await response.arrayBuffer();
 
+    const isPublicGet = req.method === 'GET' && !token && response.ok;
+
+    const responseHeaders = {
+      'Content-Type': response.headers.get('content-type') || 'application/json',
+    };
+
+    if (isPublicGet) {
+      // Micro-cache public reads at the CDN Edge for 60s with 5min SWR to absorb visitor traffic bursts
+      responseHeaders['Cache-Control'] = 'public, s-maxage=60, stale-while-revalidate=300';
+    } else {
+      // Authenticated users, admin actions, and mutations are never cached
+      responseHeaders['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
+      responseHeaders['Pragma'] = 'no-cache';
+      responseHeaders['Expires'] = '0';
+    }
+
     return new Response(responseBody, {
       status: response.status,
-      headers: {
-        'Content-Type': response.headers.get('content-type') || 'application/json',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-      },
+      headers: responseHeaders,
     });
   } catch (error) {
     console.error('[pyqs-proxy] Error:', error);
