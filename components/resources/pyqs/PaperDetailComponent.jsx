@@ -331,11 +331,11 @@ function PaperDetailContent({ paperData }) {
   };
 
   return (
-    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-6 sm:py-10 text-left">
-      <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 pt-4 sm:pt-6 pb-12 text-left">
+      <div className="max-w-5xl mx-auto px-4">
         
         {/* Navigation & Breadcrumbs Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-5">
           <Breadcrumbs
             crumbs={[
               { label: "PYQs", href: "/previous-year-questions" },
@@ -353,8 +353,9 @@ function PaperDetailContent({ paperData }) {
           </Link>
         </div>
 
-        {/* Paper Header Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 md:p-8 space-y-4">
+        <div className="space-y-6 sm:space-y-8">
+          {/* Paper Header Card */}
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 md:p-8 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(paperData.exam_type)}`}>
@@ -794,6 +795,8 @@ function PaperDetailContent({ paperData }) {
               );
             })
           )}
+        </div>
+
         </div>
 
       </div>

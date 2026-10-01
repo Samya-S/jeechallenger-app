@@ -109,11 +109,11 @@ export default function QuestionDetailComponent({ question }) {
   };
 
   return (
-    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-6 sm:py-10">
-      <div className="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 pt-4 sm:pt-6 pb-12">
+      <div className="max-w-5xl mx-auto px-4">
         
         {/* Navigation & Breadcrumbs Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-5">
           <Breadcrumbs
             crumbs={[
               { label: "PYQs", href: "/previous-year-questions" },
@@ -131,8 +131,9 @@ export default function QuestionDetailComponent({ question }) {
           </Link>
         </div>
 
-        {/* Main Question Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
+        <div className="space-y-6 sm:space-y-8">
+          {/* Main Question Card */}
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
           
           {/* Card Header & Metadata */}
           <div className="p-4 sm:p-6 md:p-8 bg-gray-50/80 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800">
@@ -511,6 +512,8 @@ export default function QuestionDetailComponent({ question }) {
             )}
           </div>
         )}
+
+        </div>
 
       </div>
 
