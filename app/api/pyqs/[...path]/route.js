@@ -20,12 +20,9 @@ export async function processRequest(req, { params }) {
   const apiPath = pathParams.join('/');
   const url = new URL(req.url);
 
-  const pyqsBaseUrl = process.env.PYQS_API_URL || (
-    process.env.NODE_ENV === 'production'
-      ? 'https://pyqs-api.jeechallenger.com'
-      : 'http://localhost:8080'
-  );
-  const targetUrl = `${pyqsBaseUrl.replace(/\/+$/, '')}/${apiPath}${url.search}`;
+  const targetUrl = process.env.NODE_ENV === 'production' || true
+    ? 'https://pyqs-api.jeechallenger.com/' + apiPath + url.search
+    : 'http://localhost:8080/' + apiPath + url.search;
 
   // 3. Build forwarded headers
   const headers = new Headers();
