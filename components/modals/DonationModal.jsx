@@ -35,11 +35,11 @@ const DonationModal = () => {
 			/>
 
 			{/* Modal */}
-			<div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] max-h-[90vh] flex flex-col">
+			<div className="relative bg-white dark:bg-gray-900 rounded-2xl p-5 sm:p-8 max-w-2xl w-full mx-auto shadow-2xl border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] max-h-[90vh] flex flex-col">
 				{/* Close button */}
 				<button
 					onClick={handleClose}
-					className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-all cursor-pointer outline-none focus:outline-none ring-0 focus:ring-0"
+					className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100/80 hover:bg-gray-200 dark:bg-gray-800/80 dark:hover:bg-gray-700 backdrop-blur-sm active:scale-95 transition-all cursor-pointer outline-none focus:outline-none ring-0 focus:ring-0"
 					aria-label="Close donation modal"
 				>
 					<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ const DonationModal = () => {
 				<div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                     <div className="flex flex-col items-center animate-fade-in">
                         <div className="text-center w-full">
-                            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Keep JEE Challenger Running 🚀</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2 px-6 sm:px-8 pt-1 sm:pt-0">Keep JEE Challenger Running 🚀</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 mt-4">
                                 We are committed to keeping our tools, trackers, resources, and AI assistant free for all aspirants. However, maintaining our infrastructure and keeping the platform running smoothly costs money. We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in. <strong>Once we reach our bare minimum funding goal to cover infrastructure costs, we will remove all pop-up ads and redirects completely!</strong>
                             </p>
