@@ -252,6 +252,9 @@ function resolveBaseUrl(baseUrl) {
 function buildImageResponse(element, fontRegular, fontSemiBold, fontBold) {
   return new ImageResponse(element, {
     ...OG_SIZE,
+    headers: {
+      'Cache-Control': 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=86400',
+    },
     ...(fontRegular && fontSemiBold && fontBold && {
       fonts: [
         { name: 'Jost', data: fontRegular, style: 'normal', weight: 400 },
