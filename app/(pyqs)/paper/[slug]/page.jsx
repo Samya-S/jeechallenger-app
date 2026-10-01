@@ -6,10 +6,12 @@ import { ogImageMeta } from "@/utils/og-metadata";
 
 const BACKEND_URL = process.env.PYQS_API_URL || "https://pyqs-api.jeechallenger.com";
 
+export const dynamicParams = true;
+
 async function fetchPaper(slug) {
   try {
     const res = await fetch(`${BACKEND_URL}/papers/${slug}`, {
-      next: { revalidate: 60 },
+      cache: "force-cache",
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -23,7 +25,7 @@ async function fetchPaper(slug) {
 export async function generateStaticParams() {
   try {
     const res = await fetch(`${BACKEND_URL}/papers`, {
-      next: { revalidate: 3600 },
+      cache: "force-cache",
     });
     if (!res.ok) return [];
     const data = await res.json();

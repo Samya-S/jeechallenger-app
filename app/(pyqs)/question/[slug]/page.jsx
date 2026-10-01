@@ -8,10 +8,12 @@ import { getSiteUrl } from "@/config/site-url";
 
 const BACKEND_URL = process.env.PYQS_API_URL || "https://pyqs-api.jeechallenger.com";
 
+export const dynamicParams = true;
+
 async function fetchQuestion(slug) {
   try {
     const res = await fetch(`${BACKEND_URL}/questions/${slug}`, {
-      next: { revalidate: 60 },
+      cache: "force-cache",
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -19,6 +21,49 @@ async function fetchQuestion(slug) {
   } catch (error) {
     console.error(`Error fetching question ${slug}:`, error);
     return null;
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const firstRes = await fetch(`${BACKEND_URL}/questions?limit=100&page=1`, {
+      headers: { Accept: "application/json" },
+      cache: "force-cache",
+    });
+    if (!firstRes.ok) return [];
+
+    const firstJson = await firstRes.json();
+    const firstData = firstJson.data || [];
+    const totalPages = firstJson.meta?.total_pages || 1;
+
+    let allQuestions = [...firstData];
+
+    if (totalPages > 1) {
+      const pagePromises = [];
+      for (let page = 2; page <= totalPages; page++) {
+        pagePromises.push(
+          fetch(`${BACKEND_URL}/questions?limit=100&page=${page}`, {
+            headers: { Accept: "application/json" },
+            cache: "force-cache",
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null)
+        );
+      }
+      const results = await Promise.all(pagePromises);
+      results.forEach((res) => {
+        if (res && Array.isArray(res.data)) {
+          allQuestions.push(...res.data);
+        }
+      });
+    }
+
+    return allQuestions
+      .filter((q) => q && q.slug)
+      .map((q) => ({ slug: q.slug }));
+  } catch (error) {
+    console.error("Error generating static params for questions:", error);
+    return [];
   }
 }
 
