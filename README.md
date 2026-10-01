@@ -213,10 +213,11 @@ UPSTASH_REDIS_REST_TOKEN=your-upstash-redis-token
 # JWT Configuration
 JWT_SECRET=your-jwt-secret
 
-# AI Tutor Backend (for production)
-# The app uses API rewrites to connect to the AI tutor backend
+# On-Demand Revalidation (must match REVALIDATION_SECRET in jeechallenger-pyqs)
+REVALIDATION_SECRET=your-secure-revalidation-secret
 
-# PYQ Go Backend Microservice URL (optional)
+# PYQ Go Backend Microservice URL (optional, defaults to https://pyqs-api.jeechallenger.com)
+PYQS_API_URL=https://pyqs-api.jeechallenger.com
 ```
 
 4. Run the development server:
