@@ -61,6 +61,16 @@ const nextConfig = {
         ],
       },
       {
+        // Cache static XML sitemaps and feeds for 1 day
+        source: '/:path*.xml',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, stale-while-revalidate=43200',
+          },
+        ],
+      },
+      {
         // Explicitly set MIME type and cache for CSS files
         source: '/:path*.css',
         headers: [
