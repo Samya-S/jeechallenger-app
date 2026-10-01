@@ -25,46 +25,9 @@ async function fetchQuestion(slug) {
 }
 
 export async function generateStaticParams() {
-  try {
-    const firstRes = await fetch(`${BACKEND_URL}/questions?limit=100&page=1`, {
-      headers: { Accept: "application/json" },
-      cache: "force-cache",
-    });
-    if (!firstRes.ok) return [];
-
-    const firstJson = await firstRes.json();
-    const firstData = firstJson.data || [];
-    const totalPages = firstJson.meta?.total_pages || 1;
-
-    let allQuestions = [...firstData];
-
-    if (totalPages > 1) {
-      const pagePromises = [];
-      for (let page = 2; page <= totalPages; page++) {
-        pagePromises.push(
-          fetch(`${BACKEND_URL}/questions?limit=100&page=${page}`, {
-            headers: { Accept: "application/json" },
-            cache: "force-cache",
-          })
-            .then((r) => (r.ok ? r.json() : null))
-            .catch(() => null)
-        );
-      }
-      const results = await Promise.all(pagePromises);
-      results.forEach((res) => {
-        if (res && Array.isArray(res.data)) {
-          allQuestions.push(...res.data);
-        }
-      });
-    }
-
-    return allQuestions
-      .filter((q) => q && q.slug)
-      .map((q) => ({ slug: q.slug }));
-  } catch (error) {
-    console.error("Error generating static params for questions:", error);
-    return [];
-  }
+  // Return empty array for fast build times (~1m). Pages are generated on-demand
+  // on their first visit, stored permanently in static cache, and purged via Go backend.
+  return [];
 }
 
 export async function generateMetadata({ params }) {
