@@ -98,8 +98,6 @@ const Footer = () => {
               <li>
                 <Link
                   href="/ai-tutor"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   AI Tutor
