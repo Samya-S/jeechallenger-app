@@ -281,7 +281,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
                     style={{ 
                       height: '100%',
                       width: `${overallStats.percentage}%`,
-                      background: 'linear-gradient(90deg, #10B981 0%, #3B82F6 50%, #8B5CF6 100%)',
+                      background: 'linear-gradient(90deg, #3B82F6 0%, #10B981 50%, #8B5CF6 100%)',
                       borderRadius: '9999px',
                       boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
                     }}

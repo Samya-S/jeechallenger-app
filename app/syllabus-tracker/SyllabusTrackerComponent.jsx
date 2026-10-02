@@ -558,7 +558,7 @@ const SyllabusTrackerComponent = () => {
 
               <div className="w-full bg-slate-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-blue-600 via-emerald-500 to-purple-600 rounded-full transition-all duration-300"
                   style={{ width: `${overallStats.percentage}%` }}
                 />
               </div>
