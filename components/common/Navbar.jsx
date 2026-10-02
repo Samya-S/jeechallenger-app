@@ -142,12 +142,15 @@ export default function NavBar() {
     }));
   };
 
-  const isFloating = isScrolled && !showMobileNav;
+  const isLandingPage = pathname === "/";
+  const isFloating = (isLandingPage || isScrolled) && !showMobileNav;
 
   return (
     <header
       ref={navRef}
-      className={`sticky top-0 z-50 w-full transition-[padding] duration-300 ease-out ${
+      className={`${
+        isLandingPage ? "fixed top-0 left-0 right-0" : "sticky top-0"
+      } z-50 w-full transition-[padding] duration-300 ease-out ${
         isFloating
           ? "pointer-events-none pt-2 px-3 sm:pt-3 sm:px-6 lg:px-8"
           : "pointer-events-auto pt-0 px-0"

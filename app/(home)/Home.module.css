@@ -80,3 +80,23 @@
   animation: float-delayed 3s ease-in-out infinite;
   animation-delay: 1.5s;
 }
+
+/* Scoped hero 3D micro-badge floating animations */
+.floatBadge1 {
+  animation: float 4s ease-in-out infinite;
+}
+
+.floatBadge2 {
+  animation: float 4.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.floatBadge3 {
+  animation: float 4.2s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.floatBadge4 {
+  animation: float 3.8s ease-in-out infinite;
+  animation-delay: 0.5s;
+}

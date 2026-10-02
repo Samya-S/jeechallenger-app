@@ -1,79 +1,95 @@
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
+import dynamic from "next/dynamic";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { FaChalkboardTeacher } from "react-icons/fa";
+
+// Dynamically import 3D Canvas for smooth client-side hydration
+const HeroAnimation3D = dynamic(() => import("./HeroAnimation3D"), {
+  ssr: false,
+  loading: () => (
+    <div className="relative w-full max-w-[560px] aspect-square mx-auto flex items-center justify-center">
+      <div className="w-48 h-48 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin" />
+    </div>
+  ),
+});
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-center bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Visual Side - Mobile First */}
-          <div className="relative order-1 lg:order-2">
-            <div className="relative w-full aspect-square">
-              <Image
-                src="/images/home.webp"
-                alt="JEE Challenger - Free IIT JEE Study Materials, AI Tutor, Previous Year Questions and Complete Preparation Platform for JEE Main and Advanced"
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                className="object-cover rounded-2xl"
-                priority
-                fetchPriority="high"
-              />
-            </div>
-          </div>
+    <section className="relative overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-14 lg:pb-20 bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
+      {/* Background Decorative Glow Spots */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-blue-500/15 via-indigo-500/10 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 dark:bg-blue-600/15 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-          {/* Content Side */}
-          <div className="text-center lg:text-left space-y-6 sm:space-y-8 order-2 lg:order-1 mb-5 md:mb-10 lg:mb-0">
-            <div className="space-y-4 sm:space-y-6">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          {/* Left Column: High-Impact Typography & Action Suite */}
+          <div className="lg:col-span-7 text-center lg:text-left space-y-6 sm:space-y-8">
+            
+            {/* Top Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-blue-50/90 dark:bg-blue-950/80 border border-blue-200/80 dark:border-blue-800 text-blue-700 dark:text-blue-300 shadow-sm backdrop-blur-sm mx-auto lg:mx-0">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              <span>JEE Main & Advanced Ready</span>
+              <span className="w-px h-3.5 bg-blue-300 dark:bg-blue-700/80" aria-hidden="true" />
+              <span className="font-bold text-indigo-600 dark:text-indigo-400">All-in-One Platform</span>
+            </div>
+
+            {/* Main Headline */}
+            <div className="space-y-3">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-[1.12]">
+                <span className="bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 bg-clip-text text-transparent">
                   All That You Need
                 </span>
                 <br />
-                <span className="text-gray-800 dark:text-gray-100">
+                <span className="text-gray-900 dark:text-white">
                   to Excel in JEE
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto lg:mx-0 px-4 sm:px-0">
-                Comprehensive study materials, solved papers, and expert guidance for JEE Main & Advanced aspirants
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-200 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed pt-2">
+                Your complete preparation ecosystem. Practice authentic chapter-wise PYQs, solve doubts 24/7 with our AI Tutor, access curated revision notes, and track all 88 syllabus chapters.
               </p>
             </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <div className="flex justify-center sm:justify-start">
-                <Link
-                  href="/ai-tutor"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex w-64 sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-base sm:text-lg rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 items-center justify-center whitespace-nowrap"
-                >
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0" fill="currentColor" viewBox="0 0 640 512">
-                    <path d="M208 352c-2.39 0-4.78.35-7.06 1.09C187.98 357.3 174.35 360 160 360c-14.35 0-27.98-2.7-40.95-6.91-2.28-.74-4.66-1.09-7.05-1.09C49.94 352-.33 402.48 0 464.62.14 490.88 21.73 512 48 512h224c26.27 0 47.86-21.12 48-47.38.33-62.14-49.94-112.62-112-112.62zm-48-32c53.02 0 96-42.98 96-96s-42.98-96-96-96-96 42.98-96 96 42.98 96 96 96zM592 0H208c-26.47 0-48 22.25-48 49.59V96c23.42 0 45.1 6.78 64 17.8V64h352v288h-64v-64H384v64h-76.24c19.1 16.69 33.12 38.73 39.69 64H592c26.47 0 48-22.25 48-49.59V49.59C640 22.25 618.47 0 592 0z"/>
-                  </svg>
-                  Try AI Tutor
-                </Link>
-              </div>
+            {/* Primary & Secondary Action Buttons (Side-by-side with natural widths) */}
+            <div className="flex flex-row flex-nowrap gap-2.5 sm:gap-4 justify-center lg:justify-start items-center pt-2">
+              {/* Primary Action: AI Tutor */}
+              <Link
+                href="/ai-tutor"
+                className="group relative inline-flex items-center justify-center px-4 sm:px-7 py-3 sm:py-4 rounded-xl font-bold text-white text-xs sm:text-base shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/35 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 whitespace-nowrap"
+              >
+                <FaChalkboardTeacher className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2.5 text-blue-200 group-hover:scale-110 transition-transform shrink-0" />
+                <span>Try AI Tutor</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
 
-              <div className="flex justify-center sm:justify-start">
-                <Link
-                  href="https://t.me/+oOnj4y_ZYqYyZjA1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex w-64 sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-base sm:text-lg rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 items-center justify-center whitespace-nowrap"
-                >
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
-                  </svg>
-                  Join us on Telegram
-                </Link>
-              </div>
+              {/* Secondary Action: Question Bank */}
+              <Link
+                href="/previous-year-questions"
+                className="group inline-flex items-center justify-center px-3.5 sm:px-6 py-3 sm:py-4 rounded-xl font-bold text-white text-xs sm:text-base bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/35 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 whitespace-nowrap"
+              >
+                <BookOpen className="w-4 h-4 mr-1.5 sm:mr-2 text-amber-100 group-hover:rotate-6 transition-transform shrink-0" />
+                <span>Solve PYQs</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
             </div>
+
           </div>
+
+          {/* Right Column: 3D Interactive Quantum Simulation Canvas */}
+          <div className="lg:col-span-5 relative flex items-center justify-center">
+            <HeroAnimation3D />
+          </div>
+
         </div>
       </div>
     </section>
   );
 };
 
-export default Hero; 
+export default Hero;
