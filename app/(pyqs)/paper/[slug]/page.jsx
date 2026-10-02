@@ -12,6 +12,7 @@ async function fetchPaper(slug) {
   try {
     const res = await fetch(`${BACKEND_URL}/papers/${slug}`, {
       cache: "force-cache",
+      next: { tags: [`paper-${slug}`] },
     });
     if (!res.ok) return null;
     const data = await res.json();

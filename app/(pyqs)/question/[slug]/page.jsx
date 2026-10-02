@@ -14,6 +14,7 @@ async function fetchQuestion(slug) {
   try {
     const res = await fetch(`${BACKEND_URL}/questions/${slug}`, {
       cache: "force-cache",
+      next: { tags: [`question-${slug}`] },
     });
     if (!res.ok) return null;
     const data = await res.json();
