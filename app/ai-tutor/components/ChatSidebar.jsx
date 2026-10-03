@@ -75,7 +75,7 @@ const ChatRow = ({
   const isActive = chat.id === activeChatId;
 
   return (
-    <li className="relative">
+    <li className="relative" data-chat-id={chat.id}>
       <div
         onClick={() => !isEditing && onSelectChat(chat.id)}
         className={`group relative flex items-center gap-2.5 px-3 py-3 rounded-xl cursor-pointer ${isActive ? "bg-white dark:bg-gray-700/90 shadow-sm" : "hover:bg-white/80 dark:hover:bg-gray-700/60"}`}
@@ -145,6 +145,7 @@ const ChatSidebar = ({
   activeChatId,
   isLoadingChats,
   isOpen,
+  initialChatId = null,
   onToggle,
   onNewChat,
   onSelectChat,
@@ -155,6 +156,53 @@ const ChatSidebar = ({
   const [editTitle, setEditTitle] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const editInputRef = useRef(null);
+  const listContainerRef = useRef(null);
+  const hasAutoScrolledRef = useRef(false);
+
+  // Auto-scroll the sidebar to bring the active chat into the center ONLY on direct URL load
+  useEffect(() => {
+    if (!initialChatId || hasAutoScrolledRef.current) return;
+    if (!isOpen || isLoadingChats || !chats || chats.length === 0) return;
+
+    const container = listContainerRef.current;
+    if (!container) return;
+
+    const escapedId = typeof CSS !== "undefined" && CSS.escape ? CSS.escape(initialChatId) : initialChatId;
+    const activeElement = container.querySelector(`[data-chat-id="${escapedId}"]`);
+    if (!activeElement) {
+      if (!isLoadingChats) {
+        hasAutoScrolledRef.current = true;
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (!container || !activeElement || hasAutoScrolledRef.current) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = activeElement.getBoundingClientRect();
+
+      if (containerRect.height === 0 || elementRect.height === 0) return;
+
+      const elementRelativeTop = elementRect.top - containerRect.top;
+      const desiredRelativeTop = (containerRect.height - elementRect.height) / 2;
+      const scrollDelta = elementRelativeTop - desiredRelativeTop;
+      const targetScrollTop = container.scrollTop + scrollDelta;
+
+      try {
+        container.scrollTo({
+          top: Math.max(0, targetScrollTop),
+          behavior: "smooth",
+        });
+      } catch {
+        container.scrollTop = Math.max(0, targetScrollTop);
+      }
+
+      hasAutoScrolledRef.current = true;
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [initialChatId, isOpen, isLoadingChats, chats]);
 
   useEffect(() => {
     if (editingId && editInputRef.current) {
@@ -236,7 +284,10 @@ const ChatSidebar = ({
           </div>
 
           {/* Chat List */}
-          <div className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+          <div
+            ref={listContainerRef}
+            className="flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
+          >
             {isLoadingChats ? (
               <div className="flex items-center justify-center py-12 text-gray-400">
                 <FaSpinner className="animate-spin mr-2 text-blue-500" />

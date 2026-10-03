@@ -54,6 +54,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
+  const initialChatIdRef = useRef(urlChatId);
 
   // --- START OF REACTIVE URL CLEANUP ---
   useEffect(() => {
@@ -761,6 +762,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
             activeChatId={activeChatId}
             isLoadingChats={isLoadingChats}
             isOpen={sidebarOpen}
+            initialChatId={initialChatIdRef.current}
             onToggle={handleToggleSidebar}
             onNewChat={handleNewChat}
             onSelectChat={handleSelectChat}
