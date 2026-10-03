@@ -82,6 +82,7 @@ const FormulaSheets = ({ formulaData = [], colorTheme = "blue" }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const tabsScrollRef = useRef(null);
   const boardTopRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   // Total formulas count
   const totalFormulas = useMemo(
@@ -118,17 +119,24 @@ const FormulaSheets = ({ formulaData = [], colorTheme = "blue" }) => {
   // Current active chapter
   const currentChapter = formulaData[activeChapterIndex] || formulaData[0];
 
-  // Scroll active tab into view when active chapter changes
+  // Scroll active tab horizontally inside the tabs container when active chapter changes (skip initial page load)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (tabsScrollRef.current) {
       const activeEl = tabsScrollRef.current.querySelector(
         `[data-tab-index="${activeChapterIndex}"]`
       );
       if (activeEl) {
-        activeEl.scrollIntoView({
+        const container = tabsScrollRef.current;
+        const scrollLeft =
+          activeEl.offsetLeft - container.clientWidth / 2 + activeEl.clientWidth / 2;
+        container.scrollTo({
+          left: scrollLeft,
           behavior: "smooth",
-          block: "nearest",
-          inline: "center",
         });
       }
     }
@@ -142,25 +150,25 @@ const FormulaSheets = ({ formulaData = [], colorTheme = "blue" }) => {
     }
   };
 
-  // Change chapter handler
-  const handleSelectChapter = (index) => {
+  // Change chapter handler (only scrolls vertically if shouldScroll is true, e.g. from Prev/Next buttons)
+  const handleSelectChapter = (index, shouldScroll = false) => {
     setActiveChapterIndex(index);
     if (searchQuery) setSearchQuery("");
-    if (boardTopRef.current) {
+    if (shouldScroll && boardTopRef.current) {
       boardTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
-  // Previous & Next Chapter navigation
+  // Previous & Next Chapter navigation (scrolls back up to the new chapter)
   const handlePrev = () => {
     if (activeChapterIndex > 0) {
-      handleSelectChapter(activeChapterIndex - 1);
+      handleSelectChapter(activeChapterIndex - 1, true);
     }
   };
 
   const handleNext = () => {
     if (activeChapterIndex < formulaData.length - 1) {
-      handleSelectChapter(activeChapterIndex + 1);
+      handleSelectChapter(activeChapterIndex + 1, true);
     }
   };
 
@@ -304,8 +312,8 @@ const FormulaSheets = ({ formulaData = [], colorTheme = "blue" }) => {
 
         </div>
 
-        {/* Anchor for smooth scroll */}
-        <div ref={boardTopRef} />
+        {/* Anchor for smooth scroll with sticky navbar clearance */}
+        <div ref={boardTopRef} className="scroll-mt-20 sm:scroll-mt-24" />
 
         {/* ========================================================================= */}
         {/* VIEW A: GLOBAL SEARCH RESULTS                                             */}
