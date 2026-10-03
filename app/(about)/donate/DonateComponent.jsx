@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Heart, ShieldCheck, Smartphone, Copy, Check } from 'lucide-react';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
+import { DONATION_CONFIG } from '@/config/donation-config';
 
-const UPI_ID = "samyasaha@upi";
+const UPI_ID = DONATION_CONFIG.upiId;
 
 const DonateComponent = () => {
   const [copied, setCopied] = useState(false);
@@ -42,15 +43,15 @@ const DonateComponent = () => {
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Keep JEE Challenger Running
+                {DONATION_CONFIG.headline}
               </h1>
 
               <p className="mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                We are committed to keeping our tools, trackers, resources, and AI assistant free for all aspirants. However, maintaining our infrastructure and keeping the platform running smoothly costs money.
+                {DONATION_CONFIG.missionStatement}
               </p>
 
               <p className="mt-3.5 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                We currently rely on ads to keep the site running, but we hate them as much as you do! If our platform has added value to your preparation journey, consider chipping in.
+                {DONATION_CONFIG.adsStatement}
               </p>
 
               {/* Highlighted Goal Callout */}
@@ -59,7 +60,7 @@ const DonateComponent = () => {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <p className="text-sm sm:text-[15px] font-semibold text-gray-900 dark:text-gray-100 leading-relaxed">
-                  Once we reach our bare minimum funding goal to cover infrastructure costs, we will remove all pop-up ads and redirects completely!
+                  {DONATION_CONFIG.goalCallout}
                 </p>
               </div>
             </div>
@@ -70,7 +71,7 @@ const DonateComponent = () => {
             {/* QR Code */}
             <div className="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800">
               <Image
-                src="/images/donation-qr.png"
+                src={DONATION_CONFIG.qrImageSrc}
                 alt="Support us with UPI"
                 className="w-48 h-48 sm:w-52 sm:h-52 object-cover rounded-lg"
                 width={1000}
@@ -106,7 +107,7 @@ const DonateComponent = () => {
 
             {/* UPI Button */}
             <a
-              href="upi://pay?pa=samyasaha@upi&pn=JEE%20Challenger&cu=INR"
+              href={DONATION_CONFIG.upiDeepLink}
               className="w-full max-w-xs inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm hover:shadow transition-all duration-150"
             >
               <Smartphone className="w-4 h-4" />

@@ -5,6 +5,7 @@ import Script from 'next/script';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { isAdExcluded, AD_CONFIG } from '@/config/ad-config';
+import { DONATION_CONFIG } from '@/config/donation-config';
 
 // Module-scoped flag: coordinates smooth navigation from AdBlock modal to excluded pages
 let isNavigatingFromAdBlockModal = false;
@@ -314,11 +315,11 @@ function AdBlockDetector({ pathname, isModalCleared }) {
         </h2>
 
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
-          We are committed to keeping JEE Challenger 100% free for all aspirants. Maintaining our infrastructure and AI tools costs real money, and we currently rely on ads to keep the platform running—<strong>though we hate them as much as you do!</strong>
+          {DONATION_CONFIG.adBlocker.description}<strong>{DONATION_CONFIG.adBlocker.descriptionEmphasis}</strong>
         </p>
 
         <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 rounded-xl p-3.5 mb-6 text-xs text-blue-800 dark:text-blue-200 text-left leading-relaxed">
-          🎯 <strong>Our Community Goal:</strong> Once we reach our bare minimum funding goal to cover infrastructure costs, we will permanently remove all pop-up ads and redirects for everyone!
+          🎯 <strong>{DONATION_CONFIG.adBlocker.goalCalloutPrefix}</strong> {DONATION_CONFIG.goalCallout}
         </div>
 
         <div className="flex flex-col gap-3">
