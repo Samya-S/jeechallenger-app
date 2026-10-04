@@ -1,11 +1,11 @@
 import { AD_CONFIG } from '@/config/ad-config';
 
-const UPI_ID = 'samyasaha@upi';
+const UPI_ID = 'samyasaha08@sbi';
 
 export const DONATION_CONFIG = {
   upiId: UPI_ID,
-  upiDeepLink: `upi://pay?pa=${UPI_ID}&pn=JEE%20Challenger&cu=INR`,
-  qrImageSrc: '/images/donation-qr.png',
+  upiDeepLink: `upi://pay?pa=${UPI_ID}&pn=JEE%20Challenger&cu=INR&tn=Support%20for%20JEE%20Challenger`,
+  qrImageSrc: '/images/donation-qr-muw81tyw.png',
 
   headline: 'Keep JEE Challenger Running 🚀',
 
