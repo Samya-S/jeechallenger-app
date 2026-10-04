@@ -69,11 +69,11 @@ const DonateComponent = () => {
           {/* Right Panel: QR Code & UPI Payment */}
           <div className="lg:col-span-5 bg-slate-50 dark:bg-[#0d1320] p-6 sm:p-10 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-gray-800 flex flex-col items-center justify-center text-center">
             {/* QR Code */}
-            <div className="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 overflow-hidden">
               <Image
                 src={DONATION_CONFIG.qrImageSrc}
                 alt="Support us with UPI"
-                className="w-48 h-48 sm:w-52 sm:h-52 object-cover rounded-lg"
+                className="w-48 h-48 sm:w-52 sm:h-52 object-cover"
                 width={1000}
                 height={1000}
                 priority

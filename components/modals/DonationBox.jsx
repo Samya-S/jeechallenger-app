@@ -1,7 +1,23 @@
+"use client";
+
+import { useState } from 'react';
 import Image from 'next/image';
+import { Copy, Check } from 'lucide-react';
 import { DONATION_CONFIG } from '@/config/donation-config';
 
 const DonationBox = ({ variant = 'plain' }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyUpi = async () => {
+    try {
+      await navigator.clipboard.writeText(DONATION_CONFIG.upiId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Ignore clipboard errors silently
+    }
+  };
+
   const isBoxed = variant === 'boxed';
 
   const containerClasses = isBoxed
@@ -26,7 +42,7 @@ const DonationBox = ({ variant = 'plain' }) => {
 
       <div className="flex flex-col items-center space-y-4 max-w-sm mx-auto">
         {/* QR Code */}
-        <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <Image
             src={DONATION_CONFIG.qrImageSrc}
             alt="Support us with UPI"
@@ -38,6 +54,21 @@ const DonationBox = ({ variant = 'plain' }) => {
         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase">
           Scan to pay with any UPI app
         </p>
+
+        {/* Copyable UPI ID Chip */}
+        <button
+          type="button"
+          onClick={handleCopyUpi}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500/60 dark:hover:border-blue-500/60 shadow-2xs text-xs font-medium text-gray-700 dark:text-gray-300 transition-colors cursor-pointer"
+          title="Copy UPI ID"
+        >
+          <span className="font-mono text-gray-900 dark:text-white">{DONATION_CONFIG.upiId}</span>
+          {copied ? (
+            <Check className="w-3.5 h-3.5 text-emerald-500" />
+          ) : (
+            <Copy className="w-3.5 h-3.5 text-gray-400" />
+          )}
+        </button>
 
         <div className="flex items-center w-full my-2">
           <hr className="flex-grow border-gray-200 dark:border-gray-700" />
