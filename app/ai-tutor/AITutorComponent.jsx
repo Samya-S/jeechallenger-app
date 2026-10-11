@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle } from "react-icons/fa";
+import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle, FaChevronDown } from "react-icons/fa";
 
 import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";
 import ChatSidebar from "@/app/ai-tutor/components/ChatSidebar";
@@ -13,6 +13,24 @@ import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import TextareaAutosize from 'react-textarea-autosize';
 
 const AIResponseRenderer = ({ content }) => <MarkdownMathRenderer content={content} />;
+
+const DESKTOP_PLACEHOLDERS = [
+  "Ask me anything about JEE preparation...",
+  "Ask a question on Physics, Chemistry, or Mathematics...",
+  "Need help solving a difficult problem? Ask here...",
+  "Ask about study plans, formula derivations, or concepts...",
+  "Type your question or attach a problem to solve...",
+  "Ask about JEE Main & Advanced strategies..."
+];
+
+const MOBILE_PLACEHOLDERS = [
+  "Ask a JEE question...",
+  "Ask anything about JEE...",
+  "Ask Physics, Chem or Maths...",
+  "Type your question here...",
+  "Ask for help with a problem...",
+  "Ask a concept or formula..."
+];
 
 const parseApiError = async (response, defaultMessage) => {
   if (response.status === 429) {
@@ -49,9 +67,12 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [abortController, setAbortController] = useState(null);
+  const [placeholder, setPlaceholder] = useState("Ask me anything about JEE preparation...");
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
   const initialChatIdRef = useRef(urlChatId);
@@ -281,22 +302,91 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     }
   };
 
-  // Scroll to last user message without animation so it sits at top of viewport
-  const scrollToLastUserMessage = () => {
-    const lastUserMsg = [...messages].reverse().find(m => m.sender === "user");
+  // Scroll to last user message so it sits at top of viewport (exact position as on mount)
+  const scrollToLastUserMessage = (smooth = false) => {
+    let lastUserMsg = null;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].sender === "user") {
+        lastUserMsg = messages[i];
+        break;
+      }
+    }
+
+    const behavior = smooth ? "smooth" : "auto";
     if (lastUserMsg) {
       const element = document.getElementById(`message-${lastUserMsg.id}`);
       if (element) {
-        element.scrollIntoView({ behavior: "auto", block: "start" });
+        element.scrollIntoView({ behavior, block: "start" });
         return;
       }
     }
     // Fallback if no user message is found
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
+
+  const handleMessagesScroll = () => {
+    const container = messagesContainerRef.current;
+    if (!container || messages.length === 0) {
+      setShowScrollBottom(false);
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    // Condition 1: The response of the latest message is completely visible
+    let isResponseFullyVisible = distanceFromBottom <= 60;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg) {
+      const lastMsgEl = document.getElementById(`message-${lastMsg.id}`);
+      if (lastMsgEl) {
+        const lastMsgRect = lastMsgEl.getBoundingClientRect();
+        if (lastMsgRect.bottom <= containerRect.bottom + 20) {
+          isResponseFullyVisible = true;
+        }
+      }
+    }
+
+    // Condition 2: The latest user message is at the top of the page (or scrolled past it)
+    let lastUserMsg = null;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].sender === "user") {
+        lastUserMsg = messages[i];
+        break;
+      }
+    }
+
+    let isLastUserMsgAtOrPastTop = false;
+    if (lastUserMsg) {
+      const userMsgEl = document.getElementById(`message-${lastUserMsg.id}`);
+      if (userMsgEl) {
+        const userMsgRect = userMsgEl.getBoundingClientRect();
+        isLastUserMsgAtOrPastTop = userMsgRect.top <= containerRect.top + 80;
+      }
+    }
+
+    // The button hides when:
+    // 1) The response of the latest message is completely visible, OR
+    // 2) The latest user message is at the top of the page (or past it)
+    const shouldHide = isResponseFullyVisible || isLastUserMsgAtOrPastTop;
+    setShowScrollBottom(!shouldHide);
+  };
+
+  // Client-side dynamic placeholder selection for desktop and mobile (SSR & Vercel friendly)
+  useEffect(() => {
+    const pickRandomPlaceholder = () => {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+      const list = isMobile ? MOBILE_PLACEHOLDERS : DESKTOP_PLACEHOLDERS;
+      const randomText = list[Math.floor(Math.random() * list.length)];
+      setPlaceholder(randomText);
+    };
+
+    pickRandomPlaceholder();
+  }, [activeChatId]);
 
   useEffect(() => {
     scrollToLastUserMessage();
+    setShowScrollBottom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
@@ -308,7 +398,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   // Update document title dynamically based on active chat and prevent Next.js from overwriting it
   useEffect(() => {
     let desiredTitle = "Personalized AI Tutor | JEE Challenger";
-    
+
     if (activeChatId && chats.length > 0) {
       const activeChat = chats.find(c => c.id === activeChatId);
       if (activeChat) {
@@ -331,8 +421,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     });
 
     // Observe the entire head in case Next.js completely swaps the <title> DOM node
-    observer.observe(document.head, { 
-      childList: true, 
+    observer.observe(document.head, {
+      childList: true,
       subtree: true,
       characterData: true
     });
@@ -518,6 +608,13 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleKeyPress = (e) => {
+    // On mobile devices and tablets, allow Enter to insert a new line naturally
+    // Mobile users tap the Send button to send messages
+    const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || ('ontouchstart' in window && window.innerWidth < 1024));
+    if (isMobileDevice) {
+      return;
+    }
+
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (isLoading || isUploading || !inputMessage.trim()) return;
@@ -771,219 +868,238 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           />
 
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
-            {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
-              <div className="max-w-4xl mx-auto">
-                {isLoadingMessages ? (
-                  <div className="flex items-center justify-center py-16">
-                    <FaSpinner className="animate-spin text-blue-500 mr-2" />
-                    <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
-                  </div>
-                ) : Object.keys(messageGroups).length === 0 ? (
-                  <div className="text-center py-8 sm:py-16">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
-                      <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
+            {/* Messages Wrapper with Scroll-to-Bottom Button */}
+            <div className="relative flex-1 min-h-0 flex flex-col">
+              {/* Messages Container */}
+              <div
+                ref={messagesContainerRef}
+                onScroll={handleMessagesScroll}
+                className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
+              >
+                <div className="max-w-4xl mx-auto">
+                  {isLoadingMessages ? (
+                    <div className="flex items-center justify-center py-16">
+                      <FaSpinner className="animate-spin text-blue-500 mr-2" />
+                      <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-                      Welcome to JEE Challenger AI Tutor!
-                    </h1>
-                    <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
-                      Your personalized JEE preparation assistant
-                    </p>
-                    <div className="max-w-2xl mx-auto space-y-4 text-left bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-                      <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold">
-                        What I can help you with:
+                  ) : Object.keys(messageGroups).length === 0 ? (
+                    <div className="text-center py-8 sm:py-16">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
+                        <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
+                      </div>
+                      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                        Welcome to JEE Challenger AI Tutor!
+                      </h1>
+                      <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
+                        Your personalized JEE preparation assistant
                       </p>
-                      <ul className="text-gray-600 dark:text-gray-300 text-sm space-y-2 ml-4">
-                        <li className="flex items-center space-x-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          <span>Physics, Chemistry, and Mathematics concepts</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          <span>JEE Main and Advanced preparation strategies</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          <span>Study material recommendations</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          <span>Problem-solving techniques</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                          <span>Exam tips and time management</span>
-                        </li>
-                      </ul>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        Just type your question below and I&lsquo;ll help you excel in your JEE journey!
-                      </p>
-                      <div className="mt-4 sm:mt-6 space-y-3">
-                        <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
-                          Try asking:
+                      <div className="max-w-2xl mx-auto space-y-4 text-left bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
+                        <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold">
+                          What I can help you with:
                         </p>
-                        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                          {[
-                            "What are the important topics for JEE Physics?",
-                            "How to solve integration problems?",
-                            "Best books for JEE Chemistry",
-                            "Time management tips for JEE"
-                          ].map((suggestion, index) => (
-                            <button
-                              key={index}
-                              onClick={() => setInputMessage(suggestion)}
-                              className="text-xs sm:text-sm bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 border border-blue-200 dark:border-blue-800"
+                        <ul className="text-gray-600 dark:text-gray-300 text-sm space-y-2 ml-4">
+                          <li className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span>Physics, Chemistry, and Mathematics concepts</span>
+                          </li>
+                          <li className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span>JEE Main and Advanced preparation strategies</span>
+                          </li>
+                          <li className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span>Study material recommendations</span>
+                          </li>
+                          <li className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span>Problem-solving techniques</span>
+                          </li>
+                          <li className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span>Exam tips and time management</span>
+                          </li>
+                        </ul>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                          Just type your question below and I&lsquo;ll help you excel in your JEE journey!
+                        </p>
+                        <div className="mt-4 sm:mt-6 space-y-3">
+                          <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
+                            Try asking:
+                          </p>
+                          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                            {[
+                              "What are the important topics for JEE Physics?",
+                              "How to solve integration problems?",
+                              "Best books for JEE Chemistry",
+                              "Time management tips for JEE"
+                            ].map((suggestion, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setInputMessage(suggestion)}
+                                className="text-xs sm:text-sm bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 border border-blue-200 dark:border-blue-800"
+                              >
+                                {suggestion}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    sortedGroupEntries.map(([date, dateMessages]) => (
+                      <div key={date}>
+                        {/* Date Separator */}
+                        <div className="flex items-center justify-center my-8">
+                          <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                              {date}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Messages for this date */}
+                        <div className="space-y-4">
+                          {dateMessages.map((message) => (
+                            <div
+                              key={message.id}
+                              id={`message-${message.id}`}
+                              className={`flex scroll-mt-8 sm:scroll-mt-12 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
                             >
-                              {suggestion}
-                            </button>
+                              <div
+                                className={`flex items-start md:space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse md:space-x-reverse" : ""}`}
+                              >
+                                {/* Avatar */}
+                                <div
+                                  className={`hidden md:flex w-8 h-8 rounded-full items-center justify-center flex-shrink-0 ${message.sender === "user"
+                                    ? "bg-blue-500"
+                                    : "bg-gradient-to-r from-blue-500 to-purple-600"
+                                    }`}
+                                >
+                                  {message.sender === "user" ? (
+                                    <FaUser className="text-white text-sm" />
+                                  ) : (
+                                    <FaChalkboardTeacher className="text-white text-sm" />
+                                  )}
+                                </div>
+
+                                <div className="flex flex-col max-w-full min-w-0">
+                                  {/* Message Bubble */}
+                                  <div
+                                    className={`px-5 py-4 shadow-sm min-w-0 overflow-hidden rounded-2xl ${message.sender === "user"
+                                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-[2px]"
+                                      : message.isError
+                                        ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-tl-[2px]"
+                                        : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md rounded-tl-[2px]"
+                                      }`}
+                                  >
+                                    {message.sender === "ai" ? (
+                                      message.isError ? (
+                                        <div className="flex flex-col items-start">
+                                          <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
+                                            {message.text}
+                                          </p>
+                                          {message.failedText && (
+                                            <button
+                                              onClick={() => {
+                                                // 1. Remove this error message from the chat
+                                                setMessages(prev => prev.filter(m => m.id !== message.id));
+                                                // 2. Put their text back into the input box
+                                                setInputMessage(message.failedText);
+                                                // 3. Focus the input so they can instantly hit enter again
+                                                inputRef.current?.focus();
+                                              }}
+                                              className="mt-3 flex items-center space-x-2 text-sm font-medium bg-red-50 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-200 px-3 py-1.5 rounded-lg transition-colors border border-red-200 dark:border-red-700"
+                                            >
+                                              <FaRedo className="text-xs" />
+                                              <span>Retry Message</span>
+                                            </button>
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <AIResponseRenderer content={message.text} />
+                                      )
+                                    ) : (
+                                      <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
+                                        {message.text}
+                                      </p>
+                                    )}
+
+                                    {/* Display attached files in user messages */}
+                                    {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
+                                      <div className="mt-3 space-y-2">
+                                        {/* <p className="text-xs opacity-80">Attached files:</p> */}
+                                        {message.attachedFiles.map((file) => (
+                                          <FileAttachment
+                                            key={file.id}
+                                            file={file}
+                                            showRemove={false}
+                                          />
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {/* Timestamp */}
+                                  <p
+                                    className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
+                                      ? "text-blue-500 dark:text-blue-400 text-right"
+                                      : message.isError
+                                        ? "text-red-600 dark:text-red-400"
+                                        : "text-gray-500 dark:text-gray-400"
+                                      }`}
+                                  >
+                                    {message.timestamp.toLocaleTimeString("en-US", {
+                                      hour: "numeric",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           ))}
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  sortedGroupEntries.map(([date, dateMessages]) => (
-                    <div key={date}>
-                      {/* Date Separator */}
-                      <div className="flex items-center justify-center my-8">
-                        <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
-                          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                            {date}
-                          </span>
+                    ))
+                  )}
+
+                  {/* Loading indicator - AI is thinking... */}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
+                        <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
+                          <FaChalkboardTeacher className="text-white text-sm" />
                         </div>
-                      </div>
-
-                      {/* Messages for this date */}
-                      <div className="space-y-4">
-                        {dateMessages.map((message) => (
-                          <div
-                            key={message.id}
-                            id={`message-${message.id}`}
-                            className={`flex scroll-mt-8 sm:scroll-mt-12 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                          >
-                            <div
-                              className={`flex items-start md:space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse md:space-x-reverse" : ""}`}
-                            >
-                              {/* Avatar */}
-                              <div
-                                className={`hidden md:flex w-8 h-8 rounded-full items-center justify-center flex-shrink-0 ${message.sender === "user"
-                                  ? "bg-blue-500"
-                                  : "bg-gradient-to-r from-blue-500 to-purple-600"
-                                  }`}
-                              >
-                                {message.sender === "user" ? (
-                                  <FaUser className="text-white text-sm" />
-                                ) : (
-                                  <FaChalkboardTeacher className="text-white text-sm" />
-                                )}
-                              </div>
-
-                              <div className="flex flex-col max-w-full min-w-0">
-                                {/* Message Bubble */}
-                                <div
-                                  className={`px-5 py-4 shadow-sm min-w-0 overflow-hidden rounded-2xl ${message.sender === "user"
-                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-[2px]"
-                                    : message.isError
-                                      ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-tl-[2px]"
-                                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md rounded-tl-[2px]"
-                                    }`}
-                                >
-                                  {message.sender === "ai" ? (
-                                    message.isError ? (
-                                      <div className="flex flex-col items-start">
-                                        <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                          {message.text}
-                                        </p>
-                                        {message.failedText && (
-                                          <button
-                                            onClick={() => {
-                                              // 1. Remove this error message from the chat
-                                              setMessages(prev => prev.filter(m => m.id !== message.id));
-                                              // 2. Put their text back into the input box
-                                              setInputMessage(message.failedText);
-                                              // 3. Focus the input so they can instantly hit enter again
-                                              inputRef.current?.focus();
-                                            }}
-                                            className="mt-3 flex items-center space-x-2 text-sm font-medium bg-red-50 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-200 px-3 py-1.5 rounded-lg transition-colors border border-red-200 dark:border-red-700"
-                                          >
-                                            <FaRedo className="text-xs" />
-                                            <span>Retry Message</span>
-                                          </button>
-                                        )}
-                                      </div>
-                                    ) : (
-                                      <AIResponseRenderer content={message.text} />
-                                    )
-                                  ) : (
-                                    <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                      {message.text}
-                                    </p>
-                                  )}
-
-                                  {/* Display attached files in user messages */}
-                                  {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
-                                    <div className="mt-3 space-y-2">
-                                      {/* <p className="text-xs opacity-80">Attached files:</p> */}
-                                      {message.attachedFiles.map((file) => (
-                                        <FileAttachment
-                                          key={file.id}
-                                          file={file}
-                                          showRemove={false}
-                                        />
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                                {/* Timestamp */}
-                                <p
-                                  className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
-                                    ? "text-blue-500 dark:text-blue-400 text-right"
-                                    : message.isError
-                                      ? "text-red-600 dark:text-red-400"
-                                      : "text-gray-500 dark:text-gray-400"
-                                    }`}
-                                >
-                                  {message.timestamp.toLocaleTimeString("en-US", {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  })}
-                                </p>
-                              </div>
-                            </div>
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] flex flex-col items-start">
+                          <div className="flex items-center space-x-2">
+                            <FaSpinner className="text-blue-500 animate-spin" />
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              AI is thinking...
+                            </span>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                )}
-
-                {/* Loading indicator - AI is thinking... */}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
-                      <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
-                        <FaChalkboardTeacher className="text-white text-sm" />
-                      </div>
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] flex flex-col items-start">
-                        <div className="flex items-center space-x-2">
-                          <FaSpinner className="text-blue-500 animate-spin" />
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            AI is thinking...
-                          </span>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div ref={messagesEndRef} />
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
+
+              {/* Floating Scroll to Latest Message Button */}
+              {showScrollBottom && (
+                <button
+                  onClick={() => scrollToLastUserMessage(true)}
+                  className="absolute bottom-4 right-5 sm:right-8 z-30 w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-lg shadow-blue-500/25 dark:shadow-purple-900/40 border border-white/25 hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center group cursor-pointer"
+                  aria-label="Scroll to latest message"
+                  title="Scroll to latest message"
+                >
+                  <FaChevronDown className="text-sm sm:text-base group-hover:translate-y-0.5 transition-transform duration-150" />
+                </button>
+              )}
             </div>
 
             {/* Input Area */}
-            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg">
+            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-3 py-2.5 sm:px-6 sm:py-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg">
               <div className="max-w-4xl mx-auto">
                 {/* Attached Files Display */}
                 {attachedFiles.length > 0 && (
@@ -1035,7 +1151,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
                     {!inputMessage && (
                       <div className="absolute left-1 right-1 block text-gray-500 dark:text-gray-400 pointer-events-none truncate select-none z-0">
-                        Ask me anything about JEE preparation...
+                        {placeholder}
                       </div>
                     )}
 
@@ -1046,7 +1162,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                       onKeyDown={handleKeyPress}
                       minRows={1}
                       maxRows={5}
-                      className="w-full py-1 px-1 resize-none bg-transparent border-none p-0 focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-y-scroll scrollbar-hide relative z-10"
+                      className="w-full py-1 px-1 resize-none bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-y-auto scrollbar-hide relative z-10"
                       onPaste={e => {
                         if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
                           e.preventDefault();
@@ -1095,7 +1211,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+                <p className="hidden md:block text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
                   Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
                 </p>
               </div>

@@ -10,6 +10,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const getFileIcon = (fileType) => {
     switch (fileType) {
@@ -93,6 +94,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
   };
 
   const handleDownload = async () => {
+    if (downloading) return;
+    setDownloading(true);
     try {
       const token = localStorage.getItem('ai-tutor-token');
       const response = await fetch(API_ENDPOINTS.FILES.GET(file.id), {
@@ -107,6 +110,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
       }
     } catch (error) {
       console.error('Error downloading file:', error);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -154,11 +159,16 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
           )}
           <button
             onClick={handleDownload}
-            className="p-1.5 text-gray-400 hover:text-green-500 transition-colors"
+            disabled={downloading}
+            className="p-1.5 text-gray-400 hover:text-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Download"
             aria-label="Download file"
           >
-            <FaDownload className="text-sm" />
+            {downloading ? (
+              <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <FaDownload className="text-sm" />
+            )}
           </button>
           {showRemove && onRemove && (
             <button

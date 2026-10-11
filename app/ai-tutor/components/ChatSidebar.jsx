@@ -42,6 +42,7 @@ const ChatRow = ({
   chat,
   activeChatId,
   isEditing,
+  isRenaming,
   onSelectChat,
   onDeleteChat,
   startRename,
@@ -85,12 +86,33 @@ const ChatRow = ({
             <input
               ref={editInputRef}
               value={editTitle}
+              disabled={isRenaming}
               onChange={(e) => setEditTitle(e.target.value)}
               onKeyDown={(e) => handleRenameKeyDown(chat.id, e)}
-              className="flex-1 w-full text-sm px-2 py-1 rounded bg-white dark:bg-gray-900 border border-blue-500 outline-none text-gray-900 dark:text-gray-100"
+              className="flex-1 w-full text-sm px-2 py-1 rounded bg-white dark:bg-gray-900 border border-blue-500 outline-none text-gray-900 dark:text-gray-100 disabled:opacity-60"
             />
-            <button onClick={(e) => confirmRename(chat.id, e)} className="text-green-600 p-1"><FaCheck className="text-xs" /></button>
-            <button onClick={cancelRename} className="text-gray-400 p-1"><FaTimes className="text-xs" /></button>
+            <button
+              disabled={isRenaming}
+              onClick={(e) => confirmRename(chat.id, e)}
+              className="text-green-600 hover:text-green-700 disabled:opacity-50 p-1"
+              title="Save rename"
+              aria-label="Save rename"
+            >
+              {isRenaming ? (
+                <FaSpinner className="animate-spin text-xs text-blue-500" />
+              ) : (
+                <FaCheck className="text-xs" />
+              )}
+            </button>
+            <button
+              disabled={isRenaming}
+              onClick={cancelRename}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 p-1"
+              title="Cancel rename"
+              aria-label="Cancel rename"
+            >
+              <FaTimes className="text-xs" />
+            </button>
           </div>
         ) : (
           <>
@@ -155,6 +177,8 @@ const ChatSidebar = ({
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
   const editInputRef = useRef(null);
   const listContainerRef = useRef(null);
   const hasAutoScrolledRef = useRef(false);
@@ -218,6 +242,7 @@ const ChatSidebar = ({
   };
 
   const cancelRename = (e) => {
+    if (isRenaming) return;
     e?.stopPropagation();
     setEditingId(null);
     setEditTitle("");
@@ -226,18 +251,35 @@ const ChatSidebar = ({
   const confirmRename = async (chatId, e) => {
     e?.stopPropagation();
     const trimmed = editTitle.trim();
-    if (!trimmed) return;
-    await onRenameChat(chatId, trimmed);
-    setEditingId(null);
-    setEditTitle("");
+    if (!trimmed || isRenaming) return;
+    setIsRenaming(true);
+    try {
+      await onRenameChat(chatId, trimmed);
+    } finally {
+      setIsRenaming(false);
+      setEditingId(null);
+      setEditTitle("");
+    }
   };
 
   const handleRenameKeyDown = (chatId, e) => {
+    if (isRenaming) return;
     if (e.key === "Enter") {
       e.preventDefault();
       confirmRename(chatId, e);
     } else if (e.key === "Escape") {
       cancelRename(e);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmId || isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteChat(deleteConfirmId);
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirmId(null);
     }
   };
 
@@ -260,7 +302,7 @@ const ChatSidebar = ({
         <div className={`flex flex-col h-full overflow-hidden transition-opacity duration-300 ${!isOpen ? "opacity-0 hidden" : "opacity-100 flex"}`}>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
+          <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b border-gray-200 dark:border-gray-800 shrink-0">
             <span className="text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap">
               Conversations
             </span>
@@ -273,7 +315,7 @@ const ChatSidebar = ({
           </div>
 
           {/* New Chat Button */}
-          <div className="px-3 py-3 shrink-0">
+          <div className="px-3 pt-2 pb-3 shrink-0">
             <button
               onClick={onNewChat}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-md active:scale-[0.98]"
@@ -293,13 +335,14 @@ const ChatSidebar = ({
                 <FaSpinner className="animate-spin mr-2 text-blue-500" />
               </div>
             ) : (
-              <ul className="space-y-2 mt-2">
+              <ul className="space-y-2">
                 {chats.map((chat) => (
                   <ChatRow
                     key={chat.id}
                     chat={chat}
                     activeChatId={activeChatId}
                     isEditing={editingId === chat.id}
+                    isRenaming={editingId === chat.id && isRenaming}
                     onSelectChat={onSelectChat}
                     onDeleteChat={(id) => setDeleteConfirmId(id)}
                     startRename={startRename}
@@ -336,11 +379,30 @@ const ChatSidebar = ({
       {/* 5. Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="fixed inset-0 bg-black/60 z-[10000] flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-sm mx-4">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-sm mx-4 shadow-2xl">
             <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Delete Chat?</h2>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">Cancel</button>
-              <button onClick={async () => { await onDeleteChat(deleteConfirmId); setDeleteConfirmId(null); }} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg">Delete</button>
+              <button
+                disabled={isDeleting}
+                onClick={() => !isDeleting && setDeleteConfirmId(null)}
+                className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors font-medium text-sm"
+              >
+                {isDeleting ? (
+                  <>
+                    <FaSpinner className="animate-spin text-sm" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
             </div>
           </div>
         </div>
