@@ -11,6 +11,7 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [deletingIds, setDeletingIds] = useState([]);
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
@@ -240,9 +241,11 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
   };
 
   const deleteFile = async (fileId) => {
+    if (deletingIds.includes(fileId)) return;
     const token = localStorage.getItem('ai-tutor-token');
     if (!token) return;
 
+    setDeletingIds(prev => [...prev, fileId]);
     try {
       const response = await fetch(API_ENDPOINTS.FILES.DELETE(fileId), {
         method: 'DELETE',
@@ -256,6 +259,8 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
       }
     } catch (error) {
       console.error('Delete error:', error);
+    } finally {
+      setDeletingIds(prev => prev.filter(id => id !== fileId));
     }
   };
 
@@ -374,10 +379,15 @@ const FileUpload = ({ onFilesUploaded, onClose, isVisible }) => {
                     )}
                     <button
                       onClick={() => deleteFile(file.id)}
-                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      disabled={deletingIds.includes(file.id)}
+                      className="p-1 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Delete file"
                     >
-                      <FaTimes className="text-sm" />
+                      {deletingIds.includes(file.id) ? (
+                        <FaSpinner className="animate-spin text-sm text-red-500" />
+                      ) : (
+                        <FaTimes className="text-sm" />
+                      )}
                     </button>
                   </div>
                 </div>
