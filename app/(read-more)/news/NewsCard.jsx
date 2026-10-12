@@ -26,23 +26,30 @@ function NewsCard({ article }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
       <div className="p-6 flex flex-col flex-grow">
-        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3 flex-shrink-0">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span>{formattedDate}</span>
-          <span className="mx-2">•</span>
-          <Link
-            href={article.source.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200 flex items-center"
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3 flex-shrink-0 min-w-0">
+          <span className="inline-flex items-center whitespace-nowrap flex-shrink-0">
+            <svg className="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            {article.source.name}
-          </Link>
+            <span>{formattedDate}</span>
+          </span>
+          {article.source?.name && (
+            <>
+              <span className="mx-2 flex-shrink-0 text-gray-400 dark:text-gray-600 select-none">•</span>
+              <Link
+                href={article.source.url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={article.source.name}
+                className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200 inline-flex items-center min-w-0"
+              >
+                <svg className="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+                <span className="truncate">{article.source.name}</span>
+              </Link>
+            </>
+          )}
         </div>
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200 flex-shrink-0">
           {article.title}
