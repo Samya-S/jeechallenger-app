@@ -429,7 +429,7 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                 value={numericValue}
                 onChange={(e) => setNumericValue(e.target.value)}
                 placeholder="e.g. 4.5"
-                className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-900 dark:text-white font-mono font-bold outline-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 ring-offset-transparent transition-colors"
               />
             </div>
           )}
