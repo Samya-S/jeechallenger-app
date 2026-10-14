@@ -117,6 +117,20 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
   const examOriginShort = formatExamOrigin(question, { isShort: true });
   const paperSlug = getPaperSlug(question);
 
+  const inlineDiagramIndices = new Set(
+    [...(question.question_text?.matchAll(/\{\{diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+  );
+  const remainingQuestionDiagrams = (question.question_diagram_urls || [])
+    .map((imgUrl, i) => ({ imgUrl, i }))
+    .filter(({ i }) => !inlineDiagramIndices.has(i));
+
+  const inlinePassageDiagramIndices = new Set(
+    [...(question.linked_passage_text?.matchAll(/\{\{passage_diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+  );
+  const remainingPassageDiagrams = (question.linked_passage_diagram_urls || [])
+    .map((imgUrl, i) => ({ imgUrl, i }))
+    .filter(({ i }) => !inlinePassageDiagramIndices.has(i));
+
   return (
     <>
       <div className="isolate bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden transition-all hover:shadow-xl">
@@ -175,20 +189,24 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
         {/* Question Body */}
         <div className="p-5 md:p-7 space-y-6">
           {/* Linked Passage (for COMPREHENSION questions) */}
-          {(question.linked_passage_text || (question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0)) && (
+          {(question.linked_passage_text || remainingPassageDiagrams.length > 0) && (
             <div className="p-4 md:p-5 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                 <FileText className="w-4 h-4" />
                 <span>Comprehension Passage</span>
               </div>
               {question.linked_passage_text && (
-                <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
-                  <MarkdownMathRenderer content={question.linked_passage_text} />
+                <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed min-w-0">
+                  <MarkdownMathRenderer
+                    content={question.linked_passage_text}
+                    passageDiagramUrls={question.linked_passage_diagram_urls}
+                    onImageClick={setZoomedImage}
+                  />
                 </div>
               )}
-              {question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0 && (
+              {remainingPassageDiagrams.length > 0 && (
                 <div className="flex flex-wrap items-start gap-4 pt-1">
-                  {question.linked_passage_diagram_urls.map((imgUrl, i) => (
+                  {remainingPassageDiagrams.map(({ imgUrl, i }) => (
                     <div
                       key={i}
                       onClick={() => setZoomedImage(imgUrl)}
@@ -207,14 +225,19 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
           )}
 
           {/* Question Text */}
-          <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed">
-            <MarkdownMathRenderer content={question.question_text} />
+          <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed min-w-0">
+            <MarkdownMathRenderer
+              content={question.question_text}
+              diagramUrls={question.question_diagram_urls}
+              passageDiagramUrls={question.linked_passage_diagram_urls}
+              onImageClick={setZoomedImage}
+            />
           </div>
 
-          {/* Question Diagrams with click-to-zoom */}
-          {question.question_diagram_urls && question.question_diagram_urls.length > 0 && (
+          {/* Question Diagrams with click-to-zoom (remaining unplaced diagrams) */}
+          {remainingQuestionDiagrams.length > 0 && (
             <div className="flex flex-wrap items-start gap-4 pt-2">
-              {question.question_diagram_urls.map((imgUrl, i) => (
+              {remainingQuestionDiagrams.map(({ imgUrl, i }) => (
                 <div
                   key={i}
                   onClick={() => setZoomedImage(imgUrl)}
@@ -300,7 +323,13 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                       {key}
                     </span>
                     <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
-                      {opt.text && <MarkdownMathRenderer content={opt.text} />}
+                      {opt.text && (
+                        <MarkdownMathRenderer
+                          content={opt.text}
+                          diagramUrls={question.question_diagram_urls}
+                          onImageClick={setZoomedImage}
+                        />
+                      )}
                       {opt.diagram_url && (
                         <div
                           onClick={(e) => {
@@ -393,7 +422,13 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                       {key}
                     </span>
                     <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
-                      {opt.text && <MarkdownMathRenderer content={opt.text} />}
+                      {opt.text && (
+                        <MarkdownMathRenderer
+                          content={opt.text}
+                          diagramUrls={question.question_diagram_urls}
+                          onImageClick={setZoomedImage}
+                        />
+                      )}
                       {opt.diagram_url && (
                         <div
                           onClick={(e) => {

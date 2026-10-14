@@ -85,6 +85,20 @@ export default function QuestionDetailComponent({ question }) {
   const examOriginFull = formatExamOrigin(question, { isShort: false });
   const examOriginShort = formatExamOrigin(question, { isShort: true });
 
+  const inlineDiagramIndices = new Set(
+    [...(question.question_text?.matchAll(/\{\{diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+  );
+  const remainingQuestionDiagrams = (question.question_diagram_urls || [])
+    .map((imgUrl, i) => ({ imgUrl, i }))
+    .filter(({ i }) => !inlineDiagramIndices.has(i));
+
+  const inlinePassageDiagramIndices = new Set(
+    [...(question.linked_passage_text?.matchAll(/\{\{passage_diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+  );
+  const remainingPassageDiagrams = (question.linked_passage_diagram_urls || [])
+    .map((imgUrl, i) => ({ imgUrl, i }))
+    .filter(({ i }) => !inlinePassageDiagramIndices.has(i));
+
   const handleShare = async () => {
     if (typeof window === "undefined") return;
     const url = window.location.href;
@@ -221,20 +235,24 @@ export default function QuestionDetailComponent({ question }) {
           <div className="p-6 md:p-8 space-y-6">
             
             {/* Linked Passage (for COMPREHENSION questions) */}
-            {(question.linked_passage_text || (question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0)) && (
+            {(question.linked_passage_text || remainingPassageDiagrams.length > 0) && (
               <div className="p-4 md:p-5 rounded-2xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                   <FileText className="w-4 h-4" />
                   <span>Comprehension Passage</span>
                 </div>
                 {question.linked_passage_text && (
-                  <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
-                    <MarkdownMathRenderer content={question.linked_passage_text} />
+                  <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed min-w-0">
+                    <MarkdownMathRenderer
+                      content={question.linked_passage_text}
+                      passageDiagramUrls={question.linked_passage_diagram_urls}
+                      onImageClick={setZoomedImage}
+                    />
                   </div>
                 )}
-                {question.linked_passage_diagram_urls && question.linked_passage_diagram_urls.length > 0 && (
+                {remainingPassageDiagrams.length > 0 && (
                   <div className="flex flex-wrap items-start gap-4 pt-1">
-                    {question.linked_passage_diagram_urls.map((imgUrl, i) => (
+                    {remainingPassageDiagrams.map(({ imgUrl, i }) => (
                       <div
                         key={i}
                         onClick={() => setZoomedImage(imgUrl)}
@@ -253,8 +271,13 @@ export default function QuestionDetailComponent({ question }) {
             )}
 
             {/* Question Text */}
-            <div className="text-gray-900 dark:text-gray-100 text-lg md:text-xl leading-relaxed">
-              <MarkdownMathRenderer content={question.question_text} />
+            <div className="text-gray-900 dark:text-gray-100 text-lg md:text-xl leading-relaxed min-w-0">
+              <MarkdownMathRenderer
+                content={question.question_text}
+                diagramUrls={question.question_diagram_urls}
+                passageDiagramUrls={question.linked_passage_diagram_urls}
+                onImageClick={setZoomedImage}
+              />
             </div>
 
             {/* Official Notice for Marks to All / Bonus Question */}
@@ -270,10 +293,10 @@ export default function QuestionDetailComponent({ question }) {
               </div>
             )}
 
-            {/* Question Diagrams with click-to-zoom */}
-            {question.question_diagram_urls && question.question_diagram_urls.length > 0 && (
+            {/* Question Diagrams with click-to-zoom (remaining unplaced diagrams) */}
+            {remainingQuestionDiagrams.length > 0 && (
               <div className="flex flex-wrap items-start gap-4 pt-2">
-                {question.question_diagram_urls.map((imgUrl, i) => (
+                {remainingQuestionDiagrams.map(({ imgUrl, i }) => (
                   <div
                     key={i}
                     onClick={() => setZoomedImage(imgUrl)}
@@ -322,7 +345,13 @@ export default function QuestionDetailComponent({ question }) {
                             {key}
                           </span>
                           <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
-                            {opt.text && <MarkdownMathRenderer content={opt.text} />}
+                            {opt.text && (
+                              <MarkdownMathRenderer
+                                content={opt.text}
+                                diagramUrls={question.question_diagram_urls}
+                                onImageClick={setZoomedImage}
+                              />
+                            )}
                             {opt.diagram_url && (
                               <div
                                 onClick={() => setZoomedImage(opt.diagram_url)}
@@ -459,8 +488,13 @@ export default function QuestionDetailComponent({ question }) {
 
           {/* Solution Body */}
           <div className="p-6 md:p-8 space-y-6">
-            <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed space-y-4">
-              <MarkdownMathRenderer content={question.solution || question.solution_text || "Solution will be uploaded soon."} />
+            <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed space-y-4 min-w-0">
+              <MarkdownMathRenderer
+                content={question.solution || question.solution_text || "Solution will be uploaded soon."}
+                diagramUrls={question.question_diagram_urls}
+                passageDiagramUrls={question.linked_passage_diagram_urls}
+                onImageClick={setZoomedImage}
+              />
             </div>
 
           </div>

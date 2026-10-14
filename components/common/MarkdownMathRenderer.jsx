@@ -15,9 +15,16 @@ const MarkdownTable = ({ children }) => {
     if (!ref) return undefined;
 
     const onWheel = (e) => {
-      if (e.deltaY !== 0) {
-        ref.scrollLeft += e.deltaY;
-        e.preventDefault();
+      if (e.shiftKey) return;
+      if (ref.scrollWidth > ref.clientWidth) {
+        if (e.deltaY !== 0 && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+          const canScrollLeft = ref.scrollLeft > 0;
+          const canScrollRight = ref.scrollLeft < ref.scrollWidth - ref.clientWidth - 1;
+          if ((e.deltaY > 0 && canScrollRight) || (e.deltaY < 0 && canScrollLeft)) {
+            ref.scrollLeft += e.deltaY;
+            e.preventDefault();
+          }
+        }
       }
     };
 
@@ -26,21 +33,51 @@ const MarkdownTable = ({ children }) => {
   }, []);
 
   return (
-    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4">
-      <table className="min-w-full border border-gray-300 dark:border-gray-700 whitespace-nowrap">
+    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 border border-gray-300 dark:border-gray-700 rounded-lg">
+      <table className="w-max min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
         {children}
       </table>
     </div>
   );
 };
 
+const resolveUrl = (url) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://pyq-assets.jeechallenger.com/${url}`;
+};
+
 /**
  * MarkdownMathRenderer
  * Renders Markdown with full KaTeX math support (\(...\), \[...\], $$...$$, $...$),
- * responsive tables, code blocks, and theme styling.
+ * responsive tables, code blocks, theme styling, and inline diagram shortcode positioning.
  */
-const MarkdownMathRenderer = ({ content, className = '' }) => {
+const MarkdownMathRenderer = ({
+  content,
+  className = '',
+  diagramUrls = [],
+  passageDiagramUrls = [],
+  onImageClick,
+}) => {
   if (!content) return null;
+
+  let processedContent = typeof content === 'string' ? content : String(content);
+
+  if (diagramUrls && diagramUrls.length > 0) {
+    processedContent = processedContent.replace(/\{\{diagram[:_](\d+)\}\}/gi, (match, idxStr) => {
+      const idx = parseInt(idxStr, 10);
+      const url = diagramUrls[idx];
+      return url ? `![Diagram ${idx}](${resolveUrl(url)})` : match;
+    });
+  }
+
+  if (passageDiagramUrls && passageDiagramUrls.length > 0) {
+    processedContent = processedContent.replace(/\{\{passage_diagram[:_](\d+)\}\}/gi, (match, idxStr) => {
+      const idx = parseInt(idxStr, 10);
+      const url = passageDiagramUrls[idx];
+      return url ? `![Passage Diagram ${idx}](${resolveUrl(url)})` : match;
+    });
+  }
 
   return (
     <div className={`text-left text-base leading-relaxed [&_.katex-display]:text-left [&_.katex-display]:my-3 [&_.katex-display]:py-1.5 [&_.katex-display]:px-1 [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden [&_.katex-display>.katex]:text-left ${className}`}>
@@ -48,6 +85,22 @@ const MarkdownMathRenderer = ({ content, className = '' }) => {
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
+          img: ({ src, alt }) => (
+            <img
+              src={src}
+              alt={alt || "Diagram"}
+              className="max-h-32 md:max-h-36 w-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+              onClick={() => {
+                if (onImageClick) {
+                  onImageClick(src);
+                } else if (src && typeof window !== "undefined") {
+                  window.open(src, "_blank");
+                }
+              }}
+              title="Click to zoom diagram"
+              loading="lazy"
+            />
+          ),
           p: ({ children }) => <p className="mb-4 last:mb-0 leading-relaxed text-left">{children}</p>,
           h1: ({ children }) => <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100">{children}</h1>,
           h2: ({ children }) => <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 dark:text-gray-100">{children}</h2>,
@@ -85,11 +138,11 @@ const MarkdownMathRenderer = ({ content, className = '' }) => {
           thead: ({ children }) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
           tbody: ({ children }) => <tbody>{children}</tbody>,
           tr: ({ children }) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
-          th: ({ children }) => <th className="px-3 py-2 text-left font-semibold border border-gray-300 dark:border-gray-700">{children}</th>,
-          td: ({ children }) => <td className="px-3 py-2 border border-gray-300 dark:border-gray-700">{children}</td>,
+          th: ({ children }) => <th className="px-4 py-3 text-left font-semibold border border-gray-300 dark:border-gray-700 align-middle whitespace-nowrap">{children}</th>,
+          td: ({ children }) => <td className="px-4 py-3 border border-gray-300 dark:border-gray-700 align-middle whitespace-nowrap">{children}</td>,
         }}
       >
-        {content}
+        {processedContent}
       </ReactMarkdown>
     </div>
   );
