@@ -497,6 +497,20 @@ function PaperDetailContent({ paperData }) {
               const isNumeric = inputFormat === "NUMERIC";
               const isMulti = inputFormat === "MULTI_CORRECT";
 
+              const inlineDiagramIndices = new Set(
+                [...(q.question_text?.matchAll(/\{\{diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+              );
+              const remainingQuestionDiagrams = (q.question_diagram_urls || [])
+                .map((imgUrl, i) => ({ imgUrl, i }))
+                .filter(({ i }) => !inlineDiagramIndices.has(i));
+
+              const inlinePassageDiagramIndices = new Set(
+                [...(q.linked_passage_text?.matchAll(/\{\{passage_diagram[:_](\d+)\}\}/gi) || [])].map((m) => parseInt(m[1], 10))
+              );
+              const remainingPassageDiagrams = (q.linked_passage_diagram_urls || [])
+                .map((imgUrl, i) => ({ imgUrl, i }))
+                .filter(({ i }) => !inlinePassageDiagramIndices.has(i));
+
               return (
                 <div
                   key={q._id || q.slug}
@@ -541,20 +555,24 @@ function PaperDetailContent({ paperData }) {
                   {/* Question Body */}
                   <div className="p-5 md:p-7 space-y-6">
                     {/* Linked Passage (for COMPREHENSION questions) */}
-                    {(q.linked_passage_text || (q.linked_passage_diagram_urls && q.linked_passage_diagram_urls.length > 0)) && (
+                    {(q.linked_passage_text || remainingPassageDiagrams.length > 0) && (
                       <div className="p-4 md:p-5 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 space-y-3">
                         <div className="flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                           <FileText className="w-4 h-4" />
                           <span>Comprehension Passage</span>
                         </div>
                         {q.linked_passage_text && (
-                          <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed">
-                            <MarkdownMathRenderer content={q.linked_passage_text} />
+                          <div className="text-gray-800 dark:text-gray-200 text-sm md:text-base leading-relaxed min-w-0">
+                            <MarkdownMathRenderer
+                              content={q.linked_passage_text}
+                              passageDiagramUrls={q.linked_passage_diagram_urls}
+                              onImageClick={setZoomedImage}
+                            />
                           </div>
                         )}
-                        {q.linked_passage_diagram_urls && q.linked_passage_diagram_urls.length > 0 && (
+                        {remainingPassageDiagrams.length > 0 && (
                           <div className="flex flex-wrap items-start gap-4 pt-1">
-                            {q.linked_passage_diagram_urls.map((imgUrl, i) => (
+                            {remainingPassageDiagrams.map(({ imgUrl, i }) => (
                               <div
                                 key={i}
                                 onClick={() => setZoomedImage(imgUrl)}
@@ -572,14 +590,19 @@ function PaperDetailContent({ paperData }) {
                       </div>
                     )}
 
-                    <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed text-left">
-                      <MarkdownMathRenderer content={q.question_text} />
+                    <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed text-left min-w-0">
+                      <MarkdownMathRenderer
+                        content={q.question_text}
+                        diagramUrls={q.question_diagram_urls}
+                        passageDiagramUrls={q.linked_passage_diagram_urls}
+                        onImageClick={setZoomedImage}
+                      />
                     </div>
 
-                    {/* Question Diagrams */}
-                    {q.question_diagram_urls && q.question_diagram_urls.length > 0 && (
+                    {/* Question Diagrams (remaining unplaced diagrams) */}
+                    {remainingQuestionDiagrams.length > 0 && (
                       <div className="flex flex-wrap items-start gap-4 pt-2">
-                        {q.question_diagram_urls.map((imgUrl, i) => (
+                        {remainingQuestionDiagrams.map(({ imgUrl, i }) => (
                           <div
                             key={i}
                             onClick={() => setZoomedImage(imgUrl)}
@@ -669,7 +692,13 @@ function PaperDetailContent({ paperData }) {
                                 {key}
                               </span>
                               <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100 text-left">
-                                {opt.text && <MarkdownMathRenderer content={opt.text} />}
+                                {opt.text && (
+                                  <MarkdownMathRenderer
+                                    content={opt.text}
+                                    diagramUrls={q.question_diagram_urls}
+                                    onImageClick={setZoomedImage}
+                                  />
+                                )}
                                 {opt.diagram_url && (
                                   <div
                                     onClick={(e) => {
