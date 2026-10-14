@@ -307,15 +307,28 @@ export default function PYQFilterBar({
           {/* Search Box and Custom Chapter Dropdown */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Search Box */}
-            <div className="md:col-span-6 relative">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="md:col-span-6 relative group">
+              <Search className="w-4 h-4 text-gray-400 group-focus-within:text-orange-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search topics, questions, or formulas..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 ring-offset-transparent transition-colors"
               />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchInput("");
+                    onFilterChange("search", "");
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-md transition-colors cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <span className="text-sm font-bold leading-none block">×</span>
+                </button>
+              )}
             </div>
 
             {/* Custom Chapter Select with search filter inside */}
