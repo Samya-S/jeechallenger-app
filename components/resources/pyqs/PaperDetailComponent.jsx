@@ -49,26 +49,58 @@ function PaperDetailContent({ paperData }) {
 
   // Read initial subject/section from URL
   const initialSubject = searchParams.get("subject");
-  const initialSectionType = searchParams.get("section");
+  const initialSectionParam = searchParams.get("section");
 
   const initialSectionIdx = useMemo(() => {
     if (!sections || sections.length === 0) return 0;
-    if (initialSubject && initialSectionType) {
-      const idx = sections.findIndex(
-        (s) =>
-          s.subject?.toLowerCase() === initialSubject.toLowerCase() &&
-          s.section_type?.toLowerCase() === initialSectionType.toLowerCase()
+
+    // 1. Determine active subject (case-insensitive, fallback to first section's subject or "Physics")
+    const matchedSubject = initialSubject
+      ? subjects.find((s) => s.toLowerCase() === initialSubject.toLowerCase())
+      : null;
+    const targetSubject = matchedSubject || sections[0]?.subject || subjects[0] || "Physics";
+
+    // Sections belonging to this subject
+    const subSections = sections.filter((s) => s.subject === targetSubject);
+    if (subSections.length === 0) return 0;
+
+    if (initialSectionParam) {
+      const trimmedParam = initialSectionParam.trim();
+      const num = parseInt(trimmedParam, 10);
+
+      // A. If section is a 1-based number (e.g. "1", "2", "3")
+      if (!isNaN(num) && num >= 1 && num <= subSections.length) {
+        return sections.indexOf(subSections[num - 1]);
+      }
+
+      // B. If section is a single letter (e.g. "A" -> 1, "B" -> 2, "C" -> 3)
+      if (/^[a-zA-Z]$/.test(trimmedParam)) {
+        const letterIdx = trimmedParam.toUpperCase().charCodeAt(0) - 65; // A=0, B=1, C=2
+        if (letterIdx >= 0 && letterIdx < subSections.length) {
+          return sections.indexOf(subSections[letterIdx]);
+        }
+      }
+
+      // C. Backward compatibility: match by section_type (e.g. "MCQ", "NUMERIC", "MULTI_CORRECT")
+      const byType = subSections.find(
+        (s) => s.section_type?.toLowerCase() === trimmedParam.toLowerCase()
       );
-      if (idx !== -1) return idx;
-    }
-    if (initialSubject) {
-      const idx = sections.findIndex(
-        (s) => s.subject?.toLowerCase() === initialSubject.toLowerCase()
+      if (byType) {
+        return sections.indexOf(byType);
+      }
+
+      // D. Backward compatibility: match by section name (e.g. "Section A", "Section 1")
+      const byName = subSections.find(
+        (s) => s.name?.toLowerCase().includes(trimmedParam.toLowerCase())
       );
-      if (idx !== -1) return idx;
+      if (byName) {
+        return sections.indexOf(byName);
+      }
     }
-    return 0;
-  }, [sections, initialSubject, initialSectionType]);
+
+    // Default to first section of target subject
+    return sections.indexOf(subSections[0]);
+  }, [sections, subjects, initialSubject, initialSectionParam]);
 
   const [selectedSectionIdx, setSelectedSectionIdx] = useState(initialSectionIdx);
   const [activeSubject, setActiveSubject] = useState(
@@ -135,9 +167,13 @@ function PaperDetailContent({ paperData }) {
     const currentSec = sections[selectedSectionIdx];
     if (!currentSec) return;
 
+    // Find 1-based index of currentSec within its subject's sections
+    const subSections = sections.filter((s) => s.subject === currentSec.subject);
+    const secNumber = Math.max(1, subSections.indexOf(currentSec) + 1);
+
     const params = new URLSearchParams();
     if (currentSec.subject) params.set("subject", currentSec.subject);
-    if (currentSec.section_type) params.set("section", currentSec.section_type);
+    params.set("section", String(secNumber));
 
     const query = params.toString();
     const targetUrl = query ? `${pathname}?${query}` : pathname;
@@ -453,9 +489,18 @@ function PaperDetailContent({ paperData }) {
 
           {/* Tier 2: Sections within active subject */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-            {subjectSections.map((sec) => {
+            {subjectSections.map((sec, secIdx) => {
               const globalIdx = sections.indexOf(sec);
               const isSelected = selectedSectionIdx === globalIdx;
+              const sectionNum = secIdx + 1;
+
+              let sectionLabel = `Section ${sectionNum}`;
+              if (sec.name) {
+                const match = sec.name.match(/section[\s-]*([a-zA-Z0-9]+)/i);
+                if (match) {
+                  sectionLabel = `Section ${match[1].toUpperCase()}`;
+                }
+              }
 
               return (
                 <button
@@ -468,7 +513,7 @@ function PaperDetailContent({ paperData }) {
                       : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                   }`}
                 >
-                  <span>Section {sec.section_type || (sec.name ? sec.name.split("Section")[1] : "")}</span>
+                  <span>{sectionLabel}{sec.section_type ? ` • ${sec.section_type}` : ""}</span>
                   <span className="text-[11px] opacity-80 font-normal">
                     ({sec.total_questions || 0} Qs)
                   </span>
