@@ -258,7 +258,13 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               {["A", "B", "C", "D"].map((key) => {
                 const opt = question.options[key];
-                if (!opt || (!opt.text && !opt.diagram_url)) return null;
+                const optDiagrams = opt?.diagram_urls || (opt?.diagram_url ? [opt.diagram_url] : []);
+                if (!opt || (!opt.text && optDiagrams.length === 0)) return null;
+
+                const remainingOptDiagrams = optDiagrams.filter((url, idx) => {
+                  const regex = new RegExp(`\\{\\{diagram[:_]${idx}\\}\\}`, 'i');
+                  return !opt.text || !regex.test(opt.text);
+                });
 
                 const isSelected = selectedOption === key;
                 const isCorrectAnswer = checkedState?.correctAnswers?.includes(key);
@@ -326,23 +332,28 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                       {opt.text && (
                         <MarkdownMathRenderer
                           content={opt.text}
-                          diagramUrls={question.question_diagram_urls}
+                          diagramUrls={optDiagrams}
                           onImageClick={setZoomedImage}
                         />
                       )}
-                      {opt.diagram_url && (
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setZoomedImage(opt.diagram_url);
-                          }}
-                          className={`relative ${opt.text ? "mt-3" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
-                        >
-                          <img
-                            src={opt.diagram_url}
-                            alt={`Option ${key}`}
-                            className="max-h-60 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
-                          />
+                      {remainingOptDiagrams.length > 0 && (
+                        <div className={`flex flex-wrap gap-2 ${opt.text ? "mt-3" : "mt-0"}`}>
+                          {remainingOptDiagrams.map((url, idx) => (
+                            <div
+                              key={idx}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setZoomedImage(url);
+                              }}
+                              className="relative p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
+                            >
+                              <img
+                                src={url}
+                                alt={`Option ${key} Diagram ${idx + 1}`}
+                                className="max-h-60 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
+                              />
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -357,7 +368,13 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               {["A", "B", "C", "D"].map((key) => {
                 const opt = question.options[key];
-                if (!opt || (!opt.text && !opt.diagram_url)) return null;
+                const optDiagrams = opt?.diagram_urls || (opt?.diagram_url ? [opt.diagram_url] : []);
+                if (!opt || (!opt.text && optDiagrams.length === 0)) return null;
+
+                const remainingOptDiagrams = optDiagrams.filter((url, idx) => {
+                  const regex = new RegExp(`\\{\\{diagram[:_]${idx}\\}\\}`, 'i');
+                  return !opt.text || !regex.test(opt.text);
+                });
 
                 const isSelected = selectedMultiOptions.includes(key);
                 const isCorrectAnswer = checkedState?.correctAnswers?.includes(key);
@@ -425,23 +442,28 @@ export default function PYQQuestionCard({ question, practiceIndex }) {
                       {opt.text && (
                         <MarkdownMathRenderer
                           content={opt.text}
-                          diagramUrls={question.question_diagram_urls}
+                          diagramUrls={optDiagrams}
                           onImageClick={setZoomedImage}
                         />
                       )}
-                      {opt.diagram_url && (
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setZoomedImage(opt.diagram_url);
-                          }}
-                          className={`relative ${opt.text ? "mt-3" : "mt-0"} p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all`}
-                        >
-                          <img
-                            src={opt.diagram_url}
-                            alt={`Option ${key}`}
-                            className="max-h-60 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
-                          />
+                      {remainingOptDiagrams.length > 0 && (
+                        <div className={`flex flex-wrap gap-2 ${opt.text ? "mt-3" : "mt-0"}`}>
+                          {remainingOptDiagrams.map((url, idx) => (
+                            <div
+                              key={idx}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setZoomedImage(url);
+                              }}
+                              className="relative p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
+                            >
+                              <img
+                                src={url}
+                                alt={`Option ${key} Diagram ${idx + 1}`}
+                                className="max-h-60 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
+                              />
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>

@@ -400,11 +400,18 @@ async function generateImageSitemap(staticRoutes, blogArticles, papers, question
       if (q.options && typeof q.options === 'object') {
         ['A', 'B', 'C', 'D'].forEach((key) => {
           const opt = q.options[key];
-          if (opt && opt.diagram_url && typeof opt.diagram_url === 'string') {
-            images.push({
-              url: opt.diagram_url,
-              title: `${ogTitle} - Option ${key} Diagram`,
-              caption: `Option ${key} diagram for ${ogTitle}`,
+          if (opt) {
+            const urls = Array.isArray(opt.diagram_urls)
+              ? opt.diagram_urls
+              : (opt.diagram_url ? [opt.diagram_url] : []);
+            urls.forEach((url, i) => {
+              if (url && typeof url === 'string') {
+                images.push({
+                  url,
+                  title: `${ogTitle} - Option ${key} Diagram${urls.length > 1 ? ` ${i + 1}` : ''}`,
+                  caption: `Option ${key} diagram for ${ogTitle}`,
+                });
+              }
             });
           }
         });
