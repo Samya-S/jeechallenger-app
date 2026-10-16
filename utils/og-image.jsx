@@ -148,41 +148,43 @@ export function OgImageLayout({
               display: 'flex',
               alignItems: 'center',
               marginBottom: 32,
+              gap: 16,
             }}
           >
             <img
-              src={`${baseUrl}/images/jcicon.jpg`}
-              width={56}
-              height={56}
+              src={`${baseUrl}/brand/jee-challenger-navbar-no-tagline-dark-mode-h80px.png`}
+              width={178}
+              height={40}
               style={{
-                borderRadius: 12,
-                marginRight: 14,
+                objectFit: 'contain',
               }}
             />
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-              }}
-            >
+            {badge && badge.toLowerCase() !== 'jee challenger' && (
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: '#e2e8f0',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  padding: '6px 14px',
-                  borderRadius: 8,
-                  border: `1px solid ${colors.from}`,
-                  background: '#0f172a',
+                  alignItems: 'center',
+                  gap: 10,
                 }}
               >
-                {badge}
+                <div
+                  style={{
+                    display: 'flex',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#e2e8f0',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    padding: '6px 14px',
+                    borderRadius: 8,
+                    border: `1px solid ${colors.from}`,
+                    background: '#0f172a',
+                  }}
+                >
+                  {badge}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Title */}

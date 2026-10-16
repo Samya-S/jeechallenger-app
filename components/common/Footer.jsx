@@ -15,9 +15,18 @@ const Footer = () => {
               className="inline-flex items-center gap-2 group"
               aria-label="JEE Challenger Homepage"
             >
-              <span className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
-                JEE Challenger
-              </span>
+              <img
+                src="/brand/jee-challenger-footer-with-tagline-light-mode.svg"
+                alt="JEE Challenger - All that you need to excel in JEE"
+                className="h-14 sm:h-16 w-auto dark:hidden"
+                height={64}
+              />
+              <img
+                src="/brand/jee-challenger-footer-with-tagline-dark-mode.svg"
+                alt="JEE Challenger - All that you need to excel in JEE"
+                className="h-14 sm:h-16 w-auto hidden dark:block"
+                height={64}
+              />
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed">
               A free, open-source preparation platform helping JEE Main & Advanced aspirants master concepts, practice past papers, and track their progress.
