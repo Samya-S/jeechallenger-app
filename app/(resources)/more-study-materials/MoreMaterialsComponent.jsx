@@ -53,7 +53,7 @@ const MoreMaterialsComponent = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-cyan-400 rounded-full blur-md opacity-20"></div>
                   <Image
-                    src="/images/jcicon.jpg"
+                    src="/brand/telegram-jee-challenger-640.png"
                     alt="JEE Challenger Telegram Channel Icon"
                     width={72}
                     height={72}

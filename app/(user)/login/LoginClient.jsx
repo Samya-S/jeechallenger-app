@@ -40,7 +40,7 @@ export default function LoginClient() {
           <div className="text-center mb-8 w-full">
             <div className="w-20 h-20 mx-auto mb-6 relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-gray-800">
               <Image
-                src="/images/jcicon.jpg"
+                src="/brand/jee-challenger-icon-512-rounded.png"
                 alt="JEE Challenger Icon"
                 fill
                 style={{ objectFit: 'cover' }}

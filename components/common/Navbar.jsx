@@ -178,9 +178,18 @@ export default function NavBar() {
               setShowMobileNav(false);
             }}
           >
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
-              JEE Challenger
-            </span>
+            <img
+              src="/brand/jee-challenger-navbar-no-tagline-light-mode.svg"
+              alt="JEE Challenger"
+              className="h-9 sm:h-10 w-auto dark:hidden"
+              height={40}
+            />
+            <img
+              src="/brand/jee-challenger-navbar-no-tagline-dark-mode.svg"
+              alt="JEE Challenger"
+              className="h-9 sm:h-10 w-auto hidden dark:block"
+              height={40}
+            />
           </Link>
         </div>
 
