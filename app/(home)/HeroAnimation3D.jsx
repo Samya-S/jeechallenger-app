@@ -324,8 +324,8 @@ export default function HeroAnimation3D() {
           const p1 = ringPoints[s];
           const p2 = ringPoints[s + 1];
 
-          const p1InLayer = isFront ? p1.z >= 0 : p1.z < 0;
-          const p2InLayer = isFront ? p2.z >= 0 : p2.z < 0;
+          const p1InLayer = isFront ? p1.z <= 0 : p1.z > 0;
+          const p2InLayer = isFront ? p2.z <= 0 : p2.z > 0;
 
           if (p1InLayer && p2InLayer) {
             if (!inPath) {
@@ -402,8 +402,8 @@ export default function HeroAnimation3D() {
         const { sym, orbit, proj } = item;
         if (proj.scale <= 0) return;
 
-        // Perspective scale and depth lighting:
-        const depthAlpha = Math.max(0.55, Math.min(1.0, 0.72 + (proj.z / 260) * 0.28));
+        // Perspective scale and depth lighting (front is z <= 0, back is z > 0):
+        const depthAlpha = Math.max(0.55, Math.min(1.0, 0.72 - (proj.z / 260) * 0.28));
         const formulaScale = Math.max(0.78, Math.min(1.18, proj.scale));
 
         ctx.save();
@@ -422,7 +422,7 @@ export default function HeroAnimation3D() {
 
         if (dark) {
           ctx.shadowColor = ringColor;
-          ctx.shadowBlur = proj.z > 0 ? 10 : 3;
+          ctx.shadowBlur = proj.z < 0 ? 10 : 3;
           ctx.fillStyle = `rgba(248, 250, 252, ${depthAlpha})`;
         } else {
           ctx.shadowBlur = 0;
@@ -464,21 +464,21 @@ export default function HeroAnimation3D() {
         ctx.restore();
       };
 
-      // ─── DEPTH LAYER 1: BACK (z < 0, behind central orb) ───
+      // ─── DEPTH LAYER 1: BACK (z > 0, diminished scale, behind central orb) ───
       // 1a. Back segments of all 3 orbits
       computedOrbits.forEach((co) => drawRingSegments(co.ringPoints, co.ringColor, false));
 
       // 1b. Back traveling energy beads
       computedOrbits.forEach((co) => {
-        if (co.electronProj.z < 0) {
+        if (co.electronProj.z > 0) {
           drawElectron(co.electronProj, co.ringColor);
         }
       });
 
-      // 1c. Back floating formulas (sorted back-to-front)
+      // 1c. Back floating formulas (sorted furthest to nearest)
       computedSymbols
-        .filter((item) => item.proj.z < 0)
-        .sort((a, b) => a.proj.z - b.proj.z)
+        .filter((item) => item.proj.z > 0)
+        .sort((a, b) => b.proj.z - a.proj.z)
         .forEach(drawFormula);
 
       // ─── DEPTH LAYER 2: CENTRAL HOLOGRAPHIC QUANTUM ORB (z = 0) ───
@@ -599,21 +599,21 @@ export default function HeroAnimation3D() {
       ctx.arc(cx, cy, orbRadius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // ─── DEPTH LAYER 3: FRONT (z >= 0, in front of central orb) ───
+      // ─── DEPTH LAYER 3: FRONT (z <= 0, enlarged scale, in front of central orb) ───
       // 3a. Front segments of all 3 orbits
       computedOrbits.forEach((co) => drawRingSegments(co.ringPoints, co.ringColor, true));
 
       // 3b. Front traveling energy beads
       computedOrbits.forEach((co) => {
-        if (co.electronProj.z >= 0) {
+        if (co.electronProj.z <= 0) {
           drawElectron(co.electronProj, co.ringColor);
         }
       });
 
-      // 3c. Front floating formulas (sorted back-to-front)
+      // 3c. Front floating formulas (sorted furthest to nearest)
       computedSymbols
-        .filter((item) => item.proj.z >= 0)
-        .sort((a, b) => a.proj.z - b.proj.z)
+        .filter((item) => item.proj.z <= 0)
+        .sort((a, b) => b.proj.z - a.proj.z)
         .forEach(drawFormula);
 
       animationFrameId = requestAnimationFrame(render);
