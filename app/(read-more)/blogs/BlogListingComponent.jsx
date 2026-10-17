@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Filter, BookOpen, TrendingUp, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, BookOpen, TrendingUp, Sparkles, ChevronDown, CheckCircle2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import BlogCard from '@/components/ui/BlogCard';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
@@ -16,7 +16,7 @@ const ITEMS_PER_PAGE = 12;
 export default function BlogListingComponent({ articles }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const articlesSectionRef = useRef(null);
 
   // Extract unique categories (memoized to avoid recalculation)
@@ -60,38 +60,32 @@ export default function BlogListingComponent({ articles }) {
     return filteredPosts;
   }, [filteredPosts, isDefaultView]);
 
-  const totalPages = Math.max(1, Math.ceil(gridPosts.length / ITEMS_PER_PAGE));
-
-  // Sliced posts for current page
+  // Sliced posts up to visibleCount
   const displayedPosts = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return gridPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [gridPosts, currentPage]);
+    return gridPosts.slice(0, visibleCount);
+  }, [gridPosts, visibleCount]);
+
+  const hasMore = visibleCount < gridPosts.length;
 
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1);
+    setVisibleCount(ITEMS_PER_PAGE);
   }, []);
 
   const handleCategoryChange = useCallback((category) => {
     setSelectedCategory(category);
-    setCurrentPage(1);
+    setVisibleCount(ITEMS_PER_PAGE);
   }, []);
 
   // Memoize callback functions
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory('All');
-    setCurrentPage(1);
+    setVisibleCount(ITEMS_PER_PAGE);
   }, []);
 
-  const handlePageChange = useCallback((newPage) => {
-    setCurrentPage(newPage);
-    if (articlesSectionRef.current) {
-      articlesSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 350, behavior: 'smooth' });
-    }
+  const handleLoadMore = useCallback(() => {
+    setVisibleCount((prev) => prev + ITEMS_PER_PAGE);
   }, []);
 
   // Memoize article count for hero section
@@ -183,8 +177,8 @@ export default function BlogListingComponent({ articles }) {
           )}
         </div>
 
-        {/* Featured Post - Only shown on Page 1 of the default view */}
-        {isDefaultView && currentPage === 1 && featuredPost && (
+        {/* Featured Post - Shown on default view */}
+        {isDefaultView && featuredPost && (
           <div className="mb-16">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="text-yellow-500" size={24} />
@@ -208,35 +202,29 @@ export default function BlogListingComponent({ articles }) {
               </div>
             )}
 
-            {/* Pagination Bar */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between gap-4 mt-12">
-                <button
-                  type="button"
-                  disabled={currentPage <= 1}
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
-                </button>
+            {/* Load More Section */}
+            {gridPosts.length > ITEMS_PER_PAGE && (
+              <div className="flex flex-col items-center justify-center mt-12 space-y-4">
+                <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
+                  Showing <strong className="font-bold text-gray-900 dark:text-white">{Math.min(displayedPosts.length, gridPosts.length)}</strong> of{" "}
+                  <strong className="font-bold text-gray-900 dark:text-white">{gridPosts.length}</strong> articles
+                </p>
 
-                <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
-                  Page <strong className="font-bold text-gray-900 dark:text-white">{Number(currentPage || 1).toLocaleString("en-IN")}</strong> of{" "}
-                  <strong className="font-bold text-gray-900 dark:text-white">{Number(totalPages || 1).toLocaleString("en-IN")}</strong>
-                </span>
-
-                <button
-                  type="button"
-                  disabled={currentPage >= totalPages}
-                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
-                  aria-label="Next page"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                {hasMore ? (
+                  <button
+                    type="button"
+                    onClick={handleLoadMore}
+                    className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/35 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Load More Articles</span>
+                    <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                  </button>
+                ) : (
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <span>You&apos;ve viewed all {gridPosts.length} articles</span>
+                  </div>
+                )}
               </div>
             )}
           </>
