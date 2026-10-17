@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Layers } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import styles from "./Home.module.css";
 
-// Dynamically import 3D Canvas for smooth client-side hydration
+// Dynamically import 3D Canvas without spinner - badges & lighting aura render immediately via SSR
 const HeroAnimation3D = dynamic(() => import("./HeroAnimation3D"), {
   ssr: false,
-  loading: () => (
-    <div className="relative w-full max-w-[560px] aspect-square mx-auto flex items-center justify-center">
-      <div className="w-48 h-48 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin" />
-    </div>
-  ),
+  loading: () => null,
 });
 
 const Hero = () => {
@@ -81,9 +78,77 @@ const Hero = () => {
 
           </div>
 
-          {/* Right Column: 3D Interactive Quantum Simulation Canvas */}
+          {/* Right Column: 3D Interactive Quantum Simulation Canvas & Floating Glass Badges */}
           <div className="lg:col-span-5 relative flex items-center justify-center">
-            <HeroAnimation3D />
+            <div className="relative w-full max-w-[560px] aspect-square mx-auto flex items-center justify-center select-none touch-pan-y">
+              {/* Background Soft Lighting Gradients */}
+              <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-tr from-blue-500/15 via-indigo-500/15 to-cyan-500/15 blur-3xl pointer-events-none" />
+
+              {/* 3D Interactive Canvas (hydrates on client progressively) */}
+              <HeroAnimation3D />
+
+              {/* Floating 3D Micro Glass Badges Overlay with matching Navbar glass styling */}
+
+              {/* Top Left Badge: 24/7 AI Doubt Solver */}
+              <div 
+                className={`absolute top-2 sm:top-4 left-0 sm:left-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge1}`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/15">
+                    <FaChalkboardTeacher className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-gray-900 dark:text-white">AI Doubt Solver</div>
+                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">Step-by-step 24/7 help</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Top Right Badge: Chapter-Wise PYQs */}
+              <div 
+                className={`absolute top-8 sm:top-10 right-0 sm:right-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge2}`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-sm shadow-amber-500/15">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-gray-900 dark:text-white">Chapter-Wise PYQs</div>
+                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">Official Shift Papers</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Left Badge: Syllabus Tracker */}
+              <div 
+                className={`absolute bottom-4 sm:bottom-6 left-0 sm:left-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge3}`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm shadow-emerald-500/15">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-gray-900 dark:text-white">Syllabus Tracker</div>
+                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">All 88 Chapters • PCM</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Right Badge: Formulas & Mindmaps */}
+              <div 
+                className={`absolute bottom-2 sm:bottom-4 right-0 sm:right-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge4}`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white shadow-sm shadow-purple-500/15">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-gray-900 dark:text-white">Formulas & Mindmaps</div>
+                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">High-Yield Notes • PCM</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
