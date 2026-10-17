@@ -251,10 +251,10 @@ export default function HeroAnimation3D() {
         ctx.fill();
       }
 
-      // 3. Smooth Luminous Energy Rings & Light Beads (Revolving Paths that periodically flatten into 3 lines)
-      orbits.forEach((orbit) => {
+      // 3. Pre-calculate 3D Orbits & Energy Beads
+      const ringSteps = 80;
+      const computedOrbits = orbits.map((orbit) => {
         orbit.electronAngle += orbit.speed;
-        const ringSteps = 80;
         const ringPoints = [];
         const ringColor = dark ? orbit.darkColor : orbit.color;
 
@@ -273,26 +273,6 @@ export default function HeroAnimation3D() {
           ringPoints.push(project3D(ox, oy, oz, baseRotX, baseRotY, cx, cy));
         }
 
-        // Smooth continuous energy ring stroke (NO dashes)
-        ctx.beginPath();
-        for (let s = 0; s < ringPoints.length; s++) {
-          if (s === 0) ctx.moveTo(ringPoints[s].x, ringPoints[s].y);
-          else ctx.lineTo(ringPoints[s].x, ringPoints[s].y);
-        }
-
-        if (dark) {
-          ctx.shadowColor = ringColor;
-          ctx.shadowBlur = 7;
-          ctx.strokeStyle = ringColor;
-          ctx.lineWidth = 1.4;
-        } else {
-          ctx.shadowBlur = 0;
-          ctx.strokeStyle = ringColor;
-          ctx.lineWidth = 1.3;
-        }
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-
         // Calculate traveling energy bead position
         const eu = Math.cos(orbit.electronAngle) * orbit.radius;
         const ev = Math.sin(orbit.electronAngle) * orbit.radius;
@@ -303,34 +283,205 @@ export default function HeroAnimation3D() {
 
         const electronProj = project3D(eox, eoy, eoz, baseRotX, baseRotY, cx, cy);
 
-        // Radiant Light Bead
-        if (electronProj.scale > 0) {
-          const eRadius = 4.2 * electronProj.scale;
-          const glowGrad = ctx.createRadialGradient(
-            electronProj.x,
-            electronProj.y,
-            0,
-            electronProj.x,
-            electronProj.y,
-            eRadius * 3.8
-          );
-          glowGrad.addColorStop(0, dark ? "#ffffff" : ringColor);
-          glowGrad.addColorStop(0.35, ringColor);
-          glowGrad.addColorStop(1, "rgba(0,0,0,0)");
+        return {
+          orbit,
+          ringPoints,
+          ringColor,
+          electronProj,
+        };
+      });
 
-          ctx.fillStyle = glowGrad;
-          ctx.beginPath();
-          ctx.arc(electronProj.x, electronProj.y, eRadius * 3.8, 0, Math.PI * 2);
-          ctx.fill();
+      // 4. Pre-calculate 3D Science & Math Formulas
+      const computedSymbols = symbols.map((sym) => {
+        const orbit = orbits[sym.orbitIndex];
+        const r = orbit.radius;
 
-          ctx.fillStyle = "#ffffff";
-          ctx.beginPath();
-          ctx.arc(electronProj.x, electronProj.y, eRadius, 0, Math.PI * 2);
-          ctx.fill();
+        const currentAngle = sym.offsetAngle + time * (orbit.speed * 0.5);
+        const u = r * Math.cos(currentAngle);
+        const v = r * Math.sin(currentAngle);
+
+        const cosAngle = Math.cos(orbit.angle);
+        const sinAngle = Math.sin(orbit.angle);
+
+        const px = u * cosAngle;
+        const py = u * sinAngle;
+        const pz = v;
+
+        const proj = project3D(px, py, pz, baseRotX, baseRotY, cx, cy);
+        return {
+          sym,
+          orbit,
+          proj,
+        };
+      });
+
+      // Helper: Draw ring segments in given depth layer (front vs back) with seamless zero-gap crossing
+      const drawRingSegments = (ringPoints, ringColor, isFront) => {
+        ctx.beginPath();
+        let inPath = false;
+
+        for (let s = 0; s < ringPoints.length - 1; s++) {
+          const p1 = ringPoints[s];
+          const p2 = ringPoints[s + 1];
+
+          const p1InLayer = isFront ? p1.z >= 0 : p1.z < 0;
+          const p2InLayer = isFront ? p2.z >= 0 : p2.z < 0;
+
+          if (p1InLayer && p2InLayer) {
+            if (!inPath) {
+              ctx.moveTo(p1.x, p1.y);
+              inPath = true;
+            }
+            ctx.lineTo(p2.x, p2.y);
+          } else if (p1InLayer && !p2InLayer) {
+            // Exiting this layer: interpolate crossing point at z = 0
+            const t = (0 - p1.z) / (p2.z - p1.z);
+            const crossX = p1.x + t * (p2.x - p1.x);
+            const crossY = p1.y + t * (p2.y - p1.y);
+            if (!inPath) {
+              ctx.moveTo(p1.x, p1.y);
+            }
+            ctx.lineTo(crossX, crossY);
+            inPath = false;
+          } else if (!p1InLayer && p2InLayer) {
+            // Entering this layer: interpolate crossing point at z = 0
+            const t = (0 - p1.z) / (p2.z - p1.z);
+            const crossX = p1.x + t * (p2.x - p1.x);
+            const crossY = p1.y + t * (p2.y - p1.y);
+            ctx.moveTo(crossX, crossY);
+            ctx.lineTo(p2.x, p2.y);
+            inPath = true;
+          } else {
+            inPath = false;
+          }
+        }
+
+        if (dark) {
+          ctx.shadowColor = ringColor;
+          ctx.shadowBlur = isFront ? 8 : 3;
+          ctx.strokeStyle = ringColor;
+          ctx.lineWidth = isFront ? 1.5 : 1.1;
+        } else {
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = ringColor;
+          ctx.lineWidth = isFront ? 1.4 : 1.0;
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      };
+
+      // Helper: Draw traveling energy bead
+      const drawElectron = (electronProj, ringColor) => {
+        if (electronProj.scale <= 0) return;
+        const eRadius = 4.2 * electronProj.scale;
+        const glowGrad = ctx.createRadialGradient(
+          electronProj.x,
+          electronProj.y,
+          0,
+          electronProj.x,
+          electronProj.y,
+          eRadius * 3.8
+        );
+        glowGrad.addColorStop(0, dark ? "#ffffff" : ringColor);
+        glowGrad.addColorStop(0.35, ringColor);
+        glowGrad.addColorStop(1, "rgba(0,0,0,0)");
+
+        ctx.fillStyle = glowGrad;
+        ctx.beginPath();
+        ctx.arc(electronProj.x, electronProj.y, eRadius * 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(electronProj.x, electronProj.y, eRadius, 0, Math.PI * 2);
+        ctx.fill();
+      };
+
+      // Helper: Draw floating JEE formula
+      const drawFormula = (item) => {
+        const { sym, orbit, proj } = item;
+        if (proj.scale <= 0) return;
+
+        // Perspective scale and depth lighting:
+        const depthAlpha = Math.max(0.55, Math.min(1.0, 0.72 + (proj.z / 260) * 0.28));
+        const formulaScale = Math.max(0.78, Math.min(1.18, proj.scale));
+
+        ctx.save();
+        ctx.translate(proj.x, proj.y);
+        ctx.scale(formulaScale, formulaScale);
+
+        // Crisp, subtle protective typography halo
+        const haloColor = dark
+          ? `rgba(15, 23, 42, ${depthAlpha * 0.9})`
+          : `rgba(255, 255, 255, ${depthAlpha * 0.95})`;
+        ctx.strokeStyle = haloColor;
+        ctx.lineWidth = 2.4;
+        ctx.lineJoin = "round";
+
+        const ringColor = dark ? orbit.darkColor : orbit.color;
+
+        if (dark) {
+          ctx.shadowColor = ringColor;
+          ctx.shadowBlur = proj.z > 0 ? 10 : 3;
+          ctx.fillStyle = `rgba(248, 250, 252, ${depthAlpha})`;
+        } else {
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = `${orbit.lightTextColor} ${depthAlpha})`;
+        }
+
+        const baseFont = "bold 13px Jost, system-ui, sans-serif";
+        const supFont = "bold 9px Jost, system-ui, sans-serif";
+
+        if (sym.segments.length === 1 && !sym.segments[0].isSup) {
+          ctx.font = baseFont;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.strokeText(sym.segments[0].text, 0, 0);
+          ctx.fillText(sym.segments[0].text, 0, 0);
+        } else {
+          ctx.font = baseFont;
+          let totalW = 0;
+          const segsWithWidth = sym.segments.map((seg) => {
+            ctx.font = seg.isSup ? supFont : baseFont;
+            const w = ctx.measureText(seg.text).width;
+            totalW += w;
+            return { ...seg, width: w };
+          });
+
+          let curX = -totalW / 2;
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+
+          segsWithWidth.forEach((seg) => {
+            ctx.font = seg.isSup ? supFont : baseFont;
+            const yOffset = seg.isSup ? -4 : 0;
+            ctx.strokeText(seg.text, curX, yOffset);
+            ctx.fillText(seg.text, curX, yOffset);
+            curX += seg.width;
+          });
+        }
+
+        ctx.restore();
+      };
+
+      // ─── DEPTH LAYER 1: BACK (z < 0, behind central orb) ───
+      // 1a. Back segments of all 3 orbits
+      computedOrbits.forEach((co) => drawRingSegments(co.ringPoints, co.ringColor, false));
+
+      // 1b. Back traveling energy beads
+      computedOrbits.forEach((co) => {
+        if (co.electronProj.z < 0) {
+          drawElectron(co.electronProj, co.ringColor);
         }
       });
 
-      // 4. Central Sleek Holographic Quantum Orb (Luminous Glass Sphere with 3D Depth)
+      // 1c. Back floating formulas (sorted back-to-front)
+      computedSymbols
+        .filter((item) => item.proj.z < 0)
+        .sort((a, b) => a.proj.z - b.proj.z)
+        .forEach(drawFormula);
+
+      // ─── DEPTH LAYER 2: CENTRAL HOLOGRAPHIC QUANTUM ORB (z = 0) ───
       const orbRadius = 34 + Math.sin(time * 2) * 0.8;
 
       // Soft ambient radiant glow halo
@@ -379,7 +530,6 @@ export default function HeroAnimation3D() {
       ctx.fill();
 
       // Delicate 3D Holographic Latitude & Longitude Rings on the Glass Orb
-      // Fixed 22° axial tilt ensures the orb always exhibits stunning spherical 3D contouring
       const orbAxialTilt = 0.38;
       const ringTiltX = baseRotX + orbAxialTilt;
       const ringTiltY = baseRotY;
@@ -400,7 +550,7 @@ export default function HeroAnimation3D() {
       ctx.lineWidth = 1.1;
       ctx.stroke();
 
-      // Cross Meridian Ring - full circumference great circle in YZ plane (perpendicular to Prime Meridian and Equator)
+      // Cross Meridian Ring
       ctx.beginPath();
       for (let s = 0; s <= orbSteps; s++) {
         const a = (s / orbSteps) * Math.PI * 2;
@@ -430,7 +580,7 @@ export default function HeroAnimation3D() {
       ctx.lineWidth = 0.9;
       ctx.stroke();
 
-      // Inner Radiant Energy Core (Heart of the Orb)
+      // Inner Radiant Energy Core
       const innerCoreRadius = 9 + Math.sin(time * 3) * 1.2;
       const innerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, innerCoreRadius * 2.2);
       innerGlow.addColorStop(0, "#ffffff");
@@ -449,90 +599,22 @@ export default function HeroAnimation3D() {
       ctx.arc(cx, cy, orbRadius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // 5. Draw Floating 3D Science & Math Formulas revolving along their respective subject paths
-      symbols.forEach((sym) => {
-        const orbit = orbits[sym.orbitIndex];
-        const r = orbit.radius;
+      // ─── DEPTH LAYER 3: FRONT (z >= 0, in front of central orb) ───
+      // 3a. Front segments of all 3 orbits
+      computedOrbits.forEach((co) => drawRingSegments(co.ringPoints, co.ringColor, true));
 
-        // Position along the circular orbit ring - glides smoothly with orbit velocity
-        const currentAngle = sym.offsetAngle + time * (orbit.speed * 0.5);
-
-        const u = r * Math.cos(currentAngle);
-        const v = r * Math.sin(currentAngle);
-
-        const cosAngle = Math.cos(orbit.angle);
-        const sinAngle = Math.sin(orbit.angle);
-
-        // Exact 3D point along this tilted orbit ring
-        const px = u * cosAngle;
-        const py = u * sinAngle;
-        const pz = v;
-
-        const proj = project3D(px, py, pz, baseRotX, baseRotY, cx, cy);
-        if (proj.scale > 0) {
-          // Perspective scale and depth lighting:
-          const depthAlpha = Math.max(0.55, Math.min(1.0, 0.72 + (proj.z / 260) * 0.28));
-          const formulaScale = Math.max(0.78, Math.min(1.18, proj.scale));
-
-          ctx.save();
-          ctx.translate(proj.x, proj.y);
-          ctx.scale(formulaScale, formulaScale);
-
-          // Crisp, subtle protective typography halo
-          const haloColor = dark
-            ? `rgba(15, 23, 42, ${depthAlpha * 0.9})`
-            : `rgba(255, 255, 255, ${depthAlpha * 0.95})`;
-          ctx.strokeStyle = haloColor;
-          ctx.lineWidth = 2.4;
-          ctx.lineJoin = "round";
-
-          const ringColor = dark ? orbit.darkColor : orbit.color;
-
-          if (dark) {
-            ctx.shadowColor = ringColor;
-            ctx.shadowBlur = proj.z > 0 ? 10 : 3;
-            ctx.fillStyle = `rgba(248, 250, 252, ${depthAlpha})`;
-          } else {
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = `${orbit.lightTextColor} ${depthAlpha})`;
-          }
-
-          // High-resolution fixed font definition; continuous scale handled smoothly by canvas matrix
-          const baseFont = "bold 13px Jost, system-ui, sans-serif";
-          const supFont = "bold 9px Jost, system-ui, sans-serif";
-
-          if (sym.segments.length === 1 && !sym.segments[0].isSup) {
-            ctx.font = baseFont;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.strokeText(sym.segments[0].text, 0, 0);
-            ctx.fillText(sym.segments[0].text, 0, 0);
-          } else {
-            ctx.font = baseFont;
-            let totalW = 0;
-            const segsWithWidth = sym.segments.map((seg) => {
-              ctx.font = seg.isSup ? supFont : baseFont;
-              const w = ctx.measureText(seg.text).width;
-              totalW += w;
-              return { ...seg, width: w };
-            });
-
-            let curX = -totalW / 2;
-            ctx.textAlign = "left";
-            ctx.textBaseline = "middle";
-
-            segsWithWidth.forEach((seg) => {
-              ctx.font = seg.isSup ? supFont : baseFont;
-              const yOffset = seg.isSup ? -4 : 0;
-              ctx.strokeText(seg.text, curX, yOffset);
-              ctx.fillText(seg.text, curX, yOffset);
-              curX += seg.width;
-            });
-          }
-
-          ctx.restore();
+      // 3b. Front traveling energy beads
+      computedOrbits.forEach((co) => {
+        if (co.electronProj.z >= 0) {
+          drawElectron(co.electronProj, co.ringColor);
         }
       });
+
+      // 3c. Front floating formulas (sorted back-to-front)
+      computedSymbols
+        .filter((item) => item.proj.z >= 0)
+        .sort((a, b) => a.proj.z - b.proj.z)
+        .forEach(drawFormula);
 
       animationFrameId = requestAnimationFrame(render);
     };
