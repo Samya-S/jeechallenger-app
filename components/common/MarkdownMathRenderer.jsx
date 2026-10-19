@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 
@@ -82,7 +83,7 @@ const MarkdownMathRenderer = ({
   return (
     <div className={`text-left text-base leading-relaxed [&_.katex-display]:text-left [&_.katex-display]:my-3 [&_.katex-display]:py-1.5 [&_.katex-display]:px-1 [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden [&_.katex-display>.katex]:text-left ${className}`}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
         components={{
           img: ({ src, alt }) => (
