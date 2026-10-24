@@ -119,9 +119,25 @@ const MarkdownTable = ({ children }) => {
     return () => ref.removeEventListener('wheel', onWheel);
   }, []);
 
+  let colCount = 0;
+  React.Children.forEach(children, (child) => {
+    if (child?.props?.children) {
+      const rows = React.Children.toArray(child.props.children);
+      const firstRow = rows[0];
+      if (firstRow?.props?.children) {
+        const cells = React.Children.count(firstRow.props.children);
+        if (cells > 0 && colCount === 0) {
+          colCount = cells;
+        }
+      }
+    }
+  });
+
+  const isTwoCol = colCount === 2;
+
   return (
     <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 max-w-full rounded-lg border border-gray-300 dark:border-gray-700">
-      <table className="w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
+      <table className={`w-full border-collapse border border-gray-300 dark:border-gray-700 ${isTwoCol ? 'table-fixed [&_th]:w-1/2 [&_td]:w-1/2' : 'table-auto'}`}>
         {children}
       </table>
     </div>
