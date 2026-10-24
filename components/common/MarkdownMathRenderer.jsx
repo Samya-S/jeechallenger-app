@@ -8,28 +8,81 @@ import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 
-const renderCellContentWithBreaks = (children) => {
-  const processNode = (node, index) => {
+const BULLET_STRONG_REGEX = /^(?:[A-Za-z0-9]|1[0-9]|\([A-Za-z0-9IVXivx]+\)|[IVXivx]{1,5})[\.:]?$/;
+const BULLET_STR_REGEX = /^(\s*(?:\*\*(?:[A-Za-z0-9]|1[0-9]|\([A-Za-z0-9IVXivx]+\)|[IVXivx]{1,5})[\.:]?\*\*|(?:[A-Za-z0-9]|1[0-9]|[IVXivx]{1,5})[\.:]|\([A-Za-z0-9IVXivx]+\)))\s+(.*)$/s;
+
+const formatSegmentWithBullet = (children, keyPrefix) => {
+  const childArray = React.Children.toArray(children);
+  if (childArray.length === 0) return null;
+
+  let bullet = null;
+  let remaining = [];
+
+  const first = childArray[0];
+  if (React.isValidElement(first) && first.type === 'strong') {
+    const text = String(first.props.children || '').trim();
+    if (BULLET_STRONG_REGEX.test(text)) {
+      bullet = first;
+      remaining = childArray.slice(1);
+    }
+  } else if (typeof first === 'string') {
+    const match = first.match(BULLET_STR_REGEX);
+    if (match) {
+      const cleanBullet = match[1].replace(/\*\*/g, '').trim();
+      bullet = <strong className="font-semibold">{cleanBullet}</strong>;
+      if (match[2]) {
+        remaining = [match[2], ...childArray.slice(1)];
+      } else {
+        remaining = childArray.slice(1);
+      }
+    }
+  }
+
+  if (bullet) {
+    return (
+      <div key={keyPrefix} className="flex items-start gap-2 w-full min-w-0">
+        <span className="font-semibold shrink-0 select-none">{bullet}</span>
+        <div className="flex-1 min-w-0">{remaining}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div key={keyPrefix} className="w-full min-w-0">
+      {children}
+    </div>
+  );
+};
+
+const renderCellContent = (children) => {
+  const lines = [[]];
+  const processNode = (node) => {
     if (typeof node === 'string') {
-      if (!/<br\s*\/?>/i.test(node)) return node;
-      const parts = node.split(/<br\s*\/?>/i);
-      const res = [];
-      parts.forEach((part, i) => {
-        if (i > 0) res.push(<br key={`br-${index}-${i}`} />);
-        if (part) res.push(part);
-      });
-      return res;
+      if (!/<br\s*\/?>/i.test(node)) {
+        lines[lines.length - 1].push(node);
+      } else {
+        const parts = node.split(/<br\s*\/?>/i);
+        parts.forEach((p, idx) => {
+          if (idx > 0) lines.push([]);
+          if (p) lines[lines.length - 1].push(p);
+        });
+      }
+    } else {
+      lines[lines.length - 1].push(node);
     }
-    if (React.isValidElement(node) && node.props && node.props.children) {
-      return React.cloneElement(
-        node,
-        { key: node.key || index },
-        React.Children.map(node.props.children, processNode)
-      );
-    }
-    return node;
   };
-  return React.Children.map(children, processNode);
+
+  React.Children.forEach(children, processNode);
+
+  if (lines.length === 1) {
+    return formatSegmentWithBullet(lines[0], 'line-0');
+  }
+
+  return lines.map((lineChildren, idx) => (
+    <div key={idx} className={idx > 0 ? 'mt-2' : ''}>
+      {formatSegmentWithBullet(lineChildren, `line-${idx}`)}
+    </div>
+  ));
 };
 
 const MarkdownTable = ({ children }) => {
@@ -161,7 +214,7 @@ const MarkdownMathRenderer = ({
               <img
                 src={src}
                 alt={displayAlt}
-                className="max-h-32 md:max-h-36 max-w-xs md:max-w-md max-w-full w-auto h-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                className="max-h-28 md:max-h-32 max-w-full w-auto h-auto object-contain block align-middle my-1 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
                 onClick={() => {
                   if (onImageClick) {
                     onImageClick(src);
@@ -212,13 +265,13 @@ const MarkdownMathRenderer = ({
           tbody: ({ children }) => <tbody>{children}</tbody>,
           tr: ({ children }) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
           th: ({ children }) => (
-            <th className="px-4 py-3 text-left font-semibold border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words min-w-[8rem] max-w-sm md:max-w-md">
-              {renderCellContentWithBreaks(children)}
+            <th className="px-4 py-3 text-left font-semibold border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words">
+              {renderCellContent(children)}
             </th>
           ),
           td: ({ children }) => (
-            <td className="px-4 py-3 border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words min-w-[8rem] max-w-sm md:max-w-md">
-              {renderCellContentWithBreaks(children)}
+            <td className="px-4 py-3 border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words">
+              {renderCellContent(children)}
             </td>
           ),
         }}
