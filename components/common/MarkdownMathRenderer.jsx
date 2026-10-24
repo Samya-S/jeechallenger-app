@@ -48,6 +48,28 @@ const resolveUrl = (url) => {
   return `https://pyq-assets.jeechallenger.com/${url}`;
 };
 
+const replaceShortcodesWithLayout = (text, pattern, urls, typePrefix) => {
+  if (!text || !urls || urls.length === 0) return text;
+
+  return text.replace(pattern, (match, idxStr, offset, fullString) => {
+    const idx = parseInt(idxStr, 10);
+    const url = urls[idx];
+    if (!url) return match;
+
+    const before = fullString.slice(0, offset);
+    const after = fullString.slice(offset + match.length);
+
+    const lineBefore = before.split(/\r?\n/).pop() || "";
+    const lineAfter = after.split(/\r?\n/).shift() || "";
+
+    const isStandalone = lineBefore.trim() === "" && lineAfter.trim() === "";
+    const alt = isStandalone ? `standalone:${typePrefix} ${idx}` : `${typePrefix} ${idx}`;
+    const imgMarkdown = `![${alt}](${resolveUrl(url)})`;
+
+    return isStandalone ? `\n\n${imgMarkdown}\n\n` : imgMarkdown;
+  });
+};
+
 /**
  * MarkdownMathRenderer
  * Renders Markdown with full KaTeX math support (\(...\), \[...\], $$...$$, $...$),
@@ -64,21 +86,19 @@ const MarkdownMathRenderer = ({
 
   let processedContent = typeof content === 'string' ? content : String(content);
 
-  if (diagramUrls && diagramUrls.length > 0) {
-    processedContent = processedContent.replace(/\{\{diagram[:_](\d+)\}\}/gi, (match, idxStr) => {
-      const idx = parseInt(idxStr, 10);
-      const url = diagramUrls[idx];
-      return url ? `![Diagram ${idx}](${resolveUrl(url)})` : match;
-    });
-  }
+  processedContent = replaceShortcodesWithLayout(
+    processedContent,
+    /\{\{diagram[:_](\d+)\}\}/gi,
+    diagramUrls,
+    "Diagram"
+  );
 
-  if (passageDiagramUrls && passageDiagramUrls.length > 0) {
-    processedContent = processedContent.replace(/\{\{passage_diagram[:_](\d+)\}\}/gi, (match, idxStr) => {
-      const idx = parseInt(idxStr, 10);
-      const url = passageDiagramUrls[idx];
-      return url ? `![Passage Diagram ${idx}](${resolveUrl(url)})` : match;
-    });
-  }
+  processedContent = replaceShortcodesWithLayout(
+    processedContent,
+    /\{\{passage_diagram[:_](\d+)\}\}/gi,
+    passageDiagramUrls,
+    "Passage Diagram"
+  );
 
   return (
     <div className={`text-left text-base leading-relaxed [&_.katex-display]:text-left [&_.katex-display]:my-3 [&_.katex-display]:py-1.5 [&_.katex-display]:px-1 [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden [&_.katex-display>.katex]:text-left ${className}`}>
@@ -86,22 +106,50 @@ const MarkdownMathRenderer = ({
         remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          img: ({ src, alt }) => (
-            <img
-              src={src}
-              alt={alt || "Diagram"}
-              className="max-h-32 md:max-h-36 w-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
-              onClick={() => {
-                if (onImageClick) {
-                  onImageClick(src);
-                } else if (src && typeof window !== "undefined") {
-                  window.open(src, "_blank");
-                }
-              }}
-              title="Click to zoom diagram"
-              loading="lazy"
-            />
-          ),
+          img: ({ src, alt }) => {
+            const isStandalone = typeof alt === "string" && alt.startsWith("standalone:");
+            const displayAlt = isStandalone ? alt.replace(/^standalone:/, "").trim() : (alt || "Diagram");
+
+            if (isStandalone) {
+              return (
+                <span
+                  className="my-3 block w-fit max-w-full relative rounded-xl md:rounded-2xl border border-gray-200 dark:border-gray-800 p-2 md:p-3 bg-white dark:bg-gray-800 shadow-sm md:shadow-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
+                  onClick={() => {
+                    if (onImageClick) {
+                      onImageClick(src);
+                    } else if (src && typeof window !== "undefined") {
+                      window.open(src, "_blank");
+                    }
+                  }}
+                  title="Click to zoom diagram"
+                >
+                  <img
+                    src={src}
+                    alt={displayAlt}
+                    className="max-h-72 md:max-h-80 w-auto object-contain rounded-lg md:rounded-xl block"
+                    loading="lazy"
+                  />
+                </span>
+              );
+            }
+
+            return (
+              <img
+                src={src}
+                alt={displayAlt}
+                className="max-h-32 md:max-h-36 w-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                onClick={() => {
+                  if (onImageClick) {
+                    onImageClick(src);
+                  } else if (src && typeof window !== "undefined") {
+                    window.open(src, "_blank");
+                  }
+                }}
+                title="Click to zoom diagram"
+                loading="lazy"
+              />
+            );
+          },
           p: ({ children }) => <p className="mb-4 last:mb-0 leading-relaxed text-left">{children}</p>,
           h1: ({ children }) => <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100">{children}</h1>,
           h2: ({ children }) => <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 dark:text-gray-100">{children}</h2>,
