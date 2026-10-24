@@ -38,6 +38,15 @@ const formatSegmentWithBullet = (children, keyPrefix) => {
     }
   }
 
+  if (remaining.length > 0 && typeof remaining[0] === 'string') {
+    const trimmed = remaining[0].replace(/^\s+/, '');
+    if (trimmed) {
+      remaining = [trimmed, ...remaining.slice(1)];
+    } else {
+      remaining = remaining.slice(1);
+    }
+  }
+
   if (bullet) {
     return (
       <div key={keyPrefix} className="flex items-start gap-2 w-full min-w-0">
@@ -111,8 +120,8 @@ const MarkdownTable = ({ children }) => {
   }, []);
 
   return (
-    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 max-w-full w-fit border border-gray-300 dark:border-gray-700 rounded-lg">
-      <table className="w-max table-auto border-collapse border border-gray-300 dark:border-gray-700">
+    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 max-w-full rounded-lg border border-gray-300 dark:border-gray-700">
+      <table className="w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
         {children}
       </table>
     </div>
