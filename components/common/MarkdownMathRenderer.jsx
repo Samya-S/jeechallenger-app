@@ -113,7 +113,7 @@ const MarkdownMathRenderer = ({
             if (isStandalone) {
               return (
                 <span
-                  className="my-3 block w-fit max-w-full relative rounded-xl md:rounded-2xl border border-gray-200 dark:border-gray-800 p-2 md:p-3 bg-white dark:bg-gray-800 shadow-sm md:shadow-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
+                  className="my-3 block w-fit max-w-md md:max-w-lg relative rounded-xl md:rounded-2xl border border-gray-200 dark:border-gray-800 p-2 md:p-3 bg-white dark:bg-gray-800 shadow-sm md:shadow-md cursor-zoom-in hover:border-orange-500/70 hover:shadow-lg transition-all"
                   onClick={() => {
                     if (onImageClick) {
                       onImageClick(src);
@@ -126,7 +126,7 @@ const MarkdownMathRenderer = ({
                   <img
                     src={src}
                     alt={displayAlt}
-                    className="max-h-72 md:max-h-80 w-auto object-contain rounded-lg md:rounded-xl block"
+                    className="max-h-72 md:max-h-80 max-w-full w-auto h-auto object-contain rounded-lg md:rounded-xl block"
                     loading="lazy"
                   />
                 </span>
@@ -137,7 +137,7 @@ const MarkdownMathRenderer = ({
               <img
                 src={src}
                 alt={displayAlt}
-                className="max-h-32 md:max-h-36 w-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
+                className="max-h-32 md:max-h-36 max-w-xs md:max-w-md max-w-full w-auto h-auto object-contain inline-block align-middle my-1 mx-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-1 shadow-sm cursor-zoom-in hover:border-orange-500/70 hover:shadow-md transition-all"
                 onClick={() => {
                   if (onImageClick) {
                     onImageClick(src);
