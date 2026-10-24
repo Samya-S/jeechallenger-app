@@ -8,6 +8,30 @@ import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 
+const renderCellContentWithBreaks = (children) => {
+  const processNode = (node, index) => {
+    if (typeof node === 'string') {
+      if (!/<br\s*\/?>/i.test(node)) return node;
+      const parts = node.split(/<br\s*\/?>/i);
+      const res = [];
+      parts.forEach((part, i) => {
+        if (i > 0) res.push(<br key={`br-${index}-${i}`} />);
+        if (part) res.push(part);
+      });
+      return res;
+    }
+    if (React.isValidElement(node) && node.props && node.props.children) {
+      return React.cloneElement(
+        node,
+        { key: node.key || index },
+        React.Children.map(node.props.children, processNode)
+      );
+    }
+    return node;
+  };
+  return React.Children.map(children, processNode);
+};
+
 const MarkdownTable = ({ children }) => {
   const tableRef = useRef(null);
 
@@ -187,8 +211,16 @@ const MarkdownMathRenderer = ({
           thead: ({ children }) => <thead className="bg-gray-100 dark:bg-gray-700">{children}</thead>,
           tbody: ({ children }) => <tbody>{children}</tbody>,
           tr: ({ children }) => <tr className="border-b border-gray-200 dark:border-gray-700">{children}</tr>,
-          th: ({ children }) => <th className="px-4 py-3 text-left font-semibold border border-gray-300 dark:border-gray-700 align-middle whitespace-nowrap">{children}</th>,
-          td: ({ children }) => <td className="px-4 py-3 border border-gray-300 dark:border-gray-700 align-middle whitespace-nowrap">{children}</td>,
+          th: ({ children }) => (
+            <th className="px-4 py-3 text-left font-semibold border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words min-w-[8rem] max-w-sm md:max-w-md">
+              {renderCellContentWithBreaks(children)}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="px-4 py-3 border border-gray-300 dark:border-gray-700 align-top whitespace-normal break-words min-w-[8rem] max-w-sm md:max-w-md">
+              {renderCellContentWithBreaks(children)}
+            </td>
+          ),
         }}
       >
         {processedContent}
