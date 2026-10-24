@@ -34,8 +34,8 @@ const MarkdownTable = ({ children }) => {
   }, []);
 
   return (
-    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 border border-gray-300 dark:border-gray-700 rounded-lg">
-      <table className="w-max min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
+    <div ref={tableRef} className="overflow-x-auto scrollbar-thin my-4 max-w-full w-fit border border-gray-300 dark:border-gray-700 rounded-lg">
+      <table className="w-max table-auto border-collapse border border-gray-300 dark:border-gray-700">
         {children}
       </table>
     </div>
