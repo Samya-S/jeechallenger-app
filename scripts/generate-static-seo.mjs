@@ -86,14 +86,14 @@ async function fetchDynamicPapers() {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(`${PYQS_API_URL}/papers`, {
+    const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
     });
     clearTimeout(timeoutId);
     if (!res.ok) return [];
     const json = await res.json();
-    return json.data || json.papers || [];
+    return json.data || [];
   } catch (e) {
     console.warn('[static-seo] Warning: Failed to fetch papers:', e.message);
     return [];
@@ -102,49 +102,37 @@ async function fetchDynamicPapers() {
 
 async function fetchDynamicQuestions() {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    const firstRes = await fetch(`${PYQS_API_URL}/questions?limit=100&page=1`, {
-      signal: controller.signal,
-      headers: { Accept: 'application/json' },
-    });
-    clearTimeout(timeoutId);
-    if (!firstRes.ok) return [];
+    const allQuestions = [];
+    let page = 1;
+    let totalPages = 1;
 
-    const firstJson = await firstRes.json();
-    const totalPages = firstJson.meta?.total_pages || 1;
-    let allQuestions = [...(firstJson.data || [])];
+    // Fetch chunked pages sequentially (limit 10,000 per request)
+    while (page <= totalPages) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    if (totalPages > 1) {
-      const promises = [];
-      for (let p = 2; p <= totalPages; p++) {
-        promises.push(
-          (async () => {
-            try {
-              const pController = new AbortController();
-              const pTimeout = setTimeout(() => pController.abort(), 10000);
-              const pRes = await fetch(`${PYQS_API_URL}/questions?limit=100&page=${p}`, {
-                signal: pController.signal,
-                headers: { Accept: 'application/json' },
-              });
-              clearTimeout(pTimeout);
-              if (pRes.ok) {
-                const pJson = await pRes.json();
-                return pJson.data || [];
-              }
-            } catch (err) {
-              console.warn(`[static-seo] Warning: Failed to fetch questions page ${p}:`, err.message);
-            }
-            return [];
-          })()
-        );
+      const res = await fetch(`${PYQS_API_URL}/questions/image-sitemap?limit=10000&page=${page}`, {
+        signal: controller.signal,
+        headers: { Accept: 'application/json' },
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        console.warn(`[static-seo] Warning: Questions image sitemap API returned HTTP ${res.status} on page ${page}`);
+        break;
       }
-      const rest = await Promise.all(promises);
-      rest.forEach((items) => allQuestions.push(...items));
+
+      const json = await res.json();
+      const data = json.data || [];
+      allQuestions.push(...data);
+
+      totalPages = json.meta?.total_pages || 1;
+      page++;
     }
+
     return allQuestions;
   } catch (e) {
-    console.warn('[static-seo] Warning: Failed to fetch questions:', e.message);
+    console.warn('[static-seo] Warning: Failed to fetch questions for image sitemap:', e.message);
     return [];
   }
 }
