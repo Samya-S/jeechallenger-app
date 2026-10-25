@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { 
   ArrowLeft, 
   Share2, 
   Check, 
   CheckCircle2, 
+  XCircle,
+  AlertCircle,
   BookOpen, 
   Award, 
-  Layers,
+  Layers, 
   Sparkles,
   FileText,
   Bug,
@@ -17,6 +20,8 @@ import {
   Tag,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  RotateCcw,
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -30,6 +35,22 @@ export default function QuestionDetailComponent({ question }) {
   const [copiedBadge, setCopiedBadge] = useState(false); // for NTA ID copy feedback
   const [zoomedImage, setZoomedImage] = useState(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
+
+  const searchParams = useSearchParams();
+  const isDirectSolutionView = searchParams?.get("view") === "solution";
+
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedMultiOptions, setSelectedMultiOptions] = useState([]);
+  const [numericValue, setNumericValue] = useState("");
+  const [checkedState, setCheckedState] = useState(null);
+  const [isSolutionRevealed, setIsSolutionRevealed] = useState(isDirectSolutionView);
+
+  // Auto-reveal solution if accessed with ?view=solution without hijacking scroll
+  useEffect(() => {
+    if (isDirectSolutionView) {
+      setIsSolutionRevealed(true);
+    }
+  }, [isDirectSolutionView]);
 
   if (!question) {
     return (
@@ -60,6 +81,110 @@ export default function QuestionDetailComponent({ question }) {
           question.numeric_answer.min_value === null &&
           question.numeric_answer.max_value === null)));
   const correctAnswers = question.correct_answer || [];
+
+  const handleRevealSolution = () => {
+    setIsSolutionRevealed(true);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `${window.location.pathname}?view=solution`);
+    }
+  };
+
+  const handleResetAttempt = () => {
+    setSelectedOption(null);
+    setSelectedMultiOptions([]);
+    setNumericValue("");
+    setCheckedState(null);
+    setIsSolutionRevealed(false);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  };
+
+  const handleCheckAnswer = () => {
+    if (isMarksToAll) {
+      if (isMCQ && !selectedOption) return;
+      if (isMulti && selectedMultiOptions.length === 0) return;
+      if (isNumeric && !numericValue.trim()) return;
+
+      setCheckedState({
+        status: "bonus",
+        isCorrect: true,
+        isMarksToAll: true,
+        message: "✨ Marks Awarded to All • Full marks are awarded for this question (Bonus/Dropped in official exam key).",
+      });
+      handleRevealSolution();
+      return;
+    }
+
+    if (isMCQ) {
+      if (!selectedOption) return;
+      const correctArr = question.correct_answer || [];
+      const isCorrect = correctArr.includes(selectedOption);
+      setCheckedState({
+        status: isCorrect ? "correct" : "incorrect",
+        isCorrect,
+        correctAnswers: correctArr,
+        message: isCorrect
+          ? "Correct! +4 Marks"
+          : `Incorrect • Correct Answer is Option (${correctArr.join(", ")})`,
+      });
+      handleRevealSolution();
+    } else if (isMulti) {
+      if (selectedMultiOptions.length === 0) return;
+      const correctArr = question.correct_answer || [];
+      const isExactMatch =
+        selectedMultiOptions.length === correctArr.length &&
+        selectedMultiOptions.every((opt) => correctArr.includes(opt));
+      const hasAnyWrong = selectedMultiOptions.some((opt) => !correctArr.includes(opt));
+      const isPartial = !hasAnyWrong && !isExactMatch;
+      const status = isExactMatch ? "correct" : isPartial ? "partial" : "incorrect";
+
+      let msg = "";
+      if (isExactMatch) {
+        msg = "Correct! All correct options selected (+4 Marks).";
+      } else if (isPartial) {
+        const missing = correctArr.filter((opt) => !selectedMultiOptions.includes(opt)).sort();
+        msg = `Partially Correct • You selected (${selectedMultiOptions.sort().join(", ")}), correct options also include (${missing.join(", ")})`;
+      } else {
+        msg = `Incorrect • Correct Options are (${correctArr.sort().join(", ")})`;
+      }
+
+      setCheckedState({
+        status,
+        isCorrect: isExactMatch,
+        correctAnswers: correctArr,
+        message: msg,
+      });
+      handleRevealSolution();
+    } else if (isNumeric) {
+      if (!numericValue.trim()) return;
+      const val = parseFloat(numericValue);
+      let isCorrect = false;
+      const numAns = question.numeric_answer;
+      if (numAns) {
+        if (numAns.is_range && numAns.min_value !== null && numAns.max_value !== null) {
+          isCorrect = val >= numAns.min_value && val <= numAns.max_value;
+        } else if (numAns.exact_value !== null && numAns.exact_value !== undefined) {
+          isCorrect = Math.abs(val - numAns.exact_value) < 0.01;
+        }
+      }
+      setCheckedState({
+        status: isCorrect ? "correct" : "incorrect",
+        isCorrect,
+        message: isCorrect
+          ? "Correct! +4 Marks"
+          : `Incorrect • Official Answer: ${numAns?.exact_value ?? `${numAns?.min_value} to ${numAns?.max_value}`}`,
+      });
+      handleRevealSolution();
+    }
+  };
+
+  const handleToggleMulti = (key) => {
+    if (checkedState || isSolutionRevealed) return;
+    setSelectedMultiOptions((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  };
 
   const copyToClipboard = async (url) => {
     try {
@@ -329,69 +454,116 @@ export default function QuestionDetailComponent({ question }) {
                       return !opt.text || !regex.test(opt.text);
                     });
 
-                    const isCorrect = !isMarksToAll && correctAnswers.includes(key);
+                    const isRevealed = isSolutionRevealed || !!checkedState;
+                    const isCorrect = isRevealed && !isMarksToAll && correctAnswers.includes(key);
+                    const isSelected = isMCQ ? selectedOption === key : selectedMultiOptions.includes(key);
+                    const isUserWrong = isRevealed && checkedState && isSelected && !isCorrect;
+
+                    const containerClasses = isRevealed
+                      ? isCorrect
+                        ? "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 ring-2 ring-emerald-500/40"
+                        : isUserWrong
+                        ? "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 ring-2 ring-rose-500/40"
+                        : "border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 opacity-70"
+                      : isSelected
+                      ? "border-orange-500 bg-orange-50/70 dark:bg-orange-950/40 ring-2 ring-orange-500/30 shadow-sm"
+                      : "border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer";
+
+                    const badgeClasses = isRevealed
+                      ? isCorrect
+                        ? "bg-emerald-600 text-white shadow-sm"
+                        : isUserWrong
+                        ? "bg-rose-600 text-white shadow-sm"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                      : isSelected
+                      ? "bg-orange-600 text-white shadow-sm"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
 
                     return (
-                      <div
+                      <button
                         key={key}
-                        className={`p-4 rounded-2xl border transition-all ${
-                          isCorrect
-                            ? "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 ring-2 ring-emerald-500/40"
-                            : "border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30"
-                        }`}
+                        type="button"
+                        disabled={isRevealed}
+                        onClick={() => {
+                          if (isRevealed) return;
+                          if (isMCQ) {
+                            setSelectedOption(key);
+                          } else {
+                            handleToggleMulti(key);
+                          }
+                        }}
+                        className={`p-4 rounded-2xl border text-left w-full transition-all flex items-start gap-3 ${containerClasses}`}
                       >
-                        <div className="flex items-start gap-3">
-                          <span
-                            className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs ${
-                              isCorrect
-                                ? "bg-emerald-600 text-white shadow-sm"
-                                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                            }`}
-                          >
-                            {key}
-                          </span>
-                          <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
-                            {opt.text && (
-                              <MarkdownMathRenderer
-                                content={opt.text}
-                                diagramUrls={optDiagrams}
-                                onImageClick={setZoomedImage}
-                              />
-                            )}
-                            {remainingOptDiagrams.length > 0 && (
-                              <div className={`flex flex-wrap gap-2 ${opt.text ? "mt-3" : "mt-0"}`}>
-                                {remainingOptDiagrams.map((url, idx) => (
-                                  <div
-                                    key={idx}
-                                    onClick={() => setZoomedImage(url)}
-                                    className="relative p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
-                                  >
-                                    <img
-                                      src={url}
-                                      alt={`Option ${key} Diagram ${idx + 1}`}
-                                      className="max-h-64 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          {isCorrect && (
-                            <span className="shrink-0 flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              Correct
-                            </span>
+                        <span className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs ${badgeClasses}`}>
+                          {key}
+                        </span>
+                        <div className="flex-1 text-sm pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
+                          {opt.text && (
+                            <MarkdownMathRenderer
+                              content={opt.text}
+                              diagramUrls={optDiagrams}
+                              onImageClick={setZoomedImage}
+                            />
+                          )}
+                          {remainingOptDiagrams.length > 0 && (
+                            <div className={`flex flex-wrap gap-2 ${opt.text ? "mt-3" : "mt-0"}`}>
+                              {remainingOptDiagrams.map((url, idx) => (
+                                <div
+                                  key={idx}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setZoomedImage(url);
+                                  }}
+                                  className="relative p-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800 max-w-full inline-block cursor-zoom-in hover:border-orange-500/70 hover:shadow-sm transition-all"
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`Option ${key} Diagram ${idx + 1}`}
+                                    className="max-h-64 sm:max-h-72 w-auto object-contain rounded-lg mx-auto"
+                                  />
+                                </div>
+                              ))}
+                            </div>
                           )}
                         </div>
-                      </div>
+                        {isRevealed && isCorrect && (
+                          <span className="shrink-0 flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            Correct
+                          </span>
+                        )}
+                        {isRevealed && isUserWrong && (
+                          <span className="shrink-0 flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/60 px-2 py-0.5 rounded-md">
+                            <XCircle className="w-3.5 h-3.5" />
+                            Your Choice
+                          </span>
+                        )}
+                      </button>
                     );
                   })}
                 </div>
               </div>
             )}
 
-            {/* Numerical Answer Box */}
-            {isNumeric && !isMarksToAll && (
+            {/* Numerical Input / Official Answer */}
+            {isNumeric && !isSolutionRevealed && !checkedState && (
+              <div className="pt-2 max-w-xs space-y-1.5">
+                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Enter Numerical Value
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={numericValue}
+                  onChange={(e) => setNumericValue(e.target.value)}
+                  placeholder="e.g. 4.5"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-900 dark:text-white font-mono font-bold outline-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                />
+              </div>
+            )}
+
+            {/* Numerical Official Answer Box (When Revealed) */}
+            {isNumeric && !isMarksToAll && (isSolutionRevealed || !!checkedState) && (
               <div className="p-4 rounded-2xl border border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 ring-2 ring-emerald-500/30 flex items-center justify-between gap-4 max-w-md">
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block mb-1">
@@ -406,6 +578,63 @@ export default function QuestionDetailComponent({ question }) {
                 <CheckCircle2 className="w-8 h-8 text-emerald-500 shrink-0" />
               </div>
             )}
+
+            {/* Feedback Alert Banner */}
+            {checkedState && (
+              <div
+                className={`p-4 rounded-2xl flex items-center gap-3 border ${
+                  checkedState.status === "correct" || checkedState.status === "bonus"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+                    : checkedState.status === "partial"
+                    ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
+                    : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
+                }`}
+              >
+                {checkedState.status === "correct" || checkedState.status === "bonus" ? (
+                  <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+                ) : checkedState.status === "partial" ? (
+                  <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
+                ) : (
+                  <XCircle className="w-5 h-5 shrink-0 text-rose-500" />
+                )}
+                <span className="text-sm font-bold">{checkedState.message}</span>
+              </div>
+            )}
+
+            {/* Action Controls Row */}
+            <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
+              {!isSolutionRevealed && !checkedState ? (
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCheckAnswer}
+                    disabled={isMCQ ? !selectedOption : isMulti ? selectedMultiOptions.length === 0 : !numericValue.trim()}
+                    className="px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  >
+                    Check Answer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRevealSolution}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all cursor-pointer border border-gray-200 dark:border-gray-700"
+                  >
+                    <Eye className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    <span>Reveal Solution</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleResetAttempt}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all cursor-pointer border border-gray-200 dark:border-gray-700"
+                  >
+                    <RotateCcw className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    <span>Reset &amp; Try Again</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Topics & Concepts Badges */}
             {question.badges && question.badges.length > 0 && (
@@ -489,26 +718,47 @@ export default function QuestionDetailComponent({ question }) {
         </div>
 
         {/* Step-by-Step KaTeX Solution Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
+        <div id="solution" className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
           {/* Solution Banner Header */}
-          <div className="p-4 sm:p-5 bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center gap-2.5">
-            <h2 className="text-base sm:text-lg font-bold tracking-tight">
-              Step-by-Step Solution
+          <div className="p-4 sm:p-5 bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center justify-between gap-2.5">
+            <h2 className="text-base sm:text-lg font-bold tracking-tight flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              <span>Step-by-Step Solution</span>
             </h2>
+            {!isSolutionRevealed && (
+              <span className="text-xs font-semibold bg-white/20 px-2.5 py-1 rounded-lg">
+                Hidden
+              </span>
+            )}
           </div>
 
           {/* Solution Body */}
-          <div className="p-6 md:p-8 space-y-6">
-            <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed space-y-4 min-w-0">
-              <MarkdownMathRenderer
-                content={question.solution || question.solution_text || "Solution will be uploaded soon."}
-                diagramUrls={question.question_diagram_urls}
-                passageDiagramUrls={question.linked_passage_diagram_urls}
-                onImageClick={setZoomedImage}
-              />
+          {isSolutionRevealed ? (
+            <div className="p-6 md:p-8 space-y-6">
+              <div className="text-gray-900 dark:text-gray-100 text-base md:text-lg leading-relaxed space-y-4 min-w-0">
+                <MarkdownMathRenderer
+                  content={question.solution || question.solution_text || "Solution will be uploaded soon."}
+                  diagramUrls={question.question_diagram_urls}
+                  passageDiagramUrls={question.linked_passage_diagram_urls}
+                  onImageClick={setZoomedImage}
+                />
+              </div>
             </div>
-
-          </div>
+          ) : (
+            <div className="p-6 md:p-8 text-center space-y-3">
+              <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+                Test your understanding first. Attempt the question above, or reveal the complete step-by-step derivation.
+              </p>
+              <button
+                type="button"
+                onClick={handleRevealSolution}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/60 border border-orange-200 dark:border-orange-800 transition-all cursor-pointer shadow-sm"
+              >
+                <Eye className="w-4 h-4" />
+                <span>Reveal Step-by-Step Solution</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Previous / Next Question Stepper */}
@@ -516,7 +766,7 @@ export default function QuestionDetailComponent({ question }) {
           <div className="flex items-center justify-between gap-4 pt-1">
             {question.navigation.prev ? (
               <Link
-                href={`/question/${question.navigation.prev.slug}`}
+                href={`/question/${question.navigation.prev.slug}${isSolutionRevealed ? "?view=solution" : ""}`}
                 title={question.navigation.prev.title}
                 aria-label={`Previous question: ${question.navigation.prev.title}`}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all cursor-pointer"
@@ -537,7 +787,7 @@ export default function QuestionDetailComponent({ question }) {
 
             {question.navigation.next ? (
               <Link
-                href={`/question/${question.navigation.next.slug}`}
+                href={`/question/${question.navigation.next.slug}${isSolutionRevealed ? "?view=solution" : ""}`}
                 title={question.navigation.next.title}
                 aria-label={`Next question: ${question.navigation.next.title}`}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all cursor-pointer ml-auto"
