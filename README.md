@@ -145,7 +145,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **Authentication**: NextAuth.js v4 with Google OAuth provider
 - **Databases (Microservice Architecture)**: 
-  - `jee_challenger_auth`: User sessions and authentication
+  - `jee_challenger_auth`: User sessions and authentication (indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
   - `jee_challenger_ai`: AI Tutor chat history
   - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress
   - `jee_challenger_pyqs`: High-performance Go microservice with MongoDB for Question Bank and Paper metadata
