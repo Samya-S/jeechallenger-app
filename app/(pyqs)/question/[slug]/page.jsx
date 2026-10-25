@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
 import QuestionDetailComponent from "@/components/resources/pyqs/QuestionDetailComponent";
 import StructuredData from "@/components/common/StructuredData";
@@ -154,7 +154,9 @@ export default async function SingleQuestionPage({ params }) {
         type="educationQuiz"
         data={{ question }}
       />
-      <QuestionDetailComponent question={question} />
+      <Suspense fallback={<div className="min-h-screen bg-gray-50/50 dark:bg-[#0a0e17]" />}>
+        <QuestionDetailComponent question={question} />
+      </Suspense>
     </>
   );
 }
