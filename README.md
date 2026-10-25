@@ -147,7 +147,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Databases (Microservice Architecture)**: 
   - `jee_challenger_auth`: User sessions and authentication (indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
   - `jee_challenger_ai`: AI Tutor chat history
-  - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress
+  - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress (indexed on `user_id` unique)
   - `jee_challenger_pyqs`: High-performance Go microservice with MongoDB for Question Bank and Paper metadata
 - **FastAPI AI Tutor Microservice**: Python & FastAPI microservice connected via Next.js proxy route `/api/ai/[...path]` with JWT authentication and streaming chat responses
 - **Go PYQ Microservice**: High-performance Go microservice connected via Next.js proxy route `/api/pyqs/[...path]` with JWT authentication and Cloudflare R2 image CDN
