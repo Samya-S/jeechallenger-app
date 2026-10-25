@@ -55,19 +55,19 @@ async function getPaperRoutes() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    const res = await fetch(`${PYQS_API_URL}/papers`, {
+    const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
     });
     clearTimeout(timeoutId);
 
     if (!res.ok) {
-      console.warn(`[next-sitemap] Warning: Papers API returned HTTP ${res.status}`);
+      console.warn(`[next-sitemap] Warning: Papers sitemap API returned HTTP ${res.status}`);
       return [];
     }
 
     const json = await res.json();
-    const papers = json.data || json.papers || [];
+    const papers = json.data || [];
 
     return papers
       .filter((paper) => paper && paper.slug)
@@ -90,57 +90,32 @@ async function getPaperRoutes() {
  */
 async function getQuestionRoutes() {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const allQuestions = [];
+    let page = 1;
+    let totalPages = 1;
 
-    // 1. Fetch first page to determine total_pages
-    const firstRes = await fetch(`${PYQS_API_URL}/questions?limit=100&page=1`, {
-      signal: controller.signal,
-      headers: { Accept: 'application/json' },
-    });
-    clearTimeout(timeoutId);
+    // Fetch chunked pages sequentially (limit 10,000 per request)
+    while (page <= totalPages) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    if (!firstRes.ok) {
-      console.warn(`[next-sitemap] Warning: Questions API returned HTTP ${firstRes.status}`);
-      return [];
-    }
+      const res = await fetch(`${PYQS_API_URL}/questions/sitemap?limit=10000&page=${page}`, {
+        signal: controller.signal,
+        headers: { Accept: 'application/json' },
+      });
+      clearTimeout(timeoutId);
 
-    const firstJson = await firstRes.json();
-    const firstData = firstJson.data || [];
-    const totalPages = firstJson.meta?.total_pages || 1;
-
-    let allQuestions = [...firstData];
-
-    // 2. Fetch remaining pages if any
-    if (totalPages > 1) {
-      const pagePromises = [];
-      for (let page = 2; page <= totalPages; page++) {
-        pagePromises.push(
-          (async () => {
-            try {
-              const pageController = new AbortController();
-              const pageTimeout = setTimeout(() => pageController.abort(), 10000);
-              const res = await fetch(`${PYQS_API_URL}/questions?limit=100&page=${page}`, {
-                signal: pageController.signal,
-                headers: { Accept: 'application/json' },
-              });
-              clearTimeout(pageTimeout);
-              if (res.ok) {
-                const json = await res.json();
-                return json.data || [];
-              }
-            } catch (err) {
-              console.warn(`[next-sitemap] Warning: Failed to fetch questions page ${page}:`, err.message);
-            }
-            return [];
-          })()
-        );
+      if (!res.ok) {
+        console.warn(`[next-sitemap] Warning: Questions sitemap API returned HTTP ${res.status} on page ${page}`);
+        break;
       }
 
-      const results = await Promise.all(pagePromises);
-      results.forEach((pageItems) => {
-        allQuestions.push(...pageItems);
-      });
+      const json = await res.json();
+      const data = json.data || [];
+      allQuestions.push(...data);
+
+      totalPages = json.meta?.total_pages || 1;
+      page++;
     }
 
     return allQuestions
@@ -174,7 +149,8 @@ module.exports = {
     '/login',
     '/profile',
   ],
-  generateIndexSitemap: false,
+  generateIndexSitemap: true,
+  sitemapSize: 10000,
   additionalPaths: async (config) => {
     const additional = [];
 
