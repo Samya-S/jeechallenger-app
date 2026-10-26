@@ -441,6 +441,11 @@ export const useCBTStore = create((setState, getState) => ({
     if (!sessionId || isSyncing || isTerminated || pendingSyncQueue.size === 0) {
       return;
     }
+    if (typeof window === 'undefined') {
+      // In SSR or Node CLI environments without browser window context, skip relative network fetch
+      setState({ pendingSyncQueue: new Set() });
+      return;
+    }
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       return;
     }
@@ -596,4 +601,20 @@ export const useCBTStore = create((setState, getState) => ({
   // ── 7. Kiosk & Fullscreen Controls ─────────────────────────────────────────
   setFullscreen: (val) => setState({ isFullscreen: val }),
   setKioskLocked: (val) => setState({ isKioskLocked: val }),
+
+  // ── 8. Display & Quick Navigation Helpers ───────────────────────────────────
+  fontScale: 'normal', // 'small' | 'normal' | 'large'
+  setFontScale: (scale) => setState({ fontScale: scale }),
+  goToPreviousQuestion: () => {
+    const { activeQuestionIndex } = getState();
+    if (activeQuestionIndex > 0) {
+      getState().jumpToQuestion(activeQuestionIndex - 1);
+    }
+  },
+  goToNextQuestion: () => {
+    const { activeQuestionIndex, questions } = getState();
+    if (activeQuestionIndex < questions.length - 1) {
+      getState().jumpToQuestion(activeQuestionIndex + 1);
+    }
+  },
 }));

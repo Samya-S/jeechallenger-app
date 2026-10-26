@@ -18,7 +18,8 @@ import {
   X,
   Share2,
   Sparkles,
-  Bug
+  Bug,
+  Play
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -451,6 +452,35 @@ function PaperDetailContent({ paperData }) {
               </span>
             </div>
           </div>
+        
+          {/* Authentic CBT Mock Test Action Banner */}
+          <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-blue-900 via-[#1b365d] to-indigo-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg border border-blue-700/50">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/40 text-[11px] font-bold tracking-wider uppercase text-blue-200">
+                  Authentic CBT Mode
+                </span>
+                <span className="text-xs text-blue-300">
+                  Official NTA / TCS iON Experience
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-white">
+                Take Full Mock Test in Real Exam Environment
+              </h3>
+              <p className="text-xs text-blue-200/90 max-w-xl">
+                Experience the 1:1 real testing room interface with real-time countdown, official question palette, mouse keypad, and immediate scorecard breakdown.
+              </p>
+            </div>
+
+            <Link
+              href={`/mock-test/${paperData.slug || paperData.paper_id}`}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold text-sm shadow-md shadow-orange-500/30 transition-all shrink-0 cursor-pointer active:scale-95 group"
+            >
+              <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
+              <span>Start Mock Test</span>
+            </Link>
+          </div>
+
         </div>
 
         {/* Responsive Two-Tier Subject & Section Switcher */}
