@@ -132,7 +132,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
     if (isPartialChoiceSection) {
       const attemptedQNums = [];
       for (const q of secQuestions) {
-        const resp = responses[q.question_number];
+        const resp = responses[String(q._id)] || responses[q.question_number];
         if (resp && isAnswerAttempted(resp)) {
           attemptedQNums.push(q.question_number);
         }
@@ -150,7 +150,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
     maxMarks += maxAllowed;
 
     for (const q of secQuestions) {
-      const resp = responses[q.question_number];
+      const resp = responses[String(q._id)] || responses[q.question_number];
 
       const attempt = {
         question_id: q._id,
@@ -249,18 +249,35 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
     throw new Error(`Paper not found: ${paperId}`);
   }
 
-  // 2. Extract Question IDs
+  // 2. Extract Question IDs with ObjectId conversion support
   const allQIds = [];
   for (const sec of paper.sections || []) {
     if (Array.isArray(sec.question_ids)) {
-      allQIds.push(...sec.question_ids);
+      for (const id of sec.question_ids) {
+        if (id) {
+          try {
+            allQIds.push(typeof id === 'string' ? new ObjectId(id) : id);
+          } catch {
+            allQIds.push(id);
+          }
+        }
+      }
     }
   }
 
   // 3. Fetch Questions from production collection
-  const questions = await db.collection('production').find({
+  let questions = await db.collection('production').find({
     _id: { $in: allQIds },
   }).toArray();
+
+  if (questions.length === 0 && paper.paper_id) {
+    questions = await db.collection('production').find({
+      $or: [
+        { paper_id: paper.paper_id },
+        { original_paper_id: paper.paper_id },
+      ],
+    }).toArray();
+  }
 
   // 4. Grade Test
   const submissionData = scoreTestSubmission(paper, questions, responses, {
