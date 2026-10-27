@@ -23,6 +23,23 @@ export default function CBTScorecard({ submission }) {
     return `${mins}m ${secs}s`;
   }, [timeTakenSeconds]);
 
+  // Format exam start timestamp in Indian Standard Time (IST)
+  const formattedStartTime = useMemo(() => {
+    const rawStart = submission?.started_at;
+    if (!rawStart) return null;
+    const d = new Date(rawStart);
+    if (isNaN(d.getTime())) return null;
+    return new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(d);
+  }, [submission?.started_at]);
+
   // Projected Percentile estimate based on score proportion
   const predictedPercentile = useMemo(() => {
     const pct = (totalScore / maxMarks) * 100;
@@ -45,10 +62,10 @@ export default function CBTScorecard({ submission }) {
       <div className="rounded-3xl p-6 sm:p-8 bg-white dark:bg-gradient-to-br dark:from-[#162942] dark:via-[#1b365d] dark:to-[#0f1d30] border border-slate-200 dark:border-blue-900/50 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] transition-colors">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           {/* Main Score Block */}
-          <div className="space-y-2">
+          <div className="space-y-2 min-w-0 flex-1 max-w-xl text-left">
             <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-300 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-              <span>Official Scorecard • {submission.paper_title || submission.paper_id}</span>
+              <Award className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
+              <span className="truncate">Official Scorecard • {submission.paper_title || submission.paper_id}</span>
             </span>
             <div className="flex items-baseline gap-3">
               <span className="text-5xl sm:text-6xl font-black tracking-tight text-gray-900 dark:text-white" data-testid="total-score-val">
@@ -61,17 +78,23 @@ export default function CBTScorecard({ submission }) {
                 {((totalScore / (maxMarks || 1)) * 100).toFixed(1)}% Marks
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-blue-200/80">
-              Exam evaluated via official JEE scoring matrix. Status: <strong className="text-emerald-600 dark:text-emerald-400">Evaluated</strong>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-blue-200/80 leading-relaxed">
+              {formattedStartTime ? (
+                <>
+                  Attempted on: <strong className="font-semibold text-gray-700 dark:text-blue-100">{formattedStartTime} IST</strong> • Review detailed subject breakdown and question solutions below.
+                </>
+              ) : (
+                'Review detailed subject breakdown, pacing insights, and question solutions below.'
+              )}
             </p>
           </div>
 
-          {/* Quick Metrics Pills */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {/* Quick Metrics Pills - shrink-0 to guarantee 0 wrapping on desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
             {/* Projected Percentile */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-amber-50/60 dark:bg-white/5 border border-amber-200/60 dark:border-white/10 flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-blue-300 font-semibold">
-                <TrendingUp className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+            <div className="p-3 sm:p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/40 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-200/90 font-semibold">
+                <TrendingUp className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                 <span>Percentile Est.</span>
               </div>
               <span className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-300 mt-1">
@@ -80,9 +103,9 @@ export default function CBTScorecard({ submission }) {
             </div>
 
             {/* Overall Accuracy */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-emerald-50/60 dark:bg-white/5 border border-emerald-200/60 dark:border-white/10 flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-blue-300 font-semibold">
-                <Target className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+            <div className="p-3 sm:p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/40 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-emerald-800 dark:text-emerald-200/90 font-semibold">
+                <Target className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Accuracy</span>
               </div>
               <span className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-300 mt-1" data-testid="accuracy-val">
@@ -91,9 +114,9 @@ export default function CBTScorecard({ submission }) {
             </div>
 
             {/* Time Used */}
-            <div className="col-span-2 sm:col-span-1 p-3 sm:p-4 rounded-2xl bg-blue-50/60 dark:bg-white/5 border border-blue-200/60 dark:border-white/10 flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-blue-700 dark:text-blue-300 font-semibold">
-                <Clock className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+            <div className="col-span-2 sm:col-span-1 p-3 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/70 dark:border-blue-800/40 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-200/90 font-semibold">
+                <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                 <span>Time Used</span>
               </div>
               <span className="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-100 mt-1">

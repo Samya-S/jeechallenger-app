@@ -138,22 +138,34 @@ export default function CBTHubComponent({
   // Performance analytics summary across attempts
   const analytics = useMemo(() => {
     if (!submissions || submissions.length === 0) {
-      return { totalTests: 0, avgAccuracy: 0, highestScore: 0 };
+      return { totalTests: 0, avgAccuracy: 0, bestScore: 0, bestMaxMarks: 300, bestPct: '0.0' };
     }
     const totalTests = submissions.length;
     let sumAccuracy = 0;
-    let highest = -999;
+    let highestPct = -999;
+    let bestScore = 0;
+    let bestMaxMarks = 300;
+
     submissions.forEach((s) => {
       const acc = s.summary?.accuracy_percentage ?? 0;
       const score = s.summary?.total_score ?? 0;
+      const max = s.summary?.max_marks || (s.exam_type === 'JEE_ADVANCED' ? 180 : 300);
+      const pct = (score / max) * 100;
       sumAccuracy += acc;
-      if (score > highest) highest = score;
+
+      if (pct > highestPct) {
+        highestPct = pct;
+        bestScore = score;
+        bestMaxMarks = max;
+      }
     });
 
     return {
       totalTests,
       avgAccuracy: (sumAccuracy / totalTests).toFixed(1),
-      highestScore: highest === -999 ? 0 : highest,
+      bestScore: highestPct === -999 ? 0 : bestScore,
+      bestMaxMarks: highestPct === -999 ? 300 : bestMaxMarks,
+      bestPct: highestPct === -999 ? '0.0' : Math.max(0, highestPct).toFixed(1),
     };
   }, [submissions]);
 
@@ -257,10 +269,15 @@ export default function CBTHubComponent({
                 </span>
               </div>
               <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
-                <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Highest Score</span>
-                <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1 block">
-                  {analytics.highestScore}
-                </span>
+                <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Best Score</span>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
+                    {analytics.bestScore}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">
+                    / {analytics.bestMaxMarks}
+                  </span>
+                </div>
               </div>
               <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
                 <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 block">Mistake Vault</span>

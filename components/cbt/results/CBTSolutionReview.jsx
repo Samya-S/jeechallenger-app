@@ -95,14 +95,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         return currentStatus;
       });
 
-      // 3. Auto-expand the solution for this question
-      setExpandedSolutions((prev) => {
-        const next = new Set(prev);
-        next.add(targetAtt.question_number);
-        return next;
-      });
-
-      // 4. Smooth scroll and highlight pulse
+      // 3. Smooth scroll directly to question card and highlight pulse
       setTimeout(() => {
         const el = document.getElementById(`review-q-${targetAtt.question_number}`);
         if (el) {

@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import { AlertTriangle, Zap, Clock, Hourglass, Target, ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { AlertTriangle, Zap, Clock, Hourglass, Target } from 'lucide-react';
 
 export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
   const attempts = submission?.question_attempts || [];
-  const [isAllSpeedWinsExpanded, setIsAllSpeedWinsExpanded] = useState(false);
 
   // 1. Detect Time Traps (spent >= 240 seconds and wrong or unattempted)
   const timeTraps = useMemo(() => {
@@ -60,6 +59,15 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
     return `${s}s`;
   };
 
+  const getShortSubject = (sub) => {
+    if (!sub) return '';
+    const s = sub.toLowerCase();
+    if (s.startsWith('math')) return 'Math';
+    if (s.startsWith('phy')) return 'Phy';
+    if (s.startsWith('chem')) return 'Chem';
+    return sub;
+  };
+
   const handleJumpToQuestion = (qNum) => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('cbt-jump-to-question', { detail: { qNum } }));
@@ -69,8 +77,6 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
     }
   };
 
-  const visibleSpeedWins = isAllSpeedWinsExpanded ? fastAndAccurate : fastAndAccurate.slice(0, 8);
-
   return (
     <div className="cbt-pacing-heatmap space-y-4 text-left" data-testid="cbt-pacing-heatmap">
       <div className="flex items-center justify-between">
@@ -79,36 +85,38 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
           <span>Pacing &amp; Time Traps Analysis</span>
         </h3>
         <span className="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">
-          Click any question pill below to inspect its detailed step-by-step solution
+          Click any question pill below to jump directly to the question
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
         {/* Time Traps Analysis Card */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col justify-between space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                <AlertTriangle className="w-5 h-5" />
+        <div className="p-6 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col justify-start space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
+                    Time Traps
+                  </span>
+                  <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5 block">
+                    {timeTraps.length}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
-                  Time Traps
-                </span>
-                <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5 block">
-                  {timeTraps.length}
-                </span>
-              </div>
+
+              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                &ge; 4 mins lost
+              </span>
             </div>
 
-            <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
-              &ge; 4 mins lost
-            </span>
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed min-h-[32px]">
+              Questions where you invested &ge; 4 minutes but resulted in 0 or negative marks. Avoiding prolonged deadlocks preserves vital scoring time.
+            </p>
           </div>
-
-          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            Questions where you invested &ge; 4 minutes but resulted in 0 or negative marks. Avoiding prolonged deadlocks preserves vital scoring time.
-          </p>
 
           {timeTraps.length === 0 ? (
             <div className="p-3 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/40 text-xs font-semibold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
@@ -116,7 +124,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
               <span>Zero severe time traps detected. Strong examination discipline!</span>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-2 pt-1 max-h-[126px] overflow-y-auto custom-scrollbar pr-1">
               {timeTraps.map((att) => {
                 const isPenalty = (att.marks_awarded || 0) < 0;
                 const outcomeLabel = isPenalty ? '-1' : '0';
@@ -126,19 +134,19 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
                     type="button"
                     onClick={() => handleJumpToQuestion(att.question_number)}
                     className="px-3 py-1.5 rounded-xl bg-amber-50/80 dark:bg-gray-800/90 border border-amber-200 dark:border-amber-700/60 text-xs font-bold text-amber-950 dark:text-amber-100 shadow-2xs hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-100/70 transition-all cursor-pointer flex items-center gap-2 group"
-                    title={`Click to inspect Solution for Q${att.question_number} (${att.subject})`}
+                    title={`Click to jump to Q${att.question_number} (${att.subject})`}
                   >
                     <span className="group-hover:text-amber-700 dark:group-hover:text-amber-300">
-                      Q{att.question_number} <span className="font-normal text-amber-800/80 dark:text-amber-300/80">({att.subject})</span>
+                      Q{att.question_number} <span className="font-normal text-amber-800/80 dark:text-amber-300/80">({getShortSubject(att.subject)})</span>
                     </span>
-                    <span className="text-[10px] text-amber-700 dark:text-amber-300 font-mono bg-amber-100/90 dark:bg-amber-950/80 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] text-amber-800 dark:text-amber-300 font-mono bg-amber-100/90 dark:bg-amber-950/80 border border-amber-200/80 dark:border-amber-800/60 px-1.5 py-0.5 rounded">
                       {formatSeconds(att.time_spent_seconds)}
                     </span>
                     <span
-                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                      className={`min-w-[26px] text-center text-[10px] font-bold px-1.5 py-0.5 rounded ${
                         isPenalty
-                          ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700'
+                          : 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
                       }`}
                     >
                       {outcomeLabel}
@@ -151,30 +159,32 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
         </div>
 
         {/* Speed Wins Analysis Card */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col justify-between space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                <Zap className="w-5 h-5" />
+        <div className="p-6 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col justify-start space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
+                    Speed Wins
+                  </span>
+                  <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5 block">
+                    {fastAndAccurate.length}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
-                  Speed Wins
-                </span>
-                <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5 block">
-                  {fastAndAccurate.length}
-                </span>
-              </div>
+
+              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                &le; 90s correct
+              </span>
             </div>
 
-            <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
-              &le; 90s correct
-            </span>
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed min-h-[32px]">
+              Questions answered correctly in &le; 90 seconds. Foundational mastery areas yielding maximum marks with minimal time overhead.
+            </p>
           </div>
-
-          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            Questions answered correctly in &le; 90 seconds. Foundational mastery areas yielding maximum marks with minimal time overhead.
-          </p>
 
           {fastAndAccurate.length === 0 ? (
             <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gray-800/60 border border-slate-200/80 dark:border-gray-700 text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-2">
@@ -182,36 +192,26 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
               <span>Focus on increasing speed on high-confidence questions.</span>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {visibleSpeedWins.map((att) => (
+            <div className="flex flex-wrap gap-2 pt-1 max-h-[126px] overflow-y-auto custom-scrollbar pr-1">
+              {fastAndAccurate.map((att) => (
                 <button
                   key={att.question_number}
                   type="button"
                   onClick={() => handleJumpToQuestion(att.question_number)}
                   className="px-3 py-1.5 rounded-xl bg-emerald-50/80 dark:bg-gray-800/90 border border-emerald-200 dark:border-emerald-700/60 text-xs font-bold text-emerald-950 dark:text-emerald-100 shadow-2xs hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-100/70 transition-all cursor-pointer flex items-center gap-2 group"
-                  title={`Click to inspect Solution for Q${att.question_number} (${att.subject})`}
+                  title={`Click to jump to Q${att.question_number} (${att.subject})`}
                 >
                   <span className="group-hover:text-emerald-700 dark:group-hover:text-emerald-300">
-                    Q{att.question_number} <span className="font-normal text-emerald-800/80 dark:text-emerald-300/80">({att.subject})</span>
+                    Q{att.question_number} <span className="font-normal text-emerald-800/80 dark:text-emerald-300/80">({getShortSubject(att.subject)})</span>
                   </span>
                   <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-mono bg-emerald-100/90 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded">
                     {formatSeconds(att.time_spent_seconds)}
                   </span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                  <span className="min-w-[26px] text-center text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
                     +4
                   </span>
                 </button>
               ))}
-
-              {fastAndAccurate.length > 8 && (
-                <button
-                  type="button"
-                  onClick={() => setIsAllSpeedWinsExpanded(!isAllSpeedWinsExpanded)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 transition-all cursor-pointer flex items-center gap-1"
-                >
-                  <span>{isAllSpeedWinsExpanded ? 'Show Less ▴' : `+${fastAndAccurate.length - 8} more (Show All ▾)`}</span>
-                </button>
-              )}
             </div>
           )}
         </div>
