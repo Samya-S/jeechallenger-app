@@ -253,8 +253,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                 onClick={() => setActiveSubject('ALL')}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeSubject === 'ALL'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md border border-gray-900 dark:border-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-transparent'
                 }`}
               >
                 All Subjects ({attempts.length})
@@ -262,10 +262,15 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
               {subjects.map((sub) => {
                 const count = attempts.filter((a) => a.subject === sub).length;
                 const isSel = activeSubject === sub;
-                let activeColorClass = 'bg-blue-600 text-white shadow-md';
-                if (sub === 'Physics') activeColorClass = 'bg-blue-600 text-white shadow-md';
-                if (sub === 'Chemistry') activeColorClass = 'bg-emerald-600 text-white shadow-md';
-                if (sub === 'Mathematics') activeColorClass = 'bg-purple-600 text-white shadow-md';
+                let activeColorClass = 'bg-blue-600 text-white shadow-md border border-blue-600';
+                let unselColorClass = 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/60';
+                if (sub === 'Chemistry') {
+                  activeColorClass = 'bg-emerald-600 text-white shadow-md border border-emerald-600';
+                  unselColorClass = 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60';
+                } else if (sub === 'Mathematics') {
+                  activeColorClass = 'bg-purple-600 text-white shadow-md border border-purple-600';
+                  unselColorClass = 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60';
+                }
 
                 return (
                   <button
@@ -273,9 +278,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     type="button"
                     onClick={() => setActiveSubject(sub)}
                     className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                      isSel
-                        ? activeColorClass
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      isSel ? activeColorClass : unselColorClass
                     }`}
                   >
                     {sub} ({count})

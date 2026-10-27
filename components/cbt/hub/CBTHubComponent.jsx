@@ -252,10 +252,10 @@ export default function CBTHubComponent({
                   {analytics.avgAccuracy}%
                 </span>
               </div>
-              <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
-                <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Best Score</span>
+              <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
+                <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 block">Best Score</span>
                 <div className="flex items-baseline gap-1.5 mt-1">
-                  <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
+                  <span className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">
                     {analytics.bestScore}
                   </span>
                   <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">
@@ -263,9 +263,12 @@ export default function CBTHubComponent({
                   </span>
                 </div>
               </div>
-              <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
-                <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 block">Mistake Vault</span>
-                <span className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400 mt-1 block">
+              <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
+                <div className="flex items-center gap-1.5">
+                  <Bookmark className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Mistake Vault</span>
+                </div>
+                <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1 block">
                   {vaultItems.length} Qs
                 </span>
               </div>
@@ -660,23 +663,38 @@ export default function CBTHubComponent({
                       onClick={() => setVaultSubjectFilter('ALL')}
                       className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         vaultSubjectFilter === 'ALL'
-                          ? 'bg-amber-500 text-white shadow-sm'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm border border-gray-900 dark:border-white'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-transparent'
                       }`}
                     >
                       All ({vaultItems.length})
                     </button>
-                    {['Physics', 'Chemistry', 'Mathematics'].map((sub) => {
+                    {[
+                      {
+                        sub: 'Physics',
+                        activeClass: 'bg-blue-600 text-white shadow-sm border border-blue-600',
+                        unselClass: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/60',
+                      },
+                      {
+                        sub: 'Chemistry',
+                        activeClass: 'bg-emerald-600 text-white shadow-sm border border-emerald-600',
+                        unselClass: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60',
+                      },
+                      {
+                        sub: 'Mathematics',
+                        activeClass: 'bg-purple-600 text-white shadow-sm border border-purple-600',
+                        unselClass: 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60',
+                      },
+                    ].map(({ sub, activeClass, unselClass }) => {
                       const count = vaultItems.filter((i) => i.subject === sub).length;
+                      const isSel = vaultSubjectFilter === sub;
                       return (
                         <button
                           key={sub}
                           type="button"
                           onClick={() => setVaultSubjectFilter(sub)}
                           className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            vaultSubjectFilter === sub
-                              ? 'bg-amber-500 text-white shadow-sm'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                            isSel ? activeClass : unselClass
                           }`}
                         >
                           {sub} ({count})
