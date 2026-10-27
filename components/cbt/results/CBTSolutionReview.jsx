@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import { normalizeOptions } from '@/utils/cbt-helpers';
@@ -43,15 +43,24 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   const [activeStatus, setActiveStatus] = useState('ALL');
   // Solutions collapsible state: Set of expanded question numbers. By default empty (all closed).
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
-  const [savedVaultQNums, setSavedVaultQNums] = useState(() => {
-    if (typeof window === 'undefined') return new Set();
-    try {
-      const stored = localStorage.getItem('cbt_mistake_vault');
-      return stored ? new Set(JSON.parse(stored)) : new Set();
-    } catch {
-      return new Set();
-    }
-  });
+  // Persistent Mistake Vault state loaded from MongoDB
+  const [savedVaultQNums, setSavedVaultQNums] = useState(() => new Set());
+
+  // Load saved Mistake Vault questions from MongoDB on mount
+  useEffect(() => {
+    if (!submission?.paper_id) return;
+    fetch(`/api/cbt/mistake-vault?paper_id=${encodeURIComponent(submission.paper_id)}`)
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.savedQuestionNumbers) {
+          setSavedVaultQNums(new Set(data.savedQuestionNumbers));
+        }
+      })
+      .catch((err) => console.error('Failed to load mistake vault from MongoDB:', err));
+  }, [submission?.paper_id]);
 
   // Extract unique subjects
   const subjects = useMemo(() => {
@@ -101,20 +110,61 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     }
   };
 
-  // Toggle Mistake Vault Bookmark
-  const handleToggleVault = (qNum) => {
+  // Toggle Mistake Vault Bookmark with persistent MongoDB storage
+  const handleToggleVault = async (att, qDoc) => {
+    const qNum = att.question_number;
+    const isCurrentlySaved = savedVaultQNums.has(qNum);
+
+    // Optimistic UI update
     setSavedVaultQNums((prev) => {
       const next = new Set(prev);
-      if (next.has(qNum)) {
+      if (isCurrentlySaved) {
         next.delete(qNum);
       } else {
         next.add(qNum);
       }
-      try {
-        localStorage.setItem('cbt_mistake_vault', JSON.stringify(Array.from(next)));
-      } catch {}
       return next;
     });
+
+    try {
+      const res = await fetch('/api/cbt/mistake-vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paper_id: submission.paper_id,
+          paper_slug: submission.paper_slug || submission.paper_id,
+          question_number: qNum,
+          question_id: qDoc?._id || att.question_id,
+          subject: att.subject || qDoc?.subject,
+          chapter: qDoc?.chapter || att.section_name,
+        }),
+      });
+
+      if (!res.ok) {
+        // Rollback on failure
+        setSavedVaultQNums((prev) => {
+          const next = new Set(prev);
+          if (isCurrentlySaved) {
+            next.add(qNum);
+          } else {
+            next.delete(qNum);
+          }
+          return next;
+        });
+      }
+    } catch (err) {
+      console.error('Failed to toggle mistake vault in MongoDB:', err);
+      // Rollback on failure
+      setSavedVaultQNums((prev) => {
+        const next = new Set(prev);
+        if (isCurrentlySaved) {
+          next.add(qNum);
+        } else {
+          next.delete(qNum);
+        }
+        return next;
+      });
+    }
   };
 
   const formatSeconds = (sec) => {
@@ -354,10 +404,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                       <span>{marksPrefix} Marks</span>
                     </span>
 
-                    {/* Bookmark to Mistake Vault */}
+                    {/* Bookmark to Mistake Vault (Persisted to MongoDB) */}
                     <button
                       type="button"
-                      onClick={() => handleToggleVault(att.question_number)}
+                      onClick={() => handleToggleVault(att, qDoc)}
                       className={`p-1.5 rounded-lg border text-xs transition-all cursor-pointer ${
                         isSaved
                           ? 'bg-amber-500 border-amber-600 text-white'

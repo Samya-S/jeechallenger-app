@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaUser, FaCog, FaShieldAlt, FaPalette, FaTrash, FaArrowLeft } from "react-icons/fa";
-import { Award, History, Target, ArrowRight, Clock } from "lucide-react";
 import { useTheme } from "@teispace/next-themes";
 
 const profileImageLoader = ({ src }) => src;
@@ -15,8 +14,6 @@ const ProfileContent = () => {
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [cbtAttempts, setCbtAttempts] = useState([]);
-  const [loadingAttempts, setLoadingAttempts] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme, setTheme } = useTheme();
@@ -34,13 +31,6 @@ const ProfileContent = () => {
 
     if (status === "authenticated") {
       setUser(session.user);
-      fetch('/api/cbt/attempts')
-        .then((res) => res.json())
-        .then((d) => {
-          setCbtAttempts(d.submissions || []);
-          setLoadingAttempts(false);
-        })
-        .catch(() => setLoadingAttempts(false));
       setLoading(false);
     }
   }, [status, session, router, returnUrl]);
@@ -110,110 +100,6 @@ const ProfileContent = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Mock Test Performance & History */}
-          <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 sm:p-8 mb-6 text-left">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2.5">
-                <Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <span>Mock Test History & Analytics</span>
-              </h2>
-              <Link
-                href="/previous-year-questions?tab=papers"
-                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
-              >
-                <span>Take New Mock Test</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            {loadingAttempts ? (
-              <div className="py-8 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              </div>
-            ) : cbtAttempts.length === 0 ? (
-              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 text-center space-y-2">
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  No mock test attempts recorded yet.
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Practice with real timed CBT mock tests for JEE Main and Advanced to analyze your pacing and accuracy.
-                </p>
-                <div className="pt-2">
-                  <Link
-                    href="/previous-year-questions?tab=papers"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-all"
-                  >
-                    <span>Browse Question Papers</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {cbtAttempts.slice(0, 10).map((att) => {
-                  const score = att.summary?.total_score ?? 0;
-                  const max = att.summary?.max_marks ?? 300;
-                  const accuracy = att.summary?.accuracy_percentage ?? 0;
-                  const dateStr = att.submitted_at
-                    ? new Date(att.submitted_at).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
-                    : 'Recent';
-                  const mins = Math.round((att.time_taken_seconds || 0) / 60);
-
-                  return (
-                    <div
-                      key={String(att._id)}
-                      className="p-4 rounded-2xl bg-slate-50/80 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-blue-500/50 transition-all"
-                    >
-                      <div className="min-w-0">
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                          {att.paper_title || att.paper_id}
-                        </h4>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          <span>{dateStr}</span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-blue-500" />
-                            <span>{mins} mins</span>
-                          </span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-                            <Target className="w-3 h-3" />
-                            <span>{accuracy.toFixed(1)}% Acc</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-200 dark:border-gray-800">
-                        <div className="text-right">
-                          <div className="text-base font-black text-gray-900 dark:text-white">
-                            {score} <span className="text-xs text-gray-400 font-semibold">/ {max}</span>
-                          </div>
-                          <div className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
-                            Score
-                          </div>
-                        </div>
-
-                        <Link
-                          href={`/mock-test/${att.paper_slug || att.paper_id}/results?submission=${att._id}`}
-                          className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all inline-flex items-center gap-1"
-                        >
-                          <span>Review</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </div>
 
           {/* Account Settings */}

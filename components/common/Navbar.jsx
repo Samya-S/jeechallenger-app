@@ -13,7 +13,9 @@ import {
   User, 
   LogOut, 
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Target,
+  Bookmark
 } from "lucide-react";
 import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -348,6 +350,22 @@ export default function NavBar() {
                         </p>
                       </div>
                       <Link
+                        href="/mock-test?tab=attempts"
+                        onClick={closeDesktopDropdownImmediately}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mt-1"
+                      >
+                        <Target className="w-4 h-4 text-blue-500" />
+                        <span>My Mock Tests</span>
+                      </Link>
+                      <Link
+                        href="/mock-test?tab=mistake-vault"
+                        onClick={closeDesktopDropdownImmediately}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <Bookmark className="w-4 h-4 text-amber-500" />
+                        <span>Mistake Vault</span>
+                      </Link>
+                      <Link
                         href={`/profile${pathname === "/" ? "" : `?returnUrl=${encodedReturnUrl}`}`}
                         onClick={closeDesktopDropdownImmediately}
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mt-1"
@@ -563,6 +581,22 @@ export default function NavBar() {
                       </div>
                     </div>
 
+                    <Link
+                      href="/mock-test?tab=attempts"
+                      onClick={() => setShowMobileNav(false)}
+                      className="group flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <Target className="w-5 h-5 text-blue-500" />
+                      <span>My Mock Tests</span>
+                    </Link>
+                    <Link
+                      href="/mock-test?tab=mistake-vault"
+                      onClick={() => setShowMobileNav(false)}
+                      className="group flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <Bookmark className="w-5 h-5 text-amber-500" />
+                      <span>Mistake Vault</span>
+                    </Link>
                     <Link
                       href={`/profile${pathname === "/" ? "" : `?returnUrl=${encodedReturnUrl}`}`}
                       onClick={() => setShowMobileNav(false)}
