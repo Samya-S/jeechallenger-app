@@ -86,13 +86,27 @@ export async function POST(req) {
     // 4. Mark session completed and delete temporary in-flight Redis cache
     await redis.del(session_id);
 
+    // Resolve clean paper slug for human-readable results URL
+    let paperSlug = paperId;
+    try {
+      const client = await clientPromise;
+      const db = client.db('jee_challenger_pyqs');
+      const paperDoc = await db.collection('papers').findOne(
+        { $or: [{ paper_id: paperId }, { slug: paperId }] },
+        { projection: { slug: 1 } }
+      );
+      if (paperDoc?.slug) {
+        paperSlug = paperDoc.slug;
+      }
+    } catch {}
+
     return Response.json({
       success: true,
       submission_id: String(submission._id),
       total_score: submission.summary.total_score,
       max_marks: submission.summary.max_marks,
       accuracy_percentage: submission.summary.accuracy_percentage,
-      redirect_url: `/mock-test/results/${String(submission._id)}`,
+      redirect_url: `/mock-test/${paperSlug}/results?submission=${String(submission._id)}`,
     });
   } catch (error) {
     console.error('Failed to submit CBT exam:', error);

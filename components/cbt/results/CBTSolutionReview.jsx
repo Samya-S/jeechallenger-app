@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import { normalizeOptions } from '@/utils/cbt-helpers';
 import { 
@@ -10,11 +11,18 @@ import {
   Clock, 
   Bookmark, 
   BookmarkCheck, 
-  ChevronDown, 
-  ChevronUp, 
   Sparkles,
-  HelpCircle
+  Check,
+  X,
+  ArrowUpRight,
+  Eye
 } from 'lucide-react';
+
+const subjectBadgeColors = {
+  Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
+  Chemistry: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60",
+  Mathematics: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60",
+};
 
 export default function CBTSolutionReview({ submission, questionsData = [] }) {
   const attempts = submission?.question_attempts || [];
@@ -53,11 +61,9 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   // Filter attempts
   const filteredAttempts = useMemo(() => {
     return attempts.filter((att) => {
-      // Subject filter
       if (activeSubject !== 'ALL' && att.subject !== activeSubject) {
         return false;
       }
-      // Status filter
       if (activeStatus === 'CORRECT' && !att.is_correct) return false;
       if (activeStatus === 'INCORRECT' && (!att.is_evaluated || att.is_correct)) return false;
       if (activeStatus === 'UNATTEMPTED' && att.is_evaluated) return false;
@@ -93,31 +99,37 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   return (
     <div className="cbt-solution-review space-y-6" data-testid="cbt-solution-review">
       {/* Header and Filter Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Subject Filter Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           <button
             type="button"
             onClick={() => setActiveSubject('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeSubject === 'ALL'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             All Subjects ({attempts.length})
           </button>
           {subjects.map((sub) => {
             const count = attempts.filter((a) => a.subject === sub).length;
+            const isSel = activeSubject === sub;
+            let activeColorClass = 'bg-blue-600 text-white shadow-md';
+            if (sub === 'Physics') activeColorClass = 'bg-blue-600 text-white shadow-md';
+            if (sub === 'Chemistry') activeColorClass = 'bg-emerald-600 text-white shadow-md';
+            if (sub === 'Mathematics') activeColorClass = 'bg-purple-600 text-white shadow-md';
+
             return (
               <button
                 key={sub}
                 type="button"
                 onClick={() => setActiveSubject(sub)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeSubject === sub
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isSel
+                    ? activeColorClass
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 {sub} ({count})
@@ -131,10 +143,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           <button
             type="button"
             onClick={() => setActiveStatus('ALL')}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeStatus === 'ALL'
-                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
             All
@@ -142,9 +154,9 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           <button
             type="button"
             onClick={() => setActiveStatus('CORRECT')}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               activeStatus === 'CORRECT'
-                ? 'bg-emerald-600 text-white shadow-xs'
+                ? 'bg-emerald-600 text-white shadow-sm'
                 : 'text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
             }`}
           >
@@ -154,10 +166,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           <button
             type="button"
             onClick={() => setActiveStatus('INCORRECT')}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               activeStatus === 'INCORRECT'
-                ? 'bg-red-600 text-white shadow-xs'
-                : 'text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40'
+                ? 'bg-rose-600 text-white shadow-sm'
+                : 'text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
             }`}
           >
             <XCircle className="w-3.5 h-3.5" />
@@ -166,10 +178,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           <button
             type="button"
             onClick={() => setActiveStatus('UNATTEMPTED')}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               activeStatus === 'UNATTEMPTED'
-                ? 'bg-gray-600 text-white shadow-xs'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-gray-700 text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
             <MinusCircle className="w-3.5 h-3.5" />
@@ -178,21 +190,21 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           <button
             type="button"
             onClick={() => setActiveStatus('TIME_TRAPS')}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeStatus === 'TIME_TRAPS'
-                ? 'bg-amber-600 text-white shadow-xs'
+                ? 'bg-amber-600 text-white shadow-sm'
                 : 'text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40'
             }`}
           >
-            Time Traps
+            Time Traps (&gt;4m)
           </button>
         </div>
       </div>
 
       {/* Filtered Question Review Cards */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {filteredAttempts.length === 0 ? (
-          <div className="p-12 text-center bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 text-gray-500">
+          <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 text-gray-500 shadow-sm">
             No questions match the selected filter criteria.
           </div>
         ) : (
@@ -204,20 +216,13 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
             const isAttempted = att.is_evaluated;
             const marksAwarded = att.marks_awarded ?? 0;
             const marksPrefix = marksAwarded > 0 ? `+${marksAwarded}` : `${marksAwarded}`;
-
-            // Determine candidate answer display
-            let candidateAns = 'None (Unattempted)';
-            if (att.selected_option) {
-              candidateAns = `Option (${att.selected_option})`;
-            } else if (att.numeric_value !== null && att.numeric_value !== undefined) {
-              candidateAns = String(att.numeric_value);
-            }
+            const isNumeric = (att.question_type || qDoc?.input_format || '').toUpperCase() === 'NUMERIC';
 
             // Determine official answer display
             let officialAns = 'Refer Solution';
             if (qDoc) {
               if (qDoc.source_of_answer === 'MARKS_TO_ALL') {
-                officialAns = '✨ Marks Awarded to All (Bonus / Dropped)';
+                officialAns = 'Marks Awarded to All (Bonus / Dropped)';
               } else if (qDoc.correct_answer && qDoc.correct_answer.length > 0) {
                 officialAns = `Option (${qDoc.correct_answer.join(', ')})`;
               } else if (qDoc.numeric_answer) {
@@ -229,57 +234,53 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
               }
             }
 
+            const normOptions = normalizeOptions(qDoc?.options);
+
             return (
               <div
                 key={att.question_number}
-                className={`p-5 sm:p-6 rounded-2xl bg-white dark:bg-gray-800 border transition-all shadow-sm space-y-4 ${
-                  isCorrect
-                    ? 'border-emerald-200 dark:border-emerald-900/40'
-                    : isAttempted
-                    ? 'border-red-200 dark:border-red-900/40'
-                    : 'border-gray-200 dark:border-gray-700'
-                }`}
+                className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left"
                 data-testid={`review-q-${att.question_number}`}
               >
-                {/* Question Top Metadata Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-gray-700/60">
-                  <div className="flex items-center gap-2.5">
-                    <span className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">
-                      Question {att.question_number}
+                {/* Question Header matching PaperDetailComponent */}
+                <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
+                      Q{att.question_number}
                     </span>
-                    <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
+                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectBadgeColors[att.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
                       {att.subject}
                     </span>
-                    {att.section_name && (
-                      <span className="text-xs text-gray-500 hidden sm:inline">
-                        • {att.section_name}
+                    {(qDoc?.chapter || att.section_name) && (
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800">
+                        {qDoc?.chapter || att.section_name}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     {/* Time Spent */}
-                    <div className="flex items-center gap-1 text-xs text-gray-500 font-mono">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-medium rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shadow-2xs">
                       <Clock className="w-3.5 h-3.5 text-blue-500" />
                       <span>{formatSeconds(att.time_spent_seconds || 0)}</span>
                     </div>
 
                     {/* Result Marks Badge */}
                     <span
-                      className={`text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 ${
+                      className={`text-xs font-bold px-3 py-1 rounded-lg border flex items-center gap-1.5 ${
                         isCorrect
-                          ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
                           : isAttempted
-                          ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                          ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700'
                       }`}
                     >
                       {isCorrect ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       ) : isAttempted ? (
-                        <XCircle className="w-3.5 h-3.5 text-red-600" />
+                        <XCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                       ) : (
-                        <MinusCircle className="w-3.5 h-3.5" />
+                        <MinusCircle className="w-3.5 h-3.5 text-gray-400" />
                       )}
                       <span>{marksPrefix} Marks</span>
                     </span>
@@ -291,7 +292,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                       className={`p-1.5 rounded-lg border text-xs transition-all cursor-pointer ${
                         isSaved
                           ? 'bg-amber-500 border-amber-600 text-white'
-                          : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-500 hover:text-amber-500'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 hover:text-amber-500'
                       }`}
                       title={isSaved ? 'Saved in Mistake Vault' : 'Save to Mistake Vault'}
                     >
@@ -300,119 +301,196 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                   </div>
                 </div>
 
-                {/* Question Text */}
-                {qDoc?.question_text && (
-                  <div className="text-sm sm:text-base text-gray-900 dark:text-gray-100 leading-relaxed font-sans">
-                    <MarkdownMathRenderer content={qDoc.question_text} />
+                {/* Question Body */}
+                <div className="p-6 md:p-8 space-y-6 text-gray-900 dark:text-gray-100">
+                  {/* Optional Passage */}
+                  {qDoc?.passage_text && (
+                    <div className="p-4 rounded-2xl bg-gray-50/70 dark:bg-[#0d1320] border border-gray-200 dark:border-gray-800 text-sm">
+                      <div className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                        Passage / Context
+                      </div>
+                      <MarkdownMathRenderer content={qDoc.passage_text} />
+                    </div>
+                  )}
+
+                  {/* Question Text */}
+                  <div className="text-base md:text-lg leading-relaxed text-left min-w-0">
+                    <MarkdownMathRenderer content={qDoc?.question_text || ''} />
                   </div>
-                )}
 
-                {/* Diagrams */}
-                {qDoc?.question_diagram_urls && qDoc.question_diagram_urls.length > 0 && (
-                  <div className="flex flex-wrap gap-3 my-2">
-                    {qDoc.question_diagram_urls.map((url, dIdx) => (
-                      <img
-                        key={dIdx}
-                        src={url}
-                        alt={`Question diagram ${dIdx + 1}`}
-                        className="max-h-48 object-contain rounded-xl border border-gray-200 dark:border-gray-700 p-1 bg-white dark:bg-gray-800"
-                        loading="lazy"
-                      />
-                    ))}
-                  </div>
-                )}
+                  {/* Question Diagrams */}
+                  {qDoc?.question_diagram_urls && qDoc.question_diagram_urls.length > 0 && (
+                    <div className="flex flex-wrap items-start gap-4 pt-2">
+                      {qDoc.question_diagram_urls.map((url, dIdx) => (
+                        <div
+                          key={dIdx}
+                          className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md"
+                        >
+                          <img
+                            src={url}
+                            alt={`Question diagram ${dIdx + 1}`}
+                            className="max-h-72 w-auto object-contain rounded-xl mr-auto"
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-                {/* Options List for MCQ */}
-                {(() => {
-                  const normOptions = normalizeOptions(qDoc?.options);
-                  if (normOptions.length === 0) return null;
-
-                  return (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                  {/* Options List (For MCQ Questions) - Matches PaperDetailComponent */}
+                  {!isNumeric && normOptions.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                       {normOptions.map((opt) => {
-                        const optKey = opt.key;
-                        const isCandidatePick = att.selected_option === optKey;
-                        const isCorrectPick = qDoc.correct_answer?.includes(optKey);
+                        const key = opt.key;
+                        const isSelected = att.selected_option === key;
+                        const isCorrectAnswer = qDoc?.correct_answer?.includes(key);
 
-                        let cardStyle = 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-750/40 text-gray-700 dark:text-gray-300';
-                        if (isCandidatePick && isCorrectPick) {
-                          cardStyle = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-bold';
-                        } else if (isCandidatePick && !isCorrectPick) {
-                          cardStyle = 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 font-bold';
-                        } else if (isCorrectPick) {
-                          cardStyle = 'border-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 font-semibold';
+                        let optionStyle = "border-gray-200 dark:border-gray-800 opacity-60";
+                        let circleStyle = "border border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400";
+                        let badge = null;
+
+                        if (isSelected && isCorrectAnswer) {
+                          optionStyle = "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/50";
+                          circleStyle = "bg-emerald-500 text-white font-bold";
+                          badge = (
+                            <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2.5 py-1 rounded-md">
+                              <Check className="w-3 h-3" />
+                              Your Choice (Correct)
+                            </span>
+                          );
+                        } else if (isSelected && !isCorrectAnswer) {
+                          optionStyle = "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/50";
+                          circleStyle = "bg-rose-500 text-white font-bold";
+                          badge = (
+                            <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-2.5 py-1 rounded-md">
+                              <X className="w-3 h-3" />
+                              Your Choice (Incorrect)
+                            </span>
+                          );
+                        } else if (!isSelected && isCorrectAnswer) {
+                          optionStyle = "border-emerald-500/80 bg-emerald-50/40 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200";
+                          circleStyle = "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500 font-bold";
+                          badge = (
+                            <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-900/40 px-2.5 py-1 rounded-md">
+                              <Check className="w-3 h-3" />
+                              Correct Answer
+                            </span>
+                          );
                         }
 
                         return (
                           <div
-                            key={optKey}
-                            className={`p-3 rounded-xl border-2 flex items-start gap-2.5 transition-all ${cardStyle}`}
+                            key={key}
+                            className={`p-4 rounded-2xl border-2 flex items-start justify-between gap-3 transition-all ${optionStyle}`}
                           >
-                            <span className="font-bold shrink-0">({optKey})</span>
-                            <div className="flex-1 min-w-0">
-                              {opt.text ? (
-                                <MarkdownMathRenderer content={opt.text} />
-                              ) : (
-                                <span>Option {optKey}</span>
-                              )}
-                              {opt.diagram_urls && opt.diagram_urls.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                  {opt.diagram_urls.map((u, dIdx) => (
-                                    <img
-                                      key={dIdx}
-                                      src={u}
-                                      alt={`Option ${optKey} Diagram ${dIdx + 1}`}
-                                      className="max-h-32 object-contain rounded border border-gray-200 dark:border-gray-700"
-                                      loading="lazy"
-                                    />
-                                  ))}
-                                </div>
-                              )}
+                            <div className="flex items-start gap-3 min-w-0 flex-1">
+                              <div
+                                className={`w-7 h-7 rounded-full text-xs flex items-center justify-center shrink-0 ${circleStyle}`}
+                              >
+                                {key}
+                              </div>
+                              <div className="flex-1 min-w-0 text-sm md:text-base pt-0.5 leading-relaxed text-gray-900 dark:text-gray-100">
+                                {opt.text ? (
+                                  <MarkdownMathRenderer content={opt.text} />
+                                ) : (
+                                  <span>Option {key}</span>
+                                )}
+                                {opt.diagram_urls && opt.diagram_urls.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mt-2">
+                                    {opt.diagram_urls.map((u, dIdx) => (
+                                      <img
+                                        key={dIdx}
+                                        src={u}
+                                        alt={`Option ${key} Diagram ${dIdx + 1}`}
+                                        className="max-h-40 object-contain rounded-xl border border-gray-200 dark:border-gray-800"
+                                        loading="lazy"
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             </div>
+                            {badge}
                           </div>
                         );
                       })}
                     </div>
-                  );
-                })()}
+                  )}
 
-                {/* Student Answer vs Official Key Comparison Strip */}
-                <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-gray-750/70 border border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">Your Response:</span>
-                    <strong
-                      className={`font-mono font-bold ${
-                        isCorrect
-                          ? 'text-emerald-600 dark:text-emerald-400'
-                          : isAttempted
-                          ? 'text-red-600 dark:text-red-400'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      {candidateAns}
-                    </strong>
-                  </div>
+                  {/* Numeric Input Display (For Numerical Questions) */}
+                  {isNumeric && (
+                    <div className="pt-2 max-w-sm text-left space-y-2">
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Numerical Response
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <div className="w-full px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-[#0d1320] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white font-mono font-bold">
+                          {att.numeric_value !== null && att.numeric_value !== undefined
+                            ? String(att.numeric_value)
+                            : 'Unattempted'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">Official Key:</span>
-                    <strong className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">
-                      {officialAns}
-                    </strong>
-                  </div>
-                </div>
-
-                {/* Step-by-Step LaTeX Solution */}
-                {qDoc?.solution && (
-                  <div className="pt-3 border-t border-gray-100 dark:border-gray-700/60 space-y-2">
-                    <h5 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Step-by-Step Verified Solution</span>
-                    </h5>
-                    <div className="p-4 rounded-xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/40 text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed font-sans">
-                      <MarkdownMathRenderer content={qDoc.solution} />
+                  {/* Feedback Alert Bar matching PaperDetailComponent */}
+                  <div
+                    className={`p-4 rounded-2xl flex items-center gap-3 border ${
+                      isCorrect
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+                        : isAttempted
+                        ? "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
+                        : "bg-gray-500/10 border-gray-500/30 text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {isCorrect ? (
+                      <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+                    ) : isAttempted ? (
+                      <XCircle className="w-5 h-5 shrink-0 text-rose-500" />
+                    ) : (
+                      <MinusCircle className="w-5 h-5 shrink-0 text-gray-400" />
+                    )}
+                    <div className="text-sm font-semibold leading-normal">
+                      {isCorrect ? (
+                        <span>
+                          Correct! {isNumeric ? `Your answer (${att.numeric_value}) matches the official answer.` : `You selected Option (${att.selected_option}).`}
+                        </span>
+                      ) : isAttempted ? (
+                        <span>
+                          Incorrect. {isNumeric ? `You entered ${att.numeric_value} • Official Answer is ${officialAns}` : `You selected Option (${att.selected_option}) • Correct Answer is ${officialAns}`}
+                        </span>
+                      ) : (
+                        <span>Unattempted • Correct Answer is {officialAns}</span>
+                      )}
                     </div>
                   </div>
-                )}
+
+                  {/* Step-by-Step Solution Section */}
+                  {qDoc?.solution && (
+                    <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-[#0d1320] p-5 sm:p-6 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-orange-500" />
+                          <span>Step-by-Step Solution</span>
+                        </h4>
+                        {qDoc.slug && (
+                          <Link
+                            href={`/question/${qDoc.slug}?view=solution`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+                          >
+                            <span>Open standalone question</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+                      </div>
+                      <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 leading-relaxed font-sans pt-1">
+                        <MarkdownMathRenderer content={qDoc.solution} />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })
