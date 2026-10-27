@@ -32,6 +32,7 @@ import Breadcrumbs from '@/components/common/Breadcrumbs';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import { normalizeOptions } from '@/utils/cbt-helpers';
 import { getExamBadgeColor, subjectColors } from '@/utils/pyq-helpers';
+import PYQQuestionCard from '@/components/resources/pyqs/PYQQuestionCard';
 
 export default function CBTHubComponent({
   user,
