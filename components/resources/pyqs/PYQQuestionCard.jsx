@@ -539,6 +539,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
                     setSelectedOption(null);
                     setSelectedMultiOptions([]);
                     setNumericValue("");
+                    setShowInlineSolution(false);
                   }}
                   className="px-4 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all cursor-pointer"
                 >
