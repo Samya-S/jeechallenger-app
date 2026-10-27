@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useCBTStore } from './store/useCBTStore';
-import { Clock, User, Monitor, FileText, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Clock, User, Monitor, FileText, HelpCircle, AlertTriangle, Maximize, ShieldCheck } from 'lucide-react';
 
 export default function CBTHeader({
   candidateName = 'Candidate Name',
@@ -157,6 +157,26 @@ export default function CBTHeader({
             <span>Instructions</span>
           </button>
         )}
+
+        {/* Fullscreen Kiosk Button */}
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              if (!document.fullscreenElement) {
+                await document.documentElement.requestFullscreen?.();
+              }
+            } catch (e) {
+              console.warn('Fullscreen trigger failed:', e);
+            }
+          }}
+          className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold shadow-sm transition-all cursor-pointer"
+          title="Fullscreen Kiosk Active"
+          data-testid="cbt-header-fullscreen-btn"
+        >
+          <Maximize className="w-3.5 h-3.5 text-blue-400" />
+          <span className="hidden xl:inline">Fullscreen</span>
+        </button>
 
         {/* Candidate & System Terminal Badge */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-700">

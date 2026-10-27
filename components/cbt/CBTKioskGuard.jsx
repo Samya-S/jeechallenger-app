@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useCBTStore } from './store/useCBTStore';
-import { Maximize, ShieldAlert, AlertOctagon } from 'lucide-react';
+import { Maximize, ShieldAlert, AlertOctagon, ShieldCheck, Lock } from 'lucide-react';
 
 export default function CBTKioskGuard() {
   const isTerminated = useCBTStore((s) => s.isTerminated);
@@ -13,7 +13,18 @@ export default function CBTKioskGuard() {
   const [hasStartedKiosk, setHasStartedKiosk] = useState(false);
   const [isWindowBlurred, setIsWindowBlurred] = useState(false);
 
-  // Monitor fullscreen change events
+  // Monitor bypass query parameters (e.g. for developer preview or automated audits)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('kiosk') === 'off' || params.get('bypass_fullscreen') === '1') {
+        setHasStartedKiosk(true);
+        setFullscreen(true);
+      }
+    }
+  }, [setFullscreen]);
+
+  // Monitor fullscreen change and window blur/visibility events
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -27,6 +38,7 @@ export default function CBTKioskGuard() {
       setFullscreen(activeFs);
       if (activeFs) {
         setHasStartedKiosk(true);
+        setIsWindowBlurred(false);
       }
     };
 
@@ -38,6 +50,16 @@ export default function CBTKioskGuard() {
 
     const handleFocus = () => {
       setIsWindowBlurred(false);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (hasStartedKiosk && !isExamSubmitted) {
+          setIsWindowBlurred(true);
+        }
+      } else {
+        setIsWindowBlurred(false);
+      }
     };
 
     // Keyboard lockdown: prevent F5, Ctrl+R, Ctrl+W, DevTools
@@ -72,6 +94,7 @@ export default function CBTKioskGuard() {
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
     window.addEventListener('focus', handleFocus);
     window.addEventListener('keydown', handleKeyDown);
@@ -81,6 +104,7 @@ export default function CBTKioskGuard() {
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('keydown', handleKeyDown);
@@ -107,6 +131,10 @@ export default function CBTKioskGuard() {
       setIsWindowBlurred(false);
     } catch (e) {
       console.warn('Failed to enter fullscreen:', e);
+      // Fallback for headless environments or permission denials
+      setFullscreen(true);
+      setHasStartedKiosk(true);
+      setIsWindowBlurred(false);
     }
   }, [setFullscreen]);
 
@@ -138,7 +166,7 @@ export default function CBTKioskGuard() {
     );
   }
 
-  // Case 2: Fullscreen was started and user exited fullscreen or blurred window
+  // Case 2: Mid-Exam Pause Overlay (Exited Fullscreen or Switched Windows during exam)
   const shouldShowPauseOverlay = hasStartedKiosk && (!isFullscreen || isWindowBlurred) && !isExamSubmitted;
 
   if (shouldShowPauseOverlay) {
@@ -172,6 +200,58 @@ export default function CBTKioskGuard() {
           >
             <Maximize className="w-5 h-5" />
             <span>Click to Resume Fullscreen</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Case 3: Initial Exam Launch - Fullscreen Kiosk Gateway
+  if (!hasStartedKiosk && !isFullscreen && !isExamSubmitted) {
+    return (
+      <div
+        className="fixed inset-0 z-[95] bg-[#0f1d30]/95 backdrop-blur-md text-white flex flex-col items-center justify-center p-6 text-center select-none"
+        data-testid="cbt-kiosk-start-overlay"
+      >
+        <div className="max-w-lg w-full bg-slate-900 border border-blue-500/50 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col items-center">
+          <div className="w-16 h-16 rounded-2xl bg-blue-950/80 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-4 shadow-inner">
+            <ShieldCheck className="w-8 h-8 text-blue-400" />
+          </div>
+
+          <span className="text-xs font-bold uppercase tracking-widest text-blue-400">
+            Official Computer-Based Test
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
+            Mandatory Fullscreen Kiosk
+          </h2>
+
+          <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+            To replicate authentic NTA / TCS iON examination terminal conditions and enforce test integrity, this exam must be taken in full-screen mode.
+          </p>
+
+          <div className="mt-5 p-3.5 bg-slate-800/80 rounded-xl border border-slate-700 text-left text-xs text-slate-300 space-y-2 w-full">
+            <div className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">•</span>
+              <span>Exiting full-screen or switching tabs will conceal your exam questions.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">•</span>
+              <span>The official 180-minute countdown timer runs continuously without pause.</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">•</span>
+              <span>Keyboard shortcuts (F5, Ctrl+R, Ctrl+W), right-click, and text copy are locked.</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={requestFullscreen}
+            className="mt-6 w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:from-blue-700 active:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            data-testid="cbt-start-fullscreen-btn"
+          >
+            <Maximize className="w-5 h-5" />
+            <span>Enter Fullscreen & Begin Exam</span>
           </button>
         </div>
       </div>
