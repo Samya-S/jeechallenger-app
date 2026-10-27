@@ -47,14 +47,21 @@ export default function CBTSectionBar() {
   const handleSelectSection = (sec) => {
     let targetIndex = -1;
 
-    if (sec.start_question_number) {
-      targetIndex = questions.findIndex((q) => q.question_number === sec.start_question_number);
-    }
-    if (targetIndex === -1 && sec.question_ids && sec.question_ids.length > 0) {
+    // 1. Match by exact question IDs belonging to this section
+    if (sec.question_ids && sec.question_ids.length > 0) {
       const firstId = String(sec.question_ids[0]);
       targetIndex = questions.findIndex((q) => String(q._id) === firstId);
     }
-    if (targetIndex === -1) {
+
+    // 2. Match by question number AND subject
+    if (targetIndex === -1 && sec.start_question_number) {
+      targetIndex = questions.findIndex(
+        (q) => q.question_number === sec.start_question_number && (!sec.subject || q.subject === sec.subject)
+      );
+    }
+
+    // 3. Fallback to subject match
+    if (targetIndex === -1 && sec.subject) {
       targetIndex = questions.findIndex((q) => q.subject === sec.subject);
     }
 

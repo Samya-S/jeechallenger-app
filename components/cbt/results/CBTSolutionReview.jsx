@@ -557,7 +557,9 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                       {normOptions.map((opt) => {
                         const key = opt.key;
-                        const isSelected = att.selected_option === key;
+                        const isSelected = Array.isArray(att.selected_options) && att.selected_options.length > 0
+                          ? att.selected_options.includes(key)
+                          : (att.selected_option ? att.selected_option.split(',').map((s) => s.trim()).includes(key) : false);
                         const isCorrectAnswer = qDoc?.correct_answer?.includes(key);
 
                         let optionStyle = "border-gray-200 dark:border-gray-800 opacity-60";
@@ -666,17 +668,28 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                       <MinusCircle className="w-5 h-5 shrink-0 text-gray-400" />
                     )}
                     <div className="text-sm font-semibold leading-normal">
-                      {isCorrect ? (
-                        <span>
-                          Correct! {isNumeric ? `Your answer (${att.numeric_value}) matches the official answer.` : `You selected Option (${att.selected_option}).`}
-                        </span>
-                      ) : isAttempted ? (
-                        <span>
-                          Incorrect. {isNumeric ? `You entered ${att.numeric_value} • Official Answer is ${officialAns}` : `You selected Option (${att.selected_option}) • Correct Answer is ${officialAns}`}
-                        </span>
-                      ) : (
-                        <span>Unattempted • Correct Answer is {officialAns}</span>
-                      )}
+                      {(() => {
+                        const candidateChoiceText = Array.isArray(att.selected_options) && att.selected_options.length > 0
+                          ? att.selected_options.join(', ')
+                          : (att.selected_option || 'None');
+
+                        if (isCorrect) {
+                          const isPartial = att.marks_awarded > 0 && att.marks_awarded < (qDoc?.marking_scheme?.correct || 4);
+                          return (
+                            <span>
+                              {isPartial ? `Partially Correct (+${att.marks_awarded} marks)!` : 'Correct!'} {isNumeric ? `Your answer (${att.numeric_value}) matches the official answer.` : `You selected Option (${candidateChoiceText}).`}
+                            </span>
+                          );
+                        }
+                        if (isAttempted) {
+                          return (
+                            <span>
+                              Incorrect. {isNumeric ? `You entered ${att.numeric_value} • Official Answer is ${officialAns}` : `You selected Option (${candidateChoiceText}) • Correct Answer is ${officialAns}`}
+                            </span>
+                          );
+                        }
+                        return <span>Unattempted • Correct Answer is {officialAns}</span>;
+                      })()}
                     </div>
                   </div>
 

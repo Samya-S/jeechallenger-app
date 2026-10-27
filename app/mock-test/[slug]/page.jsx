@@ -60,7 +60,7 @@ async function loadPaperAndQuestions(slug) {
     if (questions.length === 0 && paper.paper_id) {
       questions = await db
         .collection('production')
-        .find({ paper_id: paper.paper_id })
+        .find({ original_paper_id: paper.paper_id })
         .sort({ question_number: 1 })
         .toArray();
     }

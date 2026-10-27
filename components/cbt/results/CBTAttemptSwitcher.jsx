@@ -9,17 +9,15 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
   const router = useRouter();
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
-  if (!allAttempts || allAttempts.length === 0) return null;
-
   // Total attempts count
-  const totalCount = allAttempts.length;
+  const totalCount = allAttempts?.length || 0;
 
   // Find index of current attempt (0 is latest)
-  const currentIndex = allAttempts.findIndex(
+  const currentIndex = (allAttempts || []).findIndex(
     (a) => String(a._id) === String(currentSubmissionId)
   );
 
-  const currentAttempt = allAttempts[currentIndex !== -1 ? currentIndex : 0];
+  const currentAttempt = allAttempts?.[currentIndex !== -1 ? currentIndex : 0] || null;
   // Calculate display attempt number: oldest is Attempt 1, latest is Attempt N
   const currentAttemptNumber = currentIndex !== -1 ? totalCount - currentIndex : totalCount;
 
@@ -39,6 +37,7 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
   };
 
   const attemptOptions = useMemo(() => {
+    if (!Array.isArray(allAttempts)) return [];
     return allAttempts.map((att, idx) => {
       const attNum = totalCount - idx;
       const isLatest = idx === 0;
@@ -51,6 +50,8 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
       };
     });
   }, [allAttempts, totalCount]);
+
+  if (!allAttempts || allAttempts.length === 0) return null;
 
   return (
     <>

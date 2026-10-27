@@ -10,6 +10,9 @@ export function isAnswerAttempted(resp) {
   if (resp.color_state !== 3 && resp.color_state !== 5) {
     return false;
   }
+  if (Array.isArray(resp.selected_options) && resp.selected_options.length > 0) {
+    return true;
+  }
   if (resp.selected_option && String(resp.selected_option).trim() !== '') {
     return true;
   }
@@ -34,8 +37,10 @@ export function evaluateQuestion(q, scheme, attempt) {
     return { isCorrect: true, marks: correctMarks };
   }
 
+  const format = String(q.input_format || q.question_type || '').toUpperCase();
+
   // Rule 2: Single Correct MCQ
-  if (q.input_format === 'MCQ' || q.question_type === 'MCQ') {
+  if (format === 'MCQ' || (format !== 'NUMERIC' && format !== 'MULTI_CORRECT' && Array.isArray(q.correct_answer) && q.correct_answer.length === 1)) {
     if (!attempt.selected_option || !Array.isArray(q.correct_answer) || q.correct_answer.length === 0) {
       return { isCorrect: false, marks: incorrectMarks };
     }
@@ -48,8 +53,72 @@ export function evaluateQuestion(q, scheme, attempt) {
     return { isCorrect: false, marks: incorrectMarks };
   }
 
-  // Rule 3: Numerical Value Question
-  if (q.input_format === 'NUMERIC' || q.question_type === 'NUMERIC') {
+  // Rule 3: Multiple Correct (MULTI_CORRECT)
+  if (format === 'MULTI_CORRECT' || (Array.isArray(q.correct_answer) && q.correct_answer.length > 1 && format !== 'NUMERIC')) {
+    // Resolve candidate options: check selected_options array first, fallback to selected_option
+    let candidateOptions = [];
+    if (Array.isArray(attempt.selected_options) && attempt.selected_options.length > 0) {
+      candidateOptions = attempt.selected_options;
+    } else if (attempt.selected_option) {
+      candidateOptions = String(attempt.selected_option).split(',').map((s) => s.trim());
+    }
+
+    const chosenSet = new Set(
+      candidateOptions.map((s) => String(s).trim().toUpperCase()).filter(Boolean)
+    );
+
+    if (chosenSet.size === 0) {
+      return { isCorrect: false, marks: incorrectMarks };
+    }
+
+    const correctAnswers = Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer];
+    const correctSet = new Set(
+      correctAnswers.map((s) => String(s).trim().toUpperCase()).filter(Boolean)
+    );
+
+    if (correctSet.size === 0) {
+      return { isCorrect: false, marks: 0 };
+    }
+
+    // Check if candidate selected any option that is NOT in the correct set
+    const hasIncorrectOption = Array.from(chosenSet).some((opt) => !correctSet.has(opt));
+
+    if (hasIncorrectOption) {
+      // In all official JEE Advanced schemes: selecting any incorrect option incurs the full negative penalty
+      return { isCorrect: false, marks: incorrectMarks };
+    }
+
+    // Candidate selected ONLY correct options (zero incorrect options chosen)
+    if (chosenSet.size === correctSet.size) {
+      // All correct options chosen: full marks
+      return { isCorrect: true, marks: correctMarks };
+    }
+
+    // Incomplete correct options chosen without any wrong option:
+    const algorithm = String(scheme?.algorithm || '').toUpperCase();
+    if (algorithm === 'MULTI_CORRECT_NO_PARTIAL') {
+      return { isCorrect: false, marks: 0 };
+    }
+
+    // Official JEE Advanced Multi-Correct Partial Marking Algorithm:
+    // • +3: If 4 options are correct and 3 are chosen
+    // • +2: If 3 or more options are correct and 2 are chosen
+    // • +1: If 2 or more options are correct and 1 is chosen
+    if (correctSet.size === 4 && chosenSet.size === 3) {
+      return { isCorrect: true, marks: 3 };
+    } else if (correctSet.size >= 3 && chosenSet.size === 2) {
+      return { isCorrect: true, marks: 2 };
+    } else if (correctSet.size >= 2 && chosenSet.size === 1) {
+      return { isCorrect: true, marks: 1 };
+    }
+
+    // Proportional fallback if maximum marks exceed 4
+    const partialMarks = Math.max(1, Math.round((chosenSet.size / correctSet.size) * correctMarks));
+    return { isCorrect: true, marks: partialMarks };
+  }
+
+  // Rule 4: Numerical Value Question
+  if (format === 'NUMERIC') {
     if (attempt.numeric_value === null || attempt.numeric_value === undefined) {
       return { isCorrect: false, marks: incorrectMarks };
     }
@@ -216,13 +285,18 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
     for (const q of secQuestions) {
       const resp = responses[String(q._id)] || responses[q.question_number];
 
+      const candidateSelectedOptions = Array.isArray(resp?.selected_options)
+        ? resp.selected_options
+        : (resp?.selected_option ? [String(resp.selected_option)] : []);
+
       const attempt = {
         question_id: q._id,
         question_number: q.question_number,
         subject: sec.subject,
         section_name: sec.name,
         question_type: q.question_type,
-        selected_option: resp?.selected_option ?? null,
+        selected_option: resp?.selected_option ?? (candidateSelectedOptions.length === 1 ? candidateSelectedOptions[0] : null),
+        selected_options: candidateSelectedOptions,
         numeric_value: resp?.numeric_value ?? null,
         color_state: resp?.color_state ?? 1,
         is_evaluated: false,
@@ -354,11 +428,8 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
 
   if (questions.length === 0 && paper.paper_id) {
     questions = await db.collection('production').find({
-      $or: [
-        { paper_id: paper.paper_id },
-        { original_paper_id: paper.paper_id },
-      ],
-    }).toArray();
+      original_paper_id: paper.paper_id,
+    }).sort({ question_number: 1 }).toArray();
   }
 
   // 4. Grade Test

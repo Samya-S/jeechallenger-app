@@ -95,7 +95,7 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
     if (submission.paper_id) {
       questions = await db
         .collection('production')
-        .find({ paper_id: submission.paper_id })
+        .find({ original_paper_id: submission.paper_id })
         .sort({ question_number: 1 })
         .toArray();
     }

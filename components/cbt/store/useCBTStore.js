@@ -29,11 +29,11 @@ export const useCBTStore = create((setState, getState) => ({
   instanceId: generateInstanceId(),
 
   // ── In-Flight Candidate Responses ──────────────────────────────────────────
-  answers: {}, // qNum -> { selectedOption: string | null, numericValue: string | null }
+  answers: {}, // qNum -> { selectedOption: string | null, selectedOptions: string[], numericValue: string | null }
   paletteStates: {}, // qNum -> 1 | 2 | 3 | 4 | 5
   questionTimeMap: {}, // qNum -> seconds
   activeQuestionEnteredAt: Date.now(),
-  uncommittedAnswer: { selectedOption: null, numericValue: null },
+  uncommittedAnswer: { selectedOption: null, selectedOptions: [], numericValue: null },
 
   // ── Kiosk & Sync State ─────────────────────────────────────────────────────
   pendingSyncQueue: new Set(),
@@ -76,8 +76,12 @@ export const useCBTStore = create((setState, getState) => ({
     for (const [qNumStr, sResp] of Object.entries(rehydrated_answers)) {
       const qNum = parseInt(qNumStr, 10);
       if (!mergedAnswers[qNum] || (sResp.updated_at && sResp.updated_at > (mergedAnswers[qNum]?.updated_at || 0))) {
+        const sOptions = Array.isArray(sResp.selected_options)
+          ? sResp.selected_options
+          : (sResp.selected_option ? String(sResp.selected_option).split(',').map((s) => s.trim()) : []);
         mergedAnswers[qNum] = {
           selectedOption: sResp.selected_option || null,
+          selectedOptions: sOptions,
           numericValue: sResp.numeric_value || null,
         };
         mergedPaletteStates[qNum] = sResp.color_state || 1;
@@ -93,6 +97,7 @@ export const useCBTStore = create((setState, getState) => ({
 
     const initialUncommitted = {
       selectedOption: mergedAnswers[firstQNum]?.selectedOption || null,
+      selectedOptions: mergedAnswers[firstQNum]?.selectedOptions || [],
       numericValue: mergedAnswers[firstQNum]?.numericValue || null,
     };
 
@@ -131,12 +136,34 @@ export const useCBTStore = create((setState, getState) => ({
 
   // ── 2. Input Manipulation (0 ms UI Updates) ────────────────────────────────
   selectOption: (option) => {
-    setState((prev) => ({
-      uncommittedAnswer: {
-        ...prev.uncommittedAnswer,
-        selectedOption: prev.uncommittedAnswer.selectedOption === option ? null : option,
-      },
-    }));
+    setState((prev) => {
+      const nextOpt = prev.uncommittedAnswer.selectedOption === option ? null : option;
+      return {
+        uncommittedAnswer: {
+          ...prev.uncommittedAnswer,
+          selectedOption: nextOpt,
+          selectedOptions: nextOpt ? [nextOpt] : [],
+        },
+      };
+    });
+  },
+
+  toggleMultiOption: (option) => {
+    setState((prev) => {
+      const current = Array.isArray(prev.uncommittedAnswer?.selectedOptions)
+        ? prev.uncommittedAnswer.selectedOptions
+        : (prev.uncommittedAnswer?.selectedOption ? [prev.uncommittedAnswer.selectedOption] : []);
+      const exists = current.includes(option);
+      const next = exists ? current.filter((opt) => opt !== option) : [...current, option];
+      next.sort();
+      return {
+        uncommittedAnswer: {
+          ...prev.uncommittedAnswer,
+          selectedOptions: next,
+          selectedOption: next.length === 1 ? next[0] : (next.length > 1 ? next.join(',') : null),
+        },
+      };
+    });
   },
 
   setNumericValue: (val) => {
@@ -154,12 +181,15 @@ export const useCBTStore = create((setState, getState) => ({
     if (!currentQ) return;
     const qNum = currentQ.question_number;
 
-    const nextAnswers = { ...answers, [qNum]: { selectedOption: null, numericValue: null } };
+    const nextAnswers = {
+      ...answers,
+      [qNum]: { selectedOption: null, selectedOptions: [], numericValue: null },
+    };
     const nextPalette = { ...paletteStates, [qNum]: 2 }; // Reverts to Not Answered
     const nextQueue = new Set(pendingSyncQueue).add(qNum);
 
     setState({
-      uncommittedAnswer: { selectedOption: null, numericValue: null },
+      uncommittedAnswer: { selectedOption: null, selectedOptions: [], numericValue: null },
       answers: nextAnswers,
       paletteStates: nextPalette,
       pendingSyncQueue: nextQueue,
@@ -196,12 +226,17 @@ export const useCBTStore = create((setState, getState) => ({
 
     // 2. Commit answer & palette state
     const hasAnswer =
-      (uncommittedAnswer.selectedOption && uncommittedAnswer.selectedOption.trim() !== '') ||
+      (uncommittedAnswer.selectedOption && String(uncommittedAnswer.selectedOption).trim() !== '') ||
+      (Array.isArray(uncommittedAnswer.selectedOptions) && uncommittedAnswer.selectedOptions.length > 0) ||
       (uncommittedAnswer.numericValue !== null && uncommittedAnswer.numericValue !== undefined && String(uncommittedAnswer.numericValue).trim() !== '');
 
     const nextAnswers = {
       ...answers,
-      [qNum]: { ...uncommittedAnswer },
+      [qNum]: {
+        selectedOption: uncommittedAnswer.selectedOption || null,
+        selectedOptions: Array.isArray(uncommittedAnswer.selectedOptions) ? [...uncommittedAnswer.selectedOptions] : [],
+        numericValue: uncommittedAnswer.numericValue || null,
+      },
     };
     const nextPalette = {
       ...paletteStates,
@@ -220,6 +255,7 @@ export const useCBTStore = create((setState, getState) => ({
 
     const nextUncommitted = {
       selectedOption: nextAnswers[nextQNum]?.selectedOption || null,
+      selectedOptions: nextAnswers[nextQNum]?.selectedOptions || [],
       numericValue: nextAnswers[nextQNum]?.numericValue || null,
     };
 
@@ -262,12 +298,17 @@ export const useCBTStore = create((setState, getState) => ({
     };
 
     const hasAnswer =
-      (uncommittedAnswer.selectedOption && uncommittedAnswer.selectedOption.trim() !== '') ||
+      (uncommittedAnswer.selectedOption && String(uncommittedAnswer.selectedOption).trim() !== '') ||
+      (Array.isArray(uncommittedAnswer.selectedOptions) && uncommittedAnswer.selectedOptions.length > 0) ||
       (uncommittedAnswer.numericValue !== null && uncommittedAnswer.numericValue !== undefined && String(uncommittedAnswer.numericValue).trim() !== '');
 
     const nextAnswers = {
       ...answers,
-      [qNum]: { ...uncommittedAnswer },
+      [qNum]: {
+        selectedOption: uncommittedAnswer.selectedOption || null,
+        selectedOptions: Array.isArray(uncommittedAnswer.selectedOptions) ? [...uncommittedAnswer.selectedOptions] : [],
+        numericValue: uncommittedAnswer.numericValue || null,
+      },
     };
     const nextPalette = {
       ...paletteStates,
@@ -285,6 +326,7 @@ export const useCBTStore = create((setState, getState) => ({
 
     const nextUncommitted = {
       selectedOption: nextAnswers[nextQNum]?.selectedOption || null,
+      selectedOptions: nextAnswers[nextQNum]?.selectedOptions || [],
       numericValue: nextAnswers[nextQNum]?.numericValue || null,
     };
 
@@ -341,6 +383,7 @@ export const useCBTStore = create((setState, getState) => ({
 
     const nextUncommitted = {
       selectedOption: answers[nextQNum]?.selectedOption || null,
+      selectedOptions: answers[nextQNum]?.selectedOptions || [],
       numericValue: answers[nextQNum]?.numericValue || null,
     };
 
@@ -394,6 +437,7 @@ export const useCBTStore = create((setState, getState) => ({
 
     const targetUncommitted = {
       selectedOption: answers[targetQNum]?.selectedOption || null,
+      selectedOptions: answers[targetQNum]?.selectedOptions || [],
       numericValue: answers[targetQNum]?.numericValue || null,
     };
 
@@ -457,6 +501,7 @@ export const useCBTStore = create((setState, getState) => ({
     for (const qNum of dirtyQNums) {
       delta[`q_${qNum}`] = {
         selected_option: answers[qNum]?.selectedOption || null,
+        selected_options: answers[qNum]?.selectedOptions || [],
         numeric_value: answers[qNum]?.numericValue || null,
         color_state: paletteStates[qNum] || 1,
         time_spent_seconds: questionTimeMap[qNum] || 0,
@@ -521,6 +566,7 @@ export const useCBTStore = create((setState, getState) => ({
     const delta = {
       [`q_${qNum}`]: {
         selected_option: answers[qNum]?.selectedOption || null,
+        selected_options: answers[qNum]?.selectedOptions || [],
         numeric_value: answers[qNum]?.numericValue || null,
         color_state: paletteStates[qNum] || 2,
         time_spent_seconds: liveTime,

@@ -1,5 +1,6 @@
 import { getToken } from 'next-auth/jwt';
 import redis from '@/utils/redis';
+import clientPromise from '@/utils/mongodb';
 import { gradeAndPersistSubmission } from '@/server/cbt-judge';
 import { ObjectId } from 'mongodb';
 

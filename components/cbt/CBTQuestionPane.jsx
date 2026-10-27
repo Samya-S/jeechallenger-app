@@ -5,12 +5,14 @@ import { useCBTStore } from './store/useCBTStore';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import CBTVirtualKeypad from './CBTVirtualKeypad';
 import { normalizeOptions } from '@/utils/cbt-helpers';
+import { Check } from 'lucide-react';
 
 export default function CBTQuestionPane({ className = '' }) {
   const questions = useCBTStore((s) => s.questions);
   const activeQuestionIndex = useCBTStore((s) => s.activeQuestionIndex);
   const uncommittedAnswer = useCBTStore((s) => s.uncommittedAnswer);
   const selectOption = useCBTStore((s) => s.selectOption);
+  const toggleMultiOption = useCBTStore((s) => s.toggleMultiOption);
   const fontScale = useCBTStore((s) => s.fontScale);
   const paperMetadata = useCBTStore((s) => s.paperMetadata);
 
@@ -62,8 +64,9 @@ export default function CBTQuestionPane({ className = '' }) {
     );
   }
 
-  const isNumeric =
-    (currentQ.input_format || currentQ.question_type || '').toUpperCase() === 'NUMERIC';
+  const formatUpper = (currentQ.input_format || currentQ.question_type || '').toUpperCase();
+  const isNumeric = formatUpper === 'NUMERIC';
+  const isMulti = formatUpper === 'MULTI_CORRECT';
 
   // Normalize options across arrays and objects (JEE Main and JEE Advanced)
   const optionsList = normalizeOptions(currentQ.options);
@@ -135,6 +138,75 @@ export default function CBTQuestionPane({ className = '' }) {
             /* Numeric Input Mode with Keypad */
             <div className="my-2">
               <CBTVirtualKeypad />
+            </div>
+          ) : isMulti ? (
+            /* Multi-Correct Checkboxes */
+            <div className="space-y-3" role="group" aria-label="Multiple Correct Options">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Options (One or more options may be correct):
+                </div>
+                <div className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-300">
+                  Multi-Correct Checkbox
+                </div>
+              </div>
+              {optionsList.map((opt) => {
+                const optKey = opt.key;
+                const isSelected = Array.isArray(uncommittedAnswer?.selectedOptions)
+                  ? uncommittedAnswer.selectedOptions.includes(optKey)
+                  : uncommittedAnswer?.selectedOption === optKey;
+
+                return (
+                  <label
+                    key={optKey}
+                    onClick={() => toggleMultiOption(optKey)}
+                    className={`flex items-start gap-3.5 p-3.5 rounded-xl border-2 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-blue-600 bg-blue-50/70 shadow-sm'
+                        : 'border-gray-200 bg-gray-50/60 hover:bg-gray-100 hover:border-gray-300'
+                    }`}
+                    data-testid={`cbt-option-${optKey}`}
+                  >
+                    <div className="pt-0.5 shrink-0">
+                      <div
+                        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                          isSelected
+                            ? 'border-blue-600 bg-blue-600 text-white'
+                            : 'border-gray-400 bg-white hover:border-blue-500'
+                        }`}
+                      >
+                        {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                      </div>
+                    </div>
+
+                    <div className="flex-1 min-w-0 flex items-start gap-2">
+                      <span className="font-bold text-sm text-gray-800 shrink-0">
+                        ({optKey})
+                      </span>
+                      <div className={`flex-1 min-w-0 ${textSizeClass}`}>
+                        {opt.text ? (
+                          <MarkdownMathRenderer content={opt.text} />
+                        ) : (
+                          <span className="text-gray-400 italic">Option {optKey}</span>
+                        )}
+                        {opt.diagram_urls && opt.diagram_urls.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {opt.diagram_urls.map((u, dIdx) => (
+                              <img
+                                key={dIdx}
+                                src={u}
+                                alt={`Option ${optKey} Diagram ${dIdx + 1}`}
+                                className="max-h-40 object-contain rounded border border-gray-200"
+                                loading="lazy"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
             </div>
           ) : (
             /* MCQ Radio Options */
