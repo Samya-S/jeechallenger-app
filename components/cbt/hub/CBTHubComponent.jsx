@@ -23,6 +23,8 @@ import {
   TrendingUp, 
   ChevronDown, 
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   LogIn,
   Play
 } from 'lucide-react';
@@ -77,6 +79,20 @@ export default function CBTHubComponent({
       return true;
     });
   }, [papers, examTypeFilter, yearFilter]);
+
+  // Pagination for Available Papers (12 papers per page, matching PYQPapersList)
+  const [page, setPage] = useState(1);
+  const limit = 12;
+
+  useEffect(() => {
+    setPage(1);
+  }, [examTypeFilter, yearFilter]);
+
+  const totalPages = Math.ceil(filteredPapers.length / limit) || 1;
+  const paginatedPapers = useMemo(() => {
+    const start = (page - 1) * limit;
+    return filteredPapers.slice(start, start + limit);
+  }, [filteredPapers, page, limit]);
 
   // Unique years for papers
   const availableYears = useMemo(() => {
@@ -353,7 +369,7 @@ export default function CBTHubComponent({
 
             {/* Papers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPapers.map((paper) => {
+              {paginatedPapers.map((paper) => {
                 const isAdv = paper.exam_type === 'JEE_ADVANCED';
                 const totalQuestions =
                   paper.sections?.reduce((sum, s) => sum + (s.total_questions || 0), 0) ||
@@ -423,6 +439,45 @@ export default function CBTHubComponent({
                 );
               })}
             </div>
+
+            {/* Pagination Controls matching PYQPapersList */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between gap-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+                <button
+                  type="button"
+                  disabled={page <= 1}
+                  onClick={() => {
+                    const newPage = Math.max(1, page - 1);
+                    setPage(newPage);
+                    window.scrollTo({ top: 380, behavior: 'smooth' });
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Previous</span>
+                </button>
+
+                <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
+                  Page <strong className="font-bold text-gray-900 dark:text-white">{page}</strong> of{' '}
+                  <strong className="font-bold text-gray-900 dark:text-white">{totalPages}</strong>
+                  <span className="ml-2 text-xs text-gray-500">({filteredPapers.length} Papers)</span>
+                </span>
+
+                <button
+                  type="button"
+                  disabled={page >= totalPages}
+                  onClick={() => {
+                    const newPage = Math.min(totalPages, page + 1);
+                    setPage(newPage);
+                    window.scrollTo({ top: 380, behavior: 'smooth' });
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         )}
 

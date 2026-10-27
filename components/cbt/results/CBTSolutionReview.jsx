@@ -176,139 +176,156 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
   return (
     <div className="cbt-solution-review space-y-6" data-testid="cbt-solution-review">
-      {/* Header and Filter Controls */}
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Subject Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <button
-            type="button"
-            onClick={() => setActiveSubject('ALL')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeSubject === 'ALL'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-            }`}
-          >
-            All Subjects ({attempts.length})
-          </button>
-          {subjects.map((sub) => {
-            const count = attempts.filter((a) => a.subject === sub).length;
-            const isSel = activeSubject === sub;
-            let activeColorClass = 'bg-blue-600 text-white shadow-md';
-            if (sub === 'Physics') activeColorClass = 'bg-blue-600 text-white shadow-md';
-            if (sub === 'Chemistry') activeColorClass = 'bg-emerald-600 text-white shadow-md';
-            if (sub === 'Mathematics') activeColorClass = 'bg-purple-600 text-white shadow-md';
-
-            return (
+      {/* Multi-Level Header and Filter Controls */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 sm:p-6 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] space-y-4">
+        {/* LEVEL 1: Subject Selection & Navigation */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mr-1">
+              Subject:
+            </span>
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
               <button
-                key={sub}
                 type="button"
-                onClick={() => setActiveSubject(sub)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  isSel
-                    ? activeColorClass
+                onClick={() => setActiveSubject('ALL')}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  activeSubject === 'ALL'
+                    ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
-                {sub} ({count})
+                All Subjects ({attempts.length})
               </button>
-            );
-          })}
+              {subjects.map((sub) => {
+                const count = attempts.filter((a) => a.subject === sub).length;
+                const isSel = activeSubject === sub;
+                let activeColorClass = 'bg-blue-600 text-white shadow-md';
+                if (sub === 'Physics') activeColorClass = 'bg-blue-600 text-white shadow-md';
+                if (sub === 'Chemistry') activeColorClass = 'bg-emerald-600 text-white shadow-md';
+                if (sub === 'Mathematics') activeColorClass = 'bg-purple-600 text-white shadow-md';
+
+                return (
+                  <button
+                    key={sub}
+                    type="button"
+                    onClick={() => setActiveSubject(sub)}
+                    className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                      isSel
+                        ? activeColorClass
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {sub} ({count})
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <span className="text-xs text-gray-500 dark:text-gray-400 font-medium hidden sm:inline">
+            Showing <strong className="text-gray-900 dark:text-white font-bold">{filteredAttempts.length}</strong> questions
+          </span>
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <button
-            type="button"
-            onClick={() => setActiveStatus('ALL')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeStatus === 'ALL'
-                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
-          >
-            All
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveStatus('CORRECT')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeStatus === 'CORRECT'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
-            }`}
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Correct</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveStatus('INCORRECT')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeStatus === 'INCORRECT'
-                ? 'bg-rose-600 text-white shadow-sm'
-                : 'text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-            }`}
-          >
-            <XCircle className="w-3.5 h-3.5" />
-            <span>Incorrect</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveStatus('UNATTEMPTED')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeStatus === 'UNATTEMPTED'
-                ? 'bg-gray-700 text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
-          >
-            <MinusCircle className="w-3.5 h-3.5" />
-            <span>Unattempted</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveStatus('TIME_TRAPS')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeStatus === 'TIME_TRAPS'
-                ? 'bg-amber-600 text-white shadow-sm'
-                : 'text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40'
-            }`}
-          >
-            Time Traps (&gt;4m)
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveStatus('MISTAKE_VAULT')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeStatus === 'MISTAKE_VAULT'
-                ? 'bg-amber-500 text-white shadow-sm'
-                : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40'
-            }`}
-          >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>Mistake Vault ({savedVaultQNums.size})</span>
-          </button>
-        </div>
+        {/* LEVEL 2: Question Status Filters & Global Actions */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-1">
+          {/* Status Filter Chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mr-1">
+              Filter:
+            </span>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('ALL')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeStatus === 'ALL'
+                  ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
+                  : 'bg-gray-100 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+            >
+              All
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('CORRECT')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeStatus === 'CORRECT'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Correct ({attempts.filter((a) => (activeSubject === 'ALL' || a.subject === activeSubject) && a.is_correct).length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('INCORRECT')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeStatus === 'INCORRECT'
+                  ? 'bg-rose-600 text-white shadow-sm'
+                  : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40 hover:bg-rose-100 dark:hover:bg-rose-900/40'
+              }`}
+            >
+              <XCircle className="w-3.5 h-3.5" />
+              <span>Incorrect ({attempts.filter((a) => (activeSubject === 'ALL' || a.subject === activeSubject) && a.is_evaluated && !a.is_correct).length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('UNATTEMPTED')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeStatus === 'UNATTEMPTED'
+                  ? 'bg-gray-700 text-white shadow-sm'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+            >
+              <MinusCircle className="w-3.5 h-3.5" />
+              <span>Unattempted ({attempts.filter((a) => (activeSubject === 'ALL' || a.subject === activeSubject) && !a.is_evaluated).length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('TIME_TRAPS')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeStatus === 'TIME_TRAPS'
+                  ? 'bg-amber-600 text-white shadow-sm'
+                  : 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 dark:hover:bg-amber-900/40'
+              }`}
+            >
+              <span>Time Traps</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveStatus('MISTAKE_VAULT')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeStatus === 'MISTAKE_VAULT'
+                  ? 'bg-amber-500 text-white shadow-sm'
+                  : 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40'
+              }`}
+            >
+              <Bookmark className="w-3.5 h-3.5" />
+              <span>Mistake Vault ({savedVaultQNums.size})</span>
+            </button>
+          </div>
 
-        {/* Global Expand / Collapse All Solutions Toggle */}
-        <div className="flex items-center shrink-0">
-          <button
-            type="button"
-            onClick={handleToggleAllSolutions}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-all cursor-pointer border border-slate-200/80 dark:border-gray-700/80 shadow-2xs"
-          >
-            {expandedSolutions.size > 0 ? (
-              <>
-                <ChevronUp className="w-3.5 h-3.5 text-orange-500" />
-                <span>Collapse All Solutions</span>
-              </>
-            ) : (
-              <>
-                <ChevronDown className="w-3.5 h-3.5 text-orange-500" />
-                <span>Expand All Solutions</span>
-              </>
-            )}
-          </button>
+          {/* Global Expand / Collapse All Solutions Toggle */}
+          <div className="flex items-center shrink-0 self-end lg:self-center">
+            <button
+              type="button"
+              onClick={handleToggleAllSolutions}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-all cursor-pointer border border-slate-200 dark:border-gray-700 shadow-xs"
+            >
+              {expandedSolutions.size > 0 ? (
+                <>
+                  <ChevronUp className="w-4 h-4 text-orange-500" />
+                  <span>Collapse All Solutions</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4 text-orange-500" />
+                  <span>Expand All Solutions</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
