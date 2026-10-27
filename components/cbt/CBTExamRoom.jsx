@@ -42,6 +42,47 @@ export default function CBTExamRoom({
   const [isQPModalOpen, setIsQPModalOpen] = useState(false);
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
 
+  // Request fullscreen as soon as the Exam UI opens/mounts in browser
+  useEffect(() => {
+    if (typeof document !== 'undefined' && !document.fullscreenElement) {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(() => {});
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen().catch(() => {});
+      }
+    }
+  }, []);
+
+  // When live exam room activates (gatewayStage === 'EXAM'), ensure fullscreen is active
+  useEffect(() => {
+    if (gatewayStage === 'EXAM' && typeof document !== 'undefined' && !document.fullscreenElement) {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(() => {});
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen().catch(() => {});
+      }
+    }
+  }, [gatewayStage]);
+
+  // Seamless click listener: Any first candidate interaction inside Exam UI enters fullscreen
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleFirstExamClick = () => {
+      if (!document.fullscreenElement) {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if (docEl.webkitRequestFullscreen) {
+          docEl.webkitRequestFullscreen().catch(() => {});
+        }
+      }
+    };
+    window.addEventListener('click', handleFirstExamClick, { capture: true });
+    return () => window.removeEventListener('click', handleFirstExamClick, { capture: true });
+  }, []);
+
   // Check if session is already active in Redis on mount
   useEffect(() => {
     let isMounted = true;
@@ -80,6 +121,11 @@ export default function CBTExamRoom({
     }
 
     async function startExamDirectly() {
+      try {
+        if (typeof document !== 'undefined' && !document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.().catch(() => {});
+        }
+      } catch {}
       try {
         const instId = useCBTStore.getState().instanceId;
         const res = await fetch('/api/cbt/session/start', {

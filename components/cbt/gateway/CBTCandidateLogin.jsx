@@ -24,8 +24,15 @@ export default function CBTCandidateLogin({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e?.preventDefault();
+    try {
+      if (typeof document !== 'undefined' && !document.fullscreenElement) {
+        await document.documentElement.requestFullscreen?.().catch(() => {});
+      }
+    } catch (err) {
+      console.warn('Native fullscreen trigger failed:', err);
+    }
     if (onSignIn) {
       onSignIn();
     }

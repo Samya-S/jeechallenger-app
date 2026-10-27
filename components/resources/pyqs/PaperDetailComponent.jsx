@@ -36,24 +36,8 @@ function PaperDetailContent({ paperData }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleStartMockTest = async (e, slug) => {
+  const handleStartMockTest = (e, slug) => {
     e.preventDefault();
-    try {
-      if (typeof document !== 'undefined' && !document.fullscreenElement) {
-        const docEl = document.documentElement;
-        if (docEl.requestFullscreen) {
-          await docEl.requestFullscreen();
-        } else if (docEl.webkitRequestFullscreen) {
-          await docEl.webkitRequestFullscreen();
-        } else if (docEl.mozRequestFullScreen) {
-          await docEl.mozRequestFullScreen();
-        } else if (docEl.msRequestFullscreen) {
-          await docEl.msRequestFullscreen();
-        }
-      }
-    } catch (err) {
-      console.warn('Native fullscreen entry blocked or not allowed:', err);
-    }
     router.push(`/mock-test/${slug}`);
   };
 

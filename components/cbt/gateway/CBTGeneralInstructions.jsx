@@ -185,7 +185,16 @@ export default function CBTGeneralInstructions({
       <div className="w-full bg-[#f1f5f9] border-t border-gray-300 px-6 py-3 flex items-center justify-end shrink-0 shadow-inner">
         <button
           type="button"
-          onClick={onNext}
+          onClick={async () => {
+            try {
+              if (typeof document !== 'undefined' && !document.fullscreenElement) {
+                await document.documentElement.requestFullscreen?.().catch(() => {});
+              }
+            } catch (err) {
+              console.warn('Native fullscreen trigger failed:', err);
+            }
+            if (onNext) onNext();
+          }}
           className="py-2 px-8 bg-[#0d6efd] hover:bg-[#0b5ed7] text-white text-sm font-bold uppercase tracking-wider rounded shadow transition-all flex items-center gap-2 cursor-pointer"
           data-testid="cbt-instructions-next-btn"
         >
