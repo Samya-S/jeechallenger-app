@@ -707,42 +707,22 @@ export default function CBTHubComponent({
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {filteredVaultItems.map((item) => {
-                      const qDoc = item.question;
-                      const isExpanded = expandedSolutions.has(String(item._id));
-                      const normOptions = normalizeOptions(qDoc?.options);
+                    {filteredVaultItems.map((item, idx) => {
+                      if (!item.question) return null;
+                      const qDoc = {
+                        ...item.question,
+                        subject: item.question.subject || item.subject,
+                        chapter: item.question.chapter || item.chapter,
+                        exam_type: item.question.exam_type || (item.paper_id?.includes('Advanced') ? 'JEE_ADVANCED' : 'JEE_MAIN'),
+                        paper_slug: item.question.paper_slug || item.paper_slug || item.paper_id,
+                      };
 
                       return (
-                        <div
+                        <PYQQuestionCard
                           key={String(item._id)}
-                          className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left"
-                        >
-                          {/* Card Header */}
-                          <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="px-3 py-1 bg-amber-500 text-white text-xs font-black rounded-lg shadow-sm">
-                                Q{item.question_number}
-                              </span>
-                              {item.subject && (
-                                <span
-                                  className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${
-                                    subjectColors[item.subject] ||
-                                    'text-gray-600 bg-gray-100 border-gray-200'
-                                  }`}
-                                >
-                                  {item.subject}
-                                </span>
-                              )}
-                              {(item.chapter || qDoc?.chapter) && (
-                                <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                                  {item.chapter || qDoc?.chapter}
-                                </span>
-                              )}
-                              <span className="text-xs text-gray-500">
-                                {item.paper_slug || item.paper_id}
-                              </span>
-                            </div>
-
+                          question={qDoc}
+                          practiceIndex={idx + 1}
+                          extraHeaderAction={
                             <button
                               type="button"
                               onClick={() => handleRemoveFromVault(item)}
@@ -752,115 +732,8 @@ export default function CBTHubComponent({
                               <Trash2 className="w-3.5 h-3.5" />
                               <span>Remove</span>
                             </button>
-                          </div>
-
-                          {/* Card Body */}
-                          <div className="p-6 md:p-8 space-y-6">
-                            {qDoc?.passage_text && (
-                              <div className="p-4 rounded-2xl bg-gray-50/70 dark:bg-[#0d1320] border border-gray-200 dark:border-gray-800 text-sm">
-                                <MarkdownMathRenderer content={qDoc.passage_text} />
-                              </div>
-                            )}
-
-                            {/* Question Text */}
-                            <div className="text-base md:text-lg leading-relaxed text-gray-900 dark:text-gray-100">
-                              <MarkdownMathRenderer
-                                content={qDoc?.question_text || 'Loading question statement...'}
-                              />
-                            </div>
-
-                            {/* Question Diagrams */}
-                            {qDoc?.question_diagram_urls && qDoc.question_diagram_urls.length > 0 && (
-                              <div className="flex flex-wrap gap-4 pt-2">
-                                {qDoc.question_diagram_urls.map((url, dIdx) => (
-                                  <img
-                                    key={dIdx}
-                                    src={url}
-                                    alt={`Question diagram ${dIdx + 1}`}
-                                    className="max-h-72 object-contain rounded-xl border border-gray-200 dark:border-gray-800"
-                                    loading="lazy"
-                                  />
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Options with Official Key Highlighted */}
-                            {normOptions.length > 0 && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                                {normOptions.map((opt) => {
-                                  const isCorrect = qDoc?.correct_answer?.includes(opt.key);
-                                  return (
-                                    <div
-                                      key={opt.key}
-                                      className={`p-4 rounded-2xl border-2 flex items-start gap-3 ${
-                                        isCorrect
-                                          ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200'
-                                          : 'border-gray-200 dark:border-gray-800 opacity-70'
-                                      }`}
-                                    >
-                                      <div
-                                        className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
-                                          isCorrect
-                                            ? 'bg-emerald-500 text-white'
-                                            : 'border border-gray-300 dark:border-gray-700 text-gray-500'
-                                        }`}
-                                      >
-                                        {opt.key}
-                                      </div>
-                                      <div className="flex-1 min-w-0 text-sm">
-                                        <MarkdownMathRenderer content={opt.text} />
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-
-                            {/* Collapsible Step-by-Step Solution */}
-                            {qDoc?.solution && (
-                              <div className="pt-2">
-                                {!isExpanded ? (
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleSolution(String(item._id))}
-                                    className="w-full flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-orange-50/60 dark:bg-orange-950/20 hover:bg-orange-100/60 dark:hover:bg-orange-950/40 border border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer group"
-                                  >
-                                    <div className="flex items-center gap-2.5 font-bold text-sm">
-                                      <Sparkles className="w-4 h-4 text-orange-500" />
-                                      <span>View Step-by-Step Solution</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
-                                      <span>Show</span>
-                                      <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
-                                    </div>
-                                  </button>
-                                ) : (
-                                  <div className="rounded-2xl border border-orange-200/80 dark:border-orange-900/60 bg-gradient-to-b from-orange-50/40 to-transparent dark:from-orange-950/20 dark:to-transparent overflow-hidden">
-                                    <button
-                                      type="button"
-                                      onClick={() => toggleSolution(String(item._id))}
-                                      className="w-full flex items-center justify-between p-3.5 sm:p-4 bg-orange-50/80 dark:bg-orange-950/40 border-b border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer"
-                                    >
-                                      <div className="flex items-center gap-2.5 font-bold text-sm">
-                                        <Sparkles className="w-4 h-4 text-orange-500" />
-                                        <span>Step-by-Step Solution</span>
-                                      </div>
-                                      <div className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
-                                        <span>Hide</span>
-                                        <ChevronUp className="w-4 h-4" />
-                                      </div>
-                                    </button>
-                                    <div className="p-5 sm:p-6 space-y-4">
-                                      <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 leading-relaxed font-sans">
-                                        <MarkdownMathRenderer content={qDoc.solution} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                          }
+                        />
                       );
                     })}
                   </div>
