@@ -4,6 +4,48 @@ import clientPromise from '@/utils/mongodb';
 
 export const dynamic = 'force-dynamic';
 
+export async function GET(req) {
+  try {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token || !token.id) {
+      return Response.json(
+        { error: 'UNAUTHORIZED', message: 'Authentication required.' },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(req.url);
+    const paper_id = searchParams.get('paper_id');
+    if (!paper_id) {
+      return Response.json({ error: 'paper_id is required' }, { status: 400 });
+    }
+
+    const userId = token.id;
+    const sessionKey = `cbt:session:${userId}:${paper_id}`;
+    const existing = await redis.hgetall(sessionKey);
+    const now = Date.now();
+
+    if (existing && Object.keys(existing).length > 0 && existing.status === 'IN_PROGRESS') {
+      const expiresAt = Number(existing.expires_at);
+      if (now < expiresAt) {
+        return Response.json({
+          has_active_session: true,
+          session_id: sessionKey,
+          paper_id,
+          expires_at: expiresAt,
+          duration_minutes: Number(existing.duration_minutes || 180),
+          started_at: Number(existing.started_at),
+        });
+      }
+    }
+
+    return Response.json({ has_active_session: false });
+  } catch (error) {
+    console.error('Failed to check CBT session status:', error);
+    return Response.json({ error: 'Internal server error: ' + error.message }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

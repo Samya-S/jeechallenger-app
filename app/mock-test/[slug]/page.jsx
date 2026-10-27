@@ -113,12 +113,21 @@ export default async function MockTestPage({ params }) {
     notFound();
   }
 
+  // Generate authentic 12-digit Roll Number based on User ID
+  const candidateRollNo =
+    '2603' +
+    (session.user.id
+      ? String(session.user.id).replace(/\D/g, '').slice(-8).padStart(8, '10048291')
+      : '10048291');
+
   return (
     <div className="w-screen h-screen overflow-hidden bg-white text-gray-900 select-none">
       <CBTExamRoom
         paperData={paper}
         questionsData={paper.questions}
         candidateName={session.user.name || 'Candidate'}
+        candidateRollNo={candidateRollNo}
+        candidateImage={session.user.image}
       />
     </div>
   );
