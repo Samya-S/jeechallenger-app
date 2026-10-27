@@ -38,8 +38,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     return map;
   }, [questionsData]);
 
-  // Filters state
-  const [activeSubject, setActiveSubject] = useState('ALL');
+  // Filters state - Default to first subject to prevent overwhelming 75-question scroll fatigue
+  const [activeSubject, setActiveSubject] = useState(() => attempts[0]?.subject || 'ALL');
   const [activeStatus, setActiveStatus] = useState('ALL');
   // Solutions collapsible state: Set of expanded question numbers. By default empty (all closed).
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
