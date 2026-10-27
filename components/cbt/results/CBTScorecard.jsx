@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Award, Target, Clock, CheckCircle2, XCircle, MinusCircle, TrendingUp, BookOpen } from 'lucide-react';
+import { Award, Target, Clock, CheckCircle2, XCircle, MinusCircle, CheckSquare, BookOpen } from 'lucide-react';
 
 export default function CBTScorecard({ submission }) {
   const summary = submission?.summary || {};
@@ -40,18 +40,13 @@ export default function CBTScorecard({ submission }) {
     }).format(d);
   }, [submission?.started_at]);
 
-  // Projected Percentile estimate based on score proportion
-  const predictedPercentile = useMemo(() => {
-    const pct = (totalScore / maxMarks) * 100;
-    if (pct >= 80) return '99.8+';
-    if (pct >= 66) return '99.2 - 99.7';
-    if (pct >= 53) return '97.5 - 99.1';
-    if (pct >= 43) return '95.0 - 97.4';
-    if (pct >= 33) return '90.0 - 94.9';
-    if (pct >= 23) return '80.0 - 89.9';
-    if (pct >= 15) return '65.0 - 79.9';
-    return '< 65.0';
-  }, [totalScore, maxMarks]);
+  // Factual Attempt Rate calculation (questions answered / total questions in paper)
+  const totalQuestions =
+    (totalAttempted + totalUnattempted) ||
+    submission?.question_attempts?.length ||
+    0;
+  const attemptRate =
+    totalQuestions > 0 ? ((totalAttempted / totalQuestions) * 100).toFixed(1) : '0';
 
   const subjectScores = summary.subject_scores || {};
   const subjects = Object.keys(subjectScores);
@@ -91,15 +86,20 @@ export default function CBTScorecard({ submission }) {
 
           {/* Quick Metrics Pills - shrink-0 to guarantee 0 wrapping on desktop */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
-            {/* Projected Percentile */}
+            {/* Attempt Rate */}
             <div className="p-3 sm:p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/40 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-200/90 font-semibold">
-                <TrendingUp className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                <span>Percentile Est.</span>
+                <CheckSquare className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span>Attempt Rate</span>
               </div>
-              <span className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-300 mt-1">
-                {predictedPercentile}
-              </span>
+              <div className="flex items-baseline gap-1 mt-1">
+                <span className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-300">
+                  {attemptRate}%
+                </span>
+                <span className="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-amber-200/70">
+                  ({totalAttempted}/{totalQuestions})
+                </span>
+              </div>
             </div>
 
             {/* Overall Accuracy */}
