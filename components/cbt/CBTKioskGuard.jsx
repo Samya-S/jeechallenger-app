@@ -131,10 +131,7 @@ export default function CBTKioskGuard() {
       setIsWindowBlurred(false);
     } catch (e) {
       console.warn('Failed to enter fullscreen:', e);
-      // Fallback for headless environments or permission denials
-      setFullscreen(true);
-      setHasStartedKiosk(true);
-      setIsWindowBlurred(false);
+      // Do not fake fullscreen state if native request was denied
     }
   }, [setFullscreen]);
 

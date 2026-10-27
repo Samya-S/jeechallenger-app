@@ -21,7 +21,8 @@ import {
   Sparkles,
   Bug,
   Play,
-  LogIn
+  LogIn,
+  Loader2
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -36,8 +37,24 @@ function PaperDetailContent({ paperData }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Instant launch transition state
+  const [isLaunchingExam, setIsLaunchingExam] = useState(false);
+
   const handleStartMockTest = (e, slug) => {
     e.preventDefault();
+    setIsLaunchingExam(true);
+    try {
+      if (typeof document !== 'undefined' && !document.fullscreenElement) {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if (docEl.webkitRequestFullscreen) {
+          docEl.webkitRequestFullscreen().catch(() => {});
+        }
+      }
+    } catch (err) {
+      console.warn('Native fullscreen trigger failed:', err);
+    }
     router.push(`/mock-test/${slug}`);
   };
 
@@ -378,6 +395,21 @@ function PaperDetailContent({ paperData }) {
 
   return (
     <div className="min-h-screen text-gray-900 dark:text-gray-100 pt-4 sm:pt-6 pb-12 text-left">
+      {/* Instant Exam Launch Curtain (prevents website UI from ever being seen stretched in fullscreen) */}
+      {isLaunchingExam && (
+        <div className="fixed inset-0 z-[9999] bg-[#162942] flex flex-col items-center justify-center text-white select-none">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+            <h2 className="text-xl font-bold tracking-wide">
+              Connecting to Assessment Terminal...
+            </h2>
+            <p className="text-sm text-blue-200">
+              Initializing secure full-screen examination kiosk (Terminal C001)...
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto px-4">
         
         {/* Navigation & Breadcrumbs Row */}
