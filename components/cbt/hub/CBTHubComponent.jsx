@@ -62,6 +62,28 @@ export default function CBTHubComponent({
     }
   }, [searchParams]);
 
+  // Trigger native Fullscreen immediately on user gesture before routing
+  const handleStartMockTest = async (e, slug) => {
+    e.preventDefault();
+    try {
+      if (typeof document !== 'undefined' && !document.fullscreenElement) {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          await docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+          await docEl.webkitRequestFullscreen();
+        } else if (docEl.mozRequestFullScreen) {
+          await docEl.mozRequestFullScreen();
+        } else if (docEl.msRequestFullscreen) {
+          await docEl.msRequestFullscreen();
+        }
+      }
+    } catch (err) {
+      console.warn('Native fullscreen entry blocked or not allowed:', err);
+    }
+    router.push(`/mock-test/${slug}`);
+  };
+
   // Filter state for Available Papers
   const [examTypeFilter, setExamTypeFilter] = useState('ALL');
   const [yearFilter, setYearFilter] = useState('ALL');
@@ -419,13 +441,14 @@ export default function CBTHubComponent({
 
                     {/* Action Buttons */}
                     <div className="pt-6 space-y-2">
-                      <Link
-                        href={`/mock-test/${paper.slug}`}
+                      <button
+                        type="button"
+                        onClick={(e) => handleStartMockTest(e, paper.slug)}
                         className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
                       >
                         <Play className="w-4 h-4 fill-white" />
                         <span>Start Mock Test</span>
-                      </Link>
+                      </button>
 
                       <Link
                         href={`/paper/${paper.slug}`}
@@ -588,13 +611,14 @@ export default function CBTHubComponent({
                           >
                             Review Scorecard
                           </Link>
-                          <Link
-                            href={`/mock-test/${paperSlug}`}
-                            className="p-2.5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                          <button
+                            type="button"
+                            onClick={(e) => handleStartMockTest(e, paperSlug)}
+                            className="p-2.5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                             title="Retake Exam"
                           >
                             <RotateCcw className="w-4 h-4 text-orange-500" />
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>

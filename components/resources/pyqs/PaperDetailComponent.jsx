@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef, Suspense } from "react";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { 
@@ -34,6 +34,28 @@ function PaperDetailContent({ paperData }) {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleStartMockTest = async (e, slug) => {
+    e.preventDefault();
+    try {
+      if (typeof document !== 'undefined' && !document.fullscreenElement) {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          await docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+          await docEl.webkitRequestFullscreen();
+        } else if (docEl.mozRequestFullScreen) {
+          await docEl.mozRequestFullScreen();
+        } else if (docEl.msRequestFullscreen) {
+          await docEl.msRequestFullscreen();
+        }
+      }
+    } catch (err) {
+      console.warn('Native fullscreen entry blocked or not allowed:', err);
+    }
+    router.push(`/mock-test/${slug}`);
+  };
 
   const sections = paperData?.sections || [];
   const allQuestions = paperData?.questions || [];
@@ -476,13 +498,14 @@ function PaperDetailContent({ paperData }) {
             </div>
 
             {session?.user ? (
-              <Link
-                href={`/mock-test/${paperData.slug || paperData.paper_id}`}
+              <button
+                type="button"
+                onClick={(e) => handleStartMockTest(e, paperData.slug || paperData.paper_id)}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-bold text-sm shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-95 group"
               >
                 <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
                 <span>Start Mock Test</span>
-              </Link>
+              </button>
             ) : (
               <Link
                 href={`/login?callbackUrl=/mock-test/${paperData.slug || paperData.paper_id}`}
