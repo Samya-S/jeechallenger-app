@@ -12,6 +12,8 @@ export default function CustomSelect({
   searchPlaceholder = "Search options...",
   icon: Icon,
   className = "",
+  disabled = false,
+  size = "md",
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,16 +49,21 @@ export default function CustomSelect({
       )
     : options;
 
+  const padClass = size === "sm" ? "px-3 py-1.5 rounded-lg text-xs" : "px-4 py-2.5 rounded-xl text-sm";
+
   return (
     <div ref={containerRef} className={`relative ${isOpen ? "z-30" : "z-0"} ${className}`}>
       {/* Trigger Button */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800/80 border cursor-pointer text-left ${
-          isOpen
-            ? "border-orange-500 ring-1 ring-orange-500 bg-white dark:bg-gray-800"
-            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+        disabled={disabled}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between gap-2 ${padClass} bg-gray-50 dark:bg-gray-800/80 border text-left transition-colors ${
+          disabled
+            ? "border-gray-200 dark:border-gray-700 opacity-75 cursor-default"
+            : isOpen
+            ? "border-orange-500 ring-1 ring-orange-500 bg-white dark:bg-gray-800 cursor-pointer"
+            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer"
         }`}
       >
         <div className="flex items-center gap-2.5 truncate">
@@ -72,14 +79,14 @@ export default function CustomSelect({
           </span>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-gray-400 shrink-0 ${
+          className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${
             isOpen ? "rotate-180 text-orange-500" : ""
           }`}
         />
       </button>
 
       {/* Dropdown Menu - Instant with zero animation delay */}
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
           {/* Optional Search Input */}
           {searchable && (
@@ -99,10 +106,10 @@ export default function CustomSelect({
           )}
 
           {/* Options List */}
-          <div className="max-h-60 overflow-y-auto p-1 space-y-0.5 custom-scrollbar">
+          <div className="max-h-60 overflow-y-auto p-1 divide-y divide-transparent">
             {filteredOptions.length === 0 ? (
-              <div className="p-3 text-center text-xs text-gray-400">
-                No matching options
+              <div className="px-3 py-2 text-xs text-gray-400 dark:text-gray-500 text-center">
+                No options found
               </div>
             ) : (
               filteredOptions.map((option) => {
@@ -116,15 +123,15 @@ export default function CustomSelect({
                       setIsOpen(false);
                       setSearchTerm("");
                     }}
-                    className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-left cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left cursor-pointer ${
                       isSelected
-                        ? "bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold"
+                        ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 font-semibold"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`}
                   >
                     <span className="truncate">{option.label}</span>
                     {isSelected && (
-                      <Check className="w-4 h-4 text-orange-500 shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400 shrink-0" />
                     )}
                   </button>
                 );

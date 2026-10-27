@@ -33,6 +33,7 @@ import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import { normalizeOptions } from '@/utils/cbt-helpers';
 import { getExamBadgeColor, subjectColors } from '@/utils/pyq-helpers';
 import PYQQuestionCard from '@/components/resources/pyqs/PYQQuestionCard';
+import { YearFilterPills } from '@/components/resources/pyqs/PYQFilterBar';
 
 export default function CBTHubComponent({
   user,
@@ -240,9 +241,6 @@ export default function CBTHubComponent({
                 <TrendingUp className="w-4 h-4 text-blue-500" />
                 <span>Your Mock Test Performance Overview</span>
               </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                Logged in as <strong className="text-gray-900 dark:text-white">{user.name || user.email}</strong>
-              </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
@@ -370,22 +368,18 @@ export default function CBTHubComponent({
               </div>
 
               {availableYears.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">
                     Exam Year:
                   </span>
-                  <select
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 cursor-pointer"
-                  >
-                    <option value="ALL">All Years</option>
-                    {availableYears.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
+                  <YearFilterPills
+                    availableYears={availableYears}
+                    selectedYear={yearFilter === 'ALL' ? 'All' : yearFilter}
+                    onSelectYear={(y) => setYearFilter(y === 'All' ? 'ALL' : y)}
+                    activeClass="bg-blue-600 text-white shadow-sm"
+                    inactiveClass="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    size="sm"
+                  />
                 </div>
               )}
             </div>

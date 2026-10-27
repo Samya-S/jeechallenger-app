@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import CBTGatewayHeader from './CBTGatewayHeader';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { ArrowRight, Check } from 'lucide-react';
 
 export default function CBTGeneralInstructions({
@@ -32,13 +33,14 @@ export default function CBTGeneralInstructions({
           <label className="text-xs font-semibold text-gray-600">
             View in :
           </label>
-          <select
+          <CustomSelect
             value="en"
-            disabled
-            className="px-3 py-1 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-800 focus:outline-hidden cursor-default shadow-2xs"
-          >
-            <option value="en">English</option>
-          </select>
+            onChange={() => {}}
+            options={[{ label: 'English', value: 'en' }]}
+            disabled={true}
+            size="sm"
+            className="w-32"
+          />
         </div>
       </div>
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import CBTGatewayHeader from './CBTGatewayHeader';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { ArrowLeft, Play, AlertTriangle } from 'lucide-react';
 
 export default function CBTDeclarationGateway({
@@ -94,14 +95,14 @@ export default function CBTDeclarationGateway({
             <label className="text-xs font-bold text-blue-950 uppercase tracking-wider">
               Choose your default language :
             </label>
-            <select
+            <CustomSelect
               value="English"
-              disabled
-              className="px-3 py-1.5 bg-white border border-blue-300 rounded text-xs font-semibold text-gray-800 focus:outline-hidden cursor-default shadow-2xs w-48"
-              data-testid="cbt-language-select"
-            >
-              <option value="English">English</option>
-            </select>
+              onChange={() => {}}
+              options={[{ label: 'English', value: 'English' }]}
+              disabled={true}
+              size="sm"
+              className="w-48"
+            />
           </div>
           <p className="text-xs text-red-600 font-medium">
             Please note all questions will appear in your default language. This language can be changed for a particular question later on.

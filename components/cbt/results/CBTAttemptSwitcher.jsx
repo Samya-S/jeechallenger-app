@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { History, ChevronDown, Check, Trophy, Calendar, Clock, Target, X } from 'lucide-react';
 
 export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], currentSubmissionId }) {
@@ -37,33 +38,32 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
     router.push(`/mock-test/${paperSlug}/results?submission=${submissionId}`);
   };
 
+  const attemptOptions = useMemo(() => {
+    return allAttempts.map((att, idx) => {
+      const attNum = totalCount - idx;
+      const isLatest = idx === 0;
+      const score = att.summary?.total_score ?? 0;
+      const max = att.summary?.max_marks ?? 300;
+      const dateLabel = formatDate(att.submitted_at || att.started_at);
+      return {
+        value: String(att._id),
+        label: `Attempt #${attNum}${isLatest ? ' (Latest)' : ''} • ${score}/${max} (${dateLabel})`,
+      };
+    });
+  }, [allAttempts, totalCount]);
+
   return (
     <>
       <div className="flex items-center gap-2">
         {totalCount > 1 ? (
-          /* Multi-Attempt Dropdown Selector */
-          <div className="relative inline-block">
-            <select
+          /* Multi-Attempt Custom Select */
+          <div className="w-64 sm:w-80">
+            <CustomSelect
               value={String(currentAttempt?._id)}
-              onChange={(e) => handleSelectAttempt(e.target.value)}
-              className="appearance-none pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-gray-800 dark:text-gray-200 shadow-sm cursor-pointer hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-              aria-label="Select test attempt"
-            >
-              {allAttempts.map((att, idx) => {
-                const attNum = totalCount - idx;
-                const isLatest = idx === 0;
-                const score = att.summary?.total_score ?? 0;
-                const max = att.summary?.max_marks ?? 300;
-                const dateLabel = formatDate(att.submitted_at || att.started_at);
-
-                return (
-                  <option key={String(att._id)} value={String(att._id)}>
-                    Attempt #{attNum}{isLatest ? ' (Latest)' : ''} • {score}/{max} ({dateLabel})
-                  </option>
-                );
-              })}
-            </select>
-            <ChevronDown className="w-4 h-4 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              onChange={handleSelectAttempt}
+              options={attemptOptions}
+              size="sm"
+            />
           </div>
         ) : (
           /* Single Attempt Badge */

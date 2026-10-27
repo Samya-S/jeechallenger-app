@@ -26,7 +26,7 @@ const QUESTION_TYPES = [
   { label: "Comprehension / Passage", value: "COMPREHENSION" },
 ];
 
-function YearFilterPills({
+export function YearFilterPills({
   availableYears = [],
   selectedYear = "All",
   onSelectYear,
