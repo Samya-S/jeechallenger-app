@@ -45,7 +45,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.1"
+    "eslint-config-next": "^16.2.1",
+    "puppeteer": "^25.16.0"
   },
   "overrides": {
     "cookie": "^0.7.0"

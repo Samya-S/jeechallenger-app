@@ -7,6 +7,17 @@ export const dynamic = 'force-dynamic';
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token || !token.id) {
+      return Response.json(
+        {
+          error: 'UNAUTHORIZED',
+          message: 'Authentication required. Please sign in to take a CBT mock test.',
+          redirect_url: '/login',
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const { paper_id, instance_id } = body;
 
@@ -17,7 +28,7 @@ export async function POST(req) {
       return Response.json({ error: 'instance_id is required' }, { status: 400 });
     }
 
-    const userId = token?.id || `guest_${instance_id}`;
+    const userId = token.id;
     const sessionKey = `cbt:session:${userId}:${paper_id}`;
 
     // 1. Check if an active session already exists in Redis

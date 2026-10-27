@@ -55,12 +55,12 @@ export default function CBTVirtualKeypad({ className = '' }) {
 
   return (
     <div
-      className={`cbt-virtual-keypad select-none p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800/90 shadow-sm inline-block ${className}`}
+      className={`cbt-virtual-keypad select-none p-4 rounded-xl border border-gray-300 bg-white shadow-sm inline-block ${className}`}
       data-testid="cbt-virtual-keypad"
     >
-      <div className="mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center justify-between">
+      <div className="mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center justify-between">
         <span>Numerical Input</span>
-        <span className="text-[10px] text-amber-600 dark:text-amber-400 font-normal">
+        <span className="text-[10px] text-amber-600 font-normal">
           *Use mouse to enter value
         </span>
       </div>
@@ -76,7 +76,7 @@ export default function CBTVirtualKeypad({ className = '' }) {
           onKeyUp={(e) => e.preventDefault()}
           onKeyPress={(e) => e.preventDefault()}
           onPaste={(e) => e.preventDefault()}
-          className="w-full h-11 px-3 text-right font-mono text-xl font-bold bg-gray-50 dark:bg-gray-900 border-2 border-blue-500/70 rounded-lg text-gray-900 dark:text-white focus:outline-none shadow-inner tracking-widest cursor-default selection:bg-transparent"
+          className="w-full h-11 px-3 text-right font-mono text-xl font-bold bg-gray-50 border-2 border-blue-500/70 rounded-lg text-gray-900 focus:outline-none shadow-inner tracking-widest cursor-default selection:bg-transparent"
           data-testid="cbt-numeric-input"
         />
       </div>
@@ -89,7 +89,7 @@ export default function CBTVirtualKeypad({ className = '' }) {
               key={`${rIdx}-${btn}`}
               type="button"
               onClick={() => handleKeyPress(btn)}
-              className="h-11 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 hover:bg-blue-50 active:bg-blue-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-mono text-lg font-bold shadow-sm transition-all flex items-center justify-center cursor-pointer hover:border-blue-400 active:scale-95"
+              className="h-11 rounded-lg border border-gray-300 bg-gray-50 hover:bg-blue-50 active:bg-blue-100 text-gray-900 font-mono text-lg font-bold shadow-sm transition-all flex items-center justify-center cursor-pointer hover:border-blue-400 active:scale-95"
               data-key={btn}
             >
               {btn}
@@ -101,7 +101,7 @@ export default function CBTVirtualKeypad({ className = '' }) {
         <button
           type="button"
           onClick={handleBackspace}
-          className="col-span-2 h-11 rounded-lg border border-amber-300 dark:border-amber-700/60 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-medium text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+          className="col-span-2 h-11 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
           title="Backspace"
           data-testid="cbt-keypad-backspace"
         >
@@ -113,7 +113,7 @@ export default function CBTVirtualKeypad({ className = '' }) {
         <button
           type="button"
           onClick={handleClear}
-          className="h-11 rounded-lg border border-red-300 dark:border-red-700/60 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-medium text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+          className="h-11 rounded-lg border border-red-300 bg-red-50 hover:bg-red-100 text-red-600 font-medium text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
           title="Clear"
           data-testid="cbt-keypad-clear"
         >

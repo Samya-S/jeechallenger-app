@@ -119,7 +119,7 @@ export default function CBTExamRoom({ paperData, questionsData, initialSessionDa
 
   return (
     <div
-      className="cbt-exam-room w-screen h-screen overflow-hidden flex flex-col bg-white dark:bg-gray-900 select-none relative"
+      className="cbt-exam-room w-screen h-screen overflow-hidden flex flex-col bg-white text-gray-900 select-none relative"
       data-testid="cbt-exam-room"
     >
       {/* Kiosk Fullscreen Guard & Terminated Mutex Overlay */}

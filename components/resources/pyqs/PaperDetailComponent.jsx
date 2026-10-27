@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { 
   Clock, 
   Award, 
@@ -19,7 +20,8 @@ import {
   Share2,
   Sparkles,
   Bug,
-  Play
+  Play,
+  LogIn
 } from "lucide-react";
 
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -29,6 +31,7 @@ import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -453,32 +456,42 @@ function PaperDetailContent({ paperData }) {
             </div>
           </div>
         
-          {/* Authentic CBT Mock Test Action Banner */}
-          <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-blue-900 via-[#1b365d] to-indigo-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg border border-blue-700/50">
+          {/* Timed CBT Mock Test Action Banner */}
+          <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-800/80 dark:via-gray-800/80 dark:to-slate-800/60 border border-blue-200/80 dark:border-blue-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/40 text-[11px] font-bold tracking-wider uppercase text-blue-200">
-                  Authentic CBT Mode
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-[11px] font-bold tracking-wider uppercase text-blue-700 dark:text-blue-300">
+                  Timed Mock Test
                 </span>
-                <span className="text-xs text-blue-300">
-                  Official NTA / TCS iON Experience
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {paperData.duration_minutes || 180} Minutes • {paperData.total_marks || 300} Marks
                 </span>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-white">
-                Take Full Mock Test in Real Exam Environment
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                Attempt this full paper under exam conditions
               </h3>
-              <p className="text-xs text-blue-200/90 max-w-xl">
-                Experience the 1:1 real testing room interface with real-time countdown, official question palette, mouse keypad, and immediate scorecard breakdown.
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 max-w-xl">
+                Practice with a real-time countdown timer and marking scheme. Receive an instant scorecard, pacing analysis, and detailed step-by-step solutions when finished.
               </p>
             </div>
 
-            <Link
-              href={`/mock-test/${paperData.slug || paperData.paper_id}`}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold text-sm shadow-md shadow-orange-500/30 transition-all shrink-0 cursor-pointer active:scale-95 group"
-            >
-              <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
-              <span>Start Mock Test</span>
-            </Link>
+            {session?.user ? (
+              <Link
+                href={`/mock-test/${paperData.slug || paperData.paper_id}`}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-sm transition-all shrink-0 cursor-pointer active:scale-95 group"
+              >
+                <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
+                <span>Start Mock Test</span>
+              </Link>
+            ) : (
+              <Link
+                href={`/login?callbackUrl=/mock-test/${paperData.slug || paperData.paper_id}`}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-sm transition-all shrink-0 cursor-pointer active:scale-95 group"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign in to Take Mock Test</span>
+              </Link>
+            )}
           </div>
 
         </div>

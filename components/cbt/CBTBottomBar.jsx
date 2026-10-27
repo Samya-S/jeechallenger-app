@@ -20,7 +20,7 @@ export default function CBTBottomBar({ onOpenSubmitSummary }) {
 
   return (
     <footer
-      className="cbt-bottom-bar w-full min-h-[64px] bg-[#f8f9fa] dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5 select-none shrink-0 z-20 shadow-md"
+      className="cbt-bottom-bar w-full min-h-[64px] bg-[#f8f9fa] border-t border-gray-300 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5 select-none shrink-0 z-20 shadow-md"
       data-testid="cbt-bottom-bar"
     >
       {/* Left: Main Answering Action Buttons (NTA Official Sequence) */}
@@ -52,7 +52,7 @@ export default function CBTBottomBar({ onOpenSubmitSummary }) {
         <button
           type="button"
           onClick={clearResponse}
-          className="px-3 py-2 rounded-lg bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-semibold shadow-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+          className="px-3 py-2 rounded-lg bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 text-xs sm:text-sm font-semibold shadow-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95"
           data-testid="cbt-clear-response-btn"
         >
           <RotateCcw className="w-3.5 h-3.5 text-gray-500" />
@@ -79,8 +79,8 @@ export default function CBTBottomBar({ onOpenSubmitSummary }) {
           disabled={isFirstQuestion}
           className={`px-3 py-2 rounded-lg border text-xs sm:text-sm font-semibold flex items-center gap-1 transition-all ${
             isFirstQuestion
-              ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400'
-              : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 cursor-pointer shadow-xs active:scale-95'
+              ? 'opacity-40 cursor-not-allowed bg-gray-100 border-gray-200 text-gray-400'
+              : 'bg-white hover:bg-gray-100 text-gray-700 border-gray-300 cursor-pointer shadow-xs active:scale-95'
           }`}
           data-testid="cbt-prev-btn"
         >
@@ -95,8 +95,8 @@ export default function CBTBottomBar({ onOpenSubmitSummary }) {
           disabled={isLastQuestion}
           className={`px-3 py-2 rounded-lg border text-xs sm:text-sm font-semibold flex items-center gap-1 transition-all ${
             isLastQuestion
-              ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400'
-              : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 cursor-pointer shadow-xs active:scale-95'
+              ? 'opacity-40 cursor-not-allowed bg-gray-100 border-gray-200 text-gray-400'
+              : 'bg-white hover:bg-gray-100 text-gray-700 border-gray-300 cursor-pointer shadow-xs active:scale-95'
           }`}
           data-testid="cbt-next-btn"
         >

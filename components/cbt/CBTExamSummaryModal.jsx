@@ -89,14 +89,14 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 select-none"
       data-testid="cbt-summary-modal"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-slate-50 dark:bg-gray-800/80">
+        <div className="p-4 sm:p-5 border-b border-gray-200 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">
               Exam Submission Summary
             </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               Review your question attempt status before final submission.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,7 +112,7 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
 
         {/* Content Table */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
-          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="overflow-x-auto rounded-xl border border-gray-200">
             <table className="w-full text-xs sm:text-sm text-left">
               <thead className="bg-[#1b365d] text-white uppercase text-[11px] tracking-wider">
                 <tr>
@@ -125,25 +125,25 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
                   <th className="px-3 py-2.5 text-center text-gray-300 font-bold">Not Visited</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 font-medium">
+              <tbody className="divide-y divide-gray-200 font-medium">
                 {sectionStats.map((sec, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                    <td className="px-3 py-2 font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 font-bold text-gray-900 truncate max-w-[150px]">
                       {sec.name}
                     </td>
-                    <td className="px-3 py-2 text-center text-gray-700 dark:text-gray-300">
+                    <td className="px-3 py-2 text-center text-gray-700">
                       {sec.total}
                     </td>
-                    <td className="px-3 py-2 text-center text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50/40 dark:bg-emerald-950/20">
+                    <td className="px-3 py-2 text-center text-emerald-600 font-bold bg-emerald-50/40">
                       {sec.answered}
                     </td>
-                    <td className="px-3 py-2 text-center text-red-600 dark:text-red-400 font-bold bg-red-50/40 dark:bg-red-950/20">
+                    <td className="px-3 py-2 text-center text-red-600 font-bold bg-red-50/40">
                       {sec.notAnswered}
                     </td>
-                    <td className="px-3 py-2 text-center text-purple-600 dark:text-purple-400 font-bold">
+                    <td className="px-3 py-2 text-center text-purple-600 font-bold">
                       {sec.markedForReview}
                     </td>
-                    <td className="px-3 py-2 text-center text-purple-600 dark:text-purple-400 font-bold">
+                    <td className="px-3 py-2 text-center text-purple-600 font-bold">
                       {sec.answeredAndMarked}
                     </td>
                     <td className="px-3 py-2 text-center text-gray-500">
@@ -152,20 +152,20 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="bg-gray-100 dark:bg-gray-900 font-bold text-gray-900 dark:text-white border-t-2 border-gray-300 dark:border-gray-600">
+              <tfoot className="bg-gray-100 font-bold text-gray-900 border-t-2 border-gray-300">
                 <tr>
                   <td className="px-3 py-2.5 uppercase tracking-wider">Total</td>
                   <td className="px-3 py-2.5 text-center">{totals.total}</td>
-                  <td className="px-3 py-2.5 text-center text-emerald-600 dark:text-emerald-400">
+                  <td className="px-3 py-2.5 text-center text-emerald-600">
                     {totals.answered}
                   </td>
-                  <td className="px-3 py-2.5 text-center text-red-600 dark:text-red-400">
+                  <td className="px-3 py-2.5 text-center text-red-600">
                     {totals.notAnswered}
                   </td>
-                  <td className="px-3 py-2.5 text-center text-purple-600 dark:text-purple-400">
+                  <td className="px-3 py-2.5 text-center text-purple-600">
                     {totals.markedForReview}
                   </td>
-                  <td className="px-3 py-2.5 text-center text-purple-600 dark:text-purple-400">
+                  <td className="px-3 py-2.5 text-center text-purple-600">
                     {totals.answeredAndMarked}
                   </td>
                   <td className="px-3 py-2.5 text-center text-gray-500">{totals.notVisited}</td>
@@ -175,11 +175,11 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
           </div>
 
           {/* Warning Banner */}
-          <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-start gap-3 text-xs sm:text-sm text-amber-800 dark:text-amber-300">
+          <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3 text-xs sm:text-sm text-amber-800">
             <AlertCircle className="w-5 h-5 shrink-0 text-amber-600 mt-0.5" />
             <div>
               <p className="font-bold">Are you sure you want to submit?</p>
-              <p className="mt-0.5 text-xs text-amber-700 dark:text-amber-400">
+              <p className="mt-0.5 text-xs text-amber-700">
                 Once confirmed, your test will be evaluated immediately. You will not be able to resume or change any answers.
               </p>
             </div>
@@ -187,19 +187,19 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 font-semibold">
+            <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 font-semibold">
               {errorMessage}
             </div>
           )}
         </div>
 
         {/* Action Buttons */}
-        <div className="p-4 sm:p-5 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-3 bg-gray-50 dark:bg-gray-850">
+        <div className="p-4 sm:p-5 border-t border-gray-200 flex items-center justify-end gap-3 bg-gray-50">
           <button
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            className="px-4 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-xs disabled:opacity-50"
             data-testid="cbt-summary-cancel-btn"
           >
             Return to Test

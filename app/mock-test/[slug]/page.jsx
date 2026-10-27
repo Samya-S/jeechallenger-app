@@ -1,6 +1,8 @@
 import React from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { ObjectId } from 'mongodb';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import clientPromise from '@/utils/mongodb';
 import CBTExamRoom from '@/components/cbt/CBTExamRoom';
 
@@ -99,6 +101,12 @@ export async function generateMetadata({ params }) {
 export default async function MockTestPage({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
+
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    redirect(`/login?callbackUrl=/mock-test/${slug}`);
+  }
+
   const paper = await loadPaperAndQuestions(slug);
 
   if (!paper || !paper.questions || paper.questions.length === 0) {
@@ -106,11 +114,11 @@ export default async function MockTestPage({ params }) {
   }
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-white dark:bg-gray-900 select-none">
+    <div className="w-screen h-screen overflow-hidden bg-white text-gray-900 select-none">
       <CBTExamRoom
         paperData={paper}
         questionsData={paper.questions}
-        candidateName="JEE Aspirant"
+        candidateName={session.user.name || 'Candidate'}
       />
     </div>
   );

@@ -11,18 +11,18 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-6 select-none"
       data-testid="cbt-instructions-modal"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-3xl w-full h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-3xl w-full h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-slate-50 dark:bg-gray-800/80">
+        <div className="p-4 sm:p-5 border-b border-gray-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
               <HelpCircle className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 General Instructions & Marking Rules
               </h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-500">
                 Official Computer-Based Test (CBT) Guidelines
               </p>
             </div>
@@ -31,17 +31,17 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 text-sm text-gray-700 leading-relaxed">
           {/* Section 1: General */}
           <div className="space-y-2">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">1</span>
               General Instructions
             </h3>
@@ -54,28 +54,28 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
 
           {/* Section 2: Question Palette Color Codes */}
           <div className="space-y-2">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">2</span>
               Question Palette Color Legend
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 dark:bg-gray-750 border border-gray-200 dark:border-gray-700">
-                <span className="w-6 h-6 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 font-bold flex items-center justify-center shrink-0">1</span>
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-200">
+                <span className="w-6 h-6 rounded border border-gray-300 bg-white font-bold flex items-center justify-center shrink-0">1</span>
                 <span>You have not visited the question yet.</span>
               </div>
-              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 dark:bg-gray-750 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-200">
                 <span className="w-6 h-6 rounded-b-md bg-[#dc3545] text-white font-bold flex items-center justify-center shrink-0">2</span>
                 <span>You have not answered the question.</span>
               </div>
-              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 dark:bg-gray-750 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-200">
                 <span className="w-6 h-6 rounded-t-md bg-[#28a745] text-white font-bold flex items-center justify-center shrink-0">3</span>
                 <span>You have answered the question.</span>
               </div>
-              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 dark:bg-gray-750 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-200">
                 <span className="w-6 h-6 rounded-full bg-[#6f42c1] text-white font-bold flex items-center justify-center shrink-0">4</span>
                 <span>You have marked the question for review (not answered).</span>
               </div>
-              <div className="col-span-1 sm:col-span-2 flex items-center gap-2.5 p-2 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+              <div className="col-span-1 sm:col-span-2 flex items-center gap-2.5 p-2 rounded-lg bg-purple-50 border border-purple-200">
                 <div className="w-6 h-6 rounded-full bg-[#6f42c1] text-white font-bold flex items-center justify-center relative shrink-0">
                   <span>5</span>
                   <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-[#28a745] rounded-xs flex items-center justify-center">
@@ -89,7 +89,7 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
 
           {/* Section 3: Navigation and Saving Responses */}
           <div className="space-y-2">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">3</span>
               Navigating & Saving Responses
             </h3>
@@ -104,7 +104,7 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-slate-50 dark:bg-gray-800/80">
+        <div className="p-4 border-t border-gray-200 flex justify-end bg-slate-50">
           <button
             type="button"
             onClick={onClose}

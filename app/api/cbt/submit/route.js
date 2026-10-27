@@ -8,6 +8,13 @@ export const dynamic = 'force-dynamic';
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token || !token.id) {
+      return Response.json(
+        { error: 'UNAUTHORIZED', message: 'Authentication required. Please sign in to submit exam.' },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const { session_id, instance_id, final_question_time_map } = body;
 

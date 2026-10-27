@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
+import { normalizeOptions } from '@/utils/cbt-helpers';
 import { 
   CheckCircle2, 
   XCircle, 
@@ -322,40 +323,58 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                 )}
 
                 {/* Options List for MCQ */}
-                {qDoc?.options && qDoc.options.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-                    {qDoc.options.map((opt, oIdx) => {
-                      const optKey = opt.option_key || String.fromCharCode(65 + oIdx);
-                      const isCandidatePick = att.selected_option === optKey;
-                      const isCorrectPick = qDoc.correct_answer?.includes(optKey);
+                {(() => {
+                  const normOptions = normalizeOptions(qDoc?.options);
+                  if (normOptions.length === 0) return null;
 
-                      let cardStyle = 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-750/40 text-gray-700 dark:text-gray-300';
-                      if (isCandidatePick && isCorrectPick) {
-                        cardStyle = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-bold';
-                      } else if (isCandidatePick && !isCorrectPick) {
-                        cardStyle = 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 font-bold';
-                      } else if (isCorrectPick) {
-                        cardStyle = 'border-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 font-semibold';
-                      }
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                      {normOptions.map((opt) => {
+                        const optKey = opt.key;
+                        const isCandidatePick = att.selected_option === optKey;
+                        const isCorrectPick = qDoc.correct_answer?.includes(optKey);
 
-                      return (
-                        <div
-                          key={optKey}
-                          className={`p-3 rounded-xl border-2 flex items-start gap-2.5 transition-all ${cardStyle}`}
-                        >
-                          <span className="font-bold shrink-0">({optKey})</span>
-                          <div className="flex-1 min-w-0">
-                            {opt.option_text ? (
-                              <MarkdownMathRenderer content={opt.option_text} />
-                            ) : (
-                              <span>Option {optKey}</span>
-                            )}
+                        let cardStyle = 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-750/40 text-gray-700 dark:text-gray-300';
+                        if (isCandidatePick && isCorrectPick) {
+                          cardStyle = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-bold';
+                        } else if (isCandidatePick && !isCorrectPick) {
+                          cardStyle = 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 font-bold';
+                        } else if (isCorrectPick) {
+                          cardStyle = 'border-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 font-semibold';
+                        }
+
+                        return (
+                          <div
+                            key={optKey}
+                            className={`p-3 rounded-xl border-2 flex items-start gap-2.5 transition-all ${cardStyle}`}
+                          >
+                            <span className="font-bold shrink-0">({optKey})</span>
+                            <div className="flex-1 min-w-0">
+                              {opt.text ? (
+                                <MarkdownMathRenderer content={opt.text} />
+                              ) : (
+                                <span>Option {optKey}</span>
+                              )}
+                              {opt.diagram_urls && opt.diagram_urls.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                  {opt.diagram_urls.map((u, dIdx) => (
+                                    <img
+                                      key={dIdx}
+                                      src={u}
+                                      alt={`Option ${optKey} Diagram ${dIdx + 1}`}
+                                      className="max-h-32 object-contain rounded border border-gray-200 dark:border-gray-700"
+                                      loading="lazy"
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
 
                 {/* Student Answer vs Official Key Comparison Strip */}
                 <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-gray-750/70 border border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
