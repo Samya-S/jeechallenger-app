@@ -71,6 +71,54 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     return Array.from(seen);
   }, [attempts]);
 
+  // Listen for jump to question events from Pacing Heatmap or external analysis
+  useEffect(() => {
+    const handleJump = (e) => {
+      const qNum = e?.detail?.qNum;
+      if (!qNum) return;
+
+      const targetAtt = attempts.find((a) => a.question_number === Number(qNum) || a.question_number === qNum);
+      if (!targetAtt) return;
+
+      // 1. Ensure subject filter includes this question
+      if (activeSubject !== 'ALL' && activeSubject !== targetAtt.subject) {
+        setActiveSubject(targetAtt.subject);
+      }
+
+      // 2. Ensure status filter includes this question
+      setActiveStatus((currentStatus) => {
+        if (currentStatus === 'CORRECT' && !targetAtt.is_correct) return 'ALL';
+        if (currentStatus === 'INCORRECT' && (!targetAtt.is_evaluated || targetAtt.is_correct)) return 'ALL';
+        if (currentStatus === 'UNATTEMPTED' && targetAtt.is_evaluated) return 'ALL';
+        if (currentStatus === 'TIME_TRAPS' && ((targetAtt.time_spent_seconds || 0) < 240 || targetAtt.is_correct)) return 'ALL';
+        if (currentStatus === 'MISTAKE_VAULT' && !savedVaultQNums.has(targetAtt.question_number)) return 'ALL';
+        return currentStatus;
+      });
+
+      // 3. Auto-expand the solution for this question
+      setExpandedSolutions((prev) => {
+        const next = new Set(prev);
+        next.add(targetAtt.question_number);
+        return next;
+      });
+
+      // 4. Smooth scroll and highlight pulse
+      setTimeout(() => {
+        const el = document.getElementById(`review-q-${targetAtt.question_number}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-4', 'ring-amber-500', 'shadow-2xl');
+          setTimeout(() => {
+            el.classList.remove('ring-4', 'ring-amber-500', 'shadow-2xl');
+          }, 2500);
+        }
+      }, 150);
+    };
+
+    window.addEventListener('cbt-jump-to-question', handleJump);
+    return () => window.removeEventListener('cbt-jump-to-question', handleJump);
+  }, [attempts, activeSubject, savedVaultQNums]);
+
   // Filter attempts
   const filteredAttempts = useMemo(() => {
     return attempts.filter((att) => {
@@ -375,7 +423,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
             return (
               <div
                 key={att.question_number}
-                className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left"
+                id={`review-q-${att.question_number}`}
+                className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left transition-all duration-500"
                 data-testid={`review-q-${att.question_number}`}
               >
                 {/* Question Header matching PaperDetailComponent */}

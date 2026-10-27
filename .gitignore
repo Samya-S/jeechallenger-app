@@ -45,3 +45,8 @@ robots.txt
 sitemap*.xml
 image-sitemap.xml
 rss.xml
+
+
+# scratch & temporary files
+/scratch/
+CLAUDE.md
