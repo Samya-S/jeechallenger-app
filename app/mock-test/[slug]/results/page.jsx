@@ -9,6 +9,7 @@ import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
 import CBTSolutionReview from '@/components/cbt/results/CBTSolutionReview';
 import CBTAttemptSwitcher from '@/components/cbt/results/CBTAttemptSwitcher';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { ArrowLeft, RotateCcw, FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -187,15 +188,14 @@ export default async function MockTestResultsPage({ params, searchParams }) {
   return (
     <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Top Navigation Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
-          <Link
-            href="/previous-year-questions?tab=papers"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>All Question Papers</span>
-          </Link>
+        {/* Top Navigation & Breadcrumbs Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+          <Breadcrumbs
+            crumbs={[
+              { label: 'Mock Tests', href: '/mock-test' },
+              { label: 'Scorecard', href: `/mock-test/${paperSlug}/results` },
+            ]}
+          />
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {allAttempts.length > 0 && (

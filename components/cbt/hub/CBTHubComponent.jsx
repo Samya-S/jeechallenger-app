@@ -166,7 +166,6 @@ export default function CBTHubComponent({
         {/* Breadcrumbs Navigation */}
         <Breadcrumbs
           crumbs={[
-            { label: 'Resources', href: '/resources' },
             { label: 'Mock Tests', href: '/mock-test' },
           ]}
           className="pb-2"

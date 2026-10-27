@@ -292,5 +292,59 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
   const result = await db.collection('test_submissions').insertOne(submissionData);
   submissionData._id = result.insertedId;
 
+  // 6. Automatically populate Mistake Vault with incorrect attempts
+  try {
+    const incorrectAttempts = (submissionData.question_attempts || []).filter(
+      (att) => att.is_evaluated && !att.is_correct
+    );
+
+    if (incorrectAttempts.length > 0 && userId) {
+      let userObjId = null;
+      try {
+        userObjId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+      } catch {
+        userObjId = userId;
+      }
+
+      const qMap = new Map();
+      questions.forEach((q) => {
+        qMap.set(String(q._id), q);
+      });
+
+      const vaultOps = incorrectAttempts.map((att) => {
+        const qDoc = qMap.get(String(att.question_id));
+        return {
+          updateOne: {
+            filter: {
+              $or: [{ user_id: userObjId }, { user_id: String(userObjId) }],
+              paper_id: paper.paper_id,
+              question_number: Number(att.question_number),
+            },
+            update: {
+              $setOnInsert: {
+                user_id: userObjId,
+                paper_id: paper.paper_id,
+                paper_slug: paper.slug || paper.paper_id,
+                question_number: Number(att.question_number),
+                question_id: att.question_id,
+                subject: att.subject || qDoc?.subject || null,
+                chapter: qDoc?.chapter || null,
+                saved_at: new Date(),
+                source: 'auto_incorrect_evaluation',
+              },
+            },
+            upsert: true,
+          },
+        };
+      });
+
+      if (vaultOps.length > 0) {
+        await db.collection('mistake_vault').bulkWrite(vaultOps, { ordered: false });
+      }
+    }
+  } catch (vaultErr) {
+    console.error('Failed to auto-populate mistake vault:', vaultErr);
+  }
+
   return submissionData;
 }

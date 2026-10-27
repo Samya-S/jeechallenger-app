@@ -42,61 +42,61 @@ export default function CBTScorecard({ submission }) {
   return (
     <div className="cbt-scorecard space-y-6" data-testid="cbt-scorecard">
       {/* Top Banner: Score, Accuracy, Time & Percentile */}
-      <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#162942] via-[#1b365d] to-[#0f1d30] text-white shadow-xl border border-blue-900/50">
+      <div className="rounded-3xl p-6 sm:p-8 bg-white dark:bg-gradient-to-br dark:from-[#162942] dark:via-[#1b365d] dark:to-[#0f1d30] border border-slate-200 dark:border-blue-900/50 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] transition-colors">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           {/* Main Score Block */}
           <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-300 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-300 flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               <span>Official Scorecard • {submission.paper_title || submission.paper_id}</span>
             </span>
             <div className="flex items-baseline gap-3">
-              <span className="text-5xl sm:text-6xl font-black tracking-tight text-white" data-testid="total-score-val">
+              <span className="text-5xl sm:text-6xl font-black tracking-tight text-gray-900 dark:text-white" data-testid="total-score-val">
                 {totalScore}
               </span>
-              <span className="text-xl sm:text-2xl font-bold text-blue-300">
+              <span className="text-xl sm:text-2xl font-bold text-gray-500 dark:text-blue-300">
                 / {maxMarks}
               </span>
-              <span className="ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30">
+              <span className="ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-500/20 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-400/30">
                 {((totalScore / (maxMarks || 1)) * 100).toFixed(1)}% Marks
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-blue-200/80">
-              Exam evaluated via official JEE scoring matrix. Status: <strong className="text-emerald-400">Evaluated</strong>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-blue-200/80">
+              Exam evaluated via official JEE scoring matrix. Status: <strong className="text-emerald-600 dark:text-emerald-400">Evaluated</strong>
             </p>
           </div>
 
           {/* Quick Metrics Pills */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {/* Projected Percentile */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-blue-300 font-semibold">
-                <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+            <div className="p-3 sm:p-4 rounded-2xl bg-amber-50/60 dark:bg-white/5 border border-amber-200/60 dark:border-white/10 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-blue-300 font-semibold">
+                <TrendingUp className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 <span>Percentile Est.</span>
               </div>
-              <span className="text-lg sm:text-xl font-black text-amber-300 mt-1">
+              <span className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-300 mt-1">
                 {predictedPercentile}
               </span>
             </div>
 
             {/* Overall Accuracy */}
-            <div className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-blue-300 font-semibold">
-                <Target className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="p-3 sm:p-4 rounded-2xl bg-emerald-50/60 dark:bg-white/5 border border-emerald-200/60 dark:border-white/10 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-blue-300 font-semibold">
+                <Target className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                 <span>Accuracy</span>
               </div>
-              <span className="text-lg sm:text-xl font-black text-emerald-300 mt-1" data-testid="accuracy-val">
+              <span className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-300 mt-1" data-testid="accuracy-val">
                 {accuracy.toFixed(1)}%
               </span>
             </div>
 
             {/* Time Used */}
-            <div className="col-span-2 sm:col-span-1 p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-xs text-blue-300 font-semibold">
-                <Clock className="w-3.5 h-3.5 text-blue-400" />
+            <div className="col-span-2 sm:col-span-1 p-3 sm:p-4 rounded-2xl bg-blue-50/60 dark:bg-white/5 border border-blue-200/60 dark:border-white/10 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 text-xs text-blue-700 dark:text-blue-300 font-semibold">
+                <Clock className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
                 <span>Time Used</span>
               </div>
-              <span className="text-lg sm:text-xl font-black text-blue-100 mt-1">
+              <span className="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-100 mt-1">
                 {formattedTime}
               </span>
             </div>
