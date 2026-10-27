@@ -87,6 +87,70 @@ export function evaluateQuestion(q, scheme, attempt) {
 }
 
 /**
+ * Dynamic format-aware pacing benchmark evaluator:
+ * Determines if an attempt is a Speed Win or Time Trap based on exam format, subject, and question type.
+ */
+export function evaluateAttemptPacing(timeSpentSeconds, isCorrect, isEvaluated, subject, questionType, examType) {
+  const time = Number(timeSpentSeconds) || 0;
+  const isAdv = String(examType || '').toUpperCase().includes('ADVANCED');
+  const subj = String(subject || '').toLowerCase();
+  const qType = String(questionType || '').toUpperCase();
+
+  const isChem = subj.startsWith('chem');
+  const isPhy = subj.startsWith('phy');
+  const isMath = subj.startsWith('math');
+
+  let winThreshold = 90;
+  let trapThreshold = 240;
+
+  if (isAdv) {
+    if (qType.includes('MULTI') || qType.includes('MATCH') || qType.includes('MATRIX')) {
+      winThreshold = 135;
+      trapThreshold = 450;
+    } else if (qType.includes('NUMER') || qType.includes('INTEGER')) {
+      winThreshold = 120;
+      trapThreshold = 420;
+    } else if (isChem) {
+      winThreshold = 60;
+      trapThreshold = 240;
+    } else if (isPhy) {
+      winThreshold = 90;
+      trapThreshold = 330;
+    } else if (isMath) {
+      winThreshold = 120;
+      trapThreshold = 390;
+    } else {
+      winThreshold = 90;
+      trapThreshold = 330;
+    }
+  } else {
+    // JEE Main & default
+    const isNumeric = qType.includes('NUMER') || qType.includes('INTEGER');
+    if (isChem) {
+      winThreshold = isNumeric ? 90 : 45;
+      trapThreshold = isNumeric ? 270 : 165;
+    } else if (isPhy) {
+      winThreshold = isNumeric ? 105 : 75;
+      trapThreshold = isNumeric ? 300 : 225;
+    } else if (isMath) {
+      winThreshold = isNumeric ? 120 : 90;
+      trapThreshold = isNumeric ? 390 : 270;
+    } else {
+      winThreshold = isNumeric ? 105 : 75;
+      trapThreshold = isNumeric ? 300 : 225;
+    }
+  }
+
+  const isSpeedWin = Boolean(time > 0 && time <= winThreshold && isCorrect);
+  const isTimeTrap = Boolean(time >= trapThreshold && (!isCorrect || !isEvaluated));
+
+  return {
+    is_speed_win: isSpeedWin,
+    is_time_trap: isTimeTrap,
+  };
+}
+
+/**
  * Pure evaluation function that grades responses against a paper and question list.
  */
 export function scoreTestSubmission(paper, questions, responses, submissionMeta) {
@@ -205,11 +269,25 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
         }
       }
 
+      // Format-aware pacing benchmark analysis
+      const { is_speed_win, is_time_trap } = evaluateAttemptPacing(
+        attempt.time_spent_seconds,
+        attempt.is_correct,
+        attempt.is_evaluated,
+        sec.subject,
+        q.question_type,
+        paper.exam_type
+      );
+      attempt.is_speed_win = is_speed_win;
+      attempt.is_time_trap = is_time_trap;
+
       questionAttempts.push(attempt);
     }
   }
 
   const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 10000) / 100 : 0;
+  const timeTrapsCount = questionAttempts.filter((a) => a.is_time_trap).length;
+  const speedWinsCount = questionAttempts.filter((a) => a.is_speed_win).length;
 
   return {
     user_id: submissionMeta.user_id,
@@ -229,6 +307,10 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
       total_incorrect: totalIncorrect,
       total_unattempted: totalUnattempted,
       subject_scores: subjectScores,
+      pacing: {
+        time_traps_count: timeTrapsCount,
+        speed_wins_count: speedWinsCount,
+      },
     },
     question_attempts: questionAttempts,
   };

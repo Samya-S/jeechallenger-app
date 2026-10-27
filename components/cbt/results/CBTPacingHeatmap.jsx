@@ -6,20 +6,14 @@ import { AlertTriangle, Zap, Clock, Hourglass, Target } from 'lucide-react';
 export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
   const attempts = submission?.question_attempts || [];
 
-  // 1. Detect Time Traps (spent >= 240 seconds and wrong or unattempted)
+  // 1. Detect Time Traps from backend pacing flags (strict DB-driven, zero fallback)
   const timeTraps = useMemo(() => {
-    return attempts.filter((att) => {
-      const time = att.time_spent_seconds || 0;
-      return time >= 240 && (!att.is_correct || !att.is_evaluated);
-    });
+    return attempts.filter((att) => att.is_time_trap);
   }, [attempts]);
 
-  // 2. Detect Fast & Accurate (spent <= 90s and correct)
+  // 2. Detect Fast & Accurate from backend pacing flags (strict DB-driven, zero fallback)
   const fastAndAccurate = useMemo(() => {
-    return attempts.filter((att) => {
-      const time = att.time_spent_seconds || 0;
-      return time > 0 && time <= 90 && att.is_correct;
-    });
+    return attempts.filter((att) => att.is_speed_win);
   }, [attempts]);
 
   // 3. Subject-wise average time per attempted question & benchmarks
@@ -109,12 +103,12 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
               </div>
 
               <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
-                &ge; 4 mins lost
+                Pace Overrun
               </span>
             </div>
 
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed min-h-[32px]">
-              Questions where you invested &ge; 4 minutes but resulted in 0 or negative marks. Avoiding prolonged deadlocks preserves vital scoring time.
+              Questions where invested time significantly exceeded target pace benchmarks but resulted in 0 or negative marks. Avoiding prolonged deadlocks preserves vital scoring time.
             </p>
           </div>
 
@@ -177,12 +171,12 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
               </div>
 
               <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
-                &le; 90s correct
+                Optimal Pace
               </span>
             </div>
 
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed min-h-[32px]">
-              Questions answered correctly in &le; 90 seconds. Foundational mastery areas yielding maximum marks with minimal time overhead.
+              Questions answered correctly well within target pace benchmarks. Foundational mastery areas yielding maximum marks with minimal time overhead.
             </p>
           </div>
 
@@ -208,7 +202,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
                     {formatSeconds(att.time_spent_seconds)}
                   </span>
                   <span className="min-w-[26px] text-center text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
-                    +4
+                    +{att.marks_awarded > 0 ? att.marks_awarded : 4}
                   </span>
                 </button>
               ))}
