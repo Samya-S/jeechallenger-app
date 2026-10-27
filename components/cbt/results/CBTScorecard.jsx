@@ -107,7 +107,7 @@ export default function CBTScorecard({ submission }) {
       {/* 4-Stat Metric Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Attempted */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-3">
+        <div className="p-4 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 font-bold">
             <Target className="w-5 h-5" />
           </div>
@@ -120,7 +120,7 @@ export default function CBTScorecard({ submission }) {
         </div>
 
         {/* Total Correct */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-900/40 shadow-sm flex items-center gap-3 bg-emerald-50/20 dark:bg-emerald-950/10">
+        <div className="p-4 rounded-3xl bg-white dark:bg-gray-900 border border-emerald-200 dark:border-emerald-900/40 shadow-md flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 font-bold">
             <CheckCircle2 className="w-5 h-5" />
           </div>
@@ -133,21 +133,21 @@ export default function CBTScorecard({ submission }) {
         </div>
 
         {/* Total Incorrect */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-red-200 dark:border-red-900/40 shadow-sm flex items-center gap-3 bg-red-50/20 dark:bg-red-950/10">
-          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0 font-bold">
+        <div className="p-4 rounded-3xl bg-white dark:bg-gray-900 border border-rose-200 dark:border-rose-900/40 shadow-md flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/60 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0 font-bold">
             <XCircle className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs text-red-700 dark:text-red-400 font-medium">Incorrect</span>
-            <div className="text-xl sm:text-2xl font-black text-red-600 dark:text-red-400">
+            <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">Incorrect</span>
+            <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">
               {totalIncorrect}
             </div>
           </div>
         </div>
 
         {/* Unattempted */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-750 flex items-center justify-center text-gray-500 dark:text-gray-400 shrink-0 font-bold">
+        <div className="p-4 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-md flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 shrink-0 font-bold">
             <MinusCircle className="w-5 h-5" />
           </div>
           <div>
@@ -191,7 +191,7 @@ export default function CBTScorecard({ submission }) {
             return (
               <div
                 key={sub}
-                className={`p-5 rounded-2xl bg-white dark:bg-gray-800 border ${borderTheme} shadow-sm space-y-4`}
+                className={`p-6 rounded-3xl bg-white dark:bg-gray-900 border ${borderTheme} shadow-lg ring-1 ring-black/[0.03] dark:ring-white/[0.06] space-y-4`}
               >
                 <div className="flex items-center justify-between">
                   <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${badgeBg}`}>

@@ -15,6 +15,8 @@ import {
   Check,
   X,
   ArrowUpRight,
+  ChevronDown,
+  ChevronUp,
   Eye
 } from 'lucide-react';
 
@@ -39,6 +41,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   // Filters state
   const [activeSubject, setActiveSubject] = useState('ALL');
   const [activeStatus, setActiveStatus] = useState('ALL');
+  // Solutions collapsible state: Set of expanded question numbers. By default empty (all closed).
+  const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
   const [savedVaultQNums, setSavedVaultQNums] = useState(() => {
     if (typeof window === 'undefined') return new Set();
     try {
@@ -68,10 +72,34 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       if (activeStatus === 'INCORRECT' && (!att.is_evaluated || att.is_correct)) return false;
       if (activeStatus === 'UNATTEMPTED' && att.is_evaluated) return false;
       if (activeStatus === 'TIME_TRAPS' && (att.time_spent_seconds < 240 || att.is_correct)) return false;
+      if (activeStatus === 'MISTAKE_VAULT' && !savedVaultQNums.has(att.question_number)) return false;
 
       return true;
     });
-  }, [attempts, activeSubject, activeStatus]);
+  }, [attempts, activeSubject, activeStatus, savedVaultQNums]);
+
+  // Toggle individual solution
+  const toggleSolution = (qNum) => {
+    setExpandedSolutions((prev) => {
+      const next = new Set(prev);
+      if (next.has(qNum)) {
+        next.delete(qNum);
+      } else {
+        next.add(qNum);
+      }
+      return next;
+    });
+  };
+
+  // Toggle all solutions
+  const handleToggleAllSolutions = () => {
+    if (expandedSolutions.size > 0) {
+      setExpandedSolutions(new Set());
+    } else {
+      const allQNums = new Set(filteredAttempts.map((a) => a.question_number));
+      setExpandedSolutions(allQNums);
+    }
+  };
 
   // Toggle Mistake Vault Bookmark
   const handleToggleVault = (qNum) => {
@@ -198,6 +226,39 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           >
             Time Traps (&gt;4m)
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveStatus('MISTAKE_VAULT')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeStatus === 'MISTAKE_VAULT'
+                ? 'bg-amber-500 text-white shadow-sm'
+                : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40'
+            }`}
+          >
+            <Bookmark className="w-3.5 h-3.5" />
+            <span>Mistake Vault ({savedVaultQNums.size})</span>
+          </button>
+        </div>
+
+        {/* Global Expand / Collapse All Solutions Toggle */}
+        <div className="flex items-center shrink-0">
+          <button
+            type="button"
+            onClick={handleToggleAllSolutions}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-all cursor-pointer border border-slate-200/80 dark:border-gray-700/80 shadow-2xs"
+          >
+            {expandedSolutions.size > 0 ? (
+              <>
+                <ChevronUp className="w-3.5 h-3.5 text-orange-500" />
+                <span>Collapse All Solutions</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-3.5 h-3.5 text-orange-500" />
+                <span>Expand All Solutions</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -205,7 +266,15 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       <div className="space-y-6">
         {filteredAttempts.length === 0 ? (
           <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 text-gray-500 shadow-sm">
-            No questions match the selected filter criteria.
+            {activeStatus === 'MISTAKE_VAULT' ? (
+              <div className="space-y-2">
+                <Bookmark className="w-8 h-8 text-amber-500 mx-auto" />
+                <p className="font-bold text-gray-700 dark:text-gray-300">No questions bookmarked in Mistake Vault yet</p>
+                <p className="text-xs text-gray-500">Click the bookmark icon on any question card above to save it here for targeted revision.</p>
+              </div>
+            ) : (
+              'No questions match the selected filter criteria.'
+            )}
           </div>
         ) : (
           filteredAttempts.map((att) => {
@@ -465,29 +534,64 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     </div>
                   </div>
 
-                  {/* Step-by-Step Solution Section */}
+                  {/* Step-by-Step Solution Section (Collapsible & Closed by Default) */}
                   {qDoc?.solution && (
-                    <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-[#0d1320] p-5 sm:p-6 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-orange-500" />
-                          <span>Step-by-Step Solution</span>
-                        </h4>
-                        {qDoc.slug && (
-                          <Link
-                            href={`/question/${qDoc.slug}?view=solution`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+                    <div className="pt-2">
+                      {!expandedSolutions.has(att.question_number) ? (
+                        <button
+                          type="button"
+                          onClick={() => toggleSolution(att.question_number)}
+                          className="w-full flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-orange-50/60 dark:bg-orange-950/20 hover:bg-orange-100/60 dark:hover:bg-orange-950/40 border border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer group"
+                        >
+                          <div className="flex items-center gap-2.5 font-bold text-sm">
+                            <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+                              <Sparkles className="w-4 h-4" />
+                            </div>
+                            <span>View Step-by-Step Solution</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
+                            <span>Show Solution</span>
+                            <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                          </div>
+                        </button>
+                      ) : (
+                        <div className="rounded-2xl border border-orange-200/80 dark:border-orange-900/60 bg-gradient-to-b from-orange-50/40 to-transparent dark:from-orange-950/20 dark:to-transparent overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => toggleSolution(att.question_number)}
+                            className="w-full flex items-center justify-between p-3.5 sm:p-4 bg-orange-50/80 dark:bg-orange-950/40 border-b border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer"
                           >
-                            <span>Open standalone question</span>
-                            <ArrowUpRight className="w-3.5 h-3.5" />
-                          </Link>
-                        )}
-                      </div>
-                      <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 leading-relaxed font-sans pt-1">
-                        <MarkdownMathRenderer content={qDoc.solution} />
-                      </div>
+                            <div className="flex items-center gap-2.5 font-bold text-sm">
+                              <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+                                <Sparkles className="w-4 h-4" />
+                              </div>
+                              <span>Step-by-Step Solution</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
+                              <span>Hide Solution</span>
+                              <ChevronUp className="w-4 h-4" />
+                            </div>
+                          </button>
+                          <div className="p-5 sm:p-6 space-y-4">
+                            {qDoc.slug && (
+                              <div className="flex justify-end">
+                                <Link
+                                  href={`/question/${qDoc.slug}?view=solution`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+                                >
+                                  <span>Open standalone question</span>
+                                  <ArrowUpRight className="w-3.5 h-3.5" />
+                                </Link>
+                              </div>
+                            )}
+                            <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 leading-relaxed font-sans">
+                              <MarkdownMathRenderer content={qDoc.solution} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

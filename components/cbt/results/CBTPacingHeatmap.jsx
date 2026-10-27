@@ -59,7 +59,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Time Traps Warning Box */}
-        <div className="p-5 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 shadow-sm space-y-3">
+        <div className="p-6 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 shadow-md space-y-3">
           <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-sm">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
             <span>Time Traps Identified ({timeTraps.length})</span>
@@ -70,7 +70,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
           </p>
 
           {timeTraps.length === 0 ? (
-            <div className="p-3 rounded-xl bg-white/60 dark:bg-gray-800/60 border border-amber-200/60 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-gray-900/80 border border-amber-200/60 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
               ✨ Great discipline! Zero severe time traps detected.
             </div>
           ) : (
@@ -80,7 +80,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
                   key={att.question_number}
                   type="button"
                   onClick={() => onSelectQuestion && onSelectQuestion(att.question_number)}
-                  className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-900 dark:text-amber-200 shadow-xs hover:border-amber-500 transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-900 dark:text-amber-200 shadow-xs hover:border-amber-500 transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <span>Q{att.question_number} ({att.subject})</span>
                   <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono">
@@ -93,7 +93,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
         </div>
 
         {/* Speed Wins Box */}
-        <div className="p-5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60 shadow-sm space-y-3">
+        <div className="p-6 rounded-3xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60 shadow-md space-y-3">
           <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
             <Zap className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>Fast & Accurate Solutions ({fastAndAccurate.length})</span>
@@ -104,7 +104,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
           </p>
 
           {fastAndAccurate.length === 0 ? (
-            <div className="p-3 rounded-xl bg-white/60 dark:bg-gray-800/60 border border-emerald-200/60 text-xs text-gray-500">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-gray-900/80 border border-emerald-200/60 text-xs text-gray-500">
               Focus on increasing solving speed on straightforward questions.
             </div>
           ) : (
@@ -114,7 +114,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
                   key={att.question_number}
                   type="button"
                   onClick={() => onSelectQuestion && onSelectQuestion(att.question_number)}
-                  className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-xs hover:border-emerald-500 transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 border border-emerald-300 dark:border-emerald-700 text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-xs hover:border-emerald-500 transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <span>Q{att.question_number}</span>
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
@@ -133,7 +133,7 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
       </div>
 
       {/* Average Time Per Subject Strip */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-wrap items-center justify-between gap-4 text-xs font-medium">
+      <div className="p-5 rounded-3xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 shadow-lg ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-wrap items-center justify-between gap-4 text-xs font-medium">
         <span className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-blue-500" />
           <span>Average Time Spent per Attempted Question:</span>

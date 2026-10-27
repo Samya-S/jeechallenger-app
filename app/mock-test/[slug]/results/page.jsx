@@ -8,6 +8,7 @@ import clientPromise from '@/utils/mongodb';
 import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
 import CBTSolutionReview from '@/components/cbt/results/CBTSolutionReview';
+import CBTAttemptSwitcher from '@/components/cbt/results/CBTAttemptSwitcher';
 import { ArrowLeft, RotateCcw, FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -61,6 +62,33 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
 
     if (!submission) return null;
 
+    // Load all attempts by this user for this paper (for attempt switcher & progression)
+    let allAttempts = [];
+    if (sessionUserId) {
+      const userQueries = [{ user_id: sessionUserId }];
+      try {
+        userQueries.push({ user_id: new ObjectId(sessionUserId) });
+      } catch {}
+
+      allAttempts = await db
+        .collection('test_submissions')
+        .find({
+          $or: userQueries,
+          paper_id: { $in: [paperId, slug] },
+        })
+        .sort({ submitted_at: -1, started_at: -1 })
+        .project({
+          _id: 1,
+          paper_id: 1,
+          paper_title: 1,
+          submitted_at: 1,
+          started_at: 1,
+          time_taken_seconds: 1,
+          summary: 1,
+        })
+        .toArray();
+    }
+
     // Load full question documents for solutions
     let questions = [];
     if (submission.paper_id) {
@@ -93,10 +121,12 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
 
     const cleanSubmission = JSON.parse(JSON.stringify(submission));
     const cleanQuestions = JSON.parse(JSON.stringify(questions));
+    const cleanAllAttempts = JSON.parse(JSON.stringify(allAttempts));
 
     return {
       submission: cleanSubmission,
       questions: cleanQuestions,
+      allAttempts: cleanAllAttempts,
       paperSlug: paper?.slug || slug,
     };
   } catch (error) {
@@ -152,10 +182,10 @@ export default async function MockTestResultsPage({ params, searchParams }) {
     redirect(`/mock-test/${slug}`);
   }
 
-  const { submission, questions, paperSlug } = data;
+  const { submission, questions, allAttempts = [], paperSlug } = data;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Top Navigation Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
@@ -167,7 +197,15 @@ export default async function MockTestResultsPage({ params, searchParams }) {
             <span>All Question Papers</span>
           </Link>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {allAttempts.length > 0 && (
+              <CBTAttemptSwitcher
+                paperSlug={paperSlug}
+                allAttempts={allAttempts}
+                currentSubmissionId={submission._id}
+              />
+            )}
+
             <Link
               href={`/mock-test/${paperSlug}`}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-xs transition-all cursor-pointer"
