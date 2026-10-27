@@ -17,8 +17,10 @@ import {
   ArrowUpRight,
   ChevronDown,
   ChevronUp,
-  Eye
+  Eye,
+  Bug
 } from 'lucide-react';
+import ReportQuestionModal from '@/components/modals/ReportQuestionModal';
 
 const subjectBadgeColors = {
   Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
@@ -45,6 +47,26 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
   // Persistent Mistake Vault state loaded from MongoDB
   const [savedVaultQNums, setSavedVaultQNums] = useState(() => new Set());
+  // Reporting bug state for question bug modal
+  const [reportingQuestion, setReportingQuestion] = useState(null);
+
+  const handleReportBug = (att, qDoc) => {
+    const bugQuestion = qDoc
+      ? {
+          ...qDoc,
+          question_number: att.question_number,
+          subject: qDoc.subject || att.subject,
+          title: qDoc.title || `Q${att.question_number} - ${submission?.paper_title || ''}`,
+        }
+      : {
+          _id: att.question_id,
+          question_number: att.question_number,
+          subject: att.subject,
+          title: `Q${att.question_number} - ${submission?.paper_title || ''}`,
+          exam_type: submission?.exam_type || 'JEE_MAIN',
+        };
+    setReportingQuestion(bugQuestion);
+  };
 
   // Load saved Mistake Vault questions from MongoDB on mount
   useEffect(() => {
@@ -473,8 +495,20 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                           : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 hover:text-amber-500'
                       }`}
                       title={isSaved ? 'Saved in Mistake Vault' : 'Save to Mistake Vault'}
+                      aria-label={isSaved ? 'Remove from Mistake Vault' : 'Save to Mistake Vault'}
                     >
                       {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                    </button>
+
+                    {/* Report Bug Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleReportBug(att, qDoc)}
+                      className="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-400 hover:text-red-500 hover:border-red-300 dark:hover:border-red-800/60 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs transition-all cursor-pointer"
+                      title="Report a bug in this question"
+                      aria-label="Report a bug"
+                    >
+                      <Bug className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -709,6 +743,13 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           })
         )}
       </div>
+
+      {/* Bug Report Modal */}
+      <ReportQuestionModal
+        isOpen={!!reportingQuestion}
+        onClose={() => setReportingQuestion(null)}
+        question={reportingQuestion}
+      />
     </div>
   );
 }
