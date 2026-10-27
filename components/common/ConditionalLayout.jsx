@@ -10,7 +10,10 @@ import TelegramGateProvider from '../providers/TelegramGateProvider';
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
   const isAITutorPage = pathname.startsWith('/ai-tutor');
-  const isCBTExam = pathname.startsWith('/mock-test') && !pathname.includes('/results');
+  const isCBTExam =
+    pathname.startsWith('/mock-test/') &&
+    pathname !== '/mock-test' &&
+    !pathname.includes('/results');
   const isMinimalLayout = isAITutorPage || isCBTExam;
 
   return (

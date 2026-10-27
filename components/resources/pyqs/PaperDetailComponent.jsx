@@ -457,20 +457,20 @@ function PaperDetailContent({ paperData }) {
           </div>
         
           {/* Timed CBT Mock Test Action Banner */}
-          <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50 via-indigo-50/50 to-slate-50 dark:from-slate-800/80 dark:via-gray-800/80 dark:to-slate-800/60 border border-blue-200/80 dark:border-blue-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+          <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/90 via-indigo-50/60 to-blue-50/40 dark:bg-gradient-to-r dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-slate-900/40 border border-blue-200/90 dark:border-blue-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-[11px] font-bold tracking-wider uppercase text-blue-700 dark:text-blue-300">
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/80 border border-blue-300 dark:border-blue-800 text-[11px] font-bold tracking-wider uppercase text-blue-700 dark:text-blue-300">
                   Timed Mock Test
                 </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                   {paperData.duration_minutes || 180} Minutes • {paperData.total_marks || 300} Marks
                 </span>
               </div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                 Attempt this full paper under exam conditions
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 max-w-xl">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 max-w-xl leading-relaxed">
                 Practice with a real-time countdown timer and marking scheme. Receive an instant scorecard, pacing analysis, and detailed step-by-step solutions when finished.
               </p>
             </div>
@@ -478,7 +478,7 @@ function PaperDetailContent({ paperData }) {
             {session?.user ? (
               <Link
                 href={`/mock-test/${paperData.slug || paperData.paper_id}`}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-sm transition-all shrink-0 cursor-pointer active:scale-95 group"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-bold text-sm shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-95 group"
               >
                 <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
                 <span>Start Mock Test</span>
@@ -486,7 +486,7 @@ function PaperDetailContent({ paperData }) {
             ) : (
               <Link
                 href={`/login?callbackUrl=/mock-test/${paperData.slug || paperData.paper_id}`}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-sm transition-all shrink-0 cursor-pointer active:scale-95 group"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-bold text-sm shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-95 group"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign in to Take Mock Test</span>

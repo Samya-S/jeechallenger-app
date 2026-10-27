@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
@@ -23,16 +23,13 @@ import {
   TrendingUp, 
   ChevronDown, 
   ChevronUp,
-  LogIn
+  LogIn,
+  Play
 } from 'lucide-react';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import { normalizeOptions } from '@/utils/cbt-helpers';
-
-const subjectBadgeColors = {
-  Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
-  Chemistry: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60",
-  Mathematics: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60",
-};
+import { getExamBadgeColor, subjectColors } from '@/utils/pyq-helpers';
 
 export default function CBTHubComponent({
   user,
@@ -50,6 +47,18 @@ export default function CBTHubComponent({
     if (tabParam === 'vault' || tabParam === 'mistake-vault') return 'vault';
     return 'papers';
   });
+
+  // Sync tab with URL searchParams (Back/Forward navigation and direct links)
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'attempts') {
+      setActiveTab('attempts');
+    } else if (tabParam === 'vault' || tabParam === 'mistake-vault') {
+      setActiveTab('vault');
+    } else {
+      setActiveTab('papers');
+    }
+  }, [searchParams]);
 
   // Filter state for Available Papers
   const [examTypeFilter, setExamTypeFilter] = useState('ALL');
@@ -89,7 +98,7 @@ export default function CBTHubComponent({
   // Performance analytics summary across attempts
   const analytics = useMemo(() => {
     if (!submissions || submissions.length === 0) {
-      return { totalTests: 0, avgAccuracy: 0, highestScore: 0, totalAttempts: 0 };
+      return { totalTests: 0, avgAccuracy: 0, highestScore: 0 };
     }
     const totalTests = submissions.length;
     let sumAccuracy = 0;
@@ -141,73 +150,91 @@ export default function CBTHubComponent({
     }
   };
 
+  // Two-way URL Tab Selection
   const handleTabSelect = (tab) => {
     setActiveTab(tab);
-    const query = tab === 'papers' ? '' : `?tab=${tab === 'vault' ? 'mistake-vault' : tab}`;
-    router.replace(`/mock-test${query}`, { scroll: false });
+    const targetUrl =
+      tab === 'papers'
+        ? '/mock-test'
+        : `/mock-test?tab=${tab === 'vault' ? 'mistake-vault' : tab}`;
+    window.history.pushState(null, '', targetUrl);
   };
 
   return (
-    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100 py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header Hero */}
-        <div className="bg-gradient-to-br from-[#162942] via-[#1b365d] to-[#0f1d30] text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-blue-900/50 relative overflow-hidden">
-          <div className="relative z-10 max-w-3xl space-y-3">
-            <span className="text-xs font-black uppercase tracking-widest text-blue-300 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400" />
-              <span>JEE Challenger • CBT Mock Test Center</span>
-            </span>
-            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
-              Official Timed Mock Test Engine & Mistake Vault
+        {/* Breadcrumbs Navigation */}
+        <Breadcrumbs
+          crumbs={[
+            { label: 'Resources', href: '/resources' },
+            { label: 'Mock Tests', href: '/mock-test' },
+          ]}
+          className="pb-2"
+        />
+
+        {/* Clean Student-Facing Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-gray-200 dark:border-gray-800">
+          <div className="space-y-2 text-left">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+              JEE Mock Tests
             </h1>
-            <p className="text-sm sm:text-base text-blue-100/80 leading-relaxed font-normal">
-              Experience the authentic NTA JEE Main and TCS iON JEE Advanced interface with countdown kiosk simulation, deterministic scoring, pacing heatmaps, and a persistent Mistake Vault.
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
+              Practice official full-length JEE Main and Advanced previous year papers under real exam conditions with timed test simulation, instant scorecards, and mistake revision.
             </p>
           </div>
 
-          {/* Quick Metrics Strip for Authenticated Student */}
-          {user ? (
-            <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-blue-800/60 mt-6">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                <span className="text-xs font-semibold text-blue-300 block">Tests Completed</span>
-                <span className="text-xl sm:text-2xl font-black text-white mt-1 block">
+          {!user && (
+            <Link
+              href="/login?callbackUrl=/mock-test"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all shrink-0 self-start md:self-end"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In to Track History</span>
+            </Link>
+          )}
+        </div>
+
+        {/* Performance Overview Strip for Authenticated Student */}
+        {user && (
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-gray-800 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-black/[0.03] dark:ring-white/[0.06] text-left">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-blue-500" />
+                <span>Your Mock Test Performance Overview</span>
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Logged in as <strong className="text-gray-900 dark:text-white">{user.name || user.email}</strong>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 block">Tests Attempted</span>
+                <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-1 block">
                   {analytics.totalTests}
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                <span className="text-xs font-semibold text-blue-300 block">Avg Accuracy</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-300 mt-1 block">
+              <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40">
+                <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 block">Average Accuracy</span>
+                <span className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
                   {analytics.avgAccuracy}%
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                <span className="text-xs font-semibold text-blue-300 block">Highest Score</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-300 mt-1 block">
+              <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
+                <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Highest Score</span>
+                <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1 block">
                   {analytics.highestScore}
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                <span className="text-xs font-semibold text-blue-300 block">Mistake Vault</span>
-                <span className="text-xl sm:text-2xl font-black text-blue-100 mt-1 block">
+              <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
+                <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 block">Mistake Vault</span>
+                <span className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400 mt-1 block">
                   {vaultItems.length} Qs
                 </span>
               </div>
             </div>
-          ) : (
-            <div className="relative z-10 pt-4 mt-4 border-t border-blue-800/60 flex items-center justify-between">
-              <span className="text-xs sm:text-sm text-blue-200">
-                Sign in to save test attempt history, track speed vs accuracy, and sync your Mistake Vault across devices.
-              </span>
-              <Link
-                href="/login?callbackUrl=/mock-test"
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-white text-gray-900 hover:bg-blue-50 transition-all shrink-0 flex items-center gap-1.5 shadow-sm"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Sign In</span>
-              </Link>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Tab Navigation Controls */}
         <div className="flex items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
@@ -261,41 +288,43 @@ export default function CBTHubComponent({
         {/* ========================================================================= */}
         {activeTab === 'papers' && (
           <div className="space-y-6">
-            {/* Filter Bar */}
+            {/* Filter Bar with Official Color Chips */}
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mr-1">
-                  Exam:
+                  Exam Type:
                 </span>
                 <button
                   type="button"
                   onClick={() => setExamTypeFilter('ALL')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     examTypeFilter === 'ALL'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                   }`}
                 >
                   All Exams
                 </button>
+                {/* Official JEE Main Badge Color (Emerald) */}
                 <button
                   type="button"
                   onClick={() => setExamTypeFilter('JEE_MAIN')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     examTypeFilter === 'JEE_MAIN'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      ? 'bg-emerald-600 text-white shadow-sm border border-emerald-600'
+                      : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60'
                   }`}
                 >
                   JEE Main
                 </button>
+                {/* Official JEE Advanced Badge Color (Orange) */}
                 <button
                   type="button"
                   onClick={() => setExamTypeFilter('JEE_ADVANCED')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     examTypeFilter === 'JEE_ADVANCED'
-                      ? 'bg-purple-600 text-white shadow-sm'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      ? 'bg-orange-600 text-white shadow-sm border border-orange-600'
+                      : 'text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/60 hover:bg-orange-100 dark:hover:bg-orange-900/60'
                   }`}
                 >
                   JEE Advanced
@@ -305,12 +334,12 @@ export default function CBTHubComponent({
               {availableYears.length > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Year:
+                    Exam Year:
                   </span>
                   <select
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 cursor-pointer"
                   >
                     <option value="ALL">All Years</option>
                     {availableYears.map((y) => (
@@ -327,10 +356,9 @@ export default function CBTHubComponent({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPapers.map((paper) => {
                 const isAdv = paper.exam_type === 'JEE_ADVANCED';
-                const totalQuestions = paper.sections?.reduce(
-                  (sum, s) => sum + (s.total_questions || 0),
-                  0
-                ) || (isAdv ? 51 : 75);
+                const totalQuestions =
+                  paper.sections?.reduce((sum, s) => sum + (s.total_questions || 0), 0) ||
+                  (isAdv ? 51 : 75);
 
                 return (
                   <div
@@ -338,18 +366,16 @@ export default function CBTHubComponent({
                     className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] p-6 flex flex-col justify-between hover:shadow-xl transition-all text-left"
                   >
                     <div className="space-y-4">
-                      {/* Badge Row */}
+                      {/* Official Exam Badge (Using getExamBadgeColor from pyq-helpers) */}
                       <div className="flex items-center justify-between gap-2">
                         <span
-                          className={`px-3 py-1 text-xs font-bold rounded-lg border ${
-                            isAdv
-                              ? 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border-purple-200'
-                              : 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border-blue-200'
-                          }`}
+                          className={`px-3 py-1 text-xs font-bold rounded-lg border ${getExamBadgeColor(
+                            paper.exam_type
+                          )}`}
                         >
                           {isAdv ? 'JEE Advanced' : 'JEE Main'}
                         </span>
-                        <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg">
+                        <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
                           {paper.exam_year || 'Official'}
                         </span>
                       </div>
@@ -380,9 +406,9 @@ export default function CBTHubComponent({
                     <div className="pt-6 space-y-2">
                       <Link
                         href={`/mock-test/${paper.slug}`}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
                       >
-                        <Sparkles className="w-4 h-4" />
+                        <Play className="w-4 h-4 fill-white" />
                         <span>Start Mock Test</span>
                       </Link>
 
@@ -407,7 +433,7 @@ export default function CBTHubComponent({
         {activeTab === 'attempts' && (
           <div className="space-y-6 text-left">
             {!user ? (
-              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 space-y-4">
+              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-md space-y-4">
                 <Target className="w-12 h-12 text-blue-500 mx-auto" />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   Sign in to view your test attempts
@@ -417,14 +443,14 @@ export default function CBTHubComponent({
                 </p>
                 <Link
                   href="/login?callbackUrl=/mock-test?tab=attempts"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition-all"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Sign In with Google</span>
                 </Link>
               </div>
             ) : submissions.length === 0 ? (
-              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 space-y-4">
+              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-md space-y-4">
                 <BookOpen className="w-12 h-12 text-blue-500 mx-auto" />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   No mock test attempts recorded yet
@@ -435,7 +461,7 @@ export default function CBTHubComponent({
                 <button
                   type="button"
                   onClick={() => handleTabSelect('papers')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all cursor-pointer"
                 >
                   <span>Browse Available Papers</span>
                   <ArrowRight className="w-4 h-4" />
@@ -531,17 +557,17 @@ export default function CBTHubComponent({
         {activeTab === 'vault' && (
           <div className="space-y-6 text-left">
             {!user ? (
-              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 space-y-4">
+              <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-md space-y-4">
                 <Bookmark className="w-12 h-12 text-amber-500 mx-auto" />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   Sign in to access your Mistake Vault
                 </h3>
                 <p className="text-sm text-gray-500 max-w-md mx-auto">
-                  Your Mistake Vault is saved directly in MongoDB Atlas and syncs automatically across all your devices.
+                  Your Mistake Vault syncs securely to your account and is available across all your devices.
                 </p>
                 <Link
                   href="/login?callbackUrl=/mock-test?tab=mistake-vault"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-sm transition-all"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Sign In with Google</span>
@@ -551,17 +577,17 @@ export default function CBTHubComponent({
               <>
                 {/* Vault Header & Filter Bar */}
                 <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">
                       Subject:
                     </span>
                     <button
                       type="button"
                       onClick={() => setVaultSubjectFilter('ALL')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         vaultSubjectFilter === 'ALL'
                           ? 'bg-amber-500 text-white shadow-sm'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                       }`}
                     >
                       All ({vaultItems.length})
@@ -573,10 +599,10 @@ export default function CBTHubComponent({
                           key={sub}
                           type="button"
                           onClick={() => setVaultSubjectFilter(sub)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             vaultSubjectFilter === sub
                               ? 'bg-amber-500 text-white shadow-sm'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                           }`}
                         >
                           {sub} ({count})
@@ -586,13 +612,13 @@ export default function CBTHubComponent({
                   </div>
 
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Questions saved in your personal MongoDB Notebook
+                    Questions bookmarked from your test attempts for revision
                   </span>
                 </div>
 
                 {/* Vault Questions Feed */}
                 {filteredVaultItems.length === 0 ? (
-                  <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 space-y-3">
+                  <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-md space-y-3">
                     <BookmarkCheck className="w-12 h-12 text-amber-500 mx-auto" />
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                       No questions in Mistake Vault
@@ -622,7 +648,7 @@ export default function CBTHubComponent({
                               {item.subject && (
                                 <span
                                   className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${
-                                    subjectBadgeColors[item.subject] ||
+                                    subjectColors[item.subject] ||
                                     'text-gray-600 bg-gray-100 border-gray-200'
                                   }`}
                                 >
