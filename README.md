@@ -8,6 +8,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - [Features](#features)
   - [Core Features](#-core-features)
+  - [Computer-Based Test (CBT) Mock Test Engine](#-computer-based-test-cbt-mock-test-engine)
   - [User Experience](#-user-experience)
   - [Study Resources](#-study-resources)
   - [Previous Year Questions](#-previous-year-questions)
@@ -33,6 +34,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 🎯 Core Features
 
+- **Computer-Based Test (CBT) Mock Test Engine (`/mock-test`)**: Authentic NTA (JEE Main) and TCS iON (JEE Advanced) full-length 3-hour examination simulator with 3-tier state hierarchy (Zustand -> IndexedDB -> Upstash Redis), multi-device anti-collision lease, official palette states, multi-correct checkbox input with partial marking (`MULTI_CORRECT_PARTIAL`), Section B 5-of-10 attempt enforcement, automatic Mistake Vault sync with active recall, interactive Time Traps & Speed Wins pacing analytics, and factual Attempt Rate scorecard evaluation.
 - **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/question/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/paper/:slug`) with section navigation.
 - **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history.
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking and cloud sync.
@@ -78,6 +80,26 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - Complete official shift paper viewer with responsive **2-Tier Subject & Section Navigator** (`Physics Sec A/B`, `Chemistry Sec A/B`, `Mathematics Sec A/B`).
   - Real-time URL query parameter synchronization (`?subject=...&section=...`) to persist active state across reloads.
   - Sequential paper question numbering (`Q1..Q90`) and external solution links opening in new tabs.
+
+
+### 🖥️ Computer-Based Test (CBT) Mock Test Engine
+
+- **Authentic Examination Interfaces (`/mock-test`)**:
+  - **JEE Main Terminal**: Official NTA CBT software replica with 6-section navigation (`Physics/Chem/Math Sec A & B`), synchronized master countdown timer, Question Paper preview, Instructions modal, and official 5-state Question Palette (Not Visited, Not Answered, Answered, Marked for Review, Answered & Marked for Review).
+  - **JEE Advanced Terminal**: TCS iON CBT replica with 2-tier hierarchy (Parts & Sub-Sections), accessibility zoom (`A+ / A / A-`), and section-filtered question palette.
+  - **Unsaved Palette Jump Trait**: Replicates official NTA/IIT examination rules where jumping directly via the palette discards uncommitted choices.
+  - **Virtual Numeric Keypad**: Mouse-only on-screen keypad strictly blocking physical keyboard strokes for numerical integer/decimal inputs.
+  - **Multi-Correct Checkbox Support**: Dedicated square checkbox controls with simultaneous option toggling and official partial marking (`+4, +3, +2, +1, -2`).
+- **Resilient 3-Tier State Architecture**:
+  - Layer 1: Visual State (Zustand, 0 ms UI updates).
+  - Layer 2: Local Crash Guard (IndexedDB `<1 ms` persistence against accidental browser close).
+  - Layer 3: Cloud Persistence (Upstash Redis delta sync via lightweight HTTP REST calls).
+  - Multi-device leased mutex anti-collision preventing concurrent device cheating (409 Conflict lockout overlay).
+- **Comprehensive Scorecard & Pacing Analytics (`/mock-test/[slug]/results`)**:
+  - **Factual Attempt Rate**: Replaced pseudo-percentiles with accurate attempted question ratios (`Attempt Rate: 84.0% (63/75)`).
+  - **Interactive Time Traps & Speed Wins**: Benchmark pacing dashboard with click-to-jump smooth scrolling and amber focus highlight pulse.
+  - **Mistake Vault with Active Recall**: Automatically stores incorrect attempts in MongoDB Atlas with step-by-step solutions collapsed and closed by default.
+  - **In-Situ Bug Reporting**: Direct `<Bug />` report trigger on every review card linking into `ReportQuestionModal`.
 
 
 ### 👨‍🏫 AI Tutor

@@ -1,5 +1,5 @@
 # JEE Challenger: Computer-Based Test (CBT) Engine — Master Specification
-**Document Version:** 1.1.0  
+**Document Version:** 1.2.0  
 **Status:** Approved Architectural Blueprint (Source of Truth)  
 **Target Applications:** `jeechallenger-app`, `jeechallenger-pyqs`, `jeechallenger-admin`
 
@@ -175,6 +175,14 @@ The layout strictly mirrors the Indian Institute of Technology / TCS iON examina
   "time_spent_seconds": 125,
   "updated_at": 1714002125
 }),
+"q_5": JSON.stringify({
+  "selected_option": "A,C",
+  "selected_options": ["A", "C"],
+  "numeric_value": null,
+  "color_state": 3,
+  "time_spent_seconds": 140,
+  "updated_at": 1714002220
+}),
 "q_21": JSON.stringify({
   "selected_option": null,
   "numeric_value": "42.5",
@@ -281,9 +289,9 @@ Using `setInterval(() => seconds++, 1000)` drifts by several minutes over a 3-ho
 
 | Question Type | Correct | Incorrect | Unattempted | Partial Marking |
 | :--- | :---: | :---: | :---: | :--- |
-| **Single Correct (MCQ)** | `+4` | `-1` | `0` | None |
-| **Numerical Value** | `+4` | `-1` (Mains) / `0` (Adv) | `0` | None |
-| **Multiple Correct** | `+4` | `-2` | `0` | `+3` (if all 4 correct and 3 chosen), `+2` (if 3+ correct and 2 chosen), `+1` (if 2+ correct and 1 chosen). Any wrong option chosen = full negative (`-2`). |
+| **Single Correct (MCQ)** | `+4` / `+3` | `-1` | `0` | None |
+| **Numerical Value** | `+4` / `+3` | `-1` (Mains) / `0` (Adv) | `0` | None (Range or exact match) |
+| **Multiple Correct** | `+4` | `-2` / `-1` | `0` | **Official JEE Advanced Rules (`MULTI_CORRECT_PARTIAL`)**:<br>• **Full Marks (`+4`)**: If all correct options are chosen and zero incorrect options are chosen.<br>• **Partial Marks (`+3`)**: If 4 options are correct and 3 are chosen (none incorrect).<br>• **Partial Marks (`+2`)**: If 3 or more options are correct and 2 are chosen (none incorrect).<br>• **Partial Marks (`+1`)**: If 2 or more options are correct and 1 is chosen (none incorrect).<br>• **Penalty (`-2` or `-1`)**: If **any** incorrect option is chosen.<br>• Under `MULTI_CORRECT_NO_PARTIAL`: Exact match awards full marks, any mismatch awards penalty or 0. |
 
 ---
 
@@ -472,10 +480,11 @@ interface CBTStore {
   activeSectionIndex: number;
 
   // In-Flight Candidate Responses
-  answers: Record<number, { selectedOption: string | null; numericValue: string | null }>;
+  answers: Record<number, { selectedOption: string | null; selectedOptions: string[]; numericValue: string | null }>;
   paletteStates: Record<number, 1 | 2 | 3 | 4 | 5>;
   questionTimeMap: Record<number, number>; // question_number -> seconds
   activeQuestionEnteredAt: number;        // Date.now() timestamp
+  uncommittedAnswer: { selectedOption: string | null; selectedOptions: string[]; numericValue: string | null };
 
   // Sync & Telemetry Queues
   pendingSyncQueue: Set<number>;
@@ -489,6 +498,7 @@ interface CBTStore {
 
   // Actions
   selectOption: (option: string) => void;
+  toggleMultiOption: (option: string) => void;
   setNumericValue: (val: string) => void;
   saveAndNext: () => void;
   saveAndMarkForReview: () => void;
@@ -503,6 +513,13 @@ interface CBTStore {
 ---
 
 ## 11. Authoritative MongoDB Atlas Schemas
+
+### Canonical Database Schema Relation (Zero Fallback Policy)
+Direct audit of the MongoDB Atlas `jee_challenger_pyqs` database:
+* **`production` collection (2,973 questions)**: `paper_id` is 0. All 2,973 documents use **`original_paper_id`**.
+* **`papers` collection**: primary paper identifier is **`paper_id`** (e.g. `JEE_Advanced_2026_Paper_1`).
+* **Canonical Relational Contract**: `production.original_paper_id === papers.paper_id`.
+* All backend queries strictly enforce `{ original_paper_id: paper.paper_id }`. No fallback hacks or `$or: [{ paper_id }]` logic.
 
 ### Collection: `test_submissions` (Database: `jee_challenger_pyqs`)
 
@@ -527,9 +544,13 @@ interface CBTStore {
     "total_incorrect": 6,
     "total_unattempted": 23,
     "subject_scores": {
-      "Physics": { "score": 64, "attempted": 18, "correct": 16, "incorrect": 2 },
-      "Chemistry": { "score": 72, "attempted": 20, "correct": 18, "incorrect": 2 },
-      "Mathematics": { "score": 48, "attempted": 14, "correct": 12, "incorrect": 2 }
+      "Physics": { "score": 64, "attempted": 18, "correct": 16, "incorrect": 2, "unattempted": 7 },
+      "Chemistry": { "score": 72, "attempted": 20, "correct": 18, "incorrect": 2, "unattempted": 5 },
+      "Mathematics": { "score": 48, "attempted": 14, "correct": 12, "incorrect": 2, "unattempted": 11 }
+    },
+    "pacing": {
+      "time_traps_count": 3,
+      "speed_wins_count": 8
     }
   },
 
@@ -541,12 +562,32 @@ interface CBTStore {
       "section_name": "Mathematics Section A",
       "question_type": "MCQ",
       "selected_option": "B",
+      "selected_options": ["B"],
       "numeric_value": null,
       "color_state": 3,
       "is_evaluated": true,
       "is_correct": true,
       "marks_awarded": 4,
-      "time_spent_seconds": 135
+      "time_spent_seconds": 135,
+      "is_speed_win": false,
+      "is_time_trap": false
+    },
+    {
+      "question_id": ObjectId("6a716d9b7664030ffcb6bb98"),
+      "question_number": 5,
+      "subject": "Chemistry",
+      "section_name": "Chemistry Section 2",
+      "question_type": "MULTI_CORRECT",
+      "selected_option": "A,C",
+      "selected_options": ["A", "C"],
+      "numeric_value": null,
+      "color_state": 3,
+      "is_evaluated": true,
+      "is_correct": true,
+      "marks_awarded": 2, // Partial credit under MULTI_CORRECT_PARTIAL
+      "time_spent_seconds": 145,
+      "is_speed_win": false,
+      "is_time_trap": false
     },
     {
       "question_id": ObjectId("6a716d9b7664030ffcb6bba9"),
@@ -555,12 +596,15 @@ interface CBTStore {
       "section_name": "Mathematics Section B",
       "question_type": "NUMERIC",
       "selected_option": null,
+      "selected_options": [],
       "numeric_value": "4",
       "color_state": 5,
       "is_evaluated": true,
       "is_correct": true,
       "marks_awarded": 4,
-      "time_spent_seconds": 240
+      "time_spent_seconds": 240,
+      "is_speed_win": false,
+      "is_time_trap": false
     }
   ]
 }
@@ -572,16 +616,22 @@ interface CBTStore {
 
 Once submitted, the student lands on the permanent analysis route (`/mock-test/results/[submissionId]`):
 
-1. **Executive Scorecard Banner**: Total Marks, Subject Scores, Accuracy %, Time Used, and Predicted Percentile.
-2. **Pacing & Speed vs. Accuracy Heatmap**: Highlights questions where the student spent >4 minutes and got it wrong (time traps).
-3. **Question-by-Question Solution Navigator**:
-   * Split view or full card displaying:
-     * Student's answer vs Official answer key.
-     * Marks awarded (`+4`, `-1`, or `0`).
-     * Time spent on that specific question.
-     * Full step-by-step LaTeX solution.
-4. **"Mistake Vault" Automated Export**:
-   * All questions where `is_correct === false` can be bookmarked or added directly into the student's personal revision deck with a single click.
+1. **Executive Scorecard Banner**: Total Score, Max Marks, Subject Scores, Accuracy %, Time Used, and factual **Attempt Rate** (`84.0% (63/75)`). Zero misleading pseudo-percentiles ("Emptiness is better than wrong").
+2. **Design System Color Harmony**:
+   * **Best Score Overview Card**: Royal Blue (`bg-blue-50/50 text-blue-600 border-blue-200`)
+   * **Mistake Vault Overview Card**: Golden Amber (`bg-amber-50/50 text-amber-600 border-amber-200`) with Bookmark icon
+   * **Subject Filter Pills**: Physics (Blue), Chemistry (Emerald), Mathematics (Purple), All (Neutral dark/light)
+3. **Pacing Heatmap & Interactive Time Traps**:
+   * Symmetrical 3-row layout categorized into Time Traps, Speed Wins, and Subject Averages.
+   * **Interactive Click-to-Jump**: Clicking any Time Trap or Speed Win pill smoothly scrolls to that question's review card, automatically switches to the correct subject filter, opens the step-by-step solution, and pulses with an amber focus highlight (`ring-4 ring-amber-500 shadow-2xl`).
+4. **Active Recall Mistake Vault**:
+   * Automatically populated with all incorrect attempts (`is_correct === false`).
+   * Step-by-step solutions are **collapsed and closed by default** so candidates can attempt the problem again without immediate answer leakage.
+   * Solution reveals exclusively when the user clicks **"View Step-by-Step Solution"**.
+5. **Multi-Correct Review**:
+   * Renders multiple selected option badges and highlights partial credit awards (`Partially Correct (+X marks)` vs `Correct` vs `Incorrect`).
+6. **In-Situ Bug Reporting**:
+   * Direct `<Bug />` report button on every scorecard solution card pre-filling question metadata into `ReportQuestionModal`.
 
 ---
 

@@ -101,6 +101,24 @@ Each subject maintains its own identity for easy recognition.
 - CTA sections: `from-blue-600 via-blue-500 to-cyan-500`
 - Note: Consistent blue-cyan gradient across all blog elements for unified appearance
 
+### CBT Mock Test Engine & Mistake Vault
+- **Mock Test Overview Performance Strip**:
+  - Tests Attempted (Card 1): Indigo (`bg-indigo-50/50 text-indigo-600 border-indigo-200`)
+  - Average Accuracy (Card 2): Emerald (`bg-emerald-50/50 text-emerald-600 border-emerald-200`)
+  - Best Score (Card 3): **Royal Blue** (`bg-blue-50/50 text-blue-600 border-blue-200`)
+  - Mistake Vault (Card 4): **Golden Amber** (`bg-amber-50/50 text-amber-600 border-amber-200`) with Bookmark icon
+- **Mistake Vault Subject Filter Pills**:
+  - All: Neutral (`bg-gray-900 dark:bg-white text-white dark:text-gray-900`)
+  - Physics: Blue (`bg-blue-600 text-white`)
+  - Chemistry: Emerald Green (`bg-emerald-600 text-white`)
+  - Mathematics: Purple (`bg-purple-600 text-white`)
+- **Official NTA Question Palette States**:
+  - State 1 (Not Visited): Silver/White (`bg-white text-gray-800 border-gray-300 rounded-md`)
+  - State 2 (Not Answered): Red Polygon (`bg-[#dc3545] text-white border-[#bd2130] rounded-b-lg`)
+  - State 3 (Answered): Green Polygon (`bg-[#28a745] text-white border-[#1e7e34] rounded-t-lg`)
+  - State 4 (Marked for Review): Purple Circle (`bg-[#6f42c1] text-white border-[#59359a] rounded-full`)
+  - State 5 (Answered & Marked for Review): Purple Circle with Green Tick Indicator (`bg-[#6f42c1] text-white border-[#59359a] rounded-full relative`)
+
 ## Background Colors
 
 ### Page Backgrounds
