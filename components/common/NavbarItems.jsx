@@ -58,16 +58,16 @@ const NavbarItems = [
     icon: <FaCompass />,
     items: [
       {
+        title: 'Mock Tests',
+        url: '/mock-test'
+      },
+      {
         title: 'AI Tutor',
         url: '/ai-tutor'
       },
       {
         title: 'Syllabus Tracker',
         url: '/syllabus-tracker'
-      },
-      {
-        title: 'Mock Tests',
-        url: '/mock-test'
       },
     ]
   },

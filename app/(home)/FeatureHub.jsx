@@ -30,7 +30,7 @@ import BlogCard from "@/components/ui/BlogCard";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 
 export default function FeatureHub({ latestArticles = [] }) {
-  const [activeTab, setActiveTab] = useState("ai-tutor");
+  const [activeTab, setActiveTab] = useState("cbt");
 
   // Dynamic years fetched from backend endpoint
   const [availableYears, setAvailableYears] = useState(["2026", "2025", "2024"]);
@@ -137,16 +137,16 @@ export default function FeatureHub({ latestArticles = [] }) {
 
   const tabs = [
     {
-      id: "ai-tutor",
-      label: "AI Tutor",
-      badge: "24/7 Live",
-      icon: FaChalkboardTeacher,
-    },
-    {
       id: "cbt",
       label: "CBT Mock Tests",
       badge: "NTA & IIT iON",
       icon: Monitor,
+    },
+    {
+      id: "ai-tutor",
+      label: "AI Tutor",
+      badge: "24/7 Live",
+      icon: FaChalkboardTeacher,
     },
     {
       id: "syllabus-tracker",
