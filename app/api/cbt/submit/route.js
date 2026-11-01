@@ -85,7 +85,7 @@ export async function POST(req) {
     // 4. Mark session completed and delete temporary in-flight Redis cache
     await redis.del(session_id);
 
-    const paperSlug = submission.paper_slug || paperId;
+    const paperSlug = submission.paper_slug;
 
     return Response.json({
       success: true,

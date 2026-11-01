@@ -266,7 +266,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
     if (isPartialChoiceSection) {
       const attemptedQNums = [];
       for (const q of secQuestions) {
-        const resp = responses[String(q._id)] || responses[q.question_number];
+        const resp = responses[String(q._id)];
         if (resp && isAnswerAttempted(resp)) {
           attemptedQNums.push(q.question_number);
         }
@@ -284,7 +284,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
     maxMarks += maxAllowed;
 
     for (const q of secQuestions) {
-      const resp = responses[String(q._id)] || responses[q.question_number];
+      const resp = responses[String(q._id)];
 
       const candidateSelectedOptions = Array.isArray(resp?.selected_options)
         ? resp.selected_options
@@ -296,6 +296,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
         subject: sec.subject,
         section_name: sec.name,
         question_type: q.question_type,
+        input_format: inputFormat,
         selected_option: resp?.selected_option ?? (candidateSelectedOptions.length === 1 ? candidateSelectedOptions[0] : null),
         selected_options: candidateSelectedOptions,
         numeric_value: resp?.numeric_value ?? null,
@@ -367,7 +368,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
   return {
     user_id: submissionMeta.user_id,
     paper_id: paper.paper_id,
-    paper_slug: paper.slug || paper.paper_id,
+    paper_slug: paper.slug,
     paper_title: paper.title,
     exam_type: paper.exam_type,
     status: submissionMeta.status || 'EVALUATED',
@@ -474,7 +475,7 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
               $setOnInsert: {
                 user_id: userObjId,
                 paper_id: paper.paper_id,
-                paper_slug: paper.slug || paper.paper_id,
+                paper_slug: paper.slug,
                 question_number: Number(att.question_number),
                 question_id: cleanQId,
                 subject: att.subject || qDoc?.subject || null,

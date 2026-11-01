@@ -170,7 +170,7 @@ export async function POST(request) {
     const doc = {
       user_id: userObjectId,
       paper_id,
-      paper_slug: paper_slug || paper_id,
+      paper_slug,
       question_number: Number(question_number),
       question_id: cleanQId,
       subject: subject || null,

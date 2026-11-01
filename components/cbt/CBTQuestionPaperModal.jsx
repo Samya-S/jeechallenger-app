@@ -45,12 +45,12 @@ export default function CBTQuestionPaperModal({ isOpen, onClose }) {
 
         {/* Scrollable Questions Body */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-          {questions.map((q, idx) => {
-            const isNumeric = (q.input_format || q.question_type || '').toUpperCase() === 'NUMERIC';
+          {questions.map((q) => {
+            const isNumeric = q.input_format === 'NUMERIC';
 
             return (
               <div
-                key={q.question_number || idx}
+                key={String(q._id)}
                 className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 space-y-3"
               >
                 <div className="flex items-center justify-between text-xs font-bold text-gray-500 border-b border-gray-200 pb-2">

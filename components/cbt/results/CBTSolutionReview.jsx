@@ -197,11 +197,11 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           paper_id: submission.paper_id,
-          paper_slug: submission.paper_slug || submission.paper_id,
+          paper_slug: submission.paper_slug,
           question_number: qNum,
           question_id: qId,
-          subject: att.subject || qDoc?.subject,
-          chapter: qDoc?.chapter || att.section_name,
+          subject: att.subject,
+          chapter: qDoc?.chapter ?? att.section_name,
         }),
       });
 
@@ -421,7 +421,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
             const isAttempted = att.is_evaluated;
             const marksAwarded = att.marks_awarded ?? 0;
             const marksPrefix = marksAwarded > 0 ? `+${marksAwarded}` : `${marksAwarded}`;
-            const isNumeric = (att.question_type || qDoc?.input_format || '').toUpperCase() === 'NUMERIC';
+            const isNumeric = (att.input_format ?? qDoc?.input_format) === 'NUMERIC';
 
             // Determine official answer display
             let officialAns = 'Refer Solution';
