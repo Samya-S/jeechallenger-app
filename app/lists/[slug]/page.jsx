@@ -107,7 +107,7 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = `${playlist.name} | Question List - JEE Challenger`;
+  const title = `${playlist.name} - Question List | JEE Challenger`;
   const description = playlist.description
     ? `${playlist.description} Practice ${playlist.question_count || 0} curated questions with step-by-step solutions on JEE Challenger.`
     : `Practice ${playlist.name} with ${playlist.question_count || 0} curated questions for JEE Main & Advanced with verified solutions on JEE Challenger.`;
