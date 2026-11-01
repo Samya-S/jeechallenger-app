@@ -3,6 +3,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check, Search } from "lucide-react";
 
+const colorThemes = {
+  orange: {
+    borderOpen: "border-orange-500 ring-1 ring-orange-500",
+    chevronOpen: "text-orange-500",
+    searchRing: "focus:ring-orange-500",
+    selectedItem: "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400",
+    checkIcon: "text-orange-600 dark:text-orange-400",
+  },
+  blue: {
+    borderOpen: "border-blue-500 ring-1 ring-blue-500",
+    chevronOpen: "text-blue-500",
+    searchRing: "focus:ring-blue-500",
+    selectedItem: "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400",
+    checkIcon: "text-blue-600 dark:text-blue-400",
+  },
+};
+
 export default function CustomSelect({
   value,
   onChange,
@@ -14,7 +31,9 @@ export default function CustomSelect({
   className = "",
   disabled = false,
   size = "md",
+  color = "orange",
 }) {
+  const theme = colorThemes[color] || colorThemes.orange;
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef(null);
@@ -62,7 +81,7 @@ export default function CustomSelect({
           disabled
             ? "border-gray-200 dark:border-gray-700 opacity-75 cursor-default"
             : isOpen
-            ? "border-orange-500 ring-1 ring-orange-500 bg-white dark:bg-gray-800 cursor-pointer"
+            ? `${theme.borderOpen} bg-white dark:bg-gray-800 cursor-pointer`
             : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer"
         }`}
       >
@@ -80,7 +99,7 @@ export default function CustomSelect({
         </div>
         <ChevronDown
           className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${
-            isOpen ? "rotate-180 text-orange-500" : ""
+            isOpen ? `rotate-180 ${theme.chevronOpen}` : ""
           }`}
         />
       </button>
@@ -99,7 +118,7 @@ export default function CustomSelect({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder={searchPlaceholder}
                   autoFocus
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  className={`w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 ${theme.searchRing}`}
                 />
               </div>
             </div>
@@ -125,13 +144,13 @@ export default function CustomSelect({
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left cursor-pointer ${
                       isSelected
-                        ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 font-semibold"
+                        ? `${theme.selectedItem} font-semibold`
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`}
                   >
                     <span className="truncate">{option.label}</span>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400 shrink-0" />
+                      <Check className={`w-3.5 h-3.5 ${theme.checkIcon} shrink-0`} />
                     )}
                   </button>
                 );

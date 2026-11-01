@@ -55,6 +55,7 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
           onChange={handleSelectAttempt}
           options={attemptOptions}
           size="sm"
+          color="blue"
         />
       </div>
     </div>
