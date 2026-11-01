@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { usePlaylistContext } from "@/components/playlists/PlaylistContext";
 
 export default function ListsIndexPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
-  const [error, setError] = useState("");
+  const { userPlaylists, loadingPlaylists } = usePlaylistContext();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -16,32 +17,28 @@ export default function ListsIndexPage() {
       return;
     }
 
-    if (status === "authenticated") {
-      fetch("/api/playlists")
-        .then((res) => res.json())
-        .then((data) => {
-          const lists = data.data || [];
-          if (lists.length > 0) {
-            // Automatically select Favourites or the first available list
-            const fav = lists.find((l) => l.type === "FAVOURITES") || lists[0];
-            router.replace(`/lists/${fav.slug}`);
-          } else {
-            setError("No playlists found.");
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to fetch playlists:", err);
-          setError("Failed to load playlists.");
-        });
+    if (status === "authenticated" && !loadingPlaylists) {
+      if (userPlaylists.length > 0) {
+        // Automatically select Favourites or the first available list
+        const fav = userPlaylists.find((l) => l.type === "FAVOURITES") || userPlaylists[0];
+        router.replace(`/lists/${fav.slug}`);
+      }
     }
-  }, [status, router]);
+  }, [status, loadingPlaylists, userPlaylists, router]);
+
+  const hasNoLists = status === "authenticated" && !loadingPlaylists && userPlaylists.length === 0;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 min-h-[580px] lg:min-h-[640px] flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
-        <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-        <span className="text-xs text-gray-500 dark:text-gray-400">Loading your playlists...</span>
-        {error && <span className="text-xs text-rose-500">{error}</span>}
+        {hasNoLists ? (
+          <span className="text-xs text-rose-500 font-medium">No question lists found.</span>
+        ) : (
+          <>
+            <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Loading your lists...</span>
+          </>
+        )}
       </div>
     </div>
   );
