@@ -4,7 +4,18 @@ import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Star, ShieldAlert, ListOrdered, Plus, X, Loader2 } from "lucide-react";
+import {
+  ChevronsUpDown,
+  Star,
+  ShieldAlert,
+  ListOrdered,
+  Plus,
+  X,
+  Loader2,
+  Check,
+  Lock,
+  Globe,
+} from "lucide-react";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PlaylistSidebar from "@/components/playlists/PlaylistSidebar";
 import { PlaylistProvider, usePlaylistContext } from "@/components/playlists/PlaylistContext";
@@ -25,20 +36,21 @@ function ListsLayoutContent({ children }) {
 
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
-  // Mobile switcher state
-  const [mobileSwitcherOpen, setMobileSwitcherOpen] = useState(false);
+  // Mobile bottom sheet & create modal state
+  const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
   const [showMobileCreateModal, setShowMobileCreateModal] = useState(false);
   const [newListName, setNewListName] = useState("");
   const [creatingList, setCreatingList] = useState(false);
   const [createListError, setCreateListError] = useState("");
 
-  // Lock body scroll and handle Escape key for mobile create modal
+  // Lock body scroll and handle Escape key for bottom sheet & modal
   useEffect(() => {
-    if (!showMobileCreateModal) return;
+    if (!mobileBottomSheetOpen && !showMobileCreateModal) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
+        setMobileBottomSheetOpen(false);
         setShowMobileCreateModal(false);
         setCreateListError("");
       }
@@ -48,7 +60,7 @@ function ListsLayoutContent({ children }) {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showMobileCreateModal]);
+  }, [mobileBottomSheetOpen, showMobileCreateModal]);
 
   const handleMobileCreate = async (e) => {
     e.preventDefault();
@@ -106,16 +118,16 @@ function ListsLayoutContent({ children }) {
         className="pb-1"
       />
 
-      {/* Mobile Playlist Switcher (Visible on small screens for authenticated users) */}
+      {/* Mobile Playlist Switcher Bar (Visible on mobile/tablet for authenticated users) */}
       {authStatus === "authenticated" && userPlaylists.length > 0 && (
-        <div className="lg:hidden relative">
+        <div className="lg:hidden">
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setMobileSwitcherOpen(!mobileSwitcherOpen)}
-              className="flex-1 flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-left shadow-xs transition-colors cursor-pointer"
+              onClick={() => setMobileBottomSheetOpen(true)}
+              className="flex-1 flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-left shadow-xs hover:border-gray-300 dark:hover:border-gray-700 transition-colors cursor-pointer"
             >
-              <div className="flex items-center gap-2 min-w-0">
+              <div className="flex items-center gap-2.5 min-w-0">
                 {activePlaylist?.type === "FAVOURITES" ? (
                   <Star className="w-4 h-4 text-amber-500 fill-amber-500/20 shrink-0" />
                 ) : activePlaylist?.type === "MISTAKE_VAULT" ? (
@@ -130,11 +142,10 @@ function ListsLayoutContent({ children }) {
                   {activePlaylist?.question_count || 0}
                 </span>
               </div>
-              <ChevronDown
-                className={`w-4 h-4 text-gray-400 transition-transform ${
-                  mobileSwitcherOpen ? "rotate-180" : ""
-                }`}
-              />
+              <div className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 shrink-0">
+                <span>Change</span>
+                <ChevronsUpDown className="w-3.5 h-3.5" />
+              </div>
             </button>
 
             <button
@@ -147,46 +158,6 @@ function ListsLayoutContent({ children }) {
               <span className="hidden sm:inline">New List</span>
             </button>
           </div>
-
-          {/* Mobile Dropdown Menu */}
-          {mobileSwitcherOpen && (
-            <div className="absolute top-full left-0 right-0 mt-2 z-30 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl p-2 space-y-1 animate-in fade-in zoom-in-95 duration-100">
-              <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100 dark:border-gray-800">
-                My Question Lists
-              </div>
-              <div className="max-h-60 overflow-y-auto space-y-0.5">
-                {userPlaylists.map((pl) => {
-                  const isActive = pl.slug === currentSlug;
-                  return (
-                    <Link
-                      key={pl.id}
-                      href={`/lists/${pl.slug}`}
-                      onClick={() => setMobileSwitcherOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
-                        isActive
-                          ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        {pl.type === "FAVOURITES" ? (
-                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20 shrink-0" />
-                        ) : pl.type === "MISTAKE_VAULT" ? (
-                          <ShieldAlert className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                        ) : (
-                          <ListOrdered className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                        )}
-                        <span className="truncate">{pl.name}</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 font-bold ml-2 shrink-0">
-                        {pl.question_count}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -207,6 +178,126 @@ function ListsLayoutContent({ children }) {
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Sheet Drawer Portaled to document.body */}
+      {mounted && mobileBottomSheetOpen && createPortal(
+        <div className="fixed inset-0 z-[9990] flex flex-col justify-end">
+          {/* Blurred Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setMobileBottomSheetOpen(false)}
+          />
+
+          {/* Bottom Sheet Modal */}
+          <div
+            className="relative z-10 w-full max-h-[82vh] bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-300 ease-out"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Grab Handle */}
+            <div className="pt-3 pb-1 flex justify-center cursor-grab active:cursor-grabbing">
+              <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+            </div>
+
+            {/* Sheet Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                  My Question Lists
+                </h3>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                  Select a list to view or create a new one
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileBottomSheetOpen(false);
+                    setShowMobileCreateModal(true);
+                  }}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>New List</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileBottomSheetOpen(false)}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Touch-Friendly Items */}
+            <div className="p-3 overflow-y-auto max-h-[60vh] space-y-1.5">
+              {userPlaylists.map((pl) => {
+                const isActive = pl.slug === currentSlug;
+                return (
+                  <Link
+                    key={pl.id}
+                    href={`/lists/${pl.slug}`}
+                    onClick={() => setMobileBottomSheetOpen(false)}
+                    className={`flex items-center justify-between p-3 rounded-2xl transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 shadow-xs"
+                        : "bg-gray-50/60 dark:bg-gray-800/40 hover:bg-gray-100 dark:hover:bg-gray-800/80 border border-transparent"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                          isActive
+                            ? "bg-blue-600 text-white"
+                            : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 shadow-2xs"
+                        }`}
+                      >
+                        {pl.type === "FAVOURITES" ? (
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500/20 shrink-0" />
+                        ) : pl.type === "MISTAKE_VAULT" ? (
+                          <ShieldAlert className="w-4 h-4 text-rose-500 shrink-0" />
+                        ) : (
+                          <ListOrdered className="w-4 h-4 text-blue-500 shrink-0" />
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs font-bold truncate ${
+                              isActive
+                                ? "text-blue-600 dark:text-blue-400"
+                                : "text-gray-900 dark:text-gray-100"
+                            }`}
+                          >
+                            {pl.name}
+                          </span>
+                          {pl.is_public ? (
+                            <Globe className="w-3 h-3 text-gray-400 shrink-0" />
+                          ) : (
+                            <Lock className="w-3 h-3 text-gray-400 shrink-0" />
+                          )}
+                        </div>
+                        <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                          {pl.question_count} {pl.question_count === 1 ? "question" : "questions"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {isActive && (
+                      <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 ml-2 shadow-xs">
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {/* Mobile Create List Modal Portaled to document.body */}
       {mounted && showMobileCreateModal && createPortal(
