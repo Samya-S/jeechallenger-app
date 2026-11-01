@@ -70,8 +70,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
   // Load saved Mistake Vault questions from MongoDB on mount
   useEffect(() => {
-    if (!submission?.paper_id) return;
-    fetch(`/api/cbt/mistake-vault?paper_id=${encodeURIComponent(submission.paper_id)}`)
+    fetch('/api/cbt/mistake-vault')
       .then((res) => {
         if (!res.ok) return null;
         return res.json();
@@ -82,7 +81,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         }
       })
       .catch((err) => console.error('Failed to load mistake vault from MongoDB:', err));
-  }, [submission?.paper_id]);
+  }, []);
 
   // Extract unique subjects
   const subjects = useMemo(() => {
@@ -195,14 +194,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       const res = await fetch('/api/cbt/mistake-vault', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          paper_id: submission.paper_id,
-          paper_slug: submission.paper_slug,
-          question_number: qNum,
-          question_id: qId,
-          subject: att.subject,
-          chapter: qDoc?.chapter ?? att.section_name,
-        }),
+        body: JSON.stringify({ question_id: qId }),
       });
 
       if (!res.ok) {

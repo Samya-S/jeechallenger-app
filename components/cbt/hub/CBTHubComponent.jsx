@@ -197,11 +197,7 @@ export default function CBTHubComponent({
       await fetch('/api/cbt/mistake-vault', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          paper_id: item.paper_id,
-          question_number: item.question_number,
-          question_id: item.question_id,
-        }),
+        body: JSON.stringify({ question_id: item.question_id || item._id }),
       });
     } catch (err) {
       console.error('Failed to remove from mistake vault in MongoDB:', err);

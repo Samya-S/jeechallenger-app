@@ -15,7 +15,6 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const paperId = searchParams.get('paper_id') || '';
     const subject = searchParams.get('subject') || '';
 
     const signedToken = jwt.sign(
@@ -25,11 +24,9 @@ export async function GET(request) {
     );
 
     let url = `${BACKEND_URL}/cbt/mistake-vault`;
-    const params = new URLSearchParams();
-    if (paperId) params.append('paper_id', paperId);
-    if (subject && subject !== 'ALL') params.append('subject', subject);
-    const qs = params.toString();
-    if (qs) url += `?${qs}`;
+    if (subject && subject !== 'ALL') {
+      url += `?subject=${encodeURIComponent(subject)}`;
+    }
 
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${signedToken}` },
@@ -37,11 +34,7 @@ export async function GET(request) {
     });
 
     if (!res.ok) {
-      return NextResponse.json(
-        paperId
-          ? { savedQuestionNumbers: [], savedQuestionIds: [], items: [], total: 0 }
-          : { items: [], total: 0 }
-      );
+      return NextResponse.json({ savedQuestionIds: [], items: [], total: 0 });
     }
 
     const data = await res.json();
@@ -81,7 +74,7 @@ export async function POST(request) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${signedToken}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ question_id }),
     });
 
     if (!res.ok) {
