@@ -747,17 +747,7 @@ export default function CBTHubComponent({
                           key={String(item._id)}
                           question={qDoc}
                           practiceIndex={idx + 1}
-                          extraHeaderAction={
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveFromVault(item)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 transition-all cursor-pointer"
-                              title="Remove from Mistake Vault"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              <span>Remove</span>
-                            </button>
-                          }
+                          
                         />
                       );
                     })}

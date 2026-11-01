@@ -6,6 +6,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import DonationModal from "@/components/modals/DonationModal";
 import TelegramGateProvider from '../providers/TelegramGateProvider';
+import { BookmarkProvider } from '@/components/playlists/BookmarkContext';
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ export default function ConditionalLayout({ children }) {
 
   return (
     <TelegramGateProvider>
+      <BookmarkProvider>
       {!isMinimalLayout && (
         <Suspense fallback={
           <div className="h-16 w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/60 z-50 sticky top-0">
@@ -39,6 +41,7 @@ export default function ConditionalLayout({ children }) {
       )}
       {!isMinimalLayout && <Footer />}
       {!isMinimalLayout && <DonationModal />}
+    </BookmarkProvider>
     </TelegramGateProvider>
   );
 }

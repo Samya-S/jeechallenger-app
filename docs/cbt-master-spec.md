@@ -324,7 +324,7 @@ Using `setInterval(() => seconds++, 1000)` drifts by several minutes over a 3-ho
 Numerical answers in MongoDB Atlas contain `is_range`:
 * `is_range: false`: String comparison with `exact_value` (e.g. `entered.trim() === String(exact_value)`).
 * `is_range: true`: Range condition:
-  $$\text{min\_value} \le V_{\text{candidate}} \le \text{max\_value}$$
+  $$\min \le V_{\text{candidate}} \le \max$$
 
 ---
 
@@ -342,9 +342,9 @@ Numerical answers in MongoDB Atlas contain `is_range`:
 ---
 
 ### 7.5 Palette Evaluation Rules
-* **State 3: Answered** $\rightarrow$ Evaluated.
-* **State 5: Answered & Marked for Review** $\rightarrow$ Evaluated.
-* **States 1, 2, and 4** $\rightarrow$ Treated as unattempted (0 marks).
+* **State 3: Answered** → Evaluated.
+* **State 5: Answered & Marked for Review** → Evaluated.
+* **States 1, 2, and 4** → Treated as unattempted (0 marks).
 
 ---
 
@@ -670,7 +670,7 @@ Once submitted, the student lands on the permanent analysis route (`/mock-test/r
 
 | # | Edge Case | Mitigation / System Response |
 | :--- | :--- | :--- |
-| **1** | **Local Clock / Timezone Tampering** | Countdown timer is computed as $\text{expires\_at} - (\text{server\_now} + \Delta\text{local})$. Changing client timezone or OS clock does not add extra time. |
+| **1** | **Local Clock / Timezone Tampering** | Countdown timer is computed as `expires_at - (server_now + Δlocal)`. Changing client timezone or OS clock does not add extra time. |
 | **2** | **Accidental Tab Close / Refresh** | On mount, React reads IndexedDB (`idb-keyval`) in <2 ms, restoring all options, palette states, and timer instantly. |
 | **3** | **Wi-Fi Loss for Extended Period** | Answers queue locally in IndexedDB. UI never locks or shows spinners. Flushes seamlessly when connectivity resumes. |
 | **4** | **Simultaneous 2-Device Attempt** | Single-Instance Leased Mutex in Redis: Device B prompts to transfer; confirming instantly revokes Device A with an immovable 409 lockout screen. |

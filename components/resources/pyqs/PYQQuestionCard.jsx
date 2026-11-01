@@ -6,6 +6,7 @@ import { CheckCircle2, XCircle, AlertCircle, ArrowUpRight, Eye, Check, X, FileTe
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
+import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
 import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAction }) {
@@ -184,6 +185,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
                 <span className="sm:hidden">{examOriginShort}</span>
               </span>
             )}
+                        <QuestionBookmarkButton questionId={question._id || question.id} />
             {extraHeaderAction && (
               <div className="shrink-0 pl-1 border-l border-gray-200 dark:border-gray-800">
                 {extraHeaderAction}

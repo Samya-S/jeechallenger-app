@@ -297,7 +297,7 @@ export default function NavBar() {
 
           {/* Desktop User Auth Section */}
           <div className="hidden sm:flex items-center">
-            {status === "loading" ? (
+            {!mounted || status === "loading" ? (
               <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse border border-gray-300 dark:border-gray-600" />
             ) : status === "authenticated" ? (
               <div
@@ -358,12 +358,12 @@ export default function NavBar() {
                         <span>My Mock Tests</span>
                       </Link>
                       <Link
-                        href="/mock-test?tab=mistake-vault"
+                        href="/lists"
                         onClick={closeDesktopDropdownImmediately}
                         className="group flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <Bookmark className="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                        <span>Mistake Vault</span>
+                        <span>My Lists</span>
                       </Link>
                       <Link
                         href={`/profile${pathname === "/" ? "" : `?returnUrl=${encodedReturnUrl}`}`}
@@ -590,12 +590,12 @@ export default function NavBar() {
                       <span>My Mock Tests</span>
                     </Link>
                     <Link
-                      href="/mock-test?tab=mistake-vault"
+                      href="/lists"
                       onClick={() => setShowMobileNav(false)}
                       className="group flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     >
                       <Bookmark className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                      <span>Mistake Vault</span>
+                      <span>My Lists</span>
                     </Link>
                     <Link
                       href={`/profile${pathname === "/" ? "" : `?returnUrl=${encodedReturnUrl}`}`}
