@@ -365,63 +365,39 @@ export default function CBTHubComponent({
         {/* ========================================================================= */}
         {activeTab === 'papers' && (
           <div className="space-y-6">
-            {/* Filter Bar with Official Color Chips */}
-            <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mr-1">
-                  Exam Type:
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setExamTypeFilter('ALL')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    examTypeFilter === 'ALL'
-                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  All Exams
-                </button>
-                {/* Official JEE Main Badge Color (Emerald) */}
-                <button
-                  type="button"
-                  onClick={() => setExamTypeFilter('JEE_MAIN')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    examTypeFilter === 'JEE_MAIN'
-                      ? 'bg-emerald-600 text-white shadow-sm border border-emerald-600'
-                      : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60'
-                  }`}
-                >
-                  JEE Main
-                </button>
-                {/* Official JEE Advanced Badge Color (Orange) */}
-                <button
-                  type="button"
-                  onClick={() => setExamTypeFilter('JEE_ADVANCED')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    examTypeFilter === 'JEE_ADVANCED'
-                      ? 'bg-orange-600 text-white shadow-sm border border-orange-600'
-                      : 'text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/60 hover:bg-orange-100 dark:hover:bg-orange-900/60'
-                  }`}
-                >
-                  JEE Advanced
-                </button>
+            {/* Filter Bar matching PYQ Full Shift Papers pattern */}
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Exam Type for Papers */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {[
+                  { label: 'All Exams', value: 'ALL' },
+                  { label: 'JEE Main', value: 'JEE_MAIN' },
+                  { label: 'JEE Advanced', value: 'JEE_ADVANCED' },
+                ].map((et) => (
+                  <button
+                    key={et.value}
+                    type="button"
+                    onClick={() => setExamTypeFilter(et.value)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      examTypeFilter === et.value
+                        ? 'bg-orange-600 text-white shadow-md'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {et.label}
+                  </button>
+                ))}
               </div>
 
+              {/* Dynamic Year pills for Papers */}
               {availableYears.length > 0 && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">
-                    Exam Year:
-                  </span>
-                  <YearFilterPills
-                    availableYears={availableYears}
-                    selectedYear={yearFilter === 'ALL' ? 'All' : yearFilter}
-                    onSelectYear={(y) => setYearFilter(y === 'All' ? 'ALL' : y)}
-                    activeClass="bg-blue-600 text-white shadow-sm"
-                    inactiveClass="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
-                    size="sm"
-                  />
-                </div>
+                <YearFilterPills
+                  availableYears={availableYears}
+                  selectedYear={yearFilter === 'ALL' ? 'All' : yearFilter}
+                  onSelectYear={(y) => setYearFilter(y === 'All' ? 'ALL' : y)}
+                  activeClass="bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md"
+                  size="md"
+                />
               )}
             </div>
 
