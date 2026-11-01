@@ -7,10 +7,8 @@ import CustomSelect from '@/components/ui/CustomSelect';
 export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], currentSubmissionId }) {
   const router = useRouter();
 
-  // Total attempts count
   const totalCount = allAttempts?.length || 0;
 
-  // Find index of current attempt (0 is latest)
   const currentIndex = (allAttempts || []).findIndex(
     (a) => String(a._id) === String(currentSubmissionId)
   );
@@ -51,20 +49,14 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
 
   return (
     <div className="flex items-center">
-      {totalCount > 1 ? (
-        <div className="w-64 sm:w-80">
-          <CustomSelect
-            value={String(currentAttempt?._id)}
-            onChange={handleSelectAttempt}
-            options={attemptOptions}
-            size="sm"
-          />
-        </div>
-      ) : (
-        <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
-          Attempt #1 (Latest)
-        </span>
-      )}
+      <div className="w-64 sm:w-80">
+        <CustomSelect
+          value={String(currentAttempt?._id)}
+          onChange={handleSelectAttempt}
+          options={attemptOptions}
+          size="sm"
+        />
+      </div>
     </div>
   );
 }
