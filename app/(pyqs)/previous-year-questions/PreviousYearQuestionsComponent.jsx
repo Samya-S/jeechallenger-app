@@ -33,7 +33,8 @@ function PreviousYearQuestionsContent() {
   });
 
   const [availableYears, setAvailableYears] = useState(["All", "2026", "2025", "2024"]);
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1", 10));
+  const initialPage = parseInt(searchParams.get("page") || "1", 10);
+  const [page, setPage] = useState(Number.isInteger(initialPage) && initialPage > 0 ? initialPage : 1);
   const [limit] = useState(15);
   const [questions, setQuestions] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -67,15 +68,22 @@ function PreviousYearQuestionsContent() {
 
     const params = new URLSearchParams();
     if (activeTab && activeTab !== "practice") params.set("tab", activeTab);
-    if (filters.subject && filters.subject !== "ALL") params.set("subject", filters.subject);
-    if (filters.chapter && filters.chapter !== "ALL") params.set("chapter", filters.chapter);
-    if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
-    if (filters.year && filters.year !== "All") params.set("year", filters.year);
-    if (filters.difficulty && filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
-    if (filters.questionType && filters.questionType !== "ALL") params.set("question_type", filters.questionType);
-    if (filters.search) params.set("search", filters.search);
-    if (filters.tag) params.set("tags", filters.tag);
-    if (page > 1) params.set("page", String(page));
+
+    if (activeTab === "papers") {
+      if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
+      if (filters.year && filters.year !== "All") params.set("year", filters.year);
+      if (page > 1) params.set("page", String(page));
+    } else {
+      if (filters.subject && filters.subject !== "ALL") params.set("subject", filters.subject);
+      if (filters.chapter && filters.chapter !== "ALL") params.set("chapter", filters.chapter);
+      if (filters.examType && filters.examType !== "ALL") params.set("exam_type", filters.examType);
+      if (filters.year && filters.year !== "All") params.set("year", filters.year);
+      if (filters.difficulty && filters.difficulty !== "ALL") params.set("difficulty", filters.difficulty);
+      if (filters.questionType && filters.questionType !== "ALL") params.set("question_type", filters.questionType);
+      if (filters.search) params.set("search", filters.search);
+      if (filters.tag) params.set("tags", filters.tag);
+      if (page > 1) params.set("page", String(page));
+    }
 
     const query = params.toString();
     const targetUrl = query ? `${pathname}?${query}` : pathname;
@@ -110,6 +118,7 @@ function PreviousYearQuestionsContent() {
 
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
+    setPage(1);
   };
 
   // Fetch questions from backend
@@ -298,6 +307,8 @@ function PreviousYearQuestionsContent() {
             filters={filters}
             setTotalPapersCount={setTotalPapersCount}
             setPapersLoading={setPapersLoading}
+            page={page}
+            setPage={setPage}
           />
         )}
       </div>

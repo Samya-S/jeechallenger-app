@@ -6,20 +6,34 @@ import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, Chevron
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
 import MockTestConfirmModal from "@/components/modals/MockTestConfirmModal";
 
-export default function PYQPapersList({ filters, setTotalPapersCount, setPapersLoading }) {
+export default function PYQPapersList({
+  filters,
+  setTotalPapersCount,
+  setPapersLoading,
+  page: parentPage,
+  setPage: parentSetPage,
+}) {
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
+  const [localPage, setLocalPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedMockPaper, setSelectedMockPaper] = useState(null);
   const limit = 12;
 
-  // Reset to page 1 whenever filters change
-  const [prevFilters, setPrevFilters] = useState({ examType: filters.examType, year: filters.year });
-  if (prevFilters.examType !== filters.examType || prevFilters.year !== filters.year) {
-    setPrevFilters({ examType: filters.examType, year: filters.year });
-    setPage(1);
-  }
+  const page = parentPage !== undefined ? parentPage : localPage;
+  const setPage = parentSetPage || setLocalPage;
+
+  // Reset to page 1 whenever filters change (safety fallback)
+  const prevFiltersRef = React.useRef({ examType: filters.examType, year: filters.year });
+  useEffect(() => {
+    if (
+      prevFiltersRef.current.examType !== filters.examType ||
+      prevFiltersRef.current.year !== filters.year
+    ) {
+      prevFiltersRef.current = { examType: filters.examType, year: filters.year };
+      setPage(1);
+    }
+  }, [filters.examType, filters.year, setPage]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
