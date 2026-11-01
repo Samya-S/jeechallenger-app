@@ -714,9 +714,17 @@ export default function CBTHubComponent({
                     })}
                   </div>
 
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Questions bookmarked from your test attempts for revision
-                  </span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      Questions bookmarked from your test attempts for revision
+                    </span>
+                    <Link
+                      href="/lists"
+                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                    >
+                      Open in Lists <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Vault Questions Feed */}

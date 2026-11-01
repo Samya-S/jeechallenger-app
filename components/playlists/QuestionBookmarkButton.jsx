@@ -2,21 +2,32 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { Bookmark, Plus, Loader2, Lock, Globe, AlertCircle } from "lucide-react";
+import { Bookmark, Plus, Loader2, Lock, Globe, AlertCircle, Check } from "lucide-react";
 import { useBookmarks } from "@/components/playlists/BookmarkContext";
 
 export default function QuestionBookmarkButton({ questionId, className = "" }) {
   const { data: session, status } = useSession();
-  const { isSaved, addSavedId, removeSavedId } = useBookmarks();
+  const {
+    isSaved,
+    addSavedId,
+    removeSavedId,
+    playlists: contextPlaylists,
+    loadingPlaylists,
+    refreshPlaylists,
+    addPlaylist,
+    getMemberships,
+    setMemberships,
+  } = useBookmarks();
 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [playlists, setPlaylists] = useState([]);
   const [membershipSet, setMembershipSet] = useState(new Set());
   const [newListName, setNewListName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const popoverRef = useRef(null);
+
+  const playlists = contextPlaylists || [];
 
   // Close on outside click
   useEffect(() => {
@@ -35,22 +46,37 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
   // Load playlists and specific question membership when popover opens
   const loadData = async () => {
     if (!session?.user?.id || !questionId) return;
-    setLoading(true);
     setErrorMsg("");
-    try {
-      const [pRes, mRes] = await Promise.all([
-        fetch("/api/playlists"),
-        fetch(`/api/playlists/question/${questionId}`),
-      ]);
 
-      if (pRes.ok) {
-        const pData = await pRes.json();
-        setPlaylists(pData.data || []);
-      }
+    // If prefetched playlists are empty for any reason, trigger refresh
+    if (playlists.length === 0) {
+      refreshPlaylists();
+    }
+
+    // Fast Path 1: If question is not saved anywhere globally, it belongs to 0 playlists
+    if (!isSaved(questionId)) {
+      setMembershipSet(new Set());
+      setMemberships(questionId, new Set());
+      return;
+    }
+
+    // Fast Path 2: If question memberships are already cached in memory
+    const cached = getMemberships(questionId);
+    if (cached) {
+      setMembershipSet(cached);
+      return;
+    }
+
+    // Otherwise, fetch memberships for this bookmarked question
+    setLoading(true);
+    try {
+      const mRes = await fetch(`/api/playlists/question/${questionId}`);
       if (mRes.ok) {
         const mData = await mRes.json();
         const ids = mData.data?.playlist_ids || [];
-        setMembershipSet(new Set(ids));
+        const nextSet = new Set(ids);
+        setMembershipSet(nextSet);
+        setMemberships(questionId, nextSet);
         if (ids.length > 0) {
           addSavedId(questionId);
         } else {
@@ -82,6 +108,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
       newSet.add(playlistId);
     }
     setMembershipSet(newSet);
+    setMemberships(questionId, newSet);
 
     // Sync global filled state
     if (newSet.size > 0) {
@@ -108,6 +135,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
         // Revert on failure
         const revertSet = new Set(membershipSet);
         setMembershipSet(revertSet);
+        setMemberships(questionId, revertSet);
         if (revertSet.size > 0) {
           addSavedId(questionId);
         } else {
@@ -117,7 +145,9 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
       }
     } catch (err) {
       console.error("Failed to toggle question in playlist:", err);
-      setMembershipSet(new Set(membershipSet));
+      const revertSet = new Set(membershipSet);
+      setMembershipSet(revertSet);
+      setMemberships(questionId, revertSet);
       setErrorMsg("Network error updating playlist");
     }
   };
@@ -146,7 +176,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
       }
 
       const created = data.data;
-      setPlaylists((prev) => [...prev, created]);
+      addPlaylist(created);
       setNewListName("");
 
       // Immediately add question to newly created list
@@ -209,21 +239,50 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
 
               {/* Playlists Checkbox List */}
               <div className="max-h-48 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
-                {playlists.map((pl) => {
+                {loadingPlaylists && playlists.length === 0 ? (
+                  <div className="py-4 text-center text-xs text-gray-400 dark:text-gray-500 flex items-center justify-center gap-2">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600 dark:text-blue-400" />
+                    <span>Loading lists...</span>
+                  </div>
+                ) : playlists.length === 0 ? (
+                  <div className="py-3 text-center text-xs text-gray-400 dark:text-gray-500">
+                    No lists found. Create one below!
+                  </div>
+                ) : (
+                  playlists.map((pl) => {
                   const checked = membershipSet.has(pl.id);
                   return (
                     <label
                       key={pl.id}
                       className="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer group text-xs transition-colors"
                     >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => handleToggleMembership(pl.id, checked)}
-                          className="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        />
-                        <span className="truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {/* Custom Styled Checkbox */}
+                        <div className="relative flex items-center justify-center shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => handleToggleMembership(pl.id, checked)}
+                            className="sr-only peer"
+                          />
+                          <div
+                            className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all duration-150 peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-1 ${
+                              checked
+                                ? "bg-blue-600 border-blue-600 dark:bg-blue-500 dark:border-blue-500 text-white shadow-xs"
+                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 group-hover:border-blue-500 dark:group-hover:border-blue-400 group-hover:bg-blue-50/50 dark:group-hover:bg-blue-950/30"
+                            }`}
+                          >
+                            <Check
+                              className={`w-2.5 h-2.5 stroke-[3] text-white transition-all duration-150 ${
+                                checked ? "scale-100 opacity-100" : "scale-50 opacity-0"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        <span
+                          title={pl.name}
+                          className="truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 font-medium"
+                        >
                           {pl.name}
                         </span>
                       </div>
@@ -236,7 +295,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
                       </span>
                     </label>
                   );
-                })}
+                }))}
               </div>
 
               {/* Inline Create Playlist Form */}

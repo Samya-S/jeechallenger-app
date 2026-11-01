@@ -60,11 +60,11 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { paper_id, question_id } = body;
+    const { question_id } = body;
 
-    if (!paper_id || !question_id) {
+    if (!question_id) {
       return NextResponse.json(
-        { error: 'paper_id and question_id are required' },
+        { error: 'question_id is required' },
         { status: 400 }
       );
     }
