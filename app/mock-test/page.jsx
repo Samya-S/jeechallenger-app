@@ -20,37 +20,25 @@ const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.
 export default async function MockTestHubPage() {
   const session = await getServerSession(authOptions);
 
-  // 1. Fetch published papers from Go microservice
-  let papers = [];
-  try {
-    const res = await fetch(`${BACKEND_URL}/papers?limit=100`, { cache: 'no-store' });
-    if (res.ok) {
-      const json = await res.json();
-      papers = json?.data || [];
-    }
-  } catch (err) {
-    console.error('Failed to load papers from Go microservice:', err);
-  }
-
   let submissions = [];
   let vaultItems = [];
 
-  // 2. If authenticated, fetch user submissions and mistake vault from Go microservice
+  // If authenticated, fetch user submissions and mistake vault from Go microservice
   if (session?.user?.id) {
     const signedToken = jwt.sign(
       { id: session.user.id },
       process.env.NEXTAUTH_SECRET,
       { algorithm: 'HS256' }
     );
-    const authHeaders = { Authorization: `Bearer ${signedToken}` };
+    const authHeaders = { Authorization: 'Bearer ' + signedToken };
 
     try {
       const [subsRes, vaultRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/cbt/submissions?limit=50`, {
+        fetch(BACKEND_URL + '/cbt/submissions?limit=50', {
           headers: authHeaders,
           cache: 'no-store',
         }),
-        fetch(`${BACKEND_URL}/cbt/mistake-vault`, {
+        fetch(BACKEND_URL + '/cbt/mistake-vault', {
           headers: authHeaders,
           cache: 'no-store',
         }),
@@ -73,7 +61,6 @@ export default async function MockTestHubPage() {
   return (
     <CBTHubComponent
       user={session?.user || null}
-      papers={papers}
       submissions={submissions}
       initialVaultItems={vaultItems}
     />
