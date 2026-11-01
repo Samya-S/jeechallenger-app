@@ -245,25 +245,13 @@ export default function CBTHubComponent({
         />
 
         {/* Clean Student-Facing Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-gray-200 dark:border-gray-800">
-          <div className="space-y-2 text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
-              JEE Mock Tests
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
-              Practice official full-length JEE Main and Advanced previous year papers under real exam conditions with timed test simulation, instant scorecards, and mistake revision.
-            </p>
-          </div>
-
-          {!user && (
-            <Link
-              href="/login?callbackUrl=/mock-test"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all shrink-0 self-start md:self-end"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Sign In to Track History</span>
-            </Link>
-          )}
+        <div className="space-y-2 text-left pb-2 border-b border-gray-200 dark:border-gray-800">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+            JEE Mock Tests
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+            Practice official full-length JEE Main and Advanced previous year papers under real exam conditions with timed test simulation, instant scorecards, and mistake revision.
+          </p>
         </div>
 
         {/* Performance Overview Strip for Authenticated Student */}
