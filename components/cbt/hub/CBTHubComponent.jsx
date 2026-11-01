@@ -751,7 +751,7 @@ export default function CBTHubComponent({
                           key={String(item._id)}
                           question={qDoc}
                           practiceIndex={idx + 1}
-                          
+                          solutionBehavior="dropdown"
                         />
                       );
                     })}

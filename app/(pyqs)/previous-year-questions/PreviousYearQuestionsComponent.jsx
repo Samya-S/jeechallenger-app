@@ -243,9 +243,10 @@ function PreviousYearQuestionsContent() {
               <div className="space-y-6">
                 {questions.map((q, idx) => (
                   <PYQQuestionCard
-                    key={q._id || q.slug || idx}
+                    key={q._id}
                     question={q}
                     practiceIndex={(page - 1) * limit + idx + 1}
+                    solutionBehavior="page"
                   />
                 ))}
 

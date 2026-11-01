@@ -9,7 +9,7 @@ import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
 import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
-export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAction }) {
+export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAction, solutionBehavior }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedMultiOptions, setSelectedMultiOptions] = useState([]);
   const [numericValue, setNumericValue] = useState("");
@@ -24,6 +24,13 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
   const isMCQ = inputFormat === "MCQ";
   const isMulti = inputFormat === "MULTI_CORRECT";
   const isNumeric = inputFormat === "NUMERIC";
+
+  const isDropdown =
+    solutionBehavior === "dropdown"
+      ? true
+      : solutionBehavior === "page"
+      ? false
+      : Boolean(question.solution);
 
   const isMarksToAll =
     question.source_of_answer === "MARKS_TO_ALL" ||
@@ -185,7 +192,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
                 <span className="sm:hidden">{examOriginShort}</span>
               </span>
             )}
-                        <QuestionBookmarkButton questionId={question._id || question.id} />
+            <QuestionBookmarkButton questionId={question._id} />
             {extraHeaderAction && (
               <div className="shrink-0 pl-1 border-l border-gray-200 dark:border-gray-800">
                 {extraHeaderAction}
@@ -552,7 +559,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
 
             {/* View Full Solution Button + Report Bug Button */}
             <div className="flex items-center gap-2">
-              {question.solution ? (
+              {isDropdown ? (
                 <button
                   type="button"
                   onClick={() => setShowInlineSolution(!showInlineSolution)}
@@ -587,7 +594,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
           </div>
 
           {/* Optional Inline Step-by-Step Solution */}
-          {showInlineSolution && question.solution && (
+          {isDropdown && showInlineSolution && (
             <div className="mt-5 p-5 sm:p-6 rounded-2xl bg-orange-50/40 dark:bg-orange-950/20 border border-orange-200/80 dark:border-orange-900/60 animate-in fade-in duration-150">
               <div className="flex items-center justify-between pb-3 mb-3 border-b border-orange-200/60 dark:border-orange-900/40">
                 <div className="flex items-center gap-2 font-bold text-sm text-orange-700 dark:text-orange-300">
@@ -607,7 +614,13 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
                 )}
               </div>
               <div className="text-gray-900 dark:text-gray-100 text-sm sm:text-base leading-relaxed">
-                <MarkdownMathRenderer content={question.solution} />
+                {question.solution ? (
+                  <MarkdownMathRenderer content={question.solution} />
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Step-by-step solution will be uploaded soon.
+                  </p>
+                )}
               </div>
             </div>
           )}
