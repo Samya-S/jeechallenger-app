@@ -1,6 +1,5 @@
 import { getToken } from 'next-auth/jwt';
 import redis from '@/utils/redis';
-import clientPromise from '@/utils/mongodb';
 import { gradeAndPersistSubmission } from '@/server/cbt-judge';
 import { ObjectId } from 'mongodb';
 
@@ -43,7 +42,7 @@ export async function POST(req) {
     const responses = {};
     for (const [key, val] of Object.entries(sessionData)) {
       if (key.startsWith('q_')) {
-        const qNum = parseInt(key.replace('q_', ''), 10);
+        const qId = key.replace('q_', '');
         let resp = null;
         try {
           resp = typeof val === 'string' ? JSON.parse(val) : val;
@@ -51,24 +50,23 @@ export async function POST(req) {
           resp = val;
         }
         if (resp) {
-          responses[qNum] = resp;
+          responses[qId] = resp;
         }
       }
     }
 
     // Merge exact final question time map
     if (final_question_time_map && typeof final_question_time_map === 'object') {
-      for (const [qNumStr, sec] of Object.entries(final_question_time_map)) {
-        const qNum = parseInt(qNumStr, 10);
-        if (!responses[qNum]) {
-          responses[qNum] = {
-            selected_option: null,
+      for (const [qId, sec] of Object.entries(final_question_time_map)) {
+        if (!responses[qId]) {
+          responses[qId] = {
+            selected_options: [],
             numeric_value: null,
             color_state: 2,
             time_spent_seconds: sec,
           };
         } else {
-          responses[qNum].time_spent_seconds = sec;
+          responses[qId].time_spent_seconds = sec;
         }
       }
     }
@@ -87,19 +85,7 @@ export async function POST(req) {
     // 4. Mark session completed and delete temporary in-flight Redis cache
     await redis.del(session_id);
 
-    // Resolve clean paper slug for human-readable results URL
-    let paperSlug = paperId;
-    try {
-      const client = await clientPromise;
-      const db = client.db('jee_challenger_pyqs');
-      const paperDoc = await db.collection('papers').findOne(
-        { $or: [{ paper_id: paperId }, { slug: paperId }] },
-        { projection: { slug: 1 } }
-      );
-      if (paperDoc?.slug) {
-        paperSlug = paperDoc.slug;
-      }
-    } catch {}
+    const paperSlug = submission.paper_slug || paperId;
 
     return Response.json({
       success: true,

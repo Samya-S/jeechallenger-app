@@ -24,10 +24,10 @@ export default function CBTScorecard({ submission }) {
   }, [timeTakenSeconds]);
 
   // Format exam start timestamp in Indian Standard Time (IST)
+  const startedAt = submission?.started_at;
   const formattedStartTime = useMemo(() => {
-    const rawStart = submission?.started_at;
-    if (!rawStart) return null;
-    const d = new Date(rawStart);
+    if (!startedAt) return null;
+    const d = new Date(startedAt);
     if (isNaN(d.getTime())) return null;
     return new Intl.DateTimeFormat('en-IN', {
       timeZone: 'Asia/Kolkata',
@@ -38,7 +38,7 @@ export default function CBTScorecard({ submission }) {
       minute: '2-digit',
       hour12: true,
     }).format(d);
-  }, [submission?.started_at]);
+  }, [startedAt]);
 
   // Factual Attempt Rate calculation (questions answered / total questions in paper)
   const totalQuestions =

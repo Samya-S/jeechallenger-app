@@ -29,14 +29,15 @@ export const useCBTStore = create((setState, getState) => ({
   instanceId: generateInstanceId(),
 
   // ── In-Flight Candidate Responses ──────────────────────────────────────────
-  answers: {}, // qNum -> { selectedOption: string | null, selectedOptions: string[], numericValue: string | null }
-  paletteStates: {}, // qNum -> 1 | 2 | 3 | 4 | 5
-  questionTimeMap: {}, // qNum -> seconds
+  // Keyed strictly by Question ID (_id) for 100% collision-proof isolation
+  answers: {}, // qId -> { selected_options: string[], numeric_value: string | null }
+  paletteStates: {}, // qId -> 1 | 2 | 3 | 4 | 5
+  questionTimeMap: {}, // qId -> seconds
   activeQuestionEnteredAt: Date.now(),
-  uncommittedAnswer: { selectedOption: null, selectedOptions: [], numericValue: null },
+  uncommittedAnswer: { selected_options: [], numeric_value: null },
 
   // ── Kiosk & Sync State ─────────────────────────────────────────────────────
-  pendingSyncQueue: new Set(),
+  pendingSyncQueue: new Set(), // Set of dirty qIds
   isSyncing: false,
   isOnline: true,
   isTerminated: false, // true when 409 Conflict occurs (revoked by another device)
@@ -73,32 +74,30 @@ export const useCBTStore = create((setState, getState) => ({
     const mergedTimeMap = { ...(localCache?.questionTimeMap || {}) };
 
     // Merge server-rehydrated responses (if newer or local was empty)
-    for (const [qNumStr, sResp] of Object.entries(rehydrated_answers)) {
-      const qNum = parseInt(qNumStr, 10);
-      if (!mergedAnswers[qNum] || (sResp.updated_at && sResp.updated_at > (mergedAnswers[qNum]?.updated_at || 0))) {
+    for (const [qId, sResp] of Object.entries(rehydrated_answers)) {
+      if (!mergedAnswers[qId] || (sResp.updated_at && sResp.updated_at > (mergedAnswers[qId]?.updated_at || 0))) {
         const sOptions = Array.isArray(sResp.selected_options)
           ? sResp.selected_options
-          : (sResp.selected_option ? String(sResp.selected_option).split(',').map((s) => s.trim()) : []);
-        mergedAnswers[qNum] = {
-          selectedOption: sResp.selected_option || null,
-          selectedOptions: sOptions,
-          numericValue: sResp.numeric_value || null,
+          : (sResp.selected_option ? [String(sResp.selected_option).trim()] : []);
+        mergedAnswers[qId] = {
+          selected_options: sOptions,
+          numeric_value: sResp.numeric_value || null,
         };
-        mergedPaletteStates[qNum] = sResp.color_state || 1;
-        mergedTimeMap[qNum] = sResp.time_spent_seconds || 0;
+        mergedPaletteStates[qId] = sResp.color_state || 1;
+        mergedTimeMap[qId] = sResp.time_spent_seconds || 0;
       }
     }
 
     // Default first question state
-    const firstQNum = questions[0]?.question_number || 1;
-    if (!mergedPaletteStates[firstQNum] || mergedPaletteStates[firstQNum] === 1) {
-      mergedPaletteStates[firstQNum] = 2; // Not Answered (visited)
+    const firstQ = questions[0];
+    const firstQId = firstQ ? String(firstQ._id) : null;
+    if (firstQId && (!mergedPaletteStates[firstQId] || mergedPaletteStates[firstQId] === 1)) {
+      mergedPaletteStates[firstQId] = 2; // Not Answered (visited)
     }
 
     const initialUncommitted = {
-      selectedOption: mergedAnswers[firstQNum]?.selectedOption || null,
-      selectedOptions: mergedAnswers[firstQNum]?.selectedOptions || [],
-      numericValue: mergedAnswers[firstQNum]?.numericValue || null,
+      selected_options: (firstQId && mergedAnswers[firstQId]?.selected_options) ? [...mergedAnswers[firstQId].selected_options] : [],
+      numeric_value: (firstQId && mergedAnswers[firstQId]?.numeric_value) || null,
     };
 
     setState({
@@ -137,12 +136,12 @@ export const useCBTStore = create((setState, getState) => ({
   // ── 2. Input Manipulation (0 ms UI Updates) ────────────────────────────────
   selectOption: (option) => {
     setState((prev) => {
-      const nextOpt = prev.uncommittedAnswer.selectedOption === option ? null : option;
+      const current = prev.uncommittedAnswer?.selected_options || [];
+      const isSelected = current.includes(option);
       return {
         uncommittedAnswer: {
           ...prev.uncommittedAnswer,
-          selectedOption: nextOpt,
-          selectedOptions: nextOpt ? [nextOpt] : [],
+          selected_options: isSelected ? [] : [option],
         },
       };
     });
@@ -150,17 +149,14 @@ export const useCBTStore = create((setState, getState) => ({
 
   toggleMultiOption: (option) => {
     setState((prev) => {
-      const current = Array.isArray(prev.uncommittedAnswer?.selectedOptions)
-        ? prev.uncommittedAnswer.selectedOptions
-        : (prev.uncommittedAnswer?.selectedOption ? [prev.uncommittedAnswer.selectedOption] : []);
+      const current = prev.uncommittedAnswer?.selected_options || [];
       const exists = current.includes(option);
       const next = exists ? current.filter((opt) => opt !== option) : [...current, option];
       next.sort();
       return {
         uncommittedAnswer: {
           ...prev.uncommittedAnswer,
-          selectedOptions: next,
-          selectedOption: next.length === 1 ? next[0] : (next.length > 1 ? next.join(',') : null),
+          selected_options: next,
         },
       };
     });
@@ -170,7 +166,7 @@ export const useCBTStore = create((setState, getState) => ({
     setState((prev) => ({
       uncommittedAnswer: {
         ...prev.uncommittedAnswer,
-        numericValue: val,
+        numeric_value: val,
       },
     }));
   },
@@ -179,17 +175,17 @@ export const useCBTStore = create((setState, getState) => ({
     const { questions, activeQuestionIndex, answers, paletteStates, pendingSyncQueue } = getState();
     const currentQ = questions[activeQuestionIndex];
     if (!currentQ) return;
-    const qNum = currentQ.question_number;
+    const qId = String(currentQ._id);
 
     const nextAnswers = {
       ...answers,
-      [qNum]: { selectedOption: null, selectedOptions: [], numericValue: null },
+      [qId]: { selected_options: [], numeric_value: null },
     };
-    const nextPalette = { ...paletteStates, [qNum]: 2 }; // Reverts to Not Answered
-    const nextQueue = new Set(pendingSyncQueue).add(qNum);
+    const nextPalette = { ...paletteStates, [qId]: 2 }; // Reverts to Not Answered
+    const nextQueue = new Set(pendingSyncQueue).add(qId);
 
     setState({
-      uncommittedAnswer: { selectedOption: null, selectedOptions: [], numericValue: null },
+      uncommittedAnswer: { selected_options: [], numeric_value: null },
       answers: nextAnswers,
       paletteStates: nextPalette,
       pendingSyncQueue: nextQueue,
@@ -214,49 +210,46 @@ export const useCBTStore = create((setState, getState) => ({
 
     const currentQ = questions[activeQuestionIndex];
     if (!currentQ) return;
-    const qNum = currentQ.question_number;
+    const qId = String(currentQ._id);
 
     // 1. Commit time delta
     const now = Date.now();
     const elapsed = Math.round((now - activeQuestionEnteredAt) / 1000);
     const nextTimeMap = {
       ...questionTimeMap,
-      [qNum]: (questionTimeMap[qNum] || 0) + elapsed,
+      [qId]: (questionTimeMap[qId] || 0) + elapsed,
     };
 
     // 2. Commit answer & palette state
     const hasAnswer =
-      (uncommittedAnswer.selectedOption && String(uncommittedAnswer.selectedOption).trim() !== '') ||
-      (Array.isArray(uncommittedAnswer.selectedOptions) && uncommittedAnswer.selectedOptions.length > 0) ||
-      (uncommittedAnswer.numericValue !== null && uncommittedAnswer.numericValue !== undefined && String(uncommittedAnswer.numericValue).trim() !== '');
+      (Array.isArray(uncommittedAnswer.selected_options) && uncommittedAnswer.selected_options.length > 0) ||
+      (uncommittedAnswer.numeric_value !== null && uncommittedAnswer.numeric_value !== undefined && String(uncommittedAnswer.numeric_value).trim() !== '');
 
     const nextAnswers = {
       ...answers,
-      [qNum]: {
-        selectedOption: uncommittedAnswer.selectedOption || null,
-        selectedOptions: Array.isArray(uncommittedAnswer.selectedOptions) ? [...uncommittedAnswer.selectedOptions] : [],
-        numericValue: uncommittedAnswer.numericValue || null,
+      [qId]: {
+        selected_options: Array.isArray(uncommittedAnswer.selected_options) ? [...uncommittedAnswer.selected_options] : [],
+        numeric_value: uncommittedAnswer.numeric_value || null,
       },
     };
     const nextPalette = {
       ...paletteStates,
-      [qNum]: hasAnswer ? 3 : 2, // 3: Answered, 2: Not Answered
+      [qId]: hasAnswer ? 3 : 2, // 3: Answered, 2: Not Answered
     };
-    const nextQueue = new Set(pendingSyncQueue).add(qNum);
+    const nextQueue = new Set(pendingSyncQueue).add(qId);
 
     // 3. Prepare next question transition
     const nextIndex = activeQuestionIndex + 1 < questions.length ? activeQuestionIndex + 1 : activeQuestionIndex;
     const nextQ = questions[nextIndex];
-    const nextQNum = nextQ?.question_number;
+    const nextQId = nextQ ? String(nextQ._id) : null;
 
-    if (nextQ && (!nextPalette[nextQNum] || nextPalette[nextQNum] === 1)) {
-      nextPalette[nextQNum] = 2; // Mark Not Answered upon visiting
+    if (nextQId && (!nextPalette[nextQId] || nextPalette[nextQId] === 1)) {
+      nextPalette[nextQId] = 2; // Mark Not Answered upon visiting
     }
 
     const nextUncommitted = {
-      selectedOption: nextAnswers[nextQNum]?.selectedOption || null,
-      selectedOptions: nextAnswers[nextQNum]?.selectedOptions || [],
-      numericValue: nextAnswers[nextQNum]?.numericValue || null,
+      selected_options: (nextQId && nextAnswers[nextQId]?.selected_options) ? [...nextAnswers[nextQId].selected_options] : [],
+      numeric_value: (nextQId && nextAnswers[nextQId]?.numeric_value) || null,
     };
 
     setState({
@@ -288,46 +281,43 @@ export const useCBTStore = create((setState, getState) => ({
 
     const currentQ = questions[activeQuestionIndex];
     if (!currentQ) return;
-    const qNum = currentQ.question_number;
+    const qId = String(currentQ._id);
 
     const now = Date.now();
     const elapsed = Math.round((now - activeQuestionEnteredAt) / 1000);
     const nextTimeMap = {
       ...questionTimeMap,
-      [qNum]: (questionTimeMap[qNum] || 0) + elapsed,
+      [qId]: (questionTimeMap[qId] || 0) + elapsed,
     };
 
     const hasAnswer =
-      (uncommittedAnswer.selectedOption && String(uncommittedAnswer.selectedOption).trim() !== '') ||
-      (Array.isArray(uncommittedAnswer.selectedOptions) && uncommittedAnswer.selectedOptions.length > 0) ||
-      (uncommittedAnswer.numericValue !== null && uncommittedAnswer.numericValue !== undefined && String(uncommittedAnswer.numericValue).trim() !== '');
+      (Array.isArray(uncommittedAnswer.selected_options) && uncommittedAnswer.selected_options.length > 0) ||
+      (uncommittedAnswer.numeric_value !== null && uncommittedAnswer.numeric_value !== undefined && String(uncommittedAnswer.numeric_value).trim() !== '');
 
     const nextAnswers = {
       ...answers,
-      [qNum]: {
-        selectedOption: uncommittedAnswer.selectedOption || null,
-        selectedOptions: Array.isArray(uncommittedAnswer.selectedOptions) ? [...uncommittedAnswer.selectedOptions] : [],
-        numericValue: uncommittedAnswer.numericValue || null,
+      [qId]: {
+        selected_options: Array.isArray(uncommittedAnswer.selected_options) ? [...uncommittedAnswer.selected_options] : [],
+        numeric_value: uncommittedAnswer.numeric_value || null,
       },
     };
     const nextPalette = {
       ...paletteStates,
-      [qNum]: hasAnswer ? 5 : 4, // 5: Answered & Marked for Review, 4: Marked for Review
+      [qId]: hasAnswer ? 5 : 4, // 5: Answered & Marked for Review, 4: Marked for Review
     };
-    const nextQueue = new Set(pendingSyncQueue).add(qNum);
+    const nextQueue = new Set(pendingSyncQueue).add(qId);
 
     const nextIndex = activeQuestionIndex + 1 < questions.length ? activeQuestionIndex + 1 : activeQuestionIndex;
     const nextQ = questions[nextIndex];
-    const nextQNum = nextQ?.question_number;
+    const nextQId = nextQ ? String(nextQ._id) : null;
 
-    if (nextQ && (!nextPalette[nextQNum] || nextPalette[nextQNum] === 1)) {
-      nextPalette[nextQNum] = 2;
+    if (nextQId && (!nextPalette[nextQId] || nextPalette[nextQId] === 1)) {
+      nextPalette[nextQId] = 2;
     }
 
     const nextUncommitted = {
-      selectedOption: nextAnswers[nextQNum]?.selectedOption || null,
-      selectedOptions: nextAnswers[nextQNum]?.selectedOptions || [],
-      numericValue: nextAnswers[nextQNum]?.numericValue || null,
+      selected_options: (nextQId && nextAnswers[nextQId]?.selected_options) ? [...nextAnswers[nextQId].selected_options] : [],
+      numeric_value: (nextQId && nextAnswers[nextQId]?.numeric_value) || null,
     };
 
     setState({
@@ -358,33 +348,32 @@ export const useCBTStore = create((setState, getState) => ({
 
     const currentQ = questions[activeQuestionIndex];
     if (!currentQ) return;
-    const qNum = currentQ.question_number;
+    const qId = String(currentQ._id);
 
     const now = Date.now();
     const elapsed = Math.round((now - activeQuestionEnteredAt) / 1000);
     const nextTimeMap = {
       ...questionTimeMap,
-      [qNum]: (questionTimeMap[qNum] || 0) + elapsed,
+      [qId]: (questionTimeMap[qId] || 0) + elapsed,
     };
 
     const nextPalette = {
       ...paletteStates,
-      [qNum]: 4, // 4: Marked for Review (without answer)
+      [qId]: 4, // 4: Marked for Review (without answer)
     };
-    const nextQueue = new Set(pendingSyncQueue).add(qNum);
+    const nextQueue = new Set(pendingSyncQueue).add(qId);
 
     const nextIndex = activeQuestionIndex + 1 < questions.length ? activeQuestionIndex + 1 : activeQuestionIndex;
     const nextQ = questions[nextIndex];
-    const nextQNum = nextQ?.question_number;
+    const nextQId = nextQ ? String(nextQ._id) : null;
 
-    if (nextQ && (!nextPalette[nextQNum] || nextPalette[nextQNum] === 1)) {
-      nextPalette[nextQNum] = 2;
+    if (nextQId && (!nextPalette[nextQId] || nextPalette[nextQId] === 1)) {
+      nextPalette[nextQId] = 2;
     }
 
     const nextUncommitted = {
-      selectedOption: answers[nextQNum]?.selectedOption || null,
-      selectedOptions: answers[nextQNum]?.selectedOptions || [],
-      numericValue: answers[nextQNum]?.numericValue || null,
+      selected_options: (nextQId && answers[nextQId]?.selected_options) ? [...answers[nextQId].selected_options] : [],
+      numeric_value: (nextQId && answers[nextQId]?.numeric_value) || null,
     };
 
     setState({
@@ -417,28 +406,27 @@ export const useCBTStore = create((setState, getState) => ({
     const targetQ = questions[targetIndex];
     if (!currentQ || !targetQ) return;
 
-    const currentQNum = currentQ.question_number;
-    const targetQNum = targetQ.question_number;
+    const currentQId = String(currentQ._id);
+    const targetQId = String(targetQ._id);
 
     // 1. Commit time spent on departing question
     const now = Date.now();
     const elapsed = Math.round((now - activeQuestionEnteredAt) / 1000);
     const nextTimeMap = {
       ...questionTimeMap,
-      [currentQNum]: (questionTimeMap[currentQNum] || 0) + elapsed,
+      [currentQId]: (questionTimeMap[currentQId] || 0) + elapsed,
     };
 
     // 2. CRUCIAL NTA RULE: Uncommitted input is DISCARDED on palette jump!
-    // We do NOT save uncommittedAnswer. We load whatever was officially committed in answers[targetQNum].
+    // We do NOT save uncommittedAnswer. We load whatever was officially committed in answers[targetQId].
     const nextPalette = { ...paletteStates };
-    if (!nextPalette[targetQNum] || nextPalette[targetQNum] === 1) {
-      nextPalette[targetQNum] = 2; // Visited -> Not Answered
+    if (!nextPalette[targetQId] || nextPalette[targetQId] === 1) {
+      nextPalette[targetQId] = 2; // Visited -> Not Answered
     }
 
     const targetUncommitted = {
-      selectedOption: answers[targetQNum]?.selectedOption || null,
-      selectedOptions: answers[targetQNum]?.selectedOptions || [],
-      numericValue: answers[targetQNum]?.numericValue || null,
+      selected_options: answers[targetQId]?.selected_options ? [...answers[targetQId].selected_options] : [],
+      numeric_value: answers[targetQId]?.numeric_value || null,
     };
 
     setState({
@@ -495,16 +483,15 @@ export const useCBTStore = create((setState, getState) => ({
     }
 
     setState({ isSyncing: true });
-    const dirtyQNums = Array.from(pendingSyncQueue);
+    const dirtyQIds = Array.from(pendingSyncQueue);
 
     const delta = {};
-    for (const qNum of dirtyQNums) {
-      delta[`q_${qNum}`] = {
-        selected_option: answers[qNum]?.selectedOption || null,
-        selected_options: answers[qNum]?.selectedOptions || [],
-        numeric_value: answers[qNum]?.numericValue || null,
-        color_state: paletteStates[qNum] || 1,
-        time_spent_seconds: questionTimeMap[qNum] || 0,
+    for (const qId of dirtyQIds) {
+      delta[`q_${qId}`] = {
+        selected_options: answers[qId]?.selected_options || [],
+        numeric_value: answers[qId]?.numeric_value || null,
+        color_state: paletteStates[qId] || 1,
+        time_spent_seconds: questionTimeMap[qId] || 0,
         updated_at: Date.now(),
       };
     }
@@ -529,7 +516,7 @@ export const useCBTStore = create((setState, getState) => ({
       if (res.ok) {
         setState((prev) => {
           const nextQueue = new Set(prev.pendingSyncQueue);
-          dirtyQNums.forEach((n) => nextQueue.delete(n));
+          dirtyQIds.forEach((id) => nextQueue.delete(id));
           return { pendingSyncQueue: nextQueue, isSyncing: false };
         });
       } else {
@@ -557,18 +544,17 @@ export const useCBTStore = create((setState, getState) => ({
     if (!sessionId || isTerminated) return;
     const currentQ = questions[activeQuestionIndex];
     if (!currentQ) return;
-    const qNum = currentQ.question_number;
+    const qId = String(currentQ._id);
 
     // Calculate live in-flight slice for active question
     const elapsed = Math.round((Date.now() - activeQuestionEnteredAt) / 1000);
-    const liveTime = (questionTimeMap[qNum] || 0) + elapsed;
+    const liveTime = (questionTimeMap[qId] || 0) + elapsed;
 
     const delta = {
-      [`q_${qNum}`]: {
-        selected_option: answers[qNum]?.selectedOption || null,
-        selected_options: answers[qNum]?.selectedOptions || [],
-        numeric_value: answers[qNum]?.numericValue || null,
-        color_state: paletteStates[qNum] || 2,
+      [`q_${qId}`]: {
+        selected_options: answers[qId]?.selected_options || [],
+        numeric_value: answers[qId]?.numeric_value || null,
+        color_state: paletteStates[qId] || 2,
         time_spent_seconds: liveTime,
         updated_at: Date.now(),
       },
@@ -608,9 +594,9 @@ export const useCBTStore = create((setState, getState) => ({
     const currentQ = questions[activeQuestionIndex];
     const finalTimeMap = { ...questionTimeMap };
     if (currentQ) {
-      const qNum = currentQ.question_number;
+      const qId = String(currentQ._id);
       const finalSlice = Math.round((Date.now() - activeQuestionEnteredAt) / 1000);
-      finalTimeMap[qNum] = (finalTimeMap[qNum] || 0) + finalSlice;
+      finalTimeMap[qId] = (finalTimeMap[qId] || 0) + finalSlice;
     }
 
     setState({ isExamSubmitted: true });

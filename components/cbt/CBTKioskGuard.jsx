@@ -10,7 +10,13 @@ export default function CBTKioskGuard() {
   const isFullscreen = useCBTStore((s) => s.isFullscreen);
   const setFullscreen = useCBTStore((s) => s.setFullscreen);
 
-  const [hasStartedKiosk, setHasStartedKiosk] = useState(false);
+  const [hasStartedKiosk, setHasStartedKiosk] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('kiosk') === 'off' || params.get('bypass_fullscreen') === '1';
+    }
+    return false;
+  });
   const [isWindowBlurred, setIsWindowBlurred] = useState(false);
 
   // Monitor bypass query parameters (e.g. for developer preview or automated audits)
@@ -18,7 +24,6 @@ export default function CBTKioskGuard() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       if (params.get('kiosk') === 'off' || params.get('bypass_fullscreen') === '1') {
-        setHasStartedKiosk(true);
         setFullscreen(true);
       }
     }

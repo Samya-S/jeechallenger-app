@@ -46,16 +46,17 @@ export default function CBTHubComponent({
   const searchParams = useSearchParams();
 
   // Active Hub Tab: "papers" | "attempts" | "vault"
+  const tabParam = searchParams.get('tab');
+  const [prevTabParam, setPrevTabParam] = useState(tabParam);
   const [activeTab, setActiveTab] = useState(() => {
-    const tabParam = searchParams.get('tab');
     if (tabParam === 'attempts') return 'attempts';
     if (tabParam === 'vault' || tabParam === 'mistake-vault') return 'vault';
     return 'papers';
   });
 
-  // Sync tab with URL searchParams (Back/Forward navigation and direct links)
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
+  // Adjust tab state during render when URL searchParams change
+  if (tabParam !== prevTabParam) {
+    setPrevTabParam(tabParam);
     if (tabParam === 'attempts') {
       setActiveTab('attempts');
     } else if (tabParam === 'vault' || tabParam === 'mistake-vault') {
@@ -63,7 +64,7 @@ export default function CBTHubComponent({
     } else {
       setActiveTab('papers');
     }
-  }, [searchParams]);
+  }
 
   // Instant launch transition state
   const [isLaunchingExam, setIsLaunchingExam] = useState(false);
@@ -107,11 +108,14 @@ export default function CBTHubComponent({
 
   // Pagination for Available Papers (12 papers per page, matching PYQPapersList)
   const [page, setPage] = useState(1);
+  const [prevFilters, setPrevFilters] = useState({ examTypeFilter, yearFilter });
   const limit = 12;
 
-  useEffect(() => {
+  // Reset pagination during render when filters change
+  if (prevFilters.examTypeFilter !== examTypeFilter || prevFilters.yearFilter !== yearFilter) {
+    setPrevFilters({ examTypeFilter, yearFilter });
     setPage(1);
-  }, [examTypeFilter, yearFilter]);
+  }
 
   const totalPages = Math.ceil(filteredPapers.length / limit) || 1;
   const paginatedPapers = useMemo(() => {

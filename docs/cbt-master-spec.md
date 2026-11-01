@@ -1,5 +1,5 @@
 # JEE Challenger: Computer-Based Test (CBT) Engine — Master Specification
-**Document Version:** 1.2.0  
+**Document Version:** 1.3.0  
 **Status:** Approved Architectural Blueprint (Source of Truth)  
 **Target Applications:** `jeechallenger-app`, `jeechallenger-pyqs`, `jeechallenger-admin`
 
@@ -7,6 +7,7 @@
 
 ## Table of Contents
 1. [Core Philosophy & High-Level System Architecture](#1-core-philosophy--high-level-system-architecture)
+   - [1.1 Strict Microservices Boundary (Zero Direct PYQ DB Access in Next.js)](#11-strict-microservices-boundary-zero-direct-pyq-db-access-in-nextjs)
 2. [Authentic Frontend UI Specifications](#2-authentic-frontend-ui-specifications)
    - [2.1 JEE Main (NTA CBT Interface)](#21-jee-main-nta-cbt-interface)
    - [2.2 JEE Advanced (TCS iON CBT Interface)](#22-jee-advanced-tcs-ion-cbt-interface)
@@ -66,6 +67,21 @@ JEE Challenger CBT is designed as a **Destination Feature**—a high-stakes, 3-h
 │   4. Purge temporary Redis hash                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+### 1.1 Strict Microservices Boundary (Zero Direct PYQ DB Access in Next.js)
+
+To maintain absolute architectural purity across the ecosystem:
+1. **PYQ Microservice Exclusivity**:
+   * The Go backend (`jeechallenger-pyqs`) is the **sole system** authorized to connect directly to the `jee_challenger_pyqs` MongoDB database for papers and questions.
+   * Next.js frontend (`jeechallenger-app`) **never queries `papers` or `production` directly via MongoDB**.
+2. **Canonical Microservice Endpoints**:
+   * **Exam Room Ingestion**: `GET /papers/{slug}` — The Go service reassembles questions in strict section order (`paper.sections[].question_ids`), transforms image URLs to CDN format, and returns the complete test payload.
+   * **Scorecard Evaluation & Review**: `GET /cbt/submissions/{id}` and `GET /cbt/submissions` — Authenticated via NextAuth-signed HS256 JWT tokens.
+3. **Fail-Fast & Zero Fallback Logics**:
+   * If an endpoint returns 404 or an error, execution stops immediately and renders `notFound()`.
+   * **Zero Fallback Queries**: The frontend must never fall back to querying the database directly if the microservice fails.
 
 ---
 
@@ -158,7 +174,7 @@ The layout strictly mirrors the Indian Institute of Technology / TCS iON examina
 * **Data Structure**: Redis Hash (`HSET`)
 * **Key Expiration (TTL)**: `18000` seconds (5 hours) — ensures stale memory auto-cleans without leaving orphaned database clutter.
 
-#### Hash Fields:
+#### Hash Fields (Keyed Strictly by Question ID `q_{_id}`):
 ```javascript
 // Metadata Fields
 "started_at": 1714002000,
@@ -167,25 +183,25 @@ The layout strictly mirrors the Indian Institute of Technology / TCS iON examina
 "last_heartbeat": 1714003420,
 "status": "IN_PROGRESS", // "IN_PROGRESS" | "SUBMITTED"
 
-// Question Fields (One field per question)
-"q_1": JSON.stringify({
-  "selected_option": "B",
+// Question Fields (One field per unique MongoDB Question ObjectId)
+// Eliminates numbering collisions across subjects in JEE Advanced & custom exams
+"q_6a816d1950c0eddd0485e442": JSON.stringify({
+  "selected_options": ["B"], // Mirrors DB correct_answer array
   "numeric_value": null,
   "color_state": 3, // 3: Answered, 5: Answered & Marked for Review
   "time_spent_seconds": 125,
   "updated_at": 1714002125
 }),
-"q_5": JSON.stringify({
-  "selected_option": "A,C",
-  "selected_options": ["A", "C"],
+"q_6a816d1950c0eddd0485e452": JSON.stringify({
+  "selected_options": ["A", "C"], // Multi-correct selections
   "numeric_value": null,
   "color_state": 3,
   "time_spent_seconds": 140,
   "updated_at": 1714002220
 }),
-"q_21": JSON.stringify({
-  "selected_option": null,
-  "numeric_value": "42.5",
+"q_6a816d1950c0eddd0485e462": JSON.stringify({
+  "selected_options": [],
+  "numeric_value": "42.5", // Numerical integer/decimal entry
   "color_state": 5,
   "time_spent_seconds": 210,
   "updated_at": 1714002335
@@ -479,15 +495,15 @@ interface CBTStore {
   activeSubject: string;
   activeSectionIndex: number;
 
-  // In-Flight Candidate Responses
-  answers: Record<number, { selectedOption: string | null; selectedOptions: string[]; numericValue: string | null }>;
-  paletteStates: Record<number, 1 | 2 | 3 | 4 | 5>;
-  questionTimeMap: Record<number, number>; // question_number -> seconds
+  // In-Flight Candidate Responses (Keyed Strictly by Question ID: String(q._id))
+  answers: Record<string, { selected_options: string[]; numeric_value: string | null }>;
+  paletteStates: Record<string, 1 | 2 | 3 | 4 | 5>;
+  questionTimeMap: Record<string, number>; // qId -> seconds
   activeQuestionEnteredAt: number;        // Date.now() timestamp
-  uncommittedAnswer: { selectedOption: string | null; selectedOptions: string[]; numericValue: string | null };
+  uncommittedAnswer: { selected_options: string[]; numeric_value: string | null };
 
   // Sync & Telemetry Queues
-  pendingSyncQueue: Set<number>;
+  pendingSyncQueue: Set<string>; // Set of dirty qIds
   isSyncing: boolean;
   isOnline: boolean;
 

@@ -29,13 +29,13 @@ const subjectBadgeColors = {
 };
 
 export default function CBTSolutionReview({ submission, questionsData = [] }) {
-  const attempts = submission?.question_attempts || [];
+  const attempts = useMemo(() => submission?.question_attempts || [], [submission?.question_attempts]);
 
-  // Map question data by question_number
+  // Map question data strictly by MongoDB question _id
   const questionMap = useMemo(() => {
     const map = new Map();
     questionsData.forEach((q) => {
-      map.set(q.question_number, q);
+      map.set(String(q._id), q);
     });
     return map;
   }, [questionsData]);
@@ -411,7 +411,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           </div>
         ) : (
           filteredAttempts.map((att) => {
-            const qDoc = questionMap.get(att.question_number);
+            const qDoc = questionMap.get(String(att.question_id));
             const isSaved = savedVaultQNums.has(att.question_number);
 
             const isCorrect = att.is_correct;

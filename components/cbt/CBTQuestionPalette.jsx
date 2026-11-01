@@ -28,7 +28,7 @@ export default function CBTQuestionPalette({
   const summaryCounts = useMemo(() => {
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     sectionQuestions.forEach((q) => {
-      const state = paletteStates[q.question_number] || 1;
+      const state = paletteStates[String(q._id)] || 1;
       counts[state] = (counts[state] || 0) + 1;
     });
     return counts;
@@ -150,12 +150,13 @@ export default function CBTQuestionPalette({
           {sectionQuestions.map((q) => {
             const globalIndex = questions.indexOf(q);
             const isActive = globalIndex === activeQuestionIndex;
-            const state = paletteStates[q.question_number] || 1;
+            const qId = String(q._id);
+            const state = paletteStates[qId] || 1;
             const badgeStyle = getStateBadgeStyle(state);
 
             return (
               <button
-                key={q.question_number}
+                key={qId}
                 type="button"
                 onClick={() => jumpToQuestion(globalIndex)}
                 className={`h-9 w-full flex items-center justify-center font-bold text-xs border transition-all cursor-pointer relative shadow-xs ${badgeStyle} ${

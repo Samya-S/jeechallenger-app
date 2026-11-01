@@ -14,23 +14,16 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const sections = paperMetadata?.sections || [];
-
-  // Compute stats per section
+  // Compute stats per section strictly based on question IDs
   const sectionStats = useMemo(() => {
-    return sections.map((sec) => {
-      const start = sec.start_question_number || 1;
-      const end = sec.end_question_number || 100;
-
-      const secQuestions = questions.filter((q) => {
-        if (sec.start_question_number && sec.end_question_number) {
-          return q.question_number >= start && q.question_number <= end;
-        }
-        return q.subject === sec.subject;
-      });
+    const secs = paperMetadata?.sections || [];
+    return secs.map((sec) => {
+      const secQuestions = questions.filter((q) =>
+        sec.question_ids?.some((id) => String(id) === String(q._id))
+      );
 
       const stats = {
-        name: sec.name || `${sec.subject} (${sec.section_type})`,
+        name: sec.name || `${sec.subject} (${sec.section_type || ''})`,
         total: secQuestions.length,
         answered: 0,
         notAnswered: 0,
@@ -40,7 +33,7 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
       };
 
       secQuestions.forEach((q) => {
-        const state = paletteStates[q.question_number] || 1;
+        const state = paletteStates[String(q._id)] || 1;
         if (state === 3) stats.answered++;
         else if (state === 2) stats.notAnswered++;
         else if (state === 4) stats.markedForReview++;
@@ -50,7 +43,7 @@ export default function CBTExamSummaryModal({ isOpen, onClose }) {
 
       return stats;
     });
-  }, [sections, questions, paletteStates]);
+  }, [paperMetadata, questions, paletteStates]);
 
   // Total aggregate
   const totals = useMemo(() => {

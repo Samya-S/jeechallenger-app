@@ -1,10 +1,9 @@
 import React from 'react';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import clientPromise from '@/utils/mongodb';
 import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
 import CBTSolutionReview from '@/components/cbt/results/CBTSolutionReview';
@@ -14,124 +13,66 @@ import { ArrowLeft, RotateCcw, FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
+const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+
 async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
   try {
-    const client = await clientPromise;
-    const db = client.db('jee_challenger_pyqs');
-
-    // Find the paper to resolve paper_id and slug
-    const paper = await db.collection('papers').findOne({
-      $or: [{ slug }, { paper_id: slug }],
+    // 1. Fetch paper and pre-assembled canonical questions from Go microservice
+    const paperRes = await fetch(`${BACKEND_URL}/papers/${slug}`, {
+      cache: 'no-store',
     });
+    if (!paperRes.ok) return null;
+    const paperJson = await paperRes.json();
+    const paper = paperJson?.data;
+    if (!paper) return null;
 
-    const paperId = paper ? paper.paper_id : slug;
+    if (!submissionId) return null;
 
-    let submission = null;
+    // 2. Prepare authenticated JWT header for Go microservice
+    const signedToken = jwt.sign(
+      { id: sessionUserId },
+      process.env.NEXTAUTH_SECRET,
+      { algorithm: 'HS256' }
+    );
+    const authHeaders = {
+      Authorization: `Bearer ${signedToken}`,
+    };
 
-    // Strategy 1: If explicit submissionId is provided, look it up
-    if (submissionId) {
-      let idQuery = null;
-      try {
-        idQuery = new ObjectId(submissionId);
-      } catch {
-        idQuery = submissionId;
-      }
-
-      submission = await db.collection('test_submissions').findOne({
-        $or: [{ _id: idQuery }, { _id: String(submissionId) }],
-      });
-    }
-
-    // Strategy 2: If no submissionId or not found, find the latest attempt by this user for this paper
-    if (!submission && sessionUserId) {
-      const userQueries = [{ user_id: sessionUserId }];
-      try {
-        userQueries.push({ user_id: new ObjectId(sessionUserId) });
-      } catch {}
-
-      submission = await db
-        .collection('test_submissions')
-        .find({
-          $or: userQueries,
-          paper_id: { $in: [paperId, slug] },
-        })
-        .sort({ submitted_at: -1, started_at: -1 })
-        .limit(1)
-        .toArray()
-        .then((arr) => arr[0] || null);
-    }
-
+    // 3. Fetch specific submission from Go microservice
+    const subRes = await fetch(`${BACKEND_URL}/cbt/submissions/${submissionId}`, {
+      headers: authHeaders,
+      cache: 'no-store',
+    });
+    if (!subRes.ok) return null;
+    const subJson = await subRes.json();
+    const submission = subJson?.data;
     if (!submission) return null;
 
-    // Load all attempts by this user for this paper (for attempt switcher & progression)
+    // 4. Fetch all user attempts for this paper (for attempt switcher)
     let allAttempts = [];
-    if (sessionUserId) {
-      const userQueries = [{ user_id: sessionUserId }];
-      try {
-        userQueries.push({ user_id: new ObjectId(sessionUserId) });
-      } catch {}
-
-      allAttempts = await db
-        .collection('test_submissions')
-        .find({
-          $or: userQueries,
-          paper_id: { $in: [paperId, slug] },
-        })
-        .sort({ submitted_at: -1, started_at: -1 })
-        .project({
-          _id: 1,
-          paper_id: 1,
-          paper_title: 1,
-          submitted_at: 1,
-          started_at: 1,
-          time_taken_seconds: 1,
-          summary: 1,
-        })
-        .toArray();
-    }
-
-    // Load full question documents for solutions
-    let questions = [];
-    if (submission.paper_id) {
-      questions = await db
-        .collection('production')
-        .find({ original_paper_id: submission.paper_id })
-        .sort({ question_number: 1 })
-        .toArray();
-    }
-
-    if (questions.length === 0 && submission.question_attempts) {
-      const qIds = submission.question_attempts
-        .map((a) => {
-          try {
-            return typeof a.question_id === 'string' ? new ObjectId(a.question_id) : a.question_id;
-          } catch {
-            return null;
-          }
-        })
-        .filter(Boolean);
-
-      if (qIds.length > 0) {
-        questions = await db
-          .collection('production')
-          .find({ _id: { $in: qIds } })
-          .sort({ question_number: 1 })
-          .toArray();
+    try {
+      const listRes = await fetch(`${BACKEND_URL}/cbt/submissions`, {
+        headers: authHeaders,
+        cache: 'no-store',
+      });
+      if (listRes.ok) {
+        const listJson = await listRes.json();
+        allAttempts = (listJson?.data || []).filter(
+          (s) => s.paper_id === paper.paper_id || s.paper_id === slug
+        );
       }
+    } catch (listErr) {
+      console.warn('Failed to load user attempt history:', listErr);
     }
-
-    const cleanSubmission = JSON.parse(JSON.stringify(submission));
-    const cleanQuestions = JSON.parse(JSON.stringify(questions));
-    const cleanAllAttempts = JSON.parse(JSON.stringify(allAttempts));
 
     return {
-      submission: cleanSubmission,
-      questions: cleanQuestions,
-      allAttempts: cleanAllAttempts,
-      paperSlug: paper?.slug || slug,
+      submission,
+      questions: paper.questions || [],
+      allAttempts,
+      paperSlug: paper.slug || slug,
     };
   } catch (error) {
-    console.error('Failed to load submission data:', error);
+    console.error('Failed to load submission data from microservice:', error);
     return null;
   }
 }

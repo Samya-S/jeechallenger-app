@@ -96,7 +96,7 @@ export default function CBTInstructionsModal({ isOpen, onClose }) {
             <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
               <li>To answer a question, select your chosen option and click <strong>Save & Next</strong>.</li>
               <li>To clear your chosen answer, click <strong>Clear Response</strong>.</li>
-              <li><strong>Crucial NTA Rule:</strong> If you select an option and then click directly on a question number in the Question Palette without clicking "Save & Next", your selection will NOT be saved.</li>
+              <li><strong>Crucial NTA Rule:</strong> If you select an option and then click directly on a question number in the Question Palette without clicking &quot;Save &amp; Next&quot;, your selection will NOT be saved.</li>
               <li>For Numerical Value questions, use the on-screen mouse keypad. Physical keyboard keystrokes are blocked for test security.</li>
               <li>In Section B, you may attempt answers across any of the questions. Only the <strong>first 5 attempted questions in numerical order</strong> will be evaluated.</li>
             </ul>

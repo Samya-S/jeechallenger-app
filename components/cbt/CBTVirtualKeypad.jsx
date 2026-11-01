@@ -8,7 +8,7 @@ export default function CBTVirtualKeypad({ className = '' }) {
   const uncommittedAnswer = useCBTStore((s) => s.uncommittedAnswer);
   const setNumericValue = useCBTStore((s) => s.setNumericValue);
 
-  const currentValue = uncommittedAnswer?.numericValue ?? '';
+  const currentValue = uncommittedAnswer?.numeric_value ?? '';
 
   const handleKeyPress = (char) => {
     let next = String(currentValue);

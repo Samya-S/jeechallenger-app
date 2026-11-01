@@ -11,7 +11,7 @@ export default function CBTSectionBar() {
   const jumpToQuestion = useCBTStore((s) => s.jumpToQuestion);
   const paletteStates = useCBTStore((s) => s.paletteStates);
 
-  const sections = paperMetadata?.sections || [];
+  const sections = useMemo(() => paperMetadata?.sections || [], [paperMetadata?.sections]);
   const currentQ = questions[activeQuestionIndex];
 
   // Derive subjects list
@@ -27,46 +27,24 @@ export default function CBTSectionBar() {
     return list.length > 0 ? list : ['Physics', 'Chemistry', 'Mathematics'];
   }, [sections]);
 
-  // Determine active section index based on current question
+  // Determine active section index strictly based on current question ID
   const currentSection = useMemo(() => {
     if (!currentQ) return sections[0];
-    const qNum = currentQ.question_number;
-    const match = sections.find((sec) => {
-      if (sec.start_question_number && sec.end_question_number) {
-        return qNum >= sec.start_question_number && qNum <= sec.end_question_number;
-      }
-      if (sec.question_ids && sec.question_ids.length > 0) {
-        return sec.question_ids.includes(String(currentQ._id)) || sec.question_ids.includes(currentQ._id);
-      }
-      return sec.subject === currentQ.subject;
-    });
+    const currentQId = String(currentQ._id);
+    const match = sections.find((sec) =>
+      sec.question_ids?.some((id) => String(id) === currentQId)
+    );
     return match || sections[0];
   }, [sections, currentQ]);
 
-  // Switch to section: jump to its first question
+  // Switch to section: jump to its first question by ID
   const handleSelectSection = (sec) => {
-    let targetIndex = -1;
-
-    // 1. Match by exact question IDs belonging to this section
     if (sec.question_ids && sec.question_ids.length > 0) {
       const firstId = String(sec.question_ids[0]);
-      targetIndex = questions.findIndex((q) => String(q._id) === firstId);
-    }
-
-    // 2. Match by question number AND subject
-    if (targetIndex === -1 && sec.start_question_number) {
-      targetIndex = questions.findIndex(
-        (q) => q.question_number === sec.start_question_number && (!sec.subject || q.subject === sec.subject)
-      );
-    }
-
-    // 3. Fallback to subject match
-    if (targetIndex === -1 && sec.subject) {
-      targetIndex = questions.findIndex((q) => q.subject === sec.subject);
-    }
-
-    if (targetIndex !== -1) {
-      jumpToQuestion(targetIndex);
+      const targetIndex = questions.findIndex((q) => String(q._id) === firstId);
+      if (targetIndex !== -1) {
+        jumpToQuestion(targetIndex);
+      }
     }
   };
 
@@ -85,17 +63,15 @@ export default function CBTSectionBar() {
 
   const currentSubject = currentQ?.subject || currentSection?.subject || subjects[0];
 
-  // Calculate answered count for a section
+  // Calculate answered count for a section strictly by question IDs
   const getSectionAnsweredCount = (sec) => {
     let count = 0;
-    const start = sec.start_question_number || 1;
-    const end = sec.end_question_number || 100;
-    for (let qn = start; qn <= end; qn++) {
-      const state = paletteStates[qn];
+    (sec.question_ids || []).forEach((id) => {
+      const state = paletteStates[String(id)];
       if (state === 3 || state === 5) {
         count++;
       }
-    }
+    });
     return count;
   };
 

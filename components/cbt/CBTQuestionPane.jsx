@@ -31,27 +31,27 @@ export default function CBTQuestionPane({ className = '' }) {
     }
   }, [fontScale]);
 
-  // Determine section and marking scheme
+  // Determine section and marking scheme strictly by question ID membership
   const markingInfo = useMemo(() => {
     if (!currentQ || !paperMetadata?.sections) {
       return { correct: 4, incorrect: -1, type: 'Single Correct' };
     }
-    const qNum = currentQ.question_number;
-    const sec = paperMetadata.sections.find((s) => {
-      if (s.start_question_number && s.end_question_number) {
-        return qNum >= s.start_question_number && qNum <= s.end_question_number;
-      }
-      return s.subject === currentQ.subject;
-    });
+    const currentQId = String(currentQ._id);
+    const sec = paperMetadata.sections.find((s) =>
+      s.question_ids?.some((id) => String(id) === currentQId)
+    );
 
-    const format = currentQ.input_format || currentQ.question_type || sec?.section_type || 'MCQ';
+    const inputFormat = String(currentQ.input_format || 'MCQ').toUpperCase();
     const correct = sec?.marking_scheme?.correct ?? 4;
-    const incorrect = sec?.marking_scheme?.incorrect ?? (format === 'NUMERIC' ? 0 : -1);
+    const incorrect = sec?.marking_scheme?.incorrect ?? (inputFormat === 'NUMERIC' ? 0 : -1);
 
     let typeLabel = 'Single Correct Type';
-    if (format === 'NUMERIC') typeLabel = 'Numerical Value Type';
-    else if (format === 'MULTI_CORRECT') typeLabel = 'Multiple Correct Type';
-    else if (format === 'COMPREHENSION') typeLabel = 'Comprehension / Passage Type';
+    if (inputFormat === 'NUMERIC') typeLabel = 'Numerical Value Type';
+    else if (inputFormat === 'MULTI_CORRECT') typeLabel = 'Multiple Correct Type';
+
+    if (String(currentQ.question_type || '').toUpperCase() === 'COMPREHENSION') {
+      typeLabel = `${typeLabel} (Comprehension)`;
+    }
 
     return { correct, incorrect, type: typeLabel };
   }, [currentQ, paperMetadata]);
@@ -64,9 +64,10 @@ export default function CBTQuestionPane({ className = '' }) {
     );
   }
 
-  const formatUpper = (currentQ.input_format || currentQ.question_type || '').toUpperCase();
-  const isNumeric = formatUpper === 'NUMERIC';
-  const isMulti = formatUpper === 'MULTI_CORRECT';
+  // Use input_format strictly to decide the user control
+  const inputFormatUpper = String(currentQ.input_format || 'MCQ').toUpperCase();
+  const isNumeric = inputFormatUpper === 'NUMERIC';
+  const isMulti = inputFormatUpper === 'MULTI_CORRECT';
 
   // Normalize options across arrays and objects (JEE Main and JEE Advanced)
   const optionsList = normalizeOptions(currentQ.options);
@@ -152,9 +153,7 @@ export default function CBTQuestionPane({ className = '' }) {
               </div>
               {optionsList.map((opt) => {
                 const optKey = opt.key;
-                const isSelected = Array.isArray(uncommittedAnswer?.selectedOptions)
-                  ? uncommittedAnswer.selectedOptions.includes(optKey)
-                  : uncommittedAnswer?.selectedOption === optKey;
+                const isSelected = (uncommittedAnswer?.selected_options || []).includes(optKey);
 
                 return (
                   <label
@@ -216,7 +215,7 @@ export default function CBTQuestionPane({ className = '' }) {
               </div>
               {optionsList.map((opt) => {
                 const optKey = opt.key;
-                const isSelected = uncommittedAnswer?.selectedOption === optKey;
+                const isSelected = (uncommittedAnswer?.selected_options || []).includes(optKey);
 
                 return (
                   <label

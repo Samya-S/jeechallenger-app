@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { AlertTriangle, Zap, Clock, Hourglass, Target } from 'lucide-react';
 
 export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
-  const attempts = submission?.question_attempts || [];
+  const attempts = useMemo(() => submission?.question_attempts || [], [submission?.question_attempts]);
 
   // 1. Detect Time Traps from backend pacing flags (strict DB-driven, zero fallback)
   const timeTraps = useMemo(() => {

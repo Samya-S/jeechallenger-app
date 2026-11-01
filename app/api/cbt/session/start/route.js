@@ -1,6 +1,5 @@
 import { getToken } from 'next-auth/jwt';
 import redis from '@/utils/redis';
-import clientPromise from '@/utils/mongodb';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,15 +82,15 @@ export async function POST(req) {
       // Check if session has already expired
       if (now < expiresAt) {
         // Active session exists!
-        // Unpack existing question answers
+        // Unpack existing question answers strictly by Question ID
         const rehydratedAnswers = {};
         for (const [key, val] of Object.entries(existing)) {
           if (key.startsWith('q_')) {
-            const qNum = parseInt(key.replace('q_', ''), 10);
+            const qId = key.replace('q_', '');
             try {
-              rehydratedAnswers[qNum] = typeof val === 'string' ? JSON.parse(val) : val;
+              rehydratedAnswers[qId] = typeof val === 'string' ? JSON.parse(val) : val;
             } catch {
-              rehydratedAnswers[qNum] = val;
+              rehydratedAnswers[qId] = val;
             }
           }
         }
@@ -112,15 +111,21 @@ export async function POST(req) {
       }
     }
 
-    // 2. Fetch paper duration from MongoDB
-    const client = await clientPromise;
-    const db = client.db('jee_challenger_pyqs');
-    const paper = await db.collection('papers').findOne(
-      { $or: [{ paper_id }, { slug: paper_id }] },
-      { projection: { duration_minutes: 1, title: 1, exam_type: 1 } }
-    );
+    // 2. Fetch paper duration from Go microservice
+    const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+    let durationMinutes = 180;
+    try {
+      const pRes = await fetch(`${BACKEND_URL}/papers/${paper_id}`, { cache: 'no-store' });
+      if (pRes.ok) {
+        const pData = await pRes.json();
+        if (pData?.data?.duration_minutes) {
+          durationMinutes = pData.data.duration_minutes;
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch paper duration from microservice:', err);
+    }
 
-    const durationMinutes = paper?.duration_minutes || 180;
     const expiresAt = now + durationMinutes * 60 * 1000;
 
     // 3. Initialize fresh session hash in Redis with 5-hour TTL

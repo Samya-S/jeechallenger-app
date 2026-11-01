@@ -37,15 +37,20 @@ export function evaluateQuestion(q, scheme, attempt) {
     return { isCorrect: true, marks: correctMarks };
   }
 
-  const format = String(q.input_format || q.question_type || '').toUpperCase();
+  const inputFormat = String(q.input_format || 'MCQ').toUpperCase();
 
   // Rule 2: Single Correct MCQ
-  if (format === 'MCQ' || (format !== 'NUMERIC' && format !== 'MULTI_CORRECT' && Array.isArray(q.correct_answer) && q.correct_answer.length === 1)) {
-    if (!attempt.selected_option || !Array.isArray(q.correct_answer) || q.correct_answer.length === 0) {
+  if (inputFormat === 'MCQ') {
+    const candidateChoice = (Array.isArray(attempt.selected_options) && attempt.selected_options.length > 0)
+      ? String(attempt.selected_options[0]).trim().toUpperCase()
+      : (attempt.selected_option ? String(attempt.selected_option).trim().toUpperCase() : null);
+    const correctChoice = (Array.isArray(q.correct_answer) && q.correct_answer.length > 0)
+      ? String(q.correct_answer[0]).trim().toUpperCase()
+      : null;
+
+    if (!candidateChoice || !correctChoice) {
       return { isCorrect: false, marks: incorrectMarks };
     }
-    const candidateChoice = String(attempt.selected_option).trim().toUpperCase();
-    const correctChoice = String(q.correct_answer[0]).trim().toUpperCase();
 
     if (candidateChoice === correctChoice) {
       return { isCorrect: true, marks: correctMarks };
@@ -54,14 +59,10 @@ export function evaluateQuestion(q, scheme, attempt) {
   }
 
   // Rule 3: Multiple Correct (MULTI_CORRECT)
-  if (format === 'MULTI_CORRECT' || (Array.isArray(q.correct_answer) && q.correct_answer.length > 1 && format !== 'NUMERIC')) {
-    // Resolve candidate options: check selected_options array first, fallback to selected_option
-    let candidateOptions = [];
-    if (Array.isArray(attempt.selected_options) && attempt.selected_options.length > 0) {
-      candidateOptions = attempt.selected_options;
-    } else if (attempt.selected_option) {
-      candidateOptions = String(attempt.selected_option).split(',').map((s) => s.trim());
-    }
+  if (inputFormat === 'MULTI_CORRECT') {
+    const candidateOptions = Array.isArray(attempt.selected_options)
+      ? attempt.selected_options
+      : (attempt.selected_option ? [String(attempt.selected_option)] : []);
 
     const chosenSet = new Set(
       candidateOptions.map((s) => String(s).trim().toUpperCase()).filter(Boolean)
@@ -366,6 +367,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
   return {
     user_id: submissionMeta.user_id,
     paper_id: paper.paper_id,
+    paper_slug: paper.slug || paper.paper_id,
     paper_title: paper.title,
     exam_type: paper.exam_type,
     status: submissionMeta.status || 'EVALUATED',
@@ -422,15 +424,9 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
   }
 
   // 3. Fetch Questions from production collection
-  let questions = await db.collection('production').find({
+  const questions = await db.collection('production').find({
     _id: { $in: allQIds },
   }).toArray();
-
-  if (questions.length === 0 && paper.paper_id) {
-    questions = await db.collection('production').find({
-      original_paper_id: paper.paper_id,
-    }).sort({ question_number: 1 }).toArray();
-  }
 
   // 4. Grade Test
   const submissionData = scoreTestSubmission(paper, questions, responses, {
