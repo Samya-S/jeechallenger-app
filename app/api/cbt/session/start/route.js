@@ -60,7 +60,7 @@ export async function POST(req) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { paper_id, instance_id } = body;
+    const { paper_id, paper_slug, instance_id } = body;
 
     if (!paper_id) {
       return Response.json({ error: 'paper_id is required' }, { status: 400 });
@@ -115,7 +115,8 @@ export async function POST(req) {
     const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
     let durationMinutes = 180;
     try {
-      const pRes = await fetch(`${BACKEND_URL}/papers/${paper_id}`, { cache: 'no-store' });
+      const paperIdentifier = paper_slug || paper_id;
+      const pRes = await fetch(`${BACKEND_URL}/papers/${paperIdentifier}`, { cache: 'no-store' });
       if (pRes.ok) {
         const pData = await pRes.json();
         if (pData?.data?.duration_minutes) {

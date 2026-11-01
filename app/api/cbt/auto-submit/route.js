@@ -29,7 +29,7 @@ export async function POST(req) {
     const responses = {};
     for (const [key, val] of Object.entries(sessionData)) {
       if (key.startsWith('q_')) {
-        const qNum = parseInt(key.replace('q_', ''), 10);
+        const qId = key.replace('q_', '');
         let resp = null;
         try {
           resp = typeof val === 'string' ? JSON.parse(val) : val;
@@ -37,7 +37,7 @@ export async function POST(req) {
           resp = val;
         }
         if (resp) {
-          responses[qNum] = resp;
+          responses[qId] = resp;
         }
       }
     }

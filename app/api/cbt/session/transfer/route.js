@@ -26,11 +26,11 @@ export async function POST(req) {
     const rehydratedAnswers = {};
     for (const [key, val] of Object.entries(sessionData)) {
       if (key.startsWith('q_')) {
-        const qNum = parseInt(key.replace('q_', ''), 10);
+        const qId = key.replace('q_', '');
         try {
-          rehydratedAnswers[qNum] = typeof val === 'string' ? JSON.parse(val) : val;
+          rehydratedAnswers[qId] = typeof val === 'string' ? JSON.parse(val) : val;
         } catch {
-          rehydratedAnswers[qNum] = val;
+          rehydratedAnswers[qId] = val;
         }
       }
     }

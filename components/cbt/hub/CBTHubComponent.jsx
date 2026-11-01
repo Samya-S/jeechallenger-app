@@ -200,6 +200,7 @@ export default function CBTHubComponent({
         body: JSON.stringify({
           paper_id: item.paper_id,
           question_number: item.question_number,
+          question_id: item.question_id,
         }),
       });
     } catch (err) {

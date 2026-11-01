@@ -1,7 +1,8 @@
 # JEE Challenger: Computer-Based Test (CBT) Engine — Master Specification
-**Document Version:** 1.3.0  
+**Document Version:** 1.4.0  
 **Status:** Approved Architectural Blueprint (Source of Truth)  
 **Target Applications:** `jeechallenger-app`, `jeechallenger-pyqs`, `jeechallenger-admin`
+**Last Updated:** November 1, 2026 (Question ID isolation in Auto-Submit/Transfer, Mistake Vault uniqueness, and Go microservice dual resolution)
 
 ---
 
@@ -207,6 +208,10 @@ The layout strictly mirrors the Indian Institute of Technology / TCS iON examina
   "updated_at": 1714002335
 })
 ```
+
+> [!IMPORTANT]
+> **Zero `parseInt` Rule on Question Keys**:
+> All backend consumers (`auto-submit`, `session/transfer`, `session/start`) must extract question IDs directly as strings via `key.replace('q_', '')`. Parsing with `parseInt(key.replace('q_', ''), 10)` truncates hexadecimal ObjectIds at the first non-numeric character (e.g. `6a81...` becomes `6`), causing severe cross-question answer overwrites and evaluation loss. Always handle question identifiers strictly as string ObjectIds.
 
 ---
 
@@ -421,11 +426,11 @@ Non-blocking background delta sync called on answer changes or 10s heartbeat.
 ---
 
 ### 9.3 `POST /api/cbt/session/transfer`
-Claims the active instance lease for a new device.
+Claims the active instance lease for a new device and rehydrates in-flight state.
 * **Request Payload**:
   ```json
   {
-    "session_id": "cbt_sess_89a12c",
+    "session_id": "cbt:session:userId:paperId",
     "new_instance_id": "inst_dev_b_991"
   }
   ```
@@ -434,9 +439,14 @@ Claims the active instance lease for a new device.
   {
     "success": true,
     "active_instance_id": "inst_dev_b_991",
-    "rehydrated_state": { /* entire Redis hash */ }
+    "expires_at": 1714012800000,
+    "duration_minutes": 180,
+    "rehydrated_answers": {
+      "6a816d1950c0eddd0485e442": { "selected_options": ["B"], "numeric_value": null }
+    }
   }
   ```
+  *Note: Question keys in `rehydrated_answers` are string ObjectIds matching frontend store indices without integer truncation.*
 
 ---
 
@@ -445,9 +455,9 @@ Manual submission or client-side timer expiration.
 * **Request Payload**:
   ```json
   {
-    "session_id": "cbt_sess_89a12c",
+    "session_id": "cbt:session:userId:paperId",
     "instance_id": "inst_7f9c2a",
-    "final_question_time_map": { "1": 135, "2": 45, ... }
+    "final_question_time_map": { "6a816d1950c0eddd0485e442": 135 }
   }
   ```
 * **Response (200 OK)**:
@@ -467,10 +477,11 @@ Secured endpoint invoked by Upstash QStash or background reconciler at `expires_
 * **Headers**: `Upstash-Signature: ...` or internal authorization bearer token.
 * **Action**:
   1. Checks if session is already `SUBMITTED`. If so, exits immediately (idempotent).
-  2. Reads in-flight answers from Redis hash.
+  2. Reads in-flight answers from Redis hash, extracting question keys directly via `qId = key.replace('q_', '')`.
   3. Executes Scoring Judge against `production` and `papers` MongoDB collections.
   4. Inserts completed submission into `test_submissions`.
-  5. Purges Redis key.
+  5. Auto-populates `mistake_vault` uniquely filtered by `{ user_id, paper_id, question_id }`.
+  6. Purges Redis key.
 
 ---
 

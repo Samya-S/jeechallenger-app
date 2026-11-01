@@ -46,7 +46,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   // Solutions collapsible state: Set of expanded question numbers. By default empty (all closed).
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
   // Persistent Mistake Vault state loaded from MongoDB
-  const [savedVaultQNums, setSavedVaultQNums] = useState(() => new Set());
+  const [savedVaultQKeys, setSavedVaultQKeys] = useState(() => new Set());
   // Reporting bug state for question bug modal
   const [reportingQuestion, setReportingQuestion] = useState(null);
 
@@ -77,9 +77,18 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         return res.json();
       })
       .then((data) => {
-        if (data?.savedQuestionNumbers) {
-          setSavedVaultQNums(new Set(data.savedQuestionNumbers));
+        const keys = new Set();
+        if (Array.isArray(data?.savedQuestionIds)) {
+          data.savedQuestionIds.forEach((id) => {
+            if (id) keys.add(String(id));
+          });
         }
+        if (Array.isArray(data?.savedQuestionNumbers)) {
+          data.savedQuestionNumbers.forEach((num) => {
+            if (num !== undefined && num !== null) keys.add(String(num));
+          });
+        }
+        setSavedVaultQKeys(keys);
       })
       .catch((err) => console.error('Failed to load mistake vault from MongoDB:', err));
   }, [submission?.paper_id]);
@@ -113,7 +122,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         if (currentStatus === 'INCORRECT' && (!targetAtt.is_evaluated || targetAtt.is_correct)) return 'ALL';
         if (currentStatus === 'UNATTEMPTED' && targetAtt.is_evaluated) return 'ALL';
         if (currentStatus === 'TIME_TRAPS' && ((targetAtt.time_spent_seconds || 0) < 240 || targetAtt.is_correct)) return 'ALL';
-        if (currentStatus === 'MISTAKE_VAULT' && !savedVaultQNums.has(targetAtt.question_number)) return 'ALL';
+        const isTargetInVault =
+          savedVaultQKeys.has(String(targetAtt.question_id)) ||
+          savedVaultQKeys.has(String(targetAtt.question_number));
+        if (currentStatus === 'MISTAKE_VAULT' && !isTargetInVault) return 'ALL';
         return currentStatus;
       });
 
@@ -132,7 +144,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
     window.addEventListener('cbt-jump-to-question', handleJump);
     return () => window.removeEventListener('cbt-jump-to-question', handleJump);
-  }, [attempts, activeSubject, savedVaultQNums]);
+  }, [attempts, activeSubject, savedVaultQKeys]);
 
   // Filter attempts
   const filteredAttempts = useMemo(() => {
@@ -144,11 +156,14 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       if (activeStatus === 'INCORRECT' && (!att.is_evaluated || att.is_correct)) return false;
       if (activeStatus === 'UNATTEMPTED' && att.is_evaluated) return false;
       if (activeStatus === 'TIME_TRAPS' && (att.time_spent_seconds < 240 || att.is_correct)) return false;
-      if (activeStatus === 'MISTAKE_VAULT' && !savedVaultQNums.has(att.question_number)) return false;
+      const isInVault =
+        savedVaultQKeys.has(String(att.question_id)) ||
+        savedVaultQKeys.has(String(att.question_number));
+      if (activeStatus === 'MISTAKE_VAULT' && !isInVault) return false;
 
       return true;
     });
-  }, [attempts, activeSubject, activeStatus, savedVaultQNums]);
+  }, [attempts, activeSubject, activeStatus, savedVaultQKeys]);
 
   // Toggle individual solution
   const toggleSolution = (qNum) => {
@@ -175,16 +190,19 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
   // Toggle Mistake Vault Bookmark with persistent MongoDB storage
   const handleToggleVault = async (att, qDoc) => {
+    const qId = String(att.question_id || qDoc?._id || att.question_number);
     const qNum = att.question_number;
-    const isCurrentlySaved = savedVaultQNums.has(qNum);
+    const isCurrentlySaved = savedVaultQKeys.has(qId) || savedVaultQKeys.has(String(qNum));
 
     // Optimistic UI update
-    setSavedVaultQNums((prev) => {
+    setSavedVaultQKeys((prev) => {
       const next = new Set(prev);
       if (isCurrentlySaved) {
-        next.delete(qNum);
+        next.delete(qId);
+        next.delete(String(qNum));
       } else {
-        next.add(qNum);
+        next.add(qId);
+        if (qNum !== undefined) next.add(String(qNum));
       }
       return next;
     });
@@ -205,12 +223,14 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
       if (!res.ok) {
         // Rollback on failure
-        setSavedVaultQNums((prev) => {
+        setSavedVaultQKeys((prev) => {
           const next = new Set(prev);
           if (isCurrentlySaved) {
-            next.add(qNum);
+            next.add(qId);
+            if (qNum !== undefined) next.add(String(qNum));
           } else {
-            next.delete(qNum);
+            next.delete(qId);
+            next.delete(String(qNum));
           }
           return next;
         });
@@ -218,12 +238,14 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     } catch (err) {
       console.error('Failed to toggle mistake vault in MongoDB:', err);
       // Rollback on failure
-      setSavedVaultQNums((prev) => {
+      setSavedVaultQKeys((prev) => {
         const next = new Set(prev);
         if (isCurrentlySaved) {
-          next.add(qNum);
+          next.add(qId);
+          if (qNum !== undefined) next.add(String(qNum));
         } else {
-          next.delete(qNum);
+          next.delete(qId);
+          next.delete(String(qNum));
         }
         return next;
       });
@@ -368,7 +390,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
               }`}
             >
               <Bookmark className="w-3.5 h-3.5" />
-              <span>Mistake Vault ({savedVaultQNums.size})</span>
+              <span>Mistake Vault ({savedVaultQKeys.size})</span>
             </button>
           </div>
 
@@ -412,7 +434,9 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         ) : (
           filteredAttempts.map((att) => {
             const qDoc = questionMap.get(String(att.question_id));
-            const isSaved = savedVaultQNums.has(att.question_number);
+            const isSaved =
+              savedVaultQKeys.has(String(att.question_id || qDoc?._id)) ||
+              savedVaultQKeys.has(String(att.question_number));
 
             const isCorrect = att.is_correct;
             const isAttempted = att.is_evaluated;

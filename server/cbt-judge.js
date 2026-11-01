@@ -462,12 +462,13 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
 
       const vaultOps = incorrectAttempts.map((att) => {
         const qDoc = qMap.get(String(att.question_id));
+        const cleanQId = att.question_id && ObjectId.isValid(att.question_id) ? new ObjectId(att.question_id) : att.question_id;
         return {
           updateOne: {
             filter: {
               $or: [{ user_id: userObjId }, { user_id: String(userObjId) }],
               paper_id: paper.paper_id,
-              question_number: Number(att.question_number),
+              question_id: cleanQId,
             },
             update: {
               $setOnInsert: {
@@ -475,7 +476,7 @@ export async function gradeAndPersistSubmission(userId, paperId, responses, meta
                 paper_id: paper.paper_id,
                 paper_slug: paper.slug || paper.paper_id,
                 question_number: Number(att.question_number),
-                question_id: att.question_id,
+                question_id: cleanQId,
                 subject: att.subject || qDoc?.subject || null,
                 chapter: qDoc?.chapter || null,
                 saved_at: new Date(),
