@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useSyncExternalStore } from "react";
+import React, { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,7 @@ import {
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PlaylistSidebar from "@/components/playlists/PlaylistSidebar";
 import { PlaylistProvider, usePlaylistContext } from "@/components/playlists/PlaylistContext";
+import styles from "@/components/playlists/PlaylistBottomSheet.module.css";
 
 const emptySubscribe = () => () => {};
 
@@ -38,10 +39,32 @@ function ListsLayoutContent({ children }) {
 
   // Mobile bottom sheet & create modal state
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
+  const [isClosingSheet, setIsClosingSheet] = useState(false);
+  const closeSheetTimeoutRef = useRef(null);
+
   const [showMobileCreateModal, setShowMobileCreateModal] = useState(false);
   const [newListName, setNewListName] = useState("");
   const [creatingList, setCreatingList] = useState(false);
   const [createListError, setCreateListError] = useState("");
+
+  // Smooth exit animation matching blog TOC drawer (240ms)
+  const closeBottomSheet = React.useCallback(() => {
+    if (isClosingSheet) return;
+    setIsClosingSheet(true);
+    closeSheetTimeoutRef.current = setTimeout(() => {
+      setMobileBottomSheetOpen(false);
+      setIsClosingSheet(false);
+    }, 240);
+  }, [isClosingSheet]);
+
+  // Clean up exit animation timer
+  useEffect(() => {
+    return () => {
+      if (closeSheetTimeoutRef.current) {
+        clearTimeout(closeSheetTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Lock body scroll and handle Escape key for bottom sheet & modal
   useEffect(() => {
@@ -50,7 +73,9 @@ function ListsLayoutContent({ children }) {
     document.body.style.overflow = "hidden";
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        setMobileBottomSheetOpen(false);
+        if (mobileBottomSheetOpen) {
+          closeBottomSheet();
+        }
         setShowMobileCreateModal(false);
         setCreateListError("");
       }
@@ -60,7 +85,7 @@ function ListsLayoutContent({ children }) {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [mobileBottomSheetOpen, showMobileCreateModal]);
+  }, [mobileBottomSheetOpen, showMobileCreateModal, closeBottomSheet]);
 
   const handleMobileCreate = async (e) => {
     e.preventDefault();
@@ -124,8 +149,11 @@ function ListsLayoutContent({ children }) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setMobileBottomSheetOpen(true)}
-              className="flex-1 flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-left shadow-xs hover:border-gray-300 dark:hover:border-gray-700 transition-colors cursor-pointer"
+              onClick={() => {
+                setIsClosingSheet(false);
+                setMobileBottomSheetOpen(true);
+              }}
+              className="flex-1 flex items-center justify-between gap-2 px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-left shadow-xs hover:border-gray-300 dark:hover:border-gray-700 transition-colors cursor-pointer active:scale-[0.99]"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 {activePlaylist?.type === "FAVOURITES" ? (
@@ -151,7 +179,7 @@ function ListsLayoutContent({ children }) {
             <button
               type="button"
               onClick={() => setShowMobileCreateModal(true)}
-              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors shrink-0 shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-all shrink-0 shadow-xs cursor-pointer active:scale-95"
               title="Create New List"
             >
               <Plus className="w-4 h-4" />
@@ -182,64 +210,67 @@ function ListsLayoutContent({ children }) {
       {/* Mobile Bottom Sheet Drawer Portaled to document.body */}
       {mounted && mobileBottomSheetOpen && createPortal(
         <div className="fixed inset-0 z-[9990] flex flex-col justify-end">
-          {/* Blurred Backdrop */}
+          {/* Blurred Backdrop with Fade-In / Fade-Out */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
-            onClick={() => setMobileBottomSheetOpen(false)}
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm ${
+              isClosingSheet ? styles.fadeOut : styles.fadeIn
+            }`}
+            onClick={closeBottomSheet}
+            aria-hidden="true"
           />
 
-          {/* Bottom Sheet Modal */}
+          {/* Bottom Sheet Drawer with Spring Slide-Up / Smooth Slide-Down */}
           <div
-            className="relative z-10 w-full max-h-[82vh] bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-300 ease-out"
+            className={`relative z-10 w-full max-h-[85dvh] bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-3xl shadow-2xl flex flex-col pb-[max(1.25rem,env(safe-area-inset-bottom))] ${
+              isClosingSheet ? styles.slideDown : styles.slideUp
+            }`}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="My Question Lists"
           >
             {/* Grab Handle */}
-            <div className="pt-3 pb-1 flex justify-center cursor-grab active:cursor-grabbing">
-              <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700" />
-            </div>
+            <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto my-3 flex-shrink-0" />
 
             {/* Sheet Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800">
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                  My Question Lists
-                </h3>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                  Select a list to view or create a new one
-                </p>
+            <div className="flex items-center justify-between px-6 pb-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+              <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
+                <ListOrdered size={18} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                <span>My Question Lists</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => {
-                    setMobileBottomSheetOpen(false);
+                    closeBottomSheet();
                     setShowMobileCreateModal(true);
                   }}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer shadow-xs"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-all cursor-pointer shadow-xs active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>New List</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setMobileBottomSheetOpen(false)}
-                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                  onClick={closeBottomSheet}
+                  className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                  aria-label="Close"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
             {/* Scrollable Touch-Friendly Items */}
-            <div className="p-3 overflow-y-auto max-h-[60vh] space-y-1.5">
+            <nav className="p-4 overflow-y-auto max-h-[60dvh] space-y-1.5 flex-1 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 text-left">
               {userPlaylists.map((pl) => {
                 const isActive = pl.slug === currentSlug;
                 return (
                   <Link
                     key={pl.id}
                     href={`/lists/${pl.slug}`}
-                    onClick={() => setMobileBottomSheetOpen(false)}
-                    className={`flex items-center justify-between p-3 rounded-2xl transition-all cursor-pointer ${
+                    onClick={closeBottomSheet}
+                    className={`flex items-center justify-between p-3 rounded-2xl transition-all cursor-pointer active:scale-[0.99] ${
                       isActive
                         ? "bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 shadow-xs"
                         : "bg-gray-50/60 dark:bg-gray-800/40 hover:bg-gray-100 dark:hover:bg-gray-800/80 border border-transparent"
@@ -293,7 +324,7 @@ function ListsLayoutContent({ children }) {
                   </Link>
                 );
               })}
-            </div>
+            </nav>
           </div>
         </div>,
         document.body
