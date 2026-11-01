@@ -60,8 +60,25 @@ export default function CBTQuestionPaperModal({ isOpen, onClose }) {
                   <span>{isNumeric ? 'Numerical Value' : 'Multiple Choice'}</span>
                 </div>
 
+                {/* Optional Comprehension Passage */}
+                {q.linked_passage_text && (
+                  <div className="p-3 rounded-lg bg-blue-50/70 border border-blue-200 text-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600 mb-1">
+                      Passage / Context
+                    </div>
+                    <MarkdownMathRenderer
+                      content={q.linked_passage_text}
+                      passageDiagramUrls={q.linked_passage_diagram_urls}
+                    />
+                  </div>
+                )}
+
                 <div className="text-sm text-gray-900">
-                  <MarkdownMathRenderer content={q.question_text || ''} />
+                  <MarkdownMathRenderer
+                    content={q.question_text || ''}
+                    diagramUrls={q.question_diagram_urls}
+                    passageDiagramUrls={q.linked_passage_diagram_urls}
+                  />
                 </div>
 
                 {q.question_diagram_urls && q.question_diagram_urls.length > 0 && (

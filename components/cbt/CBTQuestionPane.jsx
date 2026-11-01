@@ -72,6 +72,24 @@ export default function CBTQuestionPane({ className = '' }) {
   // Normalize options across arrays and objects (JEE Main and JEE Advanced)
   const optionsList = normalizeOptions(currentQ.options);
 
+  // Extract inline shortcodes for passage diagrams
+  const embeddedPassageDiagrams = [
+    ...(currentQ.linked_passage_text?.matchAll(/\{\{passage_diagram[:_](\d+)\}\}/gi) || [])
+  ].map((m) => parseInt(m[1], 10));
+
+  const remainingPassageDiagrams = (currentQ.linked_passage_diagram_urls || [])
+    .map((url, i) => ({ imgUrl: url, i }))
+    .filter(({ i }) => !embeddedPassageDiagrams.includes(i));
+
+  // Extract inline shortcodes for question diagrams
+  const embeddedQuestionDiagrams = [
+    ...(currentQ.question_text?.matchAll(/\{\{diagram[:_](\d+)\}\}/gi) || [])
+  ].map((m) => parseInt(m[1], 10));
+
+  const remainingQuestionDiagrams = (currentQ.question_diagram_urls || [])
+    .map((url, i) => ({ imgUrl: url, i }))
+    .filter(({ i }) => !embeddedQuestionDiagrams.includes(i));
+
   return (
     <div
       className={`cbt-question-pane flex-1 h-full overflow-y-auto bg-white text-gray-900 p-4 sm:p-6 lg:p-8 flex flex-col justify-between ${className}`}
@@ -100,31 +118,57 @@ export default function CBTQuestionPane({ className = '' }) {
         </div>
 
         {/* Optional Comprehension Passage */}
-        {currentQ.passage_text && (
+        {(currentQ.linked_passage_text || remainingPassageDiagrams.length > 0) && (
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm mb-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
               Passage / Context
             </h4>
-            <MarkdownMathRenderer content={currentQ.passage_text} />
+            {currentQ.linked_passage_text && (
+              <MarkdownMathRenderer
+                content={currentQ.linked_passage_text}
+                passageDiagramUrls={currentQ.linked_passage_diagram_urls}
+              />
+            )}
+            {remainingPassageDiagrams.length > 0 && (
+              <div className="flex flex-wrap gap-4 my-2">
+                {remainingPassageDiagrams.map(({ imgUrl, i }) => (
+                  <div
+                    key={i}
+                    className="rounded-xl border border-gray-200 p-2 bg-white shadow-sm"
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Passage Diagram ${i + 1}`}
+                      className="max-h-64 max-w-full object-contain rounded"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Question Text Body */}
         <div className={`cbt-question-body font-sans text-gray-900 ${textSizeClass}`}>
-          <MarkdownMathRenderer content={currentQ.question_text || ''} />
+          <MarkdownMathRenderer
+            content={currentQ.question_text || ''}
+            diagramUrls={currentQ.question_diagram_urls}
+            passageDiagramUrls={currentQ.linked_passage_diagram_urls}
+          />
         </div>
 
         {/* External Diagrams (if not embedded directly in question text) */}
-        {currentQ.question_diagram_urls && currentQ.question_diagram_urls.length > 0 && (
+        {remainingQuestionDiagrams.length > 0 && (
           <div className="flex flex-wrap gap-4 my-4">
-            {currentQ.question_diagram_urls.map((url, idx) => (
+            {remainingQuestionDiagrams.map(({ imgUrl, i }) => (
               <div
-                key={idx}
+                key={i}
                 className="rounded-xl border border-gray-200 p-2 bg-white shadow-sm"
               >
                 <img
-                  src={url}
-                  alt={`Diagram ${idx + 1}`}
+                  src={imgUrl}
+                  alt={`Diagram ${i + 1}`}
                   className="max-h-64 max-w-full object-contain rounded"
                   loading="lazy"
                 />

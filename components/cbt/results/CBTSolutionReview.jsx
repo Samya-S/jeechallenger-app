@@ -441,6 +441,22 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
             const normOptions = normalizeOptions(qDoc?.options);
 
+            const embeddedPassageDiagrams = [
+              ...(qDoc?.linked_passage_text?.matchAll(/\{\{passage_diagram[:_](\d+)\}\}/gi) || [])
+            ].map((m) => parseInt(m[1], 10));
+
+            const remainingPassageDiagrams = (qDoc?.linked_passage_diagram_urls || [])
+              .map((url, i) => ({ imgUrl: url, i }))
+              .filter(({ i }) => !embeddedPassageDiagrams.includes(i));
+
+            const embeddedQuestionDiagrams = [
+              ...(qDoc?.question_text?.matchAll(/\{\{diagram[:_](\d+)\}\}/gi) || [])
+            ].map((m) => parseInt(m[1], 10));
+
+            const remainingQuestionDiagrams = (qDoc?.question_diagram_urls || [])
+              .map((url, i) => ({ imgUrl: url, i }))
+              .filter(({ i }) => !embeddedQuestionDiagrams.includes(i));
+
             return (
               <div
                 key={qIdStr}
@@ -522,31 +538,57 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                 {/* Question Body */}
                 <div className="p-6 md:p-8 space-y-6 text-gray-900 dark:text-gray-100">
                   {/* Optional Passage */}
-                  {qDoc?.passage_text && (
+                  {(qDoc?.linked_passage_text || remainingPassageDiagrams.length > 0) && (
                     <div className="p-4 rounded-2xl bg-gray-50/70 dark:bg-[#0d1320] border border-gray-200 dark:border-gray-800 text-sm">
                       <div className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                         Passage / Context
                       </div>
-                      <MarkdownMathRenderer content={qDoc.passage_text} />
+                      {qDoc?.linked_passage_text && (
+                        <MarkdownMathRenderer
+                          content={qDoc.linked_passage_text}
+                          passageDiagramUrls={qDoc.linked_passage_diagram_urls}
+                        />
+                      )}
+                      {remainingPassageDiagrams.length > 0 && (
+                        <div className="flex flex-wrap items-start gap-4 pt-2">
+                          {remainingPassageDiagrams.map(({ imgUrl, i }) => (
+                            <div
+                              key={i}
+                              className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md"
+                            >
+                              <img
+                                src={imgUrl}
+                                alt={`Passage diagram ${i + 1}`}
+                                className="max-h-72 w-auto object-contain rounded-xl mr-auto"
+                                loading="lazy"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {/* Question Text */}
                   <div className="text-base md:text-lg leading-relaxed text-left min-w-0">
-                    <MarkdownMathRenderer content={qDoc?.question_text || ''} />
+                    <MarkdownMathRenderer
+                      content={qDoc?.question_text || ''}
+                      diagramUrls={qDoc?.question_diagram_urls}
+                      passageDiagramUrls={qDoc?.linked_passage_diagram_urls}
+                    />
                   </div>
 
                   {/* Question Diagrams */}
-                  {qDoc?.question_diagram_urls && qDoc.question_diagram_urls.length > 0 && (
+                  {remainingQuestionDiagrams.length > 0 && (
                     <div className="flex flex-wrap items-start gap-4 pt-2">
-                      {qDoc.question_diagram_urls.map((url, dIdx) => (
+                      {remainingQuestionDiagrams.map(({ imgUrl, i }) => (
                         <div
-                          key={dIdx}
+                          key={i}
                           className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-2 bg-white dark:bg-gray-800 shadow-sm max-w-md"
                         >
                           <img
-                            src={url}
-                            alt={`Question diagram ${dIdx + 1}`}
+                            src={imgUrl}
+                            alt={`Question diagram ${i + 1}`}
                             className="max-h-72 w-auto object-contain rounded-xl mr-auto"
                             loading="lazy"
                           />
