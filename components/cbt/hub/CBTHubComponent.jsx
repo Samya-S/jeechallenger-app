@@ -572,7 +572,7 @@ export default function CBTHubComponent({
                       })
                     : 'Recent';
                   const mins = Math.round((sub.time_taken_seconds || 0) / 60);
-                  const paperSlug = sub.paper_slug || sub.paper_id;
+                  const paperSlug = sub.paper_slug;
 
                   return (
                     <div
@@ -741,7 +741,7 @@ export default function CBTHubComponent({
                         subject: item.question.subject || item.subject,
                         chapter: item.question.chapter || item.chapter,
                         exam_type: item.question.exam_type || (item.paper_id?.includes('Advanced') ? 'JEE_ADVANCED' : 'JEE_MAIN'),
-                        paper_slug: item.question.paper_slug || item.paper_slug || item.paper_id,
+                        paper_slug: item.question?.paper_slug || item.paper_slug,
                       };
 
                       return (

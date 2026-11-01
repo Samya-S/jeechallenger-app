@@ -38,7 +38,10 @@ export default async function LegacyResultsRedirect({ params }) {
       notFound();
     }
 
-    const targetSlug = submission.paper_slug || submission.paper_id;
+    const targetSlug = submission.paper_slug;
+    if (!targetSlug) {
+      notFound();
+    }
     redirect(`/mock-test/${targetSlug}/results?submission=${submissionId}`);
   } catch (error) {
     if (error?.message?.includes('NEXT_REDIRECT')) throw error;

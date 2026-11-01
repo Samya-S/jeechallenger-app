@@ -66,7 +66,7 @@ const NavbarItems = [
         url: '/syllabus-tracker'
       },
       {
-        title: 'CBT Mock Tests',
+        title: 'Mock Tests',
         url: '/mock-test'
       },
     ]
