@@ -441,14 +441,24 @@ export default function CBTHubComponent({
 
                     {/* Action Buttons */}
                     <div className="pt-6 space-y-2">
-                      <button
-                        type="button"
-                        onClick={(e) => handleStartMockTest(e, paper.slug)}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
-                      >
-                        <Play className="w-4 h-4 fill-white" />
-                        <span>Start Mock Test</span>
-                      </button>
+                      {user ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleStartMockTest(e, paper.slug)}
+                          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
+                        >
+                          <Play className="w-4 h-4 fill-white" />
+                          <span>Start Mock Test</span>
+                        </button>
+                      ) : (
+                        <Link
+                          href={`/login?callbackUrl=/mock-test/${paper.slug}`}
+                          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
+                        >
+                          <LogIn className="w-4 h-4" />
+                          <span>Sign In to Attempt Test</span>
+                        </Link>
+                      )}
 
                       <Link
                         href={`/paper/${paper.slug}`}
