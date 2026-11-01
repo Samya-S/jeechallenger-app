@@ -420,8 +420,13 @@ export const useCBTStore = create((setState, getState) => ({
     // 2. CRUCIAL NTA RULE: Uncommitted input is DISCARDED on palette jump!
     // We do NOT save uncommittedAnswer. We load whatever was officially committed in answers[targetQId].
     const nextPalette = { ...paletteStates };
+    const nextQueue = new Set(getState().pendingSyncQueue);
+    let shouldSync = false;
+
     if (!nextPalette[targetQId] || nextPalette[targetQId] === 1) {
       nextPalette[targetQId] = 2; // Visited -> Not Answered
+      nextQueue.add(targetQId);
+      shouldSync = true;
     }
 
     const targetUncommitted = {
@@ -436,9 +441,13 @@ export const useCBTStore = create((setState, getState) => ({
       questionTimeMap: nextTimeMap,
       paletteStates: nextPalette,
       uncommittedAnswer: targetUncommitted,
+      pendingSyncQueue: nextQueue,
     });
 
     getState().persistToIndexedDB();
+    if (shouldSync) {
+      getState().flushSyncQueue();
+    }
   },
 
   // ── 5. Persistence & Sync Workers ──────────────────────────────────────────

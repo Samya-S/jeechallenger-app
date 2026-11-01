@@ -112,7 +112,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         if (currentStatus === 'CORRECT' && !targetAtt.is_correct) return 'ALL';
         if (currentStatus === 'INCORRECT' && (!targetAtt.is_evaluated || targetAtt.is_correct)) return 'ALL';
         if (currentStatus === 'UNATTEMPTED' && targetAtt.is_evaluated) return 'ALL';
-        if (currentStatus === 'TIME_TRAPS' && ((targetAtt.time_spent_seconds || 0) < 240 || targetAtt.is_correct)) return 'ALL';
+        if (currentStatus === 'TIME_TRAPS' && !targetAtt.is_time_trap) return 'ALL';
         if (currentStatus === 'MISTAKE_VAULT' && !savedVaultQKeys.has(String(targetAtt.question_id))) return 'ALL';
         return currentStatus;
       });
@@ -143,7 +143,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       if (activeStatus === 'CORRECT' && !att.is_correct) return false;
       if (activeStatus === 'INCORRECT' && (!att.is_evaluated || att.is_correct)) return false;
       if (activeStatus === 'UNATTEMPTED' && att.is_evaluated) return false;
-      if (activeStatus === 'TIME_TRAPS' && (att.time_spent_seconds < 240 || att.is_correct)) return false;
+      if (activeStatus === 'TIME_TRAPS' && !att.is_time_trap) return false;
       if (activeStatus === 'MISTAKE_VAULT' && !savedVaultQKeys.has(String(att.question_id))) return false;
 
       return true;
@@ -358,7 +358,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                   : 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 dark:hover:bg-amber-900/40'
               }`}
             >
-              <span>Time Traps</span>
+              <span>Time Traps ({attempts.filter((a) => (activeSubject === 'ALL' || a.subject === activeSubject) && a.is_time_trap).length})</span>
             </button>
             <button
               type="button"

@@ -1,9 +1,10 @@
 import { getToken } from 'next-auth/jwt';
+import jwt from 'jsonwebtoken';
 import redis from '@/utils/redis';
-import { gradeAndPersistSubmission } from '@/server/cbt-judge';
-import { ObjectId } from 'mongodb';
 
 export const dynamic = 'force-dynamic';
+
+const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export async function POST(req) {
   try {
@@ -71,28 +72,51 @@ export async function POST(req) {
       }
     }
 
-    // Determine user ID: authenticated MongoDB user or guest identifier
-    const userId = token?.id ? new ObjectId(token.id) : new ObjectId();
+    // 3. Delegate evaluation and persistence exclusively to Go microservice
+    const signedToken = jwt.sign(
+      { id: token.id },
+      process.env.NEXTAUTH_SECRET,
+      { algorithm: 'HS256' }
+    );
 
-    // 3. Run the Scoring Judge & write atomic scorecard to MongoDB Atlas
-    const submission = await gradeAndPersistSubmission(userId, paperId, responses, {
-      status: 'EVALUATED',
-      started_at: startedAt,
-      submitted_at: submittedAt,
-      time_taken_seconds: timeTakenSeconds,
+    const submitRes = await fetch(`${BACKEND_URL}/cbt/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${signedToken}`,
+      },
+      body: JSON.stringify({
+        paper_id: paperId,
+        started_at: new Date(startedAt).toISOString(),
+        submitted_at: new Date(submittedAt).toISOString(),
+        time_taken_seconds: timeTakenSeconds,
+        status: 'MANUAL_SUBMISSION',
+        responses,
+      }),
     });
+
+    if (!submitRes.ok) {
+      const errData = await submitRes.json().catch(() => ({}));
+      throw new Error(errData.error || `Microservice evaluation failed with status ${submitRes.status}`);
+    }
+
+    const json = await submitRes.json();
+    const submission = json?.data;
+    if (!submission) {
+      throw new Error('Invalid response structure received from evaluation microservice');
+    }
 
     // 4. Mark session completed and delete temporary in-flight Redis cache
     await redis.del(session_id);
 
-    const paperSlug = submission.paper_slug;
+    const paperSlug = submission.paper_slug || paperId;
 
     return Response.json({
       success: true,
       submission_id: String(submission._id),
-      total_score: submission.summary.total_score,
-      max_marks: submission.summary.max_marks,
-      accuracy_percentage: submission.summary.accuracy_percentage,
+      total_score: submission.summary?.total_score ?? 0,
+      max_marks: submission.summary?.max_marks ?? 300,
+      accuracy_percentage: submission.summary?.accuracy_percentage ?? 0,
       redirect_url: `/mock-test/${paperSlug}/results?submission=${String(submission._id)}`,
     });
   } catch (error) {

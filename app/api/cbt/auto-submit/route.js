@@ -1,8 +1,9 @@
 import redis from '@/utils/redis';
-import { gradeAndPersistSubmission } from '@/server/cbt-judge';
-import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
+
+const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export async function POST(req) {
   try {
@@ -42,25 +43,44 @@ export async function POST(req) {
       }
     }
 
-    // Parse user ID
-    let userId;
-    try {
-      if (sessionData.user_id && ObjectId.isValid(sessionData.user_id)) {
-        userId = new ObjectId(sessionData.user_id);
-      } else {
-        userId = new ObjectId();
-      }
-    } catch {
-      userId = new ObjectId();
+    // 3. Delegate auto-submit evaluation to Go microservice
+    const userId = sessionData.user_id;
+    if (!userId) {
+      return Response.json({ error: 'Session user_id is missing' }, { status: 400 });
     }
 
-    // 3. Run the Scoring Judge & write completed document to MongoDB
-    const submission = await gradeAndPersistSubmission(userId, paperId, responses, {
-      status: 'AUTO_SUBMITTED_TIME_EXPIRED',
-      started_at: startedAt,
-      submitted_at: submittedAt,
-      time_taken_seconds: timeTakenSeconds,
+    const signedToken = jwt.sign(
+      { id: userId },
+      process.env.NEXTAUTH_SECRET,
+      { algorithm: 'HS256' }
+    );
+
+    const submitRes = await fetch(`${BACKEND_URL}/cbt/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${signedToken}`,
+      },
+      body: JSON.stringify({
+        paper_id: paperId,
+        started_at: new Date(startedAt).toISOString(),
+        submitted_at: new Date(submittedAt).toISOString(),
+        time_taken_seconds: timeTakenSeconds,
+        status: 'AUTO_SUBMITTED_TIME_EXPIRED',
+        responses,
+      }),
     });
+
+    if (!submitRes.ok) {
+      const errData = await submitRes.json().catch(() => ({}));
+      throw new Error(errData.error || `Microservice evaluation failed with status ${submitRes.status}`);
+    }
+
+    const json = await submitRes.json();
+    const submission = json?.data;
+    if (!submission) {
+      throw new Error('Invalid response structure received from evaluation microservice');
+    }
 
     // 4. Delete temporary Redis hash
     await redis.del(session_id);

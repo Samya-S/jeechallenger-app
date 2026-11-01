@@ -1,8 +1,7 @@
 import React from 'react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import clientPromise from '@/utils/mongodb';
-import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 import CBTHubComponent from '@/components/cbt/hub/CBTHubComponent';
 
 export const dynamic = 'force-dynamic';
@@ -16,98 +15,67 @@ export const metadata = {
   },
 };
 
+const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+
 export default async function MockTestHubPage() {
   const session = await getServerSession(authOptions);
-  const client = await clientPromise;
-  const db = client.db('jee_challenger_pyqs');
 
-  // Load published papers
-  const rawPapers = await db
-    .collection('papers')
-    .find({})
-    .sort({ exam_year: -1, title: 1 })
-    .project({
-      _id: 1,
-      title: 1,
-      slug: 1,
-      paper_id: 1,
-      exam_type: 1,
-      exam_year: 1,
-      duration_minutes: 1,
-      total_marks: 1,
-      sections: 1,
-    })
-    .toArray();
+  // 1. Fetch published papers from Go microservice
+  let papers = [];
+  try {
+    const res = await fetch(`${BACKEND_URL}/papers?limit=100`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      papers = json?.data || [];
+    }
+  } catch (err) {
+    console.error('Failed to load papers from Go microservice:', err);
+  }
 
   let submissions = [];
   let vaultItems = [];
 
+  // 2. If authenticated, fetch user submissions and mistake vault from Go microservice
   if (session?.user?.id) {
-    const userId = session.user.id;
-    const userQueries = [{ user_id: userId }];
+    const signedToken = jwt.sign(
+      { id: session.user.id },
+      process.env.NEXTAUTH_SECRET,
+      { algorithm: 'HS256' }
+    );
+    const authHeaders = { Authorization: `Bearer ${signedToken}` };
+
     try {
-      userQueries.push({ user_id: new ObjectId(userId) });
-    } catch {}
+      const [subsRes, vaultRes] = await Promise.all([
+        fetch(`${BACKEND_URL}/cbt/submissions?limit=50`, {
+          headers: authHeaders,
+          cache: 'no-store',
+        }),
+        fetch(`${BACKEND_URL}/cbt/mistake-vault`, {
+          headers: authHeaders,
+          cache: 'no-store',
+        }),
+      ]);
 
-    // Load user's test submissions
-    submissions = await db
-      .collection('test_submissions')
-      .find({ $or: userQueries })
-      .sort({ submitted_at: -1, started_at: -1 })
-      .limit(50)
-      .toArray();
+      if (subsRes.ok) {
+        const subsJson = await subsRes.json();
+        submissions = subsJson?.data || [];
+      }
 
-    // Load user's Mistake Vault items
-    const rawVault = await db
-      .collection('mistake_vault')
-      .find({ $or: userQueries })
-      .sort({ saved_at: -1 })
-      .limit(100)
-      .toArray();
-
-    // Populate question documents for vault items
-    const qIds = rawVault
-      .map((item) => {
-        if (!item.question_id) return null;
-        try {
-          return typeof item.question_id === 'string'
-            ? new ObjectId(item.question_id)
-            : item.question_id;
-        } catch {
-          return null;
-        }
-      })
-      .filter(Boolean);
-
-    let questions = [];
-    if (qIds.length > 0) {
-      questions = await db
-        .collection('production')
-        .find({ _id: { $in: qIds } })
-        .toArray();
+      if (vaultRes.ok) {
+        const vaultJson = await vaultRes.json();
+        vaultItems = vaultJson?.items || [];
+      }
+    } catch (err) {
+      console.error('Failed to load user CBT data from microservice:', err);
     }
-
-    const questionMap = new Map();
-    questions.forEach((q) => {
-      questionMap.set(String(q._id), q);
-    });
-
-    vaultItems = rawVault.map((item) => ({
-      ...item,
-      question: questionMap.get(String(item.question_id)) || null,
-    }));
   }
-
-  const cleanPapers = JSON.parse(JSON.stringify(rawPapers));
-  const cleanSubmissions = JSON.parse(JSON.stringify(submissions));
-  const cleanVaultItems = JSON.parse(JSON.stringify(vaultItems));
 
   return (
     <CBTHubComponent
       user={session?.user || null}
-      papers={cleanPapers}
-      submissions={cleanSubmissions}
-      initialVaultItems={cleanVaultItems}
+      papers={papers}
+      submissions={submissions}
+      initialVaultItems={vaultItems}
     />
   );
 }

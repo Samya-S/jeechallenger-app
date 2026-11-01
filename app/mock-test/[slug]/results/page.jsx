@@ -26,7 +26,7 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
     const paper = paperJson?.data;
     if (!paper) return null;
 
-    if (!submissionId) return null;
+    if (!sessionUserId) return null;
 
     // 2. Prepare authenticated JWT header for Go microservice
     const signedToken = jwt.sign(
@@ -38,8 +38,29 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
       Authorization: `Bearer ${signedToken}`,
     };
 
-    // 3. Fetch specific submission from Go microservice
-    const subRes = await fetch(`${BACKEND_URL}/cbt/submissions/${submissionId}`, {
+    // 3. Fetch all user attempts for this paper (for attempt switcher and fallback to latest)
+    let allAttempts = [];
+    try {
+      const listRes = await fetch(`${BACKEND_URL}/cbt/submissions?paper_id=${encodeURIComponent(paper.paper_id)}&limit=50`, {
+        headers: authHeaders,
+        cache: 'no-store',
+      });
+      if (listRes.ok) {
+        const listJson = await listRes.json();
+        allAttempts = listJson?.data || [];
+      }
+    } catch (listErr) {
+      console.warn('Failed to load user attempt history:', listErr);
+    }
+
+    // Determine target submission ID: either requested or latest completed attempt
+    const targetSubmissionId = submissionId || allAttempts[0]?._id;
+    if (!targetSubmissionId) {
+      return null;
+    }
+
+    // 4. Fetch specific submission from Go microservice
+    const subRes = await fetch(`${BACKEND_URL}/cbt/submissions/${targetSubmissionId}`, {
       headers: authHeaders,
       cache: 'no-store',
     });
@@ -47,23 +68,6 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
     const subJson = await subRes.json();
     const submission = subJson?.data;
     if (!submission) return null;
-
-    // 4. Fetch all user attempts for this paper (for attempt switcher)
-    let allAttempts = [];
-    try {
-      const listRes = await fetch(`${BACKEND_URL}/cbt/submissions`, {
-        headers: authHeaders,
-        cache: 'no-store',
-      });
-      if (listRes.ok) {
-        const listJson = await listRes.json();
-        allAttempts = (listJson?.data || []).filter(
-          (s) => s.paper_id === paper.paper_id || s.paper_id === slug
-        );
-      }
-    } catch (listErr) {
-      console.warn('Failed to load user attempt history:', listErr);
-    }
 
     return {
       submission,
@@ -134,7 +138,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
           <Breadcrumbs
             crumbs={[
               { label: 'Mock Tests', href: '/mock-test' },
-              { label: 'Scorecard', href: `/mock-test/${paperSlug}/results` },
+              { label: 'Scorecard', href: `/mock-test/${paperSlug}/results?submission=${submission._id}` },
             ]}
           />
 

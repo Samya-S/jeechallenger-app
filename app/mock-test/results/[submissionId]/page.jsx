@@ -1,40 +1,44 @@
 import { notFound, redirect } from 'next/navigation';
-import { ObjectId } from 'mongodb';
-import clientPromise from '@/utils/mongodb';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import jwt from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
+
+const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export default async function LegacyResultsRedirect({ params }) {
   const resolvedParams = await params;
   const submissionId = resolvedParams.submissionId;
 
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.id) {
+    redirect(`/login?callbackUrl=/mock-test/results/${submissionId}`);
+  }
+
   try {
-    const client = await clientPromise;
-    const db = client.db('jee_challenger_pyqs');
-
-    let idQuery = null;
-    try {
-      idQuery = new ObjectId(submissionId);
-    } catch {
-      idQuery = submissionId;
-    }
-
-    const submission = await db.collection('test_submissions').findOne(
-      { $or: [{ _id: idQuery }, { _id: String(submissionId) }] },
-      { projection: { paper_id: 1 } }
+    const signedToken = jwt.sign(
+      { id: session.user.id },
+      process.env.NEXTAUTH_SECRET,
+      { algorithm: 'HS256' }
     );
 
+    const res = await fetch(`${BACKEND_URL}/cbt/submissions/${submissionId}`, {
+      headers: { Authorization: `Bearer ${signedToken}` },
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      notFound();
+    }
+
+    const json = await res.json();
+    const submission = json?.data;
     if (!submission) {
       notFound();
     }
 
-    // Resolve paper slug
-    const paper = await db.collection('papers').findOne(
-      { $or: [{ paper_id: submission.paper_id }, { slug: submission.paper_id }] },
-      { projection: { slug: 1 } }
-    );
-
-    const targetSlug = paper?.slug || submission.paper_id;
+    const targetSlug = submission.paper_slug || submission.paper_id;
     redirect(`/mock-test/${targetSlug}/results?submission=${submissionId}`);
   } catch (error) {
     if (error?.message?.includes('NEXT_REDIRECT')) throw error;
