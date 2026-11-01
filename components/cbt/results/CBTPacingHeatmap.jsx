@@ -62,12 +62,16 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
     return sub;
   };
 
-  const handleJumpToQuestion = (qNum) => {
+  const handleJumpToQuestion = (questionId, qNum) => {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('cbt-jump-to-question', { detail: { qNum } }));
+      window.dispatchEvent(
+        new CustomEvent('cbt-jump-to-question', {
+          detail: { question_id: String(questionId) },
+        })
+      );
     }
     if (onSelectQuestion) {
-      onSelectQuestion(qNum);
+      onSelectQuestion(questionId, qNum);
     }
   };
 
@@ -124,9 +128,9 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
                 const outcomeLabel = isPenalty ? '-1' : '0';
                 return (
                   <button
-                    key={att.question_number}
+                    key={String(att.question_id)}
                     type="button"
-                    onClick={() => handleJumpToQuestion(att.question_number)}
+                    onClick={() => handleJumpToQuestion(att.question_id, att.question_number)}
                     className="px-3 py-1.5 rounded-xl bg-amber-50/80 dark:bg-gray-800/90 border border-amber-200 dark:border-amber-700/60 text-xs font-bold text-amber-950 dark:text-amber-100 shadow-2xs hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-100/70 transition-all cursor-pointer flex items-center gap-2 group"
                     title={`Click to jump to Q${att.question_number} (${att.subject})`}
                   >
@@ -189,9 +193,9 @@ export default function CBTPacingHeatmap({ submission, onSelectQuestion }) {
             <div className="flex flex-wrap gap-2 pt-1 max-h-[126px] overflow-y-auto custom-scrollbar pr-1">
               {fastAndAccurate.map((att) => (
                 <button
-                  key={att.question_number}
+                  key={String(att.question_id)}
                   type="button"
-                  onClick={() => handleJumpToQuestion(att.question_number)}
+                  onClick={() => handleJumpToQuestion(att.question_id, att.question_number)}
                   className="px-3 py-1.5 rounded-xl bg-emerald-50/80 dark:bg-gray-800/90 border border-emerald-200 dark:border-emerald-700/60 text-xs font-bold text-emerald-950 dark:text-emerald-100 shadow-2xs hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-100/70 transition-all cursor-pointer flex items-center gap-2 group"
                   title={`Click to jump to Q${att.question_number} (${att.subject})`}
                 >

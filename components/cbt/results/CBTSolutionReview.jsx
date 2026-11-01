@@ -77,18 +77,9 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         return res.json();
       })
       .then((data) => {
-        const keys = new Set();
         if (Array.isArray(data?.savedQuestionIds)) {
-          data.savedQuestionIds.forEach((id) => {
-            if (id) keys.add(String(id));
-          });
+          setSavedVaultQKeys(new Set(data.savedQuestionIds.map(String)));
         }
-        if (Array.isArray(data?.savedQuestionNumbers)) {
-          data.savedQuestionNumbers.forEach((num) => {
-            if (num !== undefined && num !== null) keys.add(String(num));
-          });
-        }
-        setSavedVaultQKeys(keys);
       })
       .catch((err) => console.error('Failed to load mistake vault from MongoDB:', err));
   }, [submission?.paper_id]);
@@ -105,10 +96,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
   // Listen for jump to question events from Pacing Heatmap or external analysis
   useEffect(() => {
     const handleJump = (e) => {
-      const qNum = e?.detail?.qNum;
-      if (!qNum) return;
+      const qId = e?.detail?.question_id;
+      if (!qId) return;
 
-      const targetAtt = attempts.find((a) => a.question_number === Number(qNum) || a.question_number === qNum);
+      const targetAtt = attempts.find((a) => String(a.question_id) === String(qId));
       if (!targetAtt) return;
 
       // 1. Ensure subject filter includes this question
@@ -122,16 +113,13 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         if (currentStatus === 'INCORRECT' && (!targetAtt.is_evaluated || targetAtt.is_correct)) return 'ALL';
         if (currentStatus === 'UNATTEMPTED' && targetAtt.is_evaluated) return 'ALL';
         if (currentStatus === 'TIME_TRAPS' && ((targetAtt.time_spent_seconds || 0) < 240 || targetAtt.is_correct)) return 'ALL';
-        const isTargetInVault =
-          savedVaultQKeys.has(String(targetAtt.question_id)) ||
-          savedVaultQKeys.has(String(targetAtt.question_number));
-        if (currentStatus === 'MISTAKE_VAULT' && !isTargetInVault) return 'ALL';
+        if (currentStatus === 'MISTAKE_VAULT' && !savedVaultQKeys.has(String(targetAtt.question_id))) return 'ALL';
         return currentStatus;
       });
 
       // 3. Smooth scroll directly to question card and highlight pulse
       setTimeout(() => {
-        const el = document.getElementById(`review-q-${targetAtt.question_number}`);
+        const el = document.getElementById(`review-q-${String(targetAtt.question_id)}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           el.classList.add('ring-4', 'ring-amber-500', 'shadow-2xl');
@@ -156,23 +144,21 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
       if (activeStatus === 'INCORRECT' && (!att.is_evaluated || att.is_correct)) return false;
       if (activeStatus === 'UNATTEMPTED' && att.is_evaluated) return false;
       if (activeStatus === 'TIME_TRAPS' && (att.time_spent_seconds < 240 || att.is_correct)) return false;
-      const isInVault =
-        savedVaultQKeys.has(String(att.question_id)) ||
-        savedVaultQKeys.has(String(att.question_number));
-      if (activeStatus === 'MISTAKE_VAULT' && !isInVault) return false;
+      if (activeStatus === 'MISTAKE_VAULT' && !savedVaultQKeys.has(String(att.question_id))) return false;
 
       return true;
     });
   }, [attempts, activeSubject, activeStatus, savedVaultQKeys]);
 
   // Toggle individual solution
-  const toggleSolution = (qNum) => {
+  const toggleSolution = (questionId) => {
+    const qId = String(questionId);
     setExpandedSolutions((prev) => {
       const next = new Set(prev);
-      if (next.has(qNum)) {
-        next.delete(qNum);
+      if (next.has(qId)) {
+        next.delete(qId);
       } else {
-        next.add(qNum);
+        next.add(qId);
       }
       return next;
     });
@@ -183,26 +169,24 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     if (expandedSolutions.size > 0) {
       setExpandedSolutions(new Set());
     } else {
-      const allQNums = new Set(filteredAttempts.map((a) => a.question_number));
-      setExpandedSolutions(allQNums);
+      const allQIds = new Set(filteredAttempts.map((a) => String(a.question_id)));
+      setExpandedSolutions(allQIds);
     }
   };
 
   // Toggle Mistake Vault Bookmark with persistent MongoDB storage
   const handleToggleVault = async (att, qDoc) => {
-    const qId = String(att.question_id || qDoc?._id || att.question_number);
+    const qId = String(att.question_id);
     const qNum = att.question_number;
-    const isCurrentlySaved = savedVaultQKeys.has(qId) || savedVaultQKeys.has(String(qNum));
+    const isCurrentlySaved = savedVaultQKeys.has(qId);
 
     // Optimistic UI update
     setSavedVaultQKeys((prev) => {
       const next = new Set(prev);
       if (isCurrentlySaved) {
         next.delete(qId);
-        next.delete(String(qNum));
       } else {
         next.add(qId);
-        if (qNum !== undefined) next.add(String(qNum));
       }
       return next;
     });
@@ -215,7 +199,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           paper_id: submission.paper_id,
           paper_slug: submission.paper_slug || submission.paper_id,
           question_number: qNum,
-          question_id: qDoc?._id || att.question_id,
+          question_id: qId,
           subject: att.subject || qDoc?.subject,
           chapter: qDoc?.chapter || att.section_name,
         }),
@@ -227,10 +211,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           const next = new Set(prev);
           if (isCurrentlySaved) {
             next.add(qId);
-            if (qNum !== undefined) next.add(String(qNum));
           } else {
             next.delete(qId);
-            next.delete(String(qNum));
           }
           return next;
         });
@@ -242,10 +224,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         const next = new Set(prev);
         if (isCurrentlySaved) {
           next.add(qId);
-          if (qNum !== undefined) next.add(String(qNum));
         } else {
           next.delete(qId);
-          next.delete(String(qNum));
         }
         return next;
       });
@@ -434,9 +414,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
         ) : (
           filteredAttempts.map((att) => {
             const qDoc = questionMap.get(String(att.question_id));
-            const isSaved =
-              savedVaultQKeys.has(String(att.question_id || qDoc?._id)) ||
-              savedVaultQKeys.has(String(att.question_number));
+            const qIdStr = String(att.question_id);
+            const isSaved = savedVaultQKeys.has(qIdStr);
 
             const isCorrect = att.is_correct;
             const isAttempted = att.is_evaluated;
@@ -464,10 +443,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
 
             return (
               <div
-                key={att.question_number}
-                id={`review-q-${att.question_number}`}
+                key={qIdStr}
+                id={`review-q-${qIdStr}`}
                 className="bg-white dark:bg-gray-900 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden text-left transition-all duration-500"
-                data-testid={`review-q-${att.question_number}`}
+                data-testid={`review-q-${qIdStr}`}
               >
                 {/* Question Header matching PaperDetailComponent */}
                 <div className="p-4 md:p-6 bg-gray-50/70 dark:bg-[#0d1320] border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
@@ -720,10 +699,10 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                   {/* Step-by-Step Solution Section (Collapsible & Closed by Default) */}
                   {qDoc?.solution && (
                     <div className="pt-2">
-                      {!expandedSolutions.has(att.question_number) ? (
+                      {!expandedSolutions.has(qIdStr) ? (
                         <button
                           type="button"
-                          onClick={() => toggleSolution(att.question_number)}
+                          onClick={() => toggleSolution(qIdStr)}
                           className="w-full flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-orange-50/60 dark:bg-orange-950/20 hover:bg-orange-100/60 dark:hover:bg-orange-950/40 border border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer group"
                         >
                           <div className="flex items-center gap-2.5 font-bold text-sm">
@@ -741,7 +720,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                         <div className="rounded-2xl border border-orange-200/80 dark:border-orange-900/60 bg-gradient-to-b from-orange-50/40 to-transparent dark:from-orange-950/20 dark:to-transparent overflow-hidden">
                           <button
                             type="button"
-                            onClick={() => toggleSolution(att.question_number)}
+                            onClick={() => toggleSolution(qIdStr)}
                             className="w-full flex items-center justify-between p-3.5 sm:p-4 bg-orange-50/80 dark:bg-orange-950/40 border-b border-orange-200/60 dark:border-orange-900/40 text-orange-900 dark:text-orange-200 transition-all cursor-pointer"
                           >
                             <div className="flex items-center gap-2.5 font-bold text-sm">

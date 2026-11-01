@@ -120,9 +120,9 @@ export async function POST(request) {
     const body = await request.json();
     const { paper_id, paper_slug, question_number, question_id, subject, chapter } = body;
 
-    if (!paper_id || (question_number === undefined && !question_id)) {
+    if (!paper_id || !question_id) {
       return NextResponse.json(
-        { error: 'paper_id and question_id (or question_number) are required' },
+        { error: 'paper_id and question_id are required' },
         { status: 400 }
       );
     }
@@ -130,22 +130,15 @@ export async function POST(request) {
     const client = await clientPromise;
     const db = client.db('jee_challenger_pyqs');
 
-    let cleanQId = null;
-    if (question_id) {
-      try {
-        cleanQId = typeof question_id === 'string' && ObjectId.isValid(question_id)
-          ? new ObjectId(question_id)
-          : question_id;
-      } catch {
-        cleanQId = question_id;
-      }
-    }
+    const cleanQId = typeof question_id === 'string' && ObjectId.isValid(question_id)
+      ? new ObjectId(question_id)
+      : question_id;
 
     const userQueries = getUserQueries(userId);
     const existingFilter = {
       $or: userQueries,
       paper_id,
-      ...(cleanQId ? { question_id: cleanQId } : { question_number: Number(question_number) }),
+      question_id: cleanQId,
     };
 
     const existing = await db.collection('mistake_vault').findOne(existingFilter);

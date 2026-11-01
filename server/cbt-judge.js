@@ -119,7 +119,7 @@ export function evaluateQuestion(q, scheme, attempt) {
   }
 
   // Rule 4: Numerical Value Question
-  if (format === 'NUMERIC') {
+  if (inputFormat === 'NUMERIC') {
     if (attempt.numeric_value === null || attempt.numeric_value === undefined) {
       return { isCorrect: false, marks: incorrectMarks };
     }

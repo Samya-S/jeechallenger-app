@@ -213,6 +213,10 @@ The layout strictly mirrors the Indian Institute of Technology / TCS iON examina
 > **Zero `parseInt` Rule on Question Keys**:
 > All backend consumers (`auto-submit`, `session/transfer`, `session/start`) must extract question IDs directly as strings via `key.replace('q_', '')`. Parsing with `parseInt(key.replace('q_', ''), 10)` truncates hexadecimal ObjectIds at the first non-numeric character (e.g. `6a81...` becomes `6`), causing severe cross-question answer overwrites and evaluation loss. Always handle question identifiers strictly as string ObjectIds.
 
+> [!NOTE]
+> **Strict Question Primary Key Identity (Zero Fallbacks)**:
+> In the Solution Review, Pacing Heatmap, and Mistake Vault, all accordion expansions, scroll jumps, and bookmark lookups operate strictly on `String(att.question_id)`. Question numbering resets per subject in JEE Advanced, so `question_number` or compound string concatenation must never be used as keys or fallback identifiers.
+
 ---
 
 ### 3.3 Disconnection, Offline Queue & Recovery

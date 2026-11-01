@@ -115,8 +115,7 @@ export async function POST(req) {
     const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
     let durationMinutes = 180;
     try {
-      const paperIdentifier = paper_slug || paper_id;
-      const pRes = await fetch(`${BACKEND_URL}/papers/${paperIdentifier}`, { cache: 'no-store' });
+      const pRes = await fetch(`${BACKEND_URL}/papers/${paper_slug}`, { cache: 'no-store' });
       if (pRes.ok) {
         const pData = await pRes.json();
         if (pData?.data?.duration_minutes) {

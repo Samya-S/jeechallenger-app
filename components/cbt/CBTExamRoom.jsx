@@ -133,6 +133,7 @@ export default function CBTExamRoom({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             paper_id: paperData.paper_id,
+            paper_slug: paperData.slug,
             instance_id: instId,
           }),
         });
@@ -173,6 +174,7 @@ export default function CBTExamRoom({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             paper_id: paperData.paper_id,
+            paper_slug: paperData.slug,
             instance_id: instId,
           }),
         });
