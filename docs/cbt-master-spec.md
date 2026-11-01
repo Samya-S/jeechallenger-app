@@ -1,5 +1,5 @@
 # JEE Challenger: Computer-Based Test (CBT) Engine — Master Specification
-**Document Version:** 1.4.0  
+**Document Version:** 1.4.2  
 **Status:** Approved Architectural Blueprint (Source of Truth)  
 **Target Applications:** `jeechallenger-app`, `jeechallenger-pyqs`, `jeechallenger-admin`
 **Last Updated:** November 1, 2026 (Question ID isolation in Auto-Submit/Transfer, Mistake Vault uniqueness, and Go microservice dual resolution)

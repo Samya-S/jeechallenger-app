@@ -366,7 +366,7 @@ export default function CBTHubComponent({
         {activeTab === 'papers' && (
           <div className="space-y-6">
             {/* Filter Bar with Official Color Chips */}
-            <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mr-1">
                   Exam Type:
@@ -409,7 +409,7 @@ export default function CBTHubComponent({
               </div>
 
               {availableYears.length > 0 && (
-                <div className="flex items-center gap-1.5 flex-wrap">
+                <div className="flex items-center gap-1.5 flex-wrap pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">
                   <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 shrink-0 mr-1">
                     Exam Year:
                   </span>

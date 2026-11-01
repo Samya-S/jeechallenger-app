@@ -71,11 +71,15 @@ export default function CBTDeclarationGateway({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-2.5 bg-white border border-gray-200 rounded">
               <span className="text-gray-500 block">Total Duration:</span>
-              <strong className="text-sm text-gray-900">180 Minutes (3 Hours)</strong>
+              <strong className="text-sm text-gray-900">
+                {paperData?.duration_minutes ? `${paperData.duration_minutes} Minutes (${Math.round(paperData.duration_minutes / 60)} Hours)` : '180 Minutes (3 Hours)'}
+              </strong>
             </div>
             <div className="p-2.5 bg-white border border-gray-200 rounded">
               <span className="text-gray-500 block">Total Marks:</span>
-              <strong className="text-sm text-gray-900">{isAdv ? '180 Marks' : '300 Marks'}</strong>
+              <strong className="text-sm text-gray-900">
+                {paperData?.total_marks ? `${paperData.total_marks} Marks` : (isAdv ? '180 Marks' : '300 Marks')}
+              </strong>
             </div>
             <div className="p-2.5 bg-white border border-gray-200 rounded">
               <span className="text-gray-500 block">Negative Marking:</span>

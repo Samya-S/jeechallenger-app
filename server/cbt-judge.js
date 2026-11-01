@@ -296,7 +296,7 @@ export function scoreTestSubmission(paper, questions, responses, submissionMeta)
         subject: sec.subject,
         section_name: sec.name,
         question_type: q.question_type,
-        input_format: inputFormat,
+        input_format: q.input_format,
         selected_option: resp?.selected_option ?? (candidateSelectedOptions.length === 1 ? candidateSelectedOptions[0] : null),
         selected_options: candidateSelectedOptions,
         numeric_value: resp?.numeric_value ?? null,

@@ -52,7 +52,7 @@ export default function CBTGeneralInstructions({
           </h3>
           <ul className="list-disc list-inside space-y-2 pl-2 text-sm text-gray-700">
             <li>
-              Total duration of this examination is <strong>180 minutes</strong> (3 Hours).
+              Total duration of this examination is <strong>{paperData?.duration_minutes || 180} minutes</strong> ({Math.round((paperData?.duration_minutes || 180) / 60)} Hours).
             </li>
             <li>
               The clock will be set at the server. The countdown timer at the top right corner of screen will display the remaining time available for you to finish the examination.
