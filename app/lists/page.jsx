@@ -1,45 +1,65 @@
-"use client";
+import ListsIndexClient from "@/components/playlists/ListsIndexClient";
+import StructuredData from "@/components/common/StructuredData";
+import { ogImageMeta } from "@/utils/og-metadata";
 
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { usePlaylistContext } from "@/components/playlists/PlaylistContext";
+const pageOg = ogImageMeta({
+  title: "My Question Lists & Revision Vaults",
+  subtitle: "Organize, bookmark & practice custom JEE question lists",
+  theme: "pyqs",
+  badge: "JEE Challenger",
+  alt: "JEE Question Lists - Personal Revision Vault",
+});
 
-export default function ListsIndexPage() {
-  const { status } = useSession();
-  const router = useRouter();
-  const { userPlaylists, loadingPlaylists } = usePlaylistContext();
+export const metadata = {
+  title: "My Question Lists & Revision Vaults | JEE Challenger",
+  description: "Create, organize, and practice your personalized JEE question lists. Save challenging problems to Favourites, track your Mistake Vault, and build custom revision lists for JEE Main & Advanced.",
+  keywords: [
+    "JEE Question Lists",
+    "JEE Playlists",
+    "JEE Revision Lists",
+    "Mistake Vault",
+    "JEE Bookmarks",
+    "JEE Practice Lists",
+    "JEE Main Questions",
+    "JEE Advanced Questions",
+  ],
+  alternates: {
+    canonical: "/lists",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "My Question Lists & Revision Vaults | JEE Challenger",
+    description: "Create, organize, and practice your personalized JEE question lists. Save challenging problems to Favourites, track your Mistake Vault, and build custom revision lists for JEE Main & Advanced.",
+    url: "/lists",
+    siteName: "JEE Challenger",
+    images: pageOg.images,
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "My Question Lists & Revision Vaults | JEE Challenger",
+    description: "Create, organize, and practice your personalized JEE question lists. Save challenging problems to Favourites, track your Mistake Vault, and build custom revision lists for JEE Main & Advanced.",
+    images: pageOg.twitterImages,
+  },
+};
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login?callbackUrl=/lists");
-      return;
-    }
-
-    if (status === "authenticated" && !loadingPlaylists) {
-      if (userPlaylists.length > 0) {
-        // Automatically select Favourites or the first available list
-        const fav = userPlaylists.find((l) => l.type === "FAVOURITES") || userPlaylists[0];
-        router.replace(`/lists/${fav.slug}`);
-      }
-    }
-  }, [status, loadingPlaylists, userPlaylists, router]);
-
-  const hasNoLists = status === "authenticated" && !loadingPlaylists && userPlaylists.length === 0;
-
+export default function ListsPage() {
   return (
-    <div className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 min-h-[580px] lg:min-h-[640px] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        {hasNoLists ? (
-          <span className="text-xs text-rose-500 font-medium">No question lists found.</span>
-        ) : (
-          <>
-            <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-            <span className="text-xs text-gray-500 dark:text-gray-400">Loading your lists...</span>
-          </>
-        )}
-      </div>
-    </div>
+    <>
+      <StructuredData
+        type="breadcrumb"
+        data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Lists", path: "/lists" },
+          ],
+        }}
+      />
+      <ListsIndexClient />
+    </>
   );
 }
