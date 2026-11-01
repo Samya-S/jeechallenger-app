@@ -10,15 +10,15 @@ import AdManager from "@/components/common/AdManager";
 
 const homeOg = ogImageMeta({
   title: 'JEE Challenger',
-  subtitle: 'Complete JEE Preparation Platform with Study materials, AI Tutor, PYQs & more for JEE Main & Advanced',
+  subtitle: 'Complete JEE Preparation Platform with Study materials, AI Tutor, CBT Mock Tests, PYQs & more for JEE Main & Advanced',
   theme: 'home',
   alt: 'JEE Challenger - Your JEE Preparation Partner',
 });
 
 export const metadata = {
   title: "JEE Challenger | Complete JEE Preparation Platform",
-  description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
-  keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "resources", "JEE resources", "free JEE resources", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books", "IIT JEE", "free JEE materials", "AI tutor", "JEE 2026"],
+  description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, CBT Mock Tests, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
+  keywords: ["JEE", "JEE Main", "JEE Advanced", "JEE preparation", "study materials", "resources", "JEE resources", "free JEE resources", "CBT mock test", "JEE mock test", "mock tests", "PYQ", "previous year questions", "physics", "chemistry", "mathematics", "notes", "books", "IIT JEE", "free JEE materials", "AI tutor", "JEE 2026"],
   authors: [{ name: "JEE Challenger" }],
   creator: "JEE Challenger",
   publisher: "JEE Challenger",
@@ -43,14 +43,14 @@ export const metadata = {
     locale: 'en_IN',
     url: '/',
     title: "JEE Challenger | Complete JEE Preparation Platform",
-    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
+    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, CBT Mock Tests, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
     siteName: "JEE Challenger",
     images: homeOg.images,
   },
   twitter: {
     card: 'summary_large_image',
     title: "JEE Challenger | Complete JEE Preparation Platform",
-    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
+    description: "Access Free JEE Study Materials: Comprehensive Resources, AI-Powered Tutor, CBT Mock Tests, Previous Year Questions, Syllabus Tracker. Complete Physics, Chemistry & Maths preparation for JEE Main & Advanced. Start your IIT journey today!",
     images: homeOg.twitterImages,
     creator: '@JEEChallenger',
     site: '@JEEChallenger',

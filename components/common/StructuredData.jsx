@@ -16,7 +16,7 @@ export default function StructuredData({ type, data }) {
         "name": "JEE Challenger",
         "url": siteUrl,
         "logo": `${siteUrl}/brand/jee-challenger-icon-512-rounded.png`,
-        "description": "Free JEE Preparation Platform with comprehensive study materials, an AI-powered tutor, and previous year questions for JEE Main and Advanced",
+        "description": "Free JEE Preparation Platform with comprehensive study materials, an AI-powered tutor, CBT mock tests, and previous year questions for JEE Main and Advanced",
         "foundingDate": "2020",
         "contactPoint": {
           "@type": "ContactPoint",
@@ -35,7 +35,7 @@ export default function StructuredData({ type, data }) {
         "@type": "WebSite",
         "name": "JEE Challenger",
         "url": siteUrl,
-        "description": "Complete JEE preparation platform with free study materials, AI tutor, and syllabus tracker",
+        "description": "Complete JEE preparation platform with free study materials, AI tutor, CBT mock tests, and syllabus tracker",
         "potentialAction": {
           "@type": "SearchAction",
           "target": {

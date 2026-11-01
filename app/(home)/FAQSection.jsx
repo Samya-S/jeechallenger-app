@@ -101,7 +101,7 @@ export default function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Everything you need to know about JEE Challenger, our study resources, AI Tutor, and syllabus tracking.
+            Everything you need to know about JEE Challenger, our study resources, CBT mock tests, AI Tutor, and syllabus tracking.
           </p>
         </div>
 

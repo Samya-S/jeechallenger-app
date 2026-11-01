@@ -5,11 +5,11 @@ export const homepageFAQs = {
   questions: [
     {
       question: "What is JEE Challenger?",
-      answer: "JEE Challenger is a comprehensive free online platform for JEE Main and Advanced preparation. It provides a wide range of study resources including study notes, previous year questions, an AI-powered tutor, syllabus tracker, and real-time exam updates - all completely free."
+      answer: "JEE Challenger is a comprehensive free online platform for JEE Main and Advanced preparation. It provides a wide range of study resources including study notes, previous year questions, full-length CBT mock tests, an AI-powered tutor, syllabus tracker, and real-time exam updates - all completely free."
     },
     {
       question: "Is JEE Challenger completely free?",
-      answer: "Yes! JEE Challenger is 100% free. All study materials, previous year questions, syllabus tracker, and most AI tutor features are available at no cost. We believe quality education should be accessible to everyone."
+      answer: "Yes! JEE Challenger is 100% free. All study materials, CBT mock tests, previous year questions, syllabus tracker, and most AI tutor features are available at no cost. We believe quality education should be accessible to everyone."
     },
     {
       question: "What study materials are available on JEE Challenger?",
@@ -17,7 +17,7 @@ export const homepageFAQs = {
     },
     {
       question: "How can I prepare for JEE without coaching using JEE Challenger?",
-      answer: "You can prepare for JEE completely free using JEE Challenger by: 1) Following our comprehensive study materials for all subjects, 2) Using the syllabus tracker to monitor your progress, 3) Practicing extensively with our integrated previous year question bank, 4) Getting instant doubt resolution through our AI tutor, 5) Staying updated with latest JEE news and exam patterns."
+      answer: "You can prepare for JEE completely free using JEE Challenger by: 1) Following our comprehensive study materials for all subjects, 2) Practicing full-length simulated CBT mock tests, 3) Using the syllabus tracker to monitor your progress, 4) Practicing extensively with our integrated previous year question bank, 5) Getting instant doubt resolution through our AI tutor, 6) Staying updated with latest JEE news and exam patterns."
     },
     {
       question: "What is the AI Tutor feature?",
@@ -34,6 +34,14 @@ export const homepageFAQs = {
     {
       question: "Can I access JEE Challenger on mobile?",
       answer: "Yes! JEE Challenger is fully mobile-responsive and works seamlessly on all devices including smartphones, tablets, and desktops. You can access all features through your mobile browser without needing to download any app."
+    },
+    {
+      question: "How authentic are the JEE Challenger CBT Mock Tests compared to the real NTA exam?",
+      answer: "Our Computer Based Test (CBT) engine is a 1:1 pixel-perfect simulation of the official NTA and IIT JEE examination interface. It accurately mirrors real exam features including the 5-state question palette, subject section navigation, countdown timer warnings, question paper viewing modal, and the official on-screen virtual numeric keypad for Section B questions."
+    },
+    {
+      question: "What happens if my internet disconnects during a CBT Mock Test?",
+      answer: "JEE Challenger includes military-grade offline resilience with automatic IndexedDB caching and sync queuing. If your network connection drops, you can continue solving questions and navigating smoothly without any disruption. Your answers and timer state are preserved locally and automatically synchronized with the server as soon as connection is restored."
     }
   ]
 };

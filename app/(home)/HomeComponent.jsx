@@ -20,7 +20,7 @@ const HomeComponent = ({ latestArticles }) => {
       {/* 1. REVAMPED HERO SECTION WITH 3D CANVAS & ZERO GAP */}
       <Hero />
 
-      {/* 2. UNIFIED FEATURE HUB (AI Tutor, Syllabus Tracker, PYQs, Subject Resources, JEE Papers, Articles) */}
+      {/* 2. UNIFIED FEATURE HUB (AI Tutor, CBT Mock Tests, Syllabus Tracker, PYQs, Subject Resources, JEE Papers, Articles) */}
       <FeatureHub latestArticles={latestArticles} />
 
       {/* 3. FREQUENTLY ASKED QUESTIONS (Smooth CSS Grid Accordion) */}

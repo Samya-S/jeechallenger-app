@@ -1,102 +1,100 @@
-@media screen and (max-width: 900px) {
-  .welcomeimg {
-    background: url("/images/home.webp") no-repeat center;
-    background-size: cover;
-    height: 550px;
-    position: relative;
-    filter: blur(3px);
-    -webkit-filter: blur(3px);
-  }
+/* Custom scrollbar and homepage animations */
 
-  .centered {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: absolute;
-  }
-
-  .heroText {
-    text-align: center;
-    color: black;
-  }
-
-  .welcomeimgpc {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 900px) {
-  .heroText {
-    text-align: center;
-    padding-left: 10%;
-    /* isolation: unset; */
-    color: rgb(255, 50, 0);
-  }
-
-  .welcomepc {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-    align-items: center;
-    padding: 5%;
-  }
-}
-
-.heroText {
-  font-weight: 500;
-}
-
-.thumbnailImg {
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-}
-
-/* Floating card animations */
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
 }
 
-@keyframes float-delayed {
+@keyframes pulseGlow {
   0%, 100% {
-    transform: translateY(0px);
+    opacity: 0.4;
+    transform: scale(1);
   }
   50% {
-    transform: translateY(-15px);
+    opacity: 0.8;
+    transform: scale(1.05);
   }
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.animate-float-delayed {
-  animation: float-delayed 3s ease-in-out infinite;
-  animation-delay: 1.5s;
+.floatSlow {
+  animation: float 6s ease-in-out infinite;
 }
 
-/* Scoped hero 3D micro-badge floating animations */
-.floatBadge1 {
+.pulseSlow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.spinSlow {
+  animation: spinSlow 20s linear infinite;
+}
+
+/* Glassmorphism helpers for hero interactive elements */
+.glassPanel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+:global(.dark) .glassPanel {
+  background: rgba(15, 23, 42, 0.75);
+}
+
+/* Micro-badge subtle staggered float */
+.badgeFloat1 {
   animation: float 4s ease-in-out infinite;
+  animation-delay: 0s;
 }
 
-.floatBadge2 {
+.badgeFloat2 {
   animation: float 4.5s ease-in-out infinite;
   animation-delay: 1s;
 }
 
-.floatBadge3 {
-  animation: float 4.2s ease-in-out infinite;
+.badgeFloat3 {
+  animation: float 5s ease-in-out infinite;
   animation-delay: 2s;
 }
 
+.badgeFloat4 {
+  animation: float 4.8s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+/* Scoped hero 3D micro-badge floating animations (Vertical only - centers locked by wrapper) */
+.floatBadge1 {
+  animation: float 4.0s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.floatBadge2 {
+  animation: float 4.4s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+
+.floatBadge3 {
+  animation: float 4.2s ease-in-out infinite;
+  animation-delay: 1.8s;
+}
+
 .floatBadge4 {
-  animation: float 3.8s ease-in-out infinite;
-  animation-delay: 0.5s;
+  animation: float 4.6s ease-in-out infinite;
+  animation-delay: 2.7s;
+}
+
+.floatBadge5 {
+  animation: float 4.3s ease-in-out infinite;
+  animation-delay: 3.6s;
 }

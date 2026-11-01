@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowRight, BookOpen, CheckCircle2, Layers } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Layers, Monitor } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import styles from "./Home.module.css";
 
@@ -11,6 +11,66 @@ const HeroAnimation3D = dynamic(() => import("./HeroAnimation3D"), {
   ssr: false,
   loading: () => null,
 });
+
+// Mathematically regular pentagon vertices: center at (50%, 50%), radius R = 41%
+// All 5 badges are equidistant from the center (R = 41.00%) and equidistant from each other (48.20%)
+const pentagonBadges = [
+  {
+    id: "cbt",
+    label: "CBT Mock Tests",
+    sub: "1:1 NTA & IIT Simulator",
+    icon: Monitor,
+    iconGradient: "from-indigo-600 via-blue-600 to-cyan-500",
+    shadowColor: "shadow-indigo-500/15",
+    x: "50.00%",
+    y: "9.00%",
+    floatClass: styles.floatBadge1,
+  },
+  {
+    id: "pyq",
+    label: "Chapter-Wise PYQs",
+    sub: "Official Shift Papers",
+    icon: BookOpen,
+    iconGradient: "from-amber-500 to-orange-500",
+    shadowColor: "shadow-amber-500/15",
+    x: "88.99%",
+    y: "37.33%",
+    floatClass: styles.floatBadge2,
+  },
+  {
+    id: "notes",
+    label: "Formulas & Mindmaps",
+    sub: "High-Yield Notes • PCM",
+    icon: Layers,
+    iconGradient: "from-purple-600 to-pink-500",
+    shadowColor: "shadow-purple-500/15",
+    x: "74.10%",
+    y: "83.17%",
+    floatClass: styles.floatBadge3,
+  },
+  {
+    id: "syllabus",
+    label: "Syllabus Tracker",
+    sub: "All 88 Chapters • PCM",
+    icon: CheckCircle2,
+    iconGradient: "from-emerald-500 to-teal-600",
+    shadowColor: "shadow-emerald-500/15",
+    x: "25.90%",
+    y: "83.17%",
+    floatClass: styles.floatBadge4,
+  },
+  {
+    id: "ai",
+    label: "AI Doubt Solver",
+    sub: "Step-by-step 24/7 help",
+    icon: FaChalkboardTeacher,
+    iconGradient: "from-blue-600 to-indigo-600",
+    shadowColor: "shadow-blue-500/15",
+    x: "11.01%",
+    y: "37.33%",
+    floatClass: styles.floatBadge5,
+  },
+];
 
 const Hero = () => {
   return (
@@ -49,7 +109,7 @@ const Hero = () => {
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-200 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed pt-2">
-                Your complete preparation ecosystem. Practice authentic chapter-wise PYQs, solve doubts 24/7 with our AI Tutor, access curated revision notes, and track all 88 syllabus chapters.
+                Your complete preparation ecosystem. Practice authentic chapter-wise PYQs, take full-length official CBT mock tests, solve doubts 24/7 with our AI Tutor, and track all 88 syllabus chapters.
               </p>
             </div>
 
@@ -87,67 +147,37 @@ const Hero = () => {
               {/* 3D Interactive Canvas (hydrates on client progressively) */}
               <HeroAnimation3D />
 
-              {/* Floating 3D Micro Glass Badges Overlay with matching Navbar glass styling */}
-
-              {/* Top Left Badge: 24/7 AI Doubt Solver */}
-              <div 
-                className={`absolute top-2 sm:top-4 left-0 sm:left-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge1}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/15">
-                    <FaChalkboardTeacher className="w-4 h-4" />
+              {/* Floating 3D Micro Glass Badges Overlay (5 Mathematically Equidistant Pentagon Orbit) */}
+              {pentagonBadges.map((b) => {
+                const Icon = b.icon;
+                return (
+                  <div
+                    key={b.id}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-auto scale-[0.78] sm:scale-90 md:scale-100"
+                    style={{ left: b.x, top: b.y }}
+                  >
+                    <div
+                      className={`backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2 sm:p-2.5 md:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 whitespace-nowrap ${b.floatClass}`}
+                    >
+                      <div className="flex items-center gap-2 sm:gap-2.5">
+                        <div
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr ${b.iconGradient} flex items-center justify-center text-white shadow-sm ${b.shadowColor} shrink-0`}
+                        >
+                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        </div>
+                        <div>
+                          <div className="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">
+                            {b.label}
+                          </div>
+                          <p className="text-[9px] sm:text-[10px] font-medium text-gray-600 dark:text-gray-200">
+                            {b.sub}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">AI Doubt Solver</div>
-                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">Step-by-step 24/7 help</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Top Right Badge: Chapter-Wise PYQs */}
-              <div 
-                className={`absolute top-8 sm:top-10 right-0 sm:right-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge2}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-sm shadow-amber-500/15">
-                    <BookOpen className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">Chapter-Wise PYQs</div>
-                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">Official Shift Papers</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Left Badge: Syllabus Tracker */}
-              <div 
-                className={`absolute bottom-4 sm:bottom-6 left-0 sm:left-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge3}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm shadow-emerald-500/15">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">Syllabus Tracker</div>
-                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">All 88 Chapters • PCM</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Right Badge: Formulas & Mindmaps */}
-              <div 
-                className={`absolute bottom-2 sm:bottom-4 right-0 sm:right-2 z-20 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-2.5 sm:p-3 shadow-sm dark:shadow-none transition-all duration-300 hover:scale-105 pointer-events-auto ${styles.floatBadge4}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white shadow-sm shadow-purple-500/15">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">Formulas & Mindmaps</div>
-                    <p className="text-[10px] font-medium text-gray-600 dark:text-gray-200">High-Yield Notes • PCM</p>
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
 
