@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Search, Trash2, BookOpen, Filter, Sparkles } from "lucide-react";
+import { ArrowUpRight, Search, Trash2, BookOpen, Filter, Sparkles, Loader2 } from "lucide-react";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { formatExamOrigin, subjectColors, difficultyColors } from "@/utils/pyq-helpers";
+
+const BATCH_SIZE = 25;
 
 const DIFFICULTY_OPTIONS = [
   { label: "All Difficulties", value: "ALL" },
@@ -31,6 +33,8 @@ export default function PlaylistTable({
   const [subjectFilter, setSubjectFilter] = useState("ALL");
   const [difficultyFilter, setDifficultyFilter] = useState("ALL");
   const [removingId, setRemovingId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const sentinelRef = useRef(null);
 
   // Filter questions based on search, subject & difficulty
   const filteredQuestions = useMemo(() => {
@@ -50,6 +54,57 @@ export default function PlaylistTable({
       return true;
     });
   }, [questions, subjectFilter, difficultyFilter, searchQuery]);
+
+  // Progressive infinite scroll slice: only render visibleCount rows in DOM
+  const visibleQuestions = useMemo(() => {
+    return filteredQuestions.slice(0, visibleCount);
+  }, [filteredQuestions, visibleCount]);
+
+  // Reset batch count on filter changes via event handlers
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    setVisibleCount(BATCH_SIZE);
+  };
+
+  const handleSubjectChange = (val) => {
+    setSubjectFilter(val);
+    setVisibleCount(BATCH_SIZE);
+  };
+
+  const handleDifficultyChange = (val) => {
+    setDifficultyFilter(val);
+    setVisibleCount(BATCH_SIZE);
+  };
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSubjectFilter("ALL");
+    setDifficultyFilter("ALL");
+    setVisibleCount(BATCH_SIZE);
+  };
+
+  // IntersectionObserver sentinel: automatically reveal next 25 rows as user scrolls
+  useEffect(() => {
+    const target = sentinelRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => {
+            if (prev < filteredQuestions.length) {
+              return Math.min(prev + BATCH_SIZE, filteredQuestions.length);
+            }
+            return prev;
+          });
+        }
+      },
+      { threshold: 0.1, rootMargin: "150px" }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [filteredQuestions.length]);
 
   const handleRemove = async (qId) => {
     if (!isOwner || !playlistId || removingId) return;
@@ -99,12 +154,6 @@ export default function PlaylistTable({
     );
   }
 
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSubjectFilter("ALL");
-    setDifficultyFilter("ALL");
-  };
-
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Search, Subject & Difficulty Filter Bar */}
@@ -116,7 +165,7 @@ export default function PlaylistTable({
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search problems or chapters..."
               className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
@@ -125,7 +174,7 @@ export default function PlaylistTable({
           {/* Custom Difficulty Dropdown */}
           <CustomSelect
             value={difficultyFilter}
-            onChange={(val) => setDifficultyFilter(val)}
+            onChange={handleDifficultyChange}
             options={DIFFICULTY_OPTIONS}
             size="sm"
             color="blue"
@@ -141,7 +190,7 @@ export default function PlaylistTable({
               <button
                 key={sub.value}
                 type="button"
-                onClick={() => setSubjectFilter(sub.value)}
+                onClick={() => handleSubjectChange(sub.value)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   isSelected
                     ? sub.activeClass
@@ -195,86 +244,101 @@ export default function PlaylistTable({
                   </td>
                 </tr>
               ) : (
-                filteredQuestions.map((q, idx) => {
-                const subColor =
-                  subjectColors[q.subject] ||
-                  "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
-                const diffColor =
-                  difficultyColors[q.difficulty] ||
-                  "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
-                const origin = formatExamOrigin(q.original_paper_id, q.exam_year, q.exam_type);
+                <>
+                  {visibleQuestions.map((q, idx) => {
+                    const subColor =
+                      subjectColors[q.subject] ||
+                      "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
+                    const diffColor =
+                      difficultyColors[q.difficulty] ||
+                      "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
+                    const origin = formatExamOrigin(q.original_paper_id, q.exam_year, q.exam_type);
 
-                return (
-                  <tr
-                    key={q.id || q._id}
-                    className="hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors group"
-                  >
-                    {/* Index */}
-                    <td className="py-3.5 px-4 text-center font-bold text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
-                      {idx + 1}
-                    </td>
-
-                    {/* Problem Title */}
-                    <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-gray-100">
-                      <Link
-                        href={`/pyq/${q.slug}`}
-                        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 md:line-clamp-1"
+                    return (
+                      <tr
+                        key={q.id || q._id}
+                        className="hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors group"
                       >
-                        {q.title || "Untitled Question"}
-                      </Link>
-                    </td>
+                        {/* Index */}
+                        <td className="py-3.5 px-4 text-center font-bold text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
+                          {idx + 1}
+                        </td>
 
-                    {/* Subject */}
-                    <td className="py-3.5 px-3">
-                      <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${subColor}`}>
-                        {q.subject}
-                      </span>
-                    </td>
-
-                    {/* Chapter */}
-                    <td className="py-3.5 px-3 text-gray-600 dark:text-gray-400 hidden md:table-cell truncate max-w-[160px]">
-                      {q.chapter || "—"}
-                    </td>
-
-                    {/* Exam / Year */}
-                    <td className="py-3.5 px-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell whitespace-nowrap text-[11px]">
-                      {origin}
-                    </td>
-
-                    {/* Difficulty */}
-                    <td className="py-3.5 px-3">
-                      <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${diffColor}`}>
-                        {q.difficulty || "Medium"}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          href={`/pyq/${q.slug}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors cursor-pointer"
-                        >
-                          <span>Solve</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </Link>
-
-                        {isOwner && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemove(q.id || q._id)}
-                            disabled={removingId === (q.id || q._id)}
-                            title="Remove from this playlist"
-                            className="p-1 rounded-lg text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        {/* Problem Title */}
+                        <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-gray-100">
+                          <Link
+                            href={`/pyq/${q.slug}`}
+                            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 md:line-clamp-1"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              }))}
+                            {q.title || "Untitled Question"}
+                          </Link>
+                        </td>
+
+                        {/* Subject */}
+                        <td className="py-3.5 px-3">
+                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${subColor}`}>
+                            {q.subject}
+                          </span>
+                        </td>
+
+                        {/* Chapter */}
+                        <td className="py-3.5 px-3 text-gray-600 dark:text-gray-400 hidden md:table-cell truncate max-w-[160px]">
+                          {q.chapter || "—"}
+                        </td>
+
+                        {/* Exam / Year */}
+                        <td className="py-3.5 px-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell whitespace-nowrap text-[11px]">
+                          {origin}
+                        </td>
+
+                        {/* Difficulty */}
+                        <td className="py-3.5 px-3">
+                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${diffColor}`}>
+                            {q.difficulty || "Medium"}
+                          </span>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="py-3.5 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <Link
+                              href={`/pyq/${q.slug}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors cursor-pointer"
+                            >
+                              <span>Solve</span>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                            </Link>
+
+                            {isOwner && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemove(q.id || q._id)}
+                                disabled={removingId === (q.id || q._id)}
+                                title="Remove from this playlist"
+                                className="p-1 rounded-lg text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+
+                  {/* Infinite Scroll Sentinel: triggers next batch as user scrolls near bottom */}
+                  {visibleCount < filteredQuestions.length && (
+                    <tr ref={sentinelRef}>
+                      <td colSpan={7} className="py-4 text-center">
+                        <div className="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-gray-500 font-medium">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
+                          <span>Loading more questions...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )}
             </tbody>
           </table>
         </div>
