@@ -84,6 +84,8 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 🖥️ Computer-Based Test (CBT) Mock Test Engine
 
+> 📖 **Full Architectural Specification**: See the comprehensive [CBT Engine Master Blueprint & Technical Specification](docs/cbt-master-spec.md) for deep technical details on the 3-tier state hierarchy, single-instance leased mutex, scoring judge algorithms, and authoritative MongoDB schemas.
+
 - **Authentic Examination Interfaces (`/mock-test`)**:
   - **JEE Main Terminal**: Official NTA CBT software replica with 6-section navigation (`Physics/Chem/Math Sec A & B`), synchronized master countdown timer, Question Paper preview, Instructions modal, and official 5-state Question Palette (Not Visited, Not Answered, Answered, Marked for Review, Answered & Marked for Review).
   - **JEE Advanced Terminal**: TCS iON CBT replica with 2-tier hierarchy (Parts & Sub-Sections), accessibility zoom (`A+ / A / A-`), and section-filtered question palette.
