@@ -2,14 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight, Timer } from "lucide-react";
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
+import MockTestConfirmModal from "@/components/modals/MockTestConfirmModal";
 
 export default function PYQPapersList({ filters, setTotalPapersCount, setPapersLoading }) {
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedMockPaper, setSelectedMockPaper] = useState(null);
   const limit = 12;
 
   // Reset to page 1 whenever filters change
@@ -124,17 +126,26 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
                 </div>
               </div>
 
-              {/* Action */}
-              <div className="pt-6">
+              {/* Action Buttons */}
+              <div className="pt-6 space-y-2">
                 <Link
                   href={`/paper/${paper.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md hover:from-orange-700 hover:to-red-700 transition-all cursor-pointer"
                 >
                   <span>View Complete Paper</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMockPaper(paper)}
+                  className="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                >
+                  <Timer className="w-3.5 h-3.5 text-blue-500" />
+                  <span>Attempt Timed Mock Test</span>
+                </button>
               </div>
             </div>
           );
@@ -178,6 +189,13 @@ export default function PYQPapersList({ filters, setTotalPapersCount, setPapersL
           </button>
         </div>
       )}
+
+      {/* Mock Test Confirmation Modal */}
+      <MockTestConfirmModal
+        isOpen={Boolean(selectedMockPaper)}
+        onClose={() => setSelectedMockPaper(null)}
+        paper={selectedMockPaper}
+      />
     </div>
   );
 }
