@@ -106,8 +106,11 @@ export async function POST(req) {
       throw new Error('Invalid response structure received from evaluation microservice');
     }
 
-    // 4. Mark session completed and delete temporary in-flight Redis cache
-    await redis.del(session_id);
+    // 4. Mark session completed and delete temporary in-flight Redis cache & expiring set
+    await Promise.all([
+      redis.del(session_id),
+      redis.zrem('cbt:expiring_sessions', session_id),
+    ]);
 
     const paperSlug = submission.paper_slug;
     if (!paperSlug) {

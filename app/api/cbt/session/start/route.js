@@ -1,5 +1,6 @@
 import { getToken } from 'next-auth/jwt';
 import redis from '@/utils/redis';
+import { autoSubmitCbtSession } from '@/utils/cbt-auto-submit';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,15 @@ export async function GET(req) {
           duration_minutes: Number(existing.duration_minutes || 180),
           started_at: Number(existing.started_at),
         });
+      } else {
+        // Defensive Lazy Auto-Submit Guard: Exam expired while candidate was away
+        try {
+          await autoSubmitCbtSession(sessionKey, existing);
+        } catch (e) {
+          console.warn('Lazy auto-submit in GET session/start failed:', e);
+          await redis.del(sessionKey);
+          await redis.zrem('cbt:expiring_sessions', sessionKey);
+        }
       }
     }
 
@@ -108,6 +118,15 @@ export async function POST(req) {
           is_same_instance: isSameInstance,
           rehydrated_answers: rehydratedAnswers,
         });
+      } else {
+        // Defensive Lazy Auto-Submit Guard: Exam expired while candidate was away
+        try {
+          await autoSubmitCbtSession(sessionKey, existing);
+        } catch (err) {
+          console.error('Lazy auto-submit failed during session start POST:', err);
+          await redis.del(sessionKey);
+          await redis.zrem('cbt:expiring_sessions', sessionKey);
+        }
       }
     }
 
@@ -129,6 +148,9 @@ export async function POST(req) {
     const expiresAt = now + durationMinutes * 60 * 1000;
 
     // 3. Initialize fresh session hash in Redis with 5-hour TTL
+    // Explicitly delete any prior hash to ensure zero question answer leakage
+    await redis.del(sessionKey);
+
     const initData = {
       started_at: now,
       expires_at: expiresAt,
@@ -140,8 +162,11 @@ export async function POST(req) {
       paper_id,
     };
 
-    await redis.hset(sessionKey, initData);
-    await redis.expire(sessionKey, 18000); // 5 hours TTL
+    await Promise.all([
+      redis.hset(sessionKey, initData),
+      redis.expire(sessionKey, 18000), // 5 hours TTL
+      redis.zadd('cbt:expiring_sessions', { score: expiresAt, member: sessionKey }),
+    ]);
 
     return Response.json({
       session_id: sessionKey,
