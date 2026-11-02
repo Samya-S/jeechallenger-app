@@ -201,16 +201,14 @@ export const useCBTStore = create((setState, getState) => ({
 
   // ── 2. Input Manipulation (0 ms UI Updates) ────────────────────────────────
   selectOption: (option) => {
-    setState((prev) => {
-      const current = prev.uncommittedAnswer?.selected_options || [];
-      const isSelected = current.includes(option);
-      return {
-        uncommittedAnswer: {
-          ...prev.uncommittedAnswer,
-          selected_options: isSelected ? [] : [option],
-        },
-      };
-    });
+    // Authentic NTA / TCS iON CBT Radio Semantics: Re-clicking a selected option does NOT deselect it.
+    // The candidate must explicitly click "Clear Response" to unselect.
+    setState((prev) => ({
+      uncommittedAnswer: {
+        ...prev.uncommittedAnswer,
+        selected_options: [option],
+      },
+    }));
   },
 
   toggleMultiOption: (option) => {
