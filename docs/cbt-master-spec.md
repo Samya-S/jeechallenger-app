@@ -466,7 +466,7 @@ Initializes a new test attempt or resumes an existing one.
 ---
 
 ### 9.2 `POST /api/cbt/session/sync-delta`
-Non-blocking background delta sync called on answer changes or 10s heartbeat.
+Non-blocking background delta sync called on answer changes, 60s cloud keepalive heartbeat, or tab visibilitychange/pagehide lifecycle exit (with 5s local IndexedDB time guard).
 * **Request Payload**:
   ```json
   {

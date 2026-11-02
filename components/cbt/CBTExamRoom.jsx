@@ -280,15 +280,49 @@ export default function CBTExamRoom({
     [paperData, questionsData, initSession]
   );
 
-  // 10-Second Telemetry & In-Flight Heartbeat (Active only when in Exam stage)
+  // 60-Second Cloud Heartbeat & 5-Second Local IndexedDB Time Guard (Protects Upstash Free Tier)
   useEffect(() => {
     if (gatewayStage !== 'EXAM' || !sessionId || isExamSubmitted || isTerminated) return;
 
-    const heartbeatInterval = setInterval(() => {
-      triggerHeartbeat();
-    }, 10000);
+    // 1. Local IndexedDB Time Guard (Runs every 5s, 100% offline, 0 Redis calls)
+    const localTickInterval = setInterval(() => {
+      useCBTStore.getState().persistToIndexedDB();
+    }, 5000);
 
-    return () => clearInterval(heartbeatInterval);
+    // 2. Cloud Heartbeat & Concurrency Lease (Runs every 60s to protect Redis Free Tier)
+    const cloudHeartbeatInterval = setInterval(() => {
+      triggerHeartbeat();
+    }, 60000);
+
+    return () => {
+      clearInterval(localTickInterval);
+      clearInterval(cloudHeartbeatInterval);
+    };
+  }, [gatewayStage, sessionId, isExamSubmitted, isTerminated, triggerHeartbeat]);
+
+  // Page Lifecycle API: Flush exact in-flight time on tab switch / window blur / close
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleLifecycleFlush = () => {
+      if (gatewayStage !== 'EXAM' || !sessionId || isExamSubmitted || isTerminated) return;
+      useCBTStore.getState().persistToIndexedDB();
+      triggerHeartbeat();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        handleLifecycleFlush();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handleLifecycleFlush);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', handleLifecycleFlush);
+    };
   }, [gatewayStage, sessionId, isExamSubmitted, isTerminated, triggerHeartbeat]);
 
   // Network Online/Offline Listeners for Sync Queue

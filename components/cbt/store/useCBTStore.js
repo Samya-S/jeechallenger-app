@@ -517,13 +517,20 @@ export const useCBTStore = create((setState, getState) => ({
   // ── 5. Persistence & Sync Workers ──────────────────────────────────────────
   persistToIndexedDB: async () => {
     if (typeof window === 'undefined' || typeof indexedDB === 'undefined') return;
-    const { sessionId, answers, paletteStates, questionTimeMap } = getState();
+    const { sessionId, answers, paletteStates, questionTimeMap, questions, activeQuestionIndex, activeQuestionEnteredAt } = getState();
     if (!sessionId) return;
     try {
+      const liveTimeMap = { ...questionTimeMap };
+      const currentQ = questions?.[activeQuestionIndex];
+      if (currentQ && activeQuestionEnteredAt) {
+        const elapsed = Math.round((Date.now() - activeQuestionEnteredAt) / 1000);
+        const qId = String(currentQ._id);
+        liveTimeMap[qId] = (questionTimeMap[qId] || 0) + elapsed;
+      }
       await set(`cbt_local_${sessionId}`, {
         answers,
         paletteStates,
-        questionTimeMap,
+        questionTimeMap: liveTimeMap,
         updatedAt: Date.now(),
       });
     } catch (e) {

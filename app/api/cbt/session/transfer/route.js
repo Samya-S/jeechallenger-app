@@ -3,6 +3,10 @@ import redis from '@/utils/redis';
 
 export const dynamic = 'force-dynamic';
 
+// In-memory burst rate limiter: Max 1 transfer attempt per 5 seconds per user
+// Completely prevents DevTools script bombardment from consuming Upstash Redis free tier quota
+const userTransferCooldown = new Map();
+
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -24,6 +28,24 @@ export async function POST(req) {
     const expectedPrefix = `cbt:session:${token.id}:`;
     if (!session_id.startsWith(expectedPrefix)) {
       return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
+    }
+
+    // Fast in-memory burst throttle before touching Redis (protects Upstash daily quota)
+    const now = Date.now();
+    const lastTransferAt = userTransferCooldown.get(token.id) || 0;
+    if (now - lastTransferAt < 5000) {
+      return Response.json(
+        { error: 'TOO_MANY_REQUESTS', message: 'Please wait a moment before requesting another session transfer.' },
+        { status: 429 }
+      );
+    }
+    userTransferCooldown.set(token.id, now);
+
+    // Prune stale entries if map grows
+    if (userTransferCooldown.size > 500) {
+      for (const [uid, ts] of userTransferCooldown.entries()) {
+        if (now - ts > 60000) userTransferCooldown.delete(uid);
+      }
     }
 
     const sessionData = await redis.hgetall(session_id);
