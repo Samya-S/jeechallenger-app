@@ -225,26 +225,28 @@ export default function PYQFilterBar({
           <button
             type="button"
             onClick={() => setActiveTab("practice")}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === "practice"
                 ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
-            <BookOpen className="w-4 h-4" />
-            Chapter-Wise Practice
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="hidden sm:inline">Chapter-Wise Practice</span>
+            <span className="sm:hidden">Chapter-wise</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("papers")}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeTab === "papers"
                 ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
-            <FileText className="w-4 h-4" />
-            Full Shift Papers
+            <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="hidden sm:inline">Full Shift Papers</span>
+            <span className="sm:hidden">Full Papers</span>
           </button>
         </div>
 

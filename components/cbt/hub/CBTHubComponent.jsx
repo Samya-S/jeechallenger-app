@@ -352,47 +352,50 @@ export default function CBTHubComponent({
 
         {/* Tab Navigation Controls */}
         <div className="flex items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
-          <div className="flex p-1 bg-gray-100 dark:bg-gray-800/90 rounded-2xl overflow-x-auto no-scrollbar">
+          <div className="grid grid-cols-3 sm:flex p-1 bg-gray-100 dark:bg-gray-800/90 rounded-2xl w-full sm:w-auto">
             {/* Tab 1: Available Mock Tests */}
             <button
               type="button"
               onClick={() => handleTabSelect('papers')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 activeTab === 'papers'
                   ? 'bg-blue-600 text-white shadow-md'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Available Mock Tests ({totalPapers})</span>
+              <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">Available Mock Tests ({totalPapers})</span>
+              <span className="sm:hidden">Tests ({totalPapers})</span>
             </button>
 
             {/* Tab 2: My Test Attempts */}
             <button
               type="button"
               onClick={() => handleTabSelect('attempts')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 activeTab === 'attempts'
                   ? 'bg-blue-600 text-white shadow-md'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              <Target className="w-4 h-4" />
-              <span>My Test Attempts ({submissions.length})</span>
+              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">My Test Attempts ({submissions.length})</span>
+              <span className="sm:hidden">Attempts ({submissions.length})</span>
             </button>
 
             {/* Tab 3: Mistake Vault */}
             <button
               type="button"
               onClick={() => handleTabSelect('vault')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 activeTab === 'vault'
                   ? 'bg-amber-500 text-white shadow-md'
                   : 'text-gray-600 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-400'
               }`}
             >
-              <Bookmark className="w-4 h-4" />
-              <span>Mistake Vault ({vaultItems.length})</span>
+              <Bookmark className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span className="hidden sm:inline">Mistake Vault ({vaultItems.length})</span>
+              <span className="sm:hidden">Vault ({vaultItems.length})</span>
             </button>
           </div>
         </div>
