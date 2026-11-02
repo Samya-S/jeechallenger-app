@@ -109,6 +109,7 @@ export const useCBTStore = create((setState, getState) => ({
       activeQuestionIndex: 0,
       activeSubject: questions[0]?.subject || 'Physics',
       activeSectionIndex: 0,
+      isTerminated: false,
       expiresAt: expires_at,
       serverTimeOffset,
       answers: mergedAnswers,
@@ -129,6 +130,71 @@ export const useCBTStore = create((setState, getState) => ({
         });
       } catch (e) {
         console.warn('Failed to prime IndexedDB cache:', e);
+      }
+    }
+  },
+
+  // ── 1b. Reclaim Session from Another Device (Transfer Back) ───────────────────
+  reclaimSession: async ({ newInstanceId, rehydratedAnswers, expiresAt }) => {
+    const sessionId = getState().sessionId;
+    let localCache = null;
+    if (typeof window !== 'undefined' && typeof indexedDB !== 'undefined' && sessionId) {
+      try {
+        localCache = await get(`cbt_local_${sessionId}`);
+      } catch (e) {
+        console.warn('Failed to read IndexedDB local cache on reclaim:', e);
+      }
+    }
+
+    setState((prev) => {
+      const mergedAnswers = { ...(localCache?.answers || {}), ...prev.answers };
+      const mergedPaletteStates = { ...(localCache?.paletteStates || {}), ...prev.paletteStates };
+      const mergedTimeMap = { ...(localCache?.questionTimeMap || {}), ...prev.questionTimeMap };
+
+      for (const [qId, sResp] of Object.entries(rehydratedAnswers || {})) {
+        const sOptions = Array.isArray(sResp.selected_options)
+          ? sResp.selected_options
+          : (sResp.selected_option ? [String(sResp.selected_option).trim()] : []);
+        mergedAnswers[qId] = {
+          selected_options: sOptions,
+          numeric_value: sResp.numeric_value || null,
+        };
+        mergedPaletteStates[qId] = sResp.color_state || 1;
+        mergedTimeMap[qId] = sResp.time_spent_seconds || 0;
+      }
+
+      const currentQ = prev.questions[prev.activeQuestionIndex];
+      const currentQId = currentQ ? String(currentQ._id) : null;
+      const updatedUncommitted = {
+        selected_options: (currentQId && mergedAnswers[currentQId]?.selected_options)
+          ? [...mergedAnswers[currentQId].selected_options]
+          : [],
+        numeric_value: (currentQId && mergedAnswers[currentQId]?.numeric_value) || null,
+      };
+
+      return {
+        instanceId: newInstanceId,
+        isTerminated: false,
+        expiresAt: expiresAt || prev.expiresAt,
+        answers: mergedAnswers,
+        paletteStates: mergedPaletteStates,
+        questionTimeMap: mergedTimeMap,
+        uncommittedAnswer: updatedUncommitted,
+        activeQuestionEnteredAt: Date.now(),
+        pendingSyncQueue: new Set(),
+      };
+    });
+
+    if (typeof window !== 'undefined' && typeof indexedDB !== 'undefined' && sessionId) {
+      try {
+        const { answers, paletteStates, questionTimeMap } = getState();
+        await set(`cbt_local_${sessionId}`, {
+          answers,
+          paletteStates,
+          questionTimeMap,
+        });
+      } catch (e) {
+        console.warn('Failed to persist to IndexedDB on reclaim:', e);
       }
     }
   },

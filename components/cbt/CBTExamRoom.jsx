@@ -14,6 +14,7 @@ import CBTKioskGuard from './CBTKioskGuard';
 import CBTCandidateLogin from './gateway/CBTCandidateLogin';
 import CBTGeneralInstructions from './gateway/CBTGeneralInstructions';
 import CBTDeclarationGateway from './gateway/CBTDeclarationGateway';
+import CBTTransferModal from './CBTTransferModal';
 import { Loader2 } from 'lucide-react';
 
 export default function CBTExamRoom({
@@ -41,6 +42,11 @@ export default function CBTExamRoom({
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isQPModalOpen, setIsQPModalOpen] = useState(false);
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+
+  // Multi-Device Leased Mutex Transfer State
+  const [pendingTransferSession, setPendingTransferSession] = useState(null);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [isTransferring, setIsTransferring] = useState(false);
 
   // Request fullscreen as soon as the Exam UI opens/mounts in browser
   useEffect(() => {
@@ -139,6 +145,15 @@ export default function CBTExamRoom({
         });
         const session = await res.json();
 
+        // Check if session is leased to another device instance
+        if (session.is_resumed && !session.is_same_instance) {
+          if (isMounted) {
+            setPendingTransferSession(session);
+            setIsTransferModalOpen(true);
+          }
+          return;
+        }
+
         if (isMounted) {
           await initSession({
             paper: paperData,
@@ -160,6 +175,61 @@ export default function CBTExamRoom({
       isMounted = false;
     };
   }, [paperData, questionsData, initSession]);
+
+  // Handler: Confirm transfer of active lease from another device to this device
+  const handleConfirmTransfer = useCallback(async () => {
+    if (!pendingTransferSession) return;
+    setIsTransferring(true);
+    try {
+      const instId = useCBTStore.getState().instanceId;
+      const res = await fetch('/api/cbt/session/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: pendingTransferSession.session_id,
+          new_instance_id: instId,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Failed to claim exam lease');
+      }
+
+      const transferData = await res.json();
+      const updatedSession = {
+        ...pendingTransferSession,
+        active_instance_id: transferData.active_instance_id,
+        rehydrated_answers: transferData.rehydrated_answers || pendingTransferSession.rehydrated_answers,
+        is_same_instance: true,
+      };
+
+      await initSession({
+        paper: paperData,
+        questions: questionsData,
+        sessionData: updatedSession,
+      });
+
+      setIsReady(true);
+      setIsTransferModalOpen(false);
+      setPendingTransferSession(null);
+      setGatewayStage('EXAM');
+    } catch (err) {
+      console.error('Failed to transfer session lease:', err);
+      alert('Could not transfer examination session: ' + err.message);
+    } finally {
+      setIsTransferring(false);
+    }
+  }, [pendingTransferSession, paperData, questionsData, initSession]);
+
+  // Handler: Cancel transfer and return to mock test catalog
+  const handleCancelTransfer = useCallback(() => {
+    setIsTransferModalOpen(false);
+    setPendingTransferSession(null);
+    if (typeof window !== 'undefined') {
+      window.location.href = '/mock-test';
+    }
+  }, []);
 
   // Handler: Candidate clicks "I am ready to begin" on the Declaration screen
   const handleReadyToBegin = useCallback(
@@ -184,6 +254,13 @@ export default function CBTExamRoom({
         }
 
         const session = await res.json();
+
+        // Check if session is leased to another device instance
+        if (session.is_resumed && !session.is_same_instance) {
+          setPendingTransferSession(session);
+          setIsTransferModalOpen(true);
+          return;
+        }
 
         await initSession({
           paper: paperData,
@@ -235,6 +312,20 @@ export default function CBTExamRoom({
       window.removeEventListener('offline', handleOffline);
     };
   }, [flushSyncQueue]);
+
+  // Stage: Active Lease on Another Device (Transfer Gateway Modal)
+  if (isTransferModalOpen) {
+    return (
+      <div className="w-screen h-screen flex flex-col bg-[#162942] text-white select-none relative">
+        <CBTTransferModal
+          isOpen={true}
+          isTransferring={isTransferring}
+          onConfirmTransfer={handleConfirmTransfer}
+          onCancel={handleCancelTransfer}
+        />
+      </div>
+    );
+  }
 
   // Stage 0: Initial Server Handshake
   if (gatewayStage === 'CHECKING' || isStartingSession) {

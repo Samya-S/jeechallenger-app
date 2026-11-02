@@ -2,13 +2,17 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useCBTStore } from './store/useCBTStore';
-import { Maximize, ShieldAlert, AlertOctagon, ShieldCheck, Lock } from 'lucide-react';
+import { Maximize, ShieldAlert, AlertOctagon, ShieldCheck, Lock, RefreshCw, ArrowRight, AlertTriangle, Loader2 } from 'lucide-react';
 
 export default function CBTKioskGuard() {
   const isTerminated = useCBTStore((s) => s.isTerminated);
   const isExamSubmitted = useCBTStore((s) => s.isExamSubmitted);
   const isFullscreen = useCBTStore((s) => s.isFullscreen);
   const setFullscreen = useCBTStore((s) => s.setFullscreen);
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isReclaiming, setIsReclaiming] = useState(false);
+  const [reclaimError, setReclaimError] = useState(null);
 
   const [hasStartedKiosk, setHasStartedKiosk] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -140,6 +144,58 @@ export default function CBTKioskGuard() {
     }
   }, [setFullscreen]);
 
+  // Handler: Confirm transfer of active lease back to this device
+  const handleConfirmTransferBack = useCallback(async () => {
+    setIsReclaiming(true);
+    setReclaimError(null);
+    try {
+      const sessionId = useCBTStore.getState().sessionId;
+      if (!sessionId) {
+        throw new Error('No active test session found.');
+      }
+      const newInstanceId = 'inst_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('cbt_instance_id', newInstanceId);
+      }
+
+      const res = await fetch('/api/cbt/session/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          new_instance_id: newInstanceId,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Failed to claim exam lease');
+      }
+
+      const data = await res.json();
+
+      await useCBTStore.getState().reclaimSession({
+        newInstanceId: data.active_instance_id,
+        rehydratedAnswers: data.rehydrated_answers,
+        expiresAt: data.expires_at,
+      });
+
+      setIsConfirmModalOpen(false);
+
+      // Restore fullscreen if supported
+      try {
+        if (typeof document !== 'undefined' && !document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.().catch(() => {});
+        }
+      } catch {}
+    } catch (err) {
+      console.error('Failed to reclaim session lease:', err);
+      setReclaimError(err.message || 'Could not transfer session back. Please try again.');
+    } finally {
+      setIsReclaiming(false);
+    }
+  }, []);
+
   // Case 1: Terminated via 409 Conflict (Leased Mutex Revocation)
   if (isTerminated) {
     return (
@@ -163,7 +219,106 @@ export default function CBTKioskGuard() {
           <p className="mt-4 text-xs text-slate-500">
             This window has been locked for integrity. Please continue your exam on your other device.
           </p>
+
+          {/* Action buttons on lockout screen */}
+          <div className="mt-6 w-full space-y-2.5">
+            <button
+              type="button"
+              onClick={() => {
+                setReclaimError(null);
+                setIsConfirmModalOpen(true);
+              }}
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:from-blue-700 active:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              data-testid="cbt-transfer-back-btn"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Transfer Exam Back to This Device</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') window.location.href = '/mock-test';
+              }}
+              className="w-full py-2.5 px-4 rounded-xl border border-slate-800 hover:bg-slate-800/80 text-slate-400 hover:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+              data-testid="cbt-lockout-exit-btn"
+            >
+              Exit to Mock Tests
+            </button>
+          </div>
         </div>
+
+        {/* Transfer Back Confirmation Modal */}
+        {isConfirmModalOpen && (
+          <div
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 select-none"
+            data-testid="cbt-reclaim-confirm-modal"
+          >
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 sm:p-7 text-center space-y-5 animate-in fade-in zoom-in-95 duration-150 text-gray-900 dark:text-white">
+              <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400 mx-auto">
+                <AlertTriangle className="w-7 h-7" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h2 className="text-lg sm:text-xl font-bold">
+                  Transfer Exam Back to This Device?
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-slate-300 leading-relaxed">
+                  At a time, only one device will be active.
+                </p>
+              </div>
+
+              <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-2xl text-left text-xs text-amber-900 dark:text-amber-200 space-y-2">
+                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold">
+                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                  <span>Single-Device Exam Security</span>
+                </div>
+                <p className="text-amber-800/80 dark:text-amber-300/80 text-[11px] leading-relaxed">
+                  If you transfer back, your other device will be disconnected and ended immediately. Your remaining exam timer and answers will resume here.
+                </p>
+              </div>
+
+              {reclaimError && (
+                <div className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-400 text-left">
+                  {reclaimError}
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isReclaiming) setIsConfirmModalOpen(false);
+                  }}
+                  disabled={isReclaiming}
+                  className="w-full sm:w-1/2 py-2.5 px-4 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-300 text-xs sm:text-sm font-semibold hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+                  data-testid="cbt-reclaim-cancel-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmTransferBack}
+                  disabled={isReclaiming}
+                  className="w-full sm:w-1/2 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  data-testid="cbt-reclaim-confirm-btn"
+                >
+                  {isReclaiming ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Transferring...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Confirm &amp; Transfer</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
