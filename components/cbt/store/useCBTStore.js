@@ -663,9 +663,25 @@ export const useCBTStore = create((setState, getState) => ({
       activeQuestionIndex,
       activeQuestionEnteredAt,
       questionTimeMap,
+      isExamSubmitted,
+      isTerminated,
     } = getState();
 
-    // 1. Calculate final exact seconds on active question
+    if (!sessionId || isExamSubmitted || isTerminated) return;
+
+    // 1. Wait for any active in-flight delta sync to complete
+    let attempts = 0;
+    while (getState().isSyncing && attempts < 50) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      attempts++;
+    }
+
+    // 2. Await pending delta flush: guarantee 100% of answers reach Redis before evaluation
+    if (getState().pendingSyncQueue.size > 0) {
+      await getState().flushSyncQueue();
+    }
+
+    // 3. Calculate final exact seconds on active question
     const currentQ = questions[activeQuestionIndex];
     const finalTimeMap = { ...questionTimeMap };
     if (currentQ) {
