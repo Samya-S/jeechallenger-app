@@ -23,10 +23,21 @@ export async function POST(req) {
       return Response.json({ error: 'session_id is required' }, { status: 400 });
     }
 
+    // Ownership check: session key must belong to authenticated user
+    const expectedPrefix = `cbt:session:${token.id}:`;
+    if (!session_id.startsWith(expectedPrefix)) {
+      return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
+    }
+
     // 1. Fetch full in-flight session from Redis
     const sessionData = await redis.hgetall(session_id);
     if (!sessionData || Object.keys(sessionData).length === 0) {
       return Response.json({ error: 'Session not found or already submitted' }, { status: 404 });
+    }
+
+    // Defense-in-depth: verify stored user_id matches authenticated token
+    if (sessionData.user_id && sessionData.user_id !== token.id) {
+      return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
     // Concurrency sanity check
