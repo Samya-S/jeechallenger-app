@@ -438,9 +438,21 @@ export default function CBTHubComponent({
               {/* Exam Type for Papers */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 {[
-                  { label: 'All Exams', value: 'ALL' },
-                  { label: 'JEE Main', value: 'JEE_MAIN' },
-                  { label: 'JEE Advanced', value: 'JEE_ADVANCED' },
+                  {
+                    label: 'All Exams',
+                    value: 'ALL',
+                    activeClass: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md',
+                  },
+                  {
+                    label: 'JEE Main',
+                    value: 'JEE_MAIN',
+                    activeClass: 'bg-emerald-600 text-white shadow-md',
+                  },
+                  {
+                    label: 'JEE Advanced',
+                    value: 'JEE_ADVANCED',
+                    activeClass: 'bg-orange-600 text-white shadow-md',
+                  },
                 ].map((et) => (
                   <button
                     key={et.value}
@@ -448,7 +460,7 @@ export default function CBTHubComponent({
                     onClick={() => handleExamTypeChange(et.value)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       examTypeFilter === et.value
-                        ? 'bg-orange-600 text-white shadow-md'
+                        ? et.activeClass
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`}
                   >
