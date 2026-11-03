@@ -201,6 +201,17 @@ export default function CBTHubComponent({
   const [vaultItems, setVaultItems] = useState(initialVaultItems);
   const [vaultSubjectFilter, setVaultSubjectFilter] = useState('ALL');
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
+  const [isVaultMounting, setIsVaultMounting] = useState(tabParam === 'vault' || tabParam === 'mistake-vault');
+  const [visibleVaultCount, setVisibleVaultCount] = useState(10);
+
+  useEffect(() => {
+    if (isVaultMounting) {
+      const timer = setTimeout(() => {
+        setIsVaultMounting(false);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isVaultMounting]);
 
   // Filter vault items
   const filteredVaultItems = useMemo(() => {
@@ -278,6 +289,10 @@ export default function CBTHubComponent({
   const handleTabSelect = (tab) => {
     setActiveTab(tab);
     setPage(1);
+    if (tab === 'vault') {
+      setIsVaultMounting(true);
+      setVisibleVaultCount(10);
+    }
   };
 
   return (
@@ -825,7 +840,33 @@ export default function CBTHubComponent({
                 </div>
 
                 {/* Vault Questions Feed */}
-                {filteredVaultItems.length === 0 ? (
+                {isVaultMounting ? (
+                  <div className="space-y-6 animate-pulse" data-testid="cbt-vault-skeleton">
+                    {[1, 2, 3].map((n) => (
+                      <div
+                        key={n}
+                        className="bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 p-6 space-y-4 shadow-sm"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="h-6 w-20 bg-gray-200 dark:bg-gray-800 rounded-md" />
+                            <div className="h-6 w-28 bg-gray-200 dark:bg-gray-800 rounded-md" />
+                          </div>
+                          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-800 rounded-full" />
+                        </div>
+                        <div className="space-y-2 py-2">
+                          <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-800 rounded" />
+                          <div className="h-4 w-4/6 bg-gray-200 dark:bg-gray-800 rounded" />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="h-14 bg-gray-100 dark:bg-gray-800/60 rounded-2xl border border-gray-200 dark:border-gray-800" />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : filteredVaultItems.length === 0 ? (
                   <div className="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-md space-y-3">
                     <BookmarkCheck className="w-12 h-12 text-amber-500 mx-auto" />
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -837,7 +878,7 @@ export default function CBTHubComponent({
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {filteredVaultItems.map((item, idx) => {
+                    {filteredVaultItems.slice(0, visibleVaultCount).map((item, idx) => {
                       if (!item.question) return null;
                       const qDoc = {
                         ...item.question,
@@ -856,6 +897,18 @@ export default function CBTHubComponent({
                         />
                       );
                     })}
+
+                    {filteredVaultItems.length > visibleVaultCount && (
+                      <div className="pt-2 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setVisibleVaultCount((prev) => prev + 10)}
+                          className="px-6 py-3 rounded-2xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-amber-400 dark:hover:border-amber-500 font-bold text-xs sm:text-sm text-gray-800 dark:text-gray-200 shadow-sm transition-all cursor-pointer"
+                        >
+                          Load More Questions ({filteredVaultItems.length - visibleVaultCount} remaining)
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </>
