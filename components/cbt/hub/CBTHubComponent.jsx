@@ -130,7 +130,7 @@ export default function CBTHubComponent({
       return;
     }
 
-    if (activeTab !== 'papers' && totalPapers > 0) return;
+    if (activeTab !== 'papers') return;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPapersLoading(true);
@@ -161,7 +161,7 @@ export default function CBTHubComponent({
         setTotalPapers(0);
         setPapersLoading(false);
       });
-  }, [activeTab, examTypeFilter, yearFilter, page, limit, totalPapers]);
+  }, [activeTab, examTypeFilter, yearFilter, page, limit]);
 
   // Sync URL query params with active tab, filters, and page
   const isInitialMount = useRef(true);
