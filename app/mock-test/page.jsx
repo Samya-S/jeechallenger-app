@@ -22,6 +22,28 @@ export default async function MockTestHubPage() {
 
   let submissions = [];
   let vaultItems = [];
+  let initialPapers = [];
+  let initialTotalPapers = 0;
+  let initialTotalPages = 1;
+
+  // Pre-fetch initial page of papers and total count for instant, zero-flicker badge rendering
+  try {
+    const papersRes = await fetch(`${BACKEND_URL}/papers?page=1&limit=12`, {
+      next: { revalidate: 300 },
+    });
+    if (papersRes.ok) {
+      const papersJson = await papersRes.json();
+      initialPapers = papersJson?.data || papersJson?.papers || [];
+      if (papersJson?.meta) {
+        initialTotalPapers = papersJson.meta.total || 0;
+        initialTotalPages = papersJson.meta.total_pages || 1;
+      } else {
+        initialTotalPapers = initialPapers.length;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to pre-fetch papers for CBT Hub SSR:', err);
+  }
 
   // If authenticated, fetch user submissions and mistake vault from Go microservice
   if (session?.user?.id) {
@@ -63,6 +85,9 @@ export default async function MockTestHubPage() {
       user={session?.user || null}
       submissions={submissions}
       initialVaultItems={vaultItems}
+      initialPapers={initialPapers}
+      initialTotalPapers={initialTotalPapers}
+      initialTotalPages={initialTotalPages}
     />
   );
 }

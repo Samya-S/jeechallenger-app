@@ -41,6 +41,9 @@ export default function CBTHubComponent({
   user,
   submissions = [],
   initialVaultItems = [],
+  initialPapers = [],
+  initialTotalPapers = 0,
+  initialTotalPages = 1,
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -96,10 +99,10 @@ export default function CBTHubComponent({
   const [yearFilter, setYearFilter] = useState(searchParams.get('year') || 'ALL');
 
   // Papers data & pagination state (Server-side API Pagination matching PYQPapersList)
-  const [papers, setPapers] = useState([]);
-  const [totalPapers, setTotalPapers] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [papersLoading, setPapersLoading] = useState(true);
+  const [papers, setPapers] = useState(initialPapers);
+  const [totalPapers, setTotalPapers] = useState(initialTotalPapers);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [papersLoading, setPapersLoading] = useState(initialPapers.length === 0);
   const limit = 12;
 
   // Dynamic available years from dedicated API endpoint
@@ -118,8 +121,16 @@ export default function CBTHubComponent({
   }, []);
 
   // Fetch papers from backend with server-side pagination & filter params
+  const hasLoadedInitial = useRef(initialPapers.length > 0 && page === 1 && examTypeFilter === 'ALL' && yearFilter === 'ALL');
+
   useEffect(() => {
-    if (activeTab !== 'papers') return;
+    // If initial papers were already pre-populated from SSR for page 1 and no filters are active, skip duplicate first fetch
+    if (hasLoadedInitial.current) {
+      hasLoadedInitial.current = false;
+      return;
+    }
+
+    if (activeTab !== 'papers' && totalPapers > 0) return;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPapersLoading(true);
@@ -150,7 +161,7 @@ export default function CBTHubComponent({
         setTotalPapers(0);
         setPapersLoading(false);
       });
-  }, [activeTab, examTypeFilter, yearFilter, page, limit]);
+  }, [activeTab, examTypeFilter, yearFilter, page, limit, totalPapers]);
 
   // Sync URL query params with active tab, filters, and page
   const isInitialMount = useRef(true);
