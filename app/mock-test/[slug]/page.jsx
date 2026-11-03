@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import CBTExamRoom from '@/components/cbt/CBTExamRoom';
+import CBTMobileGuard from '@/components/cbt/CBTMobileGuard';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,14 +74,16 @@ export default async function MockTestPage({ params }) {
       : '10048291');
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-white text-gray-900 select-none">
-      <CBTExamRoom
-        paperData={paper}
-        questionsData={paper.questions}
-        candidateName={session.user.name || 'Candidate'}
-        candidateRollNo={candidateRollNo}
-        candidateImage={session.user.image}
-      />
-    </div>
+    <CBTMobileGuard paperSlug={slug}>
+      <div className="w-screen h-screen overflow-hidden bg-white text-gray-900 select-none">
+        <CBTExamRoom
+          paperData={paper}
+          questionsData={paper.questions}
+          candidateName={session.user.name || 'Candidate'}
+          candidateRollNo={candidateRollNo}
+          candidateImage={session.user.image}
+        />
+      </div>
+    </CBTMobileGuard>
   );
 }
