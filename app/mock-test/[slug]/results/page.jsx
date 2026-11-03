@@ -71,6 +71,7 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
     if (!submission) return null;
 
     return {
+      paper,
       submission,
       questions: paper.questions || [],
       allAttempts,
@@ -129,7 +130,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
     redirect(`/mock-test/${slug}`);
   }
 
-  const { submission, questions, allAttempts = [], paperSlug } = data;
+  const { paper, submission, questions, allAttempts = [], paperSlug } = data;
 
   return (
     <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
