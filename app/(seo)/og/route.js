@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { createFallbackOgImageResponse, createOgImageResponse } from '@/utils/og-image';
 import { OG_PARAM_LIMITS, sanitizeOgText, unpackOgImageParams } from '@/utils/og-metadata';
 import { normalizeOgTheme } from '@/config/og-themes';
@@ -32,12 +34,23 @@ export async function GET(request) {
       new URL(request.url).searchParams,
     );
 
-    return createOgImageResponse({ title, subtitle, theme, badge, baseUrl });
+    return await createOgImageResponse({ title, subtitle, theme, badge, baseUrl });
   } catch {
     try {
       return createFallbackOgImageResponse();
     } catch {
-      return new Response('Failed to generate the image', { status: 500 });
+      try {
+        const staticFallbackPath = path.join(process.cwd(), 'public', 'og-image-1200x630.png');
+        const buffer = await fs.readFile(staticFallbackPath);
+        return new Response(buffer, {
+          headers: {
+            'Content-Type': 'image/png',
+            'Cache-Control': 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=86400',
+          },
+        });
+      } catch {
+        return new Response('Failed to generate the image', { status: 500 });
+      }
     }
   }
 }
