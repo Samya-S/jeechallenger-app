@@ -212,7 +212,7 @@ export default function StructuredData({ type, data }) {
           "@type": "Organization",
           "name": "JEE Challenger",
           "url": siteUrl,
-          "logo": `${siteUrl}/images/jcicon.jpg`,
+          "logo": `${siteUrl}/brand/jee-challenger-icon-512-rounded.png`,
         },
         "about": [
           { "@type": "Thing", "name": examLabel },
@@ -284,7 +284,7 @@ export default function StructuredData({ type, data }) {
           "name": "JEE Challenger",
           "logo": {
             "@type": "ImageObject",
-            "url": `${siteUrl}/images/jcicon.jpg`
+            "url": `${siteUrl}/brand/jee-challenger-icon-512-rounded.png`
           }
         }
       };

@@ -502,7 +502,7 @@ function generateRssXml(staticRoutes, blogArticles, papers) {
     <lastBuildDate>${currentDate}</lastBuildDate>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
-      <url>${SITE_URL}/images/jcicon.jpg</url>
+      <url>${SITE_URL}/brand/jee-challenger-icon-512-rounded.png</url>
       <title>JEE Challenger</title>
       <link>${SITE_URL}</link>
     </image>
