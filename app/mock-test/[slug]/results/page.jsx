@@ -8,6 +8,7 @@ import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
 import CBTSolutionReview from '@/components/cbt/results/CBTSolutionReview';
 import CBTAttemptSwitcher from '@/components/cbt/results/CBTAttemptSwitcher';
+import CBTRetakeButton from '@/components/cbt/results/CBTRetakeButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { ArrowLeft, RotateCcw, FileText } from 'lucide-react';
 
@@ -151,13 +152,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
               />
             )}
 
-            <Link
-              href={`/mock-test/${paperSlug}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-xs transition-all cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-orange-500" />
-              <span>Retake Test</span>
-            </Link>
+            <CBTRetakeButton paper={paper} paperSlug={paperSlug} />
 
             <Link
               href={`/paper/${paperSlug}`}

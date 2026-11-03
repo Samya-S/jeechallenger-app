@@ -29,6 +29,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
+import CBTMockTestModal from "@/components/modals/CBTMockTestModal";
 import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
@@ -39,9 +40,10 @@ function PaperDetailContent({ paperData }) {
 
   // Instant launch transition state
   const [isLaunchingExam, setIsLaunchingExam] = useState(false);
+  const [isMockModalOpen, setIsMockModalOpen] = useState(false);
 
   const handleStartMockTest = (e, slug) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     setIsLaunchingExam(true);
     try {
       if (typeof document !== 'undefined' && !document.fullscreenElement) {
@@ -516,7 +518,7 @@ function PaperDetailContent({ paperData }) {
             {session?.user ? (
               <button
                 type="button"
-                onClick={(e) => handleStartMockTest(e, paperData.slug || paperData.paper_id)}
+                onClick={() => setIsMockModalOpen(true)}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-bold text-sm shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-95 group"
               >
                 <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
@@ -982,6 +984,14 @@ function PaperDetailContent({ paperData }) {
         isOpen={!!reportingQuestion}
         onClose={() => setReportingQuestion(null)}
         question={reportingQuestion}
+      />
+
+      {/* Mock Test Launch Confirmation Modal */}
+      <CBTMockTestModal
+        isOpen={isMockModalOpen}
+        onClose={() => setIsMockModalOpen(false)}
+        onConfirm={(slug) => handleStartMockTest(null, slug || paperData.slug || paperData.paper_id)}
+        paper={paperData}
       />
     </div>
   );
