@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight, Timer } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight, Timer, LogIn } from "lucide-react";
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
 import MockTestConfirmModal from "@/components/modals/MockTestConfirmModal";
 
@@ -13,6 +14,7 @@ export default function PYQPapersList({
   page: parentPage,
   setPage: parentSetPage,
 }) {
+  const { data: session } = useSession();
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [localPage, setLocalPage] = useState(1);
@@ -152,14 +154,24 @@ export default function PYQPapersList({
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedMockPaper(paper)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
-                >
-                  <Timer className="w-3.5 h-3.5 text-blue-500" />
-                  <span>Attempt Timed Mock Test</span>
-                </button>
+                {session?.user ? (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMockPaper(paper)}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                  >
+                    <Timer className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Attempt Timed Mock Test</span>
+                  </button>
+                ) : (
+                  <Link
+                    href={`/login?callbackUrl=/mock-test/${paper.slug}`}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                  >
+                    <LogIn className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Sign In to Attempt Mock Test</span>
+                  </Link>
+                )}
               </div>
             </div>
           );

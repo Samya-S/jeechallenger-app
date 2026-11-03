@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
+import CBTMockTestModal from '@/components/modals/CBTMockTestModal';
 import { normalizeOptions } from '@/utils/cbt-helpers';
 import { getExamBadgeColor, subjectColors } from '@/utils/pyq-helpers';
 import PYQQuestionCard from '@/components/resources/pyqs/PYQQuestionCard';
@@ -67,10 +68,11 @@ export default function CBTHubComponent({
 
   // Instant launch transition state
   const [isLaunchingExam, setIsLaunchingExam] = useState(false);
+  const [selectedMockPaper, setSelectedMockPaper] = useState(null);
 
   // Navigate to mock test with instant exam curtain so website UI is never seen stretched in fullscreen
   const handleStartMockTest = (e, slug) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     setIsLaunchingExam(true);
     try {
       if (typeof document !== 'undefined' && !document.fullscreenElement) {
@@ -518,7 +520,7 @@ export default function CBTHubComponent({
                         {user ? (
                           <button
                             type="button"
-                            onClick={(e) => handleStartMockTest(e, paper.slug)}
+                            onClick={() => setSelectedMockPaper(paper)}
                             className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white shadow-sm hover:shadow transition-all cursor-pointer"
                           >
                             <Play className="w-4 h-4 fill-white" />
@@ -698,7 +700,16 @@ export default function CBTHubComponent({
                           </Link>
                           <button
                             type="button"
-                            onClick={(e) => handleStartMockTest(e, paperSlug)}
+                            onClick={() => {
+                              const matchedPaper = papers.find((p) => p.slug === paperSlug) || {
+                                slug: paperSlug,
+                                title: sub.paper_title || sub.paper_id,
+                                paper_id: sub.paper_id,
+                                duration_minutes: 180,
+                                total_marks: sub.summary?.max_marks || 300,
+                              };
+                              setSelectedMockPaper(matchedPaper);
+                            }}
                             className="p-2.5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                             title="Retake Exam"
                           >
@@ -841,6 +852,14 @@ export default function CBTHubComponent({
           </div>
         )}
       </div>
+
+      {/* Mock Test Launch Confirmation Modal */}
+      <CBTMockTestModal
+        isOpen={Boolean(selectedMockPaper)}
+        onClose={() => setSelectedMockPaper(null)}
+        onConfirm={(slug) => handleStartMockTest(null, slug)}
+        paper={selectedMockPaper}
+      />
     </div>
   );
 }
