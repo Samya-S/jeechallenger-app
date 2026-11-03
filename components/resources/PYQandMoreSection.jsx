@@ -95,7 +95,13 @@ const PYQandMoreSection = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 dark:from-indigo-800 dark:via-purple-900 dark:to-indigo-900"></div>
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-fuchsia-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-20"></div>
+          <div
+            className="absolute inset-0 opacity-20 pointer-events-none"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 40' stroke='rgba(255,255,255,0.4)' stroke-width='1' fill='none'/%3E%3Cpath d='M40 40L40 0' stroke='rgba(255,255,255,0.4)' stroke-width='1' fill='none'/%3E%3C/svg%3E")`,
+              backgroundSize: '40px 40px'
+            }}
+          />
           
           <div className="relative px-8 py-14 md:py-16 md:px-16 flex flex-col md:flex-row items-center justify-between text-center md:text-left gap-10 backdrop-blur-sm">
             
