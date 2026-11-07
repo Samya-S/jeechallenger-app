@@ -207,12 +207,10 @@ export const DIFFICULTY_COLORS = {
 export const subjectColors = SUBJECT_COLORS;
 export const difficultyColors = DIFFICULTY_COLORS;
 
-export const EXAM_TYPE_COLORS = {
+const EXAM_TYPE_COLORS = {
   JEE_MAIN: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
   JEE_ADVANCED: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800",
 };
-
-export const examTypeColors = EXAM_TYPE_COLORS;
 
 export const MARKS_TO_ALL_COLOR = "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800";
 
@@ -223,4 +221,15 @@ export const MARKS_TO_ALL_COLOR = "text-purple-600 dark:text-purple-400 bg-purpl
 export function getExamBadgeColor(examTypeOrText) {
   const str = String(examTypeOrText || "").toUpperCase();
   return str.includes("ADVANCED") ? EXAM_TYPE_COLORS.JEE_ADVANCED : EXAM_TYPE_COLORS.JEE_MAIN;
+}
+
+/**
+ * Returns hover text color classes for JEE Main vs JEE Advanced links.
+ * Supports examType strings ('JEE_MAIN', 'JEE_ADVANCED') or full origin labels ('JEE Main 2026...').
+ */
+export function getExamHoverColor(examTypeOrText) {
+  const str = String(examTypeOrText || "").toUpperCase();
+  return str.includes("ADVANCED")
+    ? "hover:text-orange-600 dark:hover:text-orange-400"
+    : "hover:text-emerald-600 dark:hover:text-emerald-400";
 }

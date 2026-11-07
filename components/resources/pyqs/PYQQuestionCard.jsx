@@ -7,7 +7,7 @@ import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
-import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamHoverColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAction, solutionBehavior }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -177,11 +177,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open full question paper"
-                className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${
-                  (question.exam_type === "JEE_ADVANCED" || examOriginFull.includes("Advanced"))
-                    ? "hover:text-orange-600 dark:hover:text-orange-400"
-                    : "hover:text-emerald-600 dark:hover:text-emerald-400"
-                } transition-colors inline-block`}
+                className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${getExamHoverColor(question.exam_type || examOriginFull)} transition-colors inline-block`}
               >
                 <span className="hidden sm:inline">{examOriginFull}</span>
                 <span className="sm:hidden">{examOriginShort}</span>
