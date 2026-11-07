@@ -209,23 +209,6 @@ function PaperDetailContent({ paperData }) {
     window.history.replaceState(null, "", targetUrl);
   }, [selectedSectionIdx, sections, pathname]);
 
-  if (!paperData) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Paper Not Found</h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
-          The requested question paper could not be found or has not been published yet.
-        </p>
-        <Link
-          href="/previous-year-questions?tab=papers"
-          className="px-6 py-2.5 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-md transition-all"
-        >
-          Back to Papers List
-        </Link>
-      </div>
-    );
-  }
-
   // Sections for the active subject
   const subjectSections = sections.filter((s) => s.subject === activeSubject);
   const currentSection = sections[selectedSectionIdx] || subjectSections[0] || sections[0];
@@ -250,6 +233,23 @@ function PaperDetailContent({ paperData }) {
       return matchSubject && matchRange;
     });
   }, [currentSection, allQuestions]);
+
+  if (!paperData) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Paper Not Found</h2>
+        <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
+          The requested question paper could not be found or has not been published yet.
+        </p>
+        <Link
+          href="/previous-year-questions?tab=papers"
+          className="px-6 py-2.5 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-md transition-all"
+        >
+          Back to Papers List
+        </Link>
+      </div>
+    );
+  }
 
   const handleSelectOption = (qId, optionKey, isMulti = false) => {
     const current = userAnswers[qId];

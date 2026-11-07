@@ -85,13 +85,15 @@ const ProfileContent = () => {
                 <p className="text-gray-600 dark:text-gray-400 truncate text-sm sm:text-base">
                   {user.email}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Joined on {new Date(user.created_at || Date.now()).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: '2-digit'
-                  })}
-                </p>
+                {user.created_at && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Joined on {new Date(user.created_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit'
+                    })}
+                  </p>
+                )}
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
                   <span className="text-sm text-green-600 dark:text-green-400">
