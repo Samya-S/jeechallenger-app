@@ -506,7 +506,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     <button
                       type="button"
                       onClick={() => handleReportBug(att, qDoc)}
-                      className="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-400 hover:text-red-500 hover:border-red-300 dark:hover:border-red-800/60 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs transition-all cursor-pointer"
+                      className="p-1.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-800 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 transition-colors duration-100 cursor-pointer"
                       title="Report a bug in this question"
                       aria-label="Report a bug"
                     >
