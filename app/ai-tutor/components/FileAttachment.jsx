@@ -73,11 +73,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
     if (file.file_type === 'image') {
       setLoading(true);
       try {
-        const token = localStorage.getItem('ai-tutor-token');
         const response = await fetch(API_ENDPOINTS.FILES.GET(file.id), {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          credentials: 'include'
         });
 
         if (response.ok) {
@@ -97,11 +94,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
     if (downloading) return;
     setDownloading(true);
     try {
-      const token = localStorage.getItem('ai-tutor-token');
       const response = await fetch(API_ENDPOINTS.FILES.GET(file.id), {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include'
       });
 
       if (response.ok) {
