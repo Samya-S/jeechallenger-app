@@ -610,6 +610,8 @@ export default function CBTHubComponent({
 
                         <Link
                           href={`/paper/${paper.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
                           <span>View Questions Offline</span>
