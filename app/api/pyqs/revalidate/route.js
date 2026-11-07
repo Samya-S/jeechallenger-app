@@ -64,18 +64,17 @@ async function handleRevalidate(req) {
     }
 
     // Purge cache for each path
-    for (const path of paths) {
-      // Revalidate both exact path and with explicit 'page' type for dynamic segments
-      revalidatePath(path, 'page');
-      revalidatePath(path);
+    for (let path of paths) {
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      // Revalidate both exact path and with explicit 'page' type for the targeted dynamic segment
+      revalidatePath(normalizedPath, 'page');
+      revalidatePath(normalizedPath);
 
-      if (path.startsWith('/question/')) {
-        revalidatePath('/question/[slug]', 'page');
-        const slug = path.replace(/^\/question\//, '').trim();
+      if (normalizedPath.startsWith('/question/')) {
+        const slug = normalizedPath.replace(/^\/question\//, '').trim();
         if (slug) tags.push(`question-${slug}`);
-      } else if (path.startsWith('/paper/')) {
-        revalidatePath('/paper/[slug]', 'page');
-        const slug = path.replace(/^\/paper\//, '').trim();
+      } else if (normalizedPath.startsWith('/paper/')) {
+        const slug = normalizedPath.replace(/^\/paper\//, '').trim();
         if (slug) tags.push(`paper-${slug}`);
       }
     }
