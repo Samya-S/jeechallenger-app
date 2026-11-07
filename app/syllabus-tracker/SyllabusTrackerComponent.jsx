@@ -424,7 +424,7 @@ const SyllabusTrackerComponent = () => {
             {/* Cloud Sync Pill */}
             {!isAuthenticated ? (
               <Link
-                href={`/login?returnUrl=${encodedReturnUrl}`}
+                href={`/login?callbackUrl=${encodedReturnUrl}`}
                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 text-xs font-semibold text-gray-700 dark:text-gray-200 shadow-2xs transition-colors"
                 title="Log in to sync your progress across devices"
               >

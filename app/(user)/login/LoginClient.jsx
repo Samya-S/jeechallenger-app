@@ -13,13 +13,13 @@ export default function LoginClient() {
   const { status } = useSession();
   const [authError, setAuthError] = useState("");
 
-  const returnUrl = searchParams.get("returnUrl") || searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push(returnUrl);
+      router.push(callbackUrl);
     }
-  }, [status, router, returnUrl]);
+  }, [status, router, callbackUrl]);
 
   useEffect(() => {
     const errorParam = searchParams.get("error");
@@ -63,7 +63,7 @@ export default function LoginClient() {
 
           <div className="w-full space-y-6">
             <GoogleAuthButton
-              returnUrl={returnUrl}
+              callbackUrl={callbackUrl}
               onLoginError={(msg) => setAuthError(msg)}
             />
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">

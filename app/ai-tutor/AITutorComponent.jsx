@@ -145,7 +145,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   useEffect(() => {
     if (status === "unauthenticated") {
       const currentUrl = window.location.pathname + window.location.search;
-      router.push(`/login?returnUrl=${encodeURIComponent(currentUrl)}`);
+      router.push(`/login?callbackUrl=${encodeURIComponent(currentUrl)}`);
     }
   }, [status, router]);
 

@@ -25,7 +25,7 @@ const ProfileContent = () => {
 
     if (status === "unauthenticated") {
       const profilePath = `/profile${returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''}`;
-      router.push(`/login?returnUrl=${encodeURIComponent(profilePath)}`);
+      router.push(`/login?callbackUrl=${encodeURIComponent(profilePath)}`);
       return;
     }
 

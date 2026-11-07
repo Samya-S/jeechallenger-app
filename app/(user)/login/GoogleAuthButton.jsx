@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
-const GoogleAuthButton = ({ returnUrl = "/", onLoginError }) => {
+const GoogleAuthButton = ({ callbackUrl = "/", onLoginError }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      await signIn('google', { callbackUrl: returnUrl });
+      await signIn('google', { callbackUrl });
     } catch (error) {
       console.error('Google login error:', error);
       if (onLoginError) onLoginError('Failed to initialize login. Please try again.');

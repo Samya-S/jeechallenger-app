@@ -42,7 +42,7 @@ export default function NavBar() {
 
   const loginHref = pathname === '/login'
     ? (currentSearchParams ? `/login?${currentSearchParams}` : '/login')
-    : `/login?returnUrl=${encodedReturnUrl}`;
+    : `/login?callbackUrl=${encodedReturnUrl}`;
 
   // Set mounted for client-side portals
   useEffect(() => {
