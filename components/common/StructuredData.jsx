@@ -2,7 +2,7 @@
 // Generates JSON-LD schema for Google Rich Results
 
 import { getSiteUrl } from '@/config/site-url';
-import { cleanMathText } from '@/utils/seo-utils';
+import { cleanMathText } from '@/utils/pyq-helpers';
 
 export default function StructuredData({ type, data }) {
   const siteUrl = getSiteUrl();

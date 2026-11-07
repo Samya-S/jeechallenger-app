@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import QuestionDetailComponent from "@/components/resources/pyqs/QuestionDetailComponent";
 import StructuredData from "@/components/common/StructuredData";
 import { ogImageMeta } from "@/utils/og-metadata";
-import { createQuestionMetaDescription } from "@/utils/seo-utils";
+import { createQuestionMetaDescription } from "@/utils/pyq-helpers";
 import { getSiteUrl } from "@/config/site-url";
 import { pyqsService } from "@/server/services/pyqs";
 

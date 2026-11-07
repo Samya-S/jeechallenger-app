@@ -336,9 +336,8 @@ jeechallenger-app/
     ├── cbt-auto-submit.js      # Lazy & cron expired CBT exam finalizer
     ├── cbt-helpers.js          # CBT palette, timer, and score formatting helpers
     ├── mongodb.js              # MongoDB client singleton
-    ├── pyq-helpers.js          # PYQ taxonomy, slugs, and color mappings
-    ├── redis.js                # Upstash Redis client singleton
-    └── seo-utils.js            # JSON-LD Schema & meta description generators
+    ├── pyq-helpers.js          # PYQ taxonomy, slugs, badges, and search snippet helpers
+    └── redis.js                # Upstash Redis client singleton
 ```
 
 

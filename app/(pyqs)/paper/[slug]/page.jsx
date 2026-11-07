@@ -48,7 +48,7 @@ export async function generateMetadata({ params }) {
   const examLabel = paper.exam_type === "JEE_ADVANCED" ? "JEE Advanced" : "JEE Main";
   const ogTitle = paper.title || `${examLabel} ${paper.exam_year} Question Paper`;
   const title = `${ogTitle} | Solutions & Answer Key - JEE Challenger`;
-  const description = `Access full official ${ogTitle} with section-wise questions, step-by-step KaTeX solutions, and verified answer keys on JEE Challenger.`;
+  const description = `Access full official ${ogTitle} with section-wise questions, step-by-step solutions, and verified answer keys on JEE Challenger.`;
 
   const keywords = [
     paper.title,
