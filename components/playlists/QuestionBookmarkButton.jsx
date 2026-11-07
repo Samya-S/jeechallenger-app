@@ -2,11 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { Bookmark, Plus, Loader2, Lock, Globe, AlertCircle, Check } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Bookmark, Plus, Loader2, Lock, Globe, AlertCircle, Check, LogIn } from "lucide-react";
 import { useBookmarks } from "@/components/playlists/BookmarkContext";
 
 export default function QuestionBookmarkButton({ questionId, className = "" }) {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const loginHref = pathname
+    ? `/login?callbackUrl=${encodeURIComponent(pathname)}`
+    : "/login";
   const {
     isSaved,
     addSavedId,
@@ -213,11 +219,25 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
         <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl z-50 p-3 text-left animate-in fade-in zoom-in-95 duration-100">
           {/* Unauthenticated State */}
           {status !== "authenticated" ? (
-            <div className="p-3 text-center space-y-2">
-              <Bookmark className="w-6 h-6 text-gray-400 mx-auto" />
-              <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">
-                Sign in to save questions to your lists
-              </p>
+            <div className="p-3 text-center space-y-3">
+              <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+                <Bookmark className="w-5 h-5 fill-blue-600/20" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                  Save to Your Lists
+                </p>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">
+                  Sign in to save this question to your Favourites or custom practice playlists.
+                </p>
+              </div>
+              <Link
+                href={loginHref}
+                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In to Save</span>
+              </Link>
             </div>
           ) : (
             /* Authenticated State */
