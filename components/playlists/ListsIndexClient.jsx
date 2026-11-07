@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { usePlaylistContext } from "@/components/playlists/PlaylistContext";
+import { useBookmarks } from "@/components/playlists/BookmarkContext";
 
 export default function ListsIndexClient() {
   const { status } = useSession();
   const router = useRouter();
-  const { userPlaylists, loadingPlaylists } = usePlaylistContext();
+  const { userPlaylists, loadingPlaylists } = useBookmarks();
 
   useEffect(() => {
     if (status === "unauthenticated") {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Lock, AlertCircle, ArrowLeft } from "lucide-react";
 import PlaylistHeader from "@/components/playlists/PlaylistHeader";
 import PlaylistTable from "@/components/playlists/PlaylistTable";
-import { usePlaylistContext } from "@/components/playlists/PlaylistContext";
+import { useBookmarks } from "@/components/playlists/BookmarkContext";
 
 // Shimmering skeleton displayed exclusively in the right content pane while switching lists
 function PlaylistContentSkeleton() {
@@ -55,7 +55,7 @@ export default function PlaylistSlugPageClient({ slug }) {
     handleQuestionRemoved: contextQuestionRemoved,
     handlePlaylistUpdated: contextPlaylistUpdated,
     handlePlaylistDeleted: contextPlaylistDeleted,
-  } = usePlaylistContext();
+  } = useBookmarks();
 
   const [dataState, setDataState] = useState({
     slug: null,

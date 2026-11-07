@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import PlaylistSidebar from "@/components/playlists/PlaylistSidebar";
-import { PlaylistProvider, usePlaylistContext } from "@/components/playlists/PlaylistContext";
+import { useBookmarks } from "@/components/playlists/BookmarkContext";
 import styles from "@/components/playlists/PlaylistBottomSheet.module.css";
 
 const emptySubscribe = () => () => {};
@@ -33,7 +33,7 @@ function ListsLayoutContent({ children }) {
     authStatus,
     activeDetail,
     handlePlaylistCreated,
-  } = usePlaylistContext();
+  } = useBookmarks();
 
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
@@ -408,9 +408,5 @@ function ListsLayoutContent({ children }) {
 }
 
 export default function ListsClientLayout({ children }) {
-  return (
-    <PlaylistProvider>
-      <ListsLayoutContent>{children}</ListsLayoutContent>
-    </PlaylistProvider>
-  );
+  return <ListsLayoutContent>{children}</ListsLayoutContent>;
 }
