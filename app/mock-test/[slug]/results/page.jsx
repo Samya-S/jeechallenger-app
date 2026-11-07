@@ -113,7 +113,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
     <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Top Navigation & Breadcrumbs Bar */}
-        <div className="flex flex-col sm:row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
           <Breadcrumbs
             crumbs={[
               { label: 'Mock Tests', href: '/mock-test' },
@@ -134,6 +134,8 @@ export default async function MockTestResultsPage({ params, searchParams }) {
 
             <Link
               href={`/paper/${paperSlug}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />

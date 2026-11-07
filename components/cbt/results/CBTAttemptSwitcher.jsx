@@ -40,7 +40,12 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
       const dateLabel = formatDate(att.submitted_at || att.started_at);
       return {
         value: String(att._id),
-        label: `Attempt #${attNum}${isLatest ? ' (Latest)' : ''} • ${score}/${max} (${dateLabel})`,
+        label: (
+          <>
+            <span className="sm:hidden">{`Attempt #${attNum} • ${score}/${max}`}</span>
+            <span className="hidden sm:inline">{`Attempt #${attNum}${isLatest ? ' (Latest)' : ''} • ${score}/${max} (${dateLabel})`}</span>
+          </>
+        ),
       };
     });
   }, [allAttempts, totalCount]);
@@ -49,7 +54,7 @@ export default function CBTAttemptSwitcher({ paperSlug, allAttempts = [], curren
 
   return (
     <div className="flex items-center">
-      <div className="w-64 sm:w-80">
+      <div className="w-44 sm:w-80">
         <CustomSelect
           value={String(currentAttempt?._id)}
           onChange={handleSelectAttempt}
