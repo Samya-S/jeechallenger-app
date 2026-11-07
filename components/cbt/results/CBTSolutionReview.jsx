@@ -23,6 +23,12 @@ import {
 import ReportQuestionModal from '@/components/modals/ReportQuestionModal';
 import QuestionBookmarkButton from '@/components/playlists/QuestionBookmarkButton';
 
+const SUBJECT_SHORT_NAMES = {
+  Physics: "Phy",
+  Chemistry: "Chem",
+  Mathematics: "Maths",
+};
+
 const SUBJECT_BADGE_COLORS = {
   Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
   Chemistry: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60",
@@ -164,15 +170,6 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
     });
   };
 
-  // Toggle all solutions
-  const handleToggleAllSolutions = () => {
-    if (expandedSolutions.size > 0) {
-      setExpandedSolutions(new Set());
-    } else {
-      const allQIds = new Set(filteredAttempts.map((a) => String(a.question_id)));
-      setExpandedSolutions(allQIds);
-    }
-  };
 
   // Toggle Mistake Vault Bookmark with persistent MongoDB storage
   const handleToggleVault = async (att, qDoc) => {
@@ -246,13 +243,15 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
               <button
                 type="button"
                 onClick={() => setActiveSubject('ALL')}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 ${
                   activeSubject === 'ALL'
                     ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md border border-gray-900 dark:border-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-transparent'
                 }`}
               >
-                All Subjects ({attempts.length})
+                <span className="sm:hidden">All</span>
+                <span className="hidden sm:inline">All Subjects</span>
+                <span> ({attempts.length})</span>
               </button>
               {subjects.map((sub) => {
                 const count = attempts.filter((a) => a.subject === sub).length;
@@ -272,11 +271,13 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     key={sub}
                     type="button"
                     onClick={() => setActiveSubject(sub)}
-                    className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 ${
                       isSel ? activeColorClass : unselColorClass
                     }`}
                   >
-                    {sub} ({count})
+                    <span className="sm:hidden">{SUBJECT_SHORT_NAMES[sub] || sub}</span>
+                    <span className="hidden sm:inline">{sub}</span>
+                    <span> ({count})</span>
                   </button>
                 );
               })}
@@ -367,26 +368,6 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
             </button>
           </div>
 
-          {/* Global Expand / Collapse All Solutions Toggle */}
-          <div className="flex items-center shrink-0 self-end lg:self-center">
-            <button
-              type="button"
-              onClick={handleToggleAllSolutions}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-all cursor-pointer border border-slate-200 dark:border-gray-700 shadow-xs"
-            >
-              {expandedSolutions.size > 0 ? (
-                <>
-                  <ChevronUp className="w-4 h-4 text-orange-500" />
-                  <span>Collapse All Solutions</span>
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4 text-orange-500" />
-                  <span>Expand All Solutions</span>
-                </>
-              )}
-            </button>
-          </div>
         </div>
       </div>
 
