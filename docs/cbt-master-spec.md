@@ -34,7 +34,6 @@
 12. [Post-Exam Scorecard & Review Experience](#12-post-exam-scorecard--review-experience)
 13. [Exhaustive Edge Cases & Failure Mitigation Matrix](#13-exhaustive-edge-cases--failure-mitigation-matrix)
 14. [Upstream Data Ingestion Pipeline & Admin Staging Lifecycle](#14-upstream-data-ingestion-pipeline--admin-staging-lifecycle)
-15. [Pre-Flight Verification & Acceptance Checklist](#15-pre-flight-verification--acceptance-checklist)
 
 ---
 
@@ -841,15 +840,3 @@ To eliminate manual transcription of complex mathematical equations and ensure 1
    * Admins can adjust bounding boxes, upload replacement diagrams, fine-tune LaTeX expressions, and confirm answer keys.
    * Clicking **"Approve"** atomically migrates the document from the `staging` collection to the `production` collection. Once approved, the Go microservice immediately serves the paper to the CBT exam engine.
 
----
-
-## 15. Pre-Flight Verification & Acceptance Checklist
-
-Before any production deployment of the CBT Engine:
-- [ ] **NTA Palette Test**: Verify that clicking directly on Question 15 after choosing option B resets option B without saving.
-- [ ] **Section B Rule Test**: Submit 7 answers in Section B; verify that the judge only marks the first 5 in ascending numerical order.
-- [ ] **Keyboard Lock Test**: Confirm that typing numbers via physical keyboard into numerical fields produces zero input.
-- [ ] **Offline Disconnection Test**: Turn off Wi-Fi, answer 5 questions, turn on Wi-Fi; confirm all 5 questions sync to Redis with exact timestamps.
-- [ ] **Concurrent Device Test**: Open test on Device A, open on Device B, click transfer; confirm Device A is instantly locked with the 409 overlay.
-- [ ] **Abandonment Auto-Submit Test**: Start test, close browser, simulate arrival of `expires_at`; verify Cloudflare Worker or defensive lazy evaluation creates `test_submissions` document in MongoDB Atlas with status `AUTO_SUBMITTED_TIME_EXPIRED`.
-- [ ] **1366x768 Viewport Test**: Verify bottom action bar (`Save & Next`, `Clear Response`) is permanently visible without page scrolling.
