@@ -2,37 +2,16 @@ import React from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { pyqsService } from '@/server/services/pyqs';
 import CBTExamRoom from '@/components/cbt/CBTExamRoom';
 import CBTMobileGuard from '@/components/cbt/CBTMobileGuard';
 
 export const dynamic = 'force-dynamic';
 
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
-
-async function loadPaperAndQuestions(slug) {
-  try {
-    const res = await fetch(`${BACKEND_URL}/papers/${slug}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) {
-      return null;
-    }
-    const data = await res.json();
-    const paper = data?.data;
-    if (paper && Array.isArray(paper.questions) && paper.questions.length > 0) {
-      return paper;
-    }
-    return null;
-  } catch (err) {
-    console.error('Failed to fetch paper from PYQ microservice:', err);
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  const paper = await loadPaperAndQuestions(slug);
+  const paper = await pyqsService.getPaperBySlug(slug);
 
   if (!paper) {
     return {
@@ -60,7 +39,7 @@ export default async function MockTestPage({ params }) {
     redirect(`/login?callbackUrl=/mock-test/${slug}`);
   }
 
-  const paper = await loadPaperAndQuestions(slug);
+  const paper = await pyqsService.getPaperBySlug(slug);
 
   if (!paper || !paper.questions || paper.questions.length === 0) {
     notFound();

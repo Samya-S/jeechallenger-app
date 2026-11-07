@@ -1,11 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { pyqsService } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export default async function LegacyResultsRedirect({ params }) {
   const resolvedParams = await params;
@@ -17,23 +15,11 @@ export default async function LegacyResultsRedirect({ params }) {
   }
 
   try {
-    const signedToken = jwt.sign(
-      { id: session.user.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-
-    const res = await fetch(`${BACKEND_URL}/cbt/submissions/${submissionId}`, {
-      headers: { Authorization: `Bearer ${signedToken}` },
-      cache: 'no-store',
+    const submission = await pyqsService.getSubmissionById({
+      userId: session.user.id,
+      submissionId,
     });
 
-    if (!res.ok) {
-      notFound();
-    }
-
-    const json = await res.json();
-    const submission = json?.data;
     if (!submission) {
       notFound();
     }
@@ -42,10 +28,10 @@ export default async function LegacyResultsRedirect({ params }) {
     if (!targetSlug) {
       notFound();
     }
+
     redirect(`/mock-test/${targetSlug}/results?submission=${submissionId}`);
   } catch (error) {
     if (error?.message?.includes('NEXT_REDIRECT')) throw error;
     notFound();
   }
 }
-

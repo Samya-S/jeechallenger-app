@@ -1,8 +1,8 @@
 # JEE Challenger: Question Playlists & Custom Bookmarks — Master Specification
-**Document Version:** 1.0.0  
+**Document Version:** 1.1.0  
 **Status:** Approved Architectural Blueprint (Source of Truth)  
 **Target Applications:** `jeechallenger-app`, `jeechallenger-pyqs`  
-**Last Updated:** November 1, 2026
+**Last Updated:** November 2026
 
 ---
 
@@ -11,8 +11,9 @@
 ### 1.1 Zero Direct MongoDB Access in Next.js
 In strict adherence to the JEE Challenger platform architecture:
 * `jeechallenger-app` performs **zero** direct MongoDB connections or queries for questions, papers, or playlists.
-* All playlist CRUD, question hydration, deduplication, and slug resolution flow exclusively through the Go microservice (`jeechallenger-pyqs`) via server-side API proxy routes:
-  * NextAuth cookie -> Next.js API route (`app/api/playlists/...`) -> Re-signed HS256 JWT -> Go backend (`http://localhost:8080/playlists` or `PYQS_API_URL`).
+* All playlist CRUD, question hydration, deduplication, and slug resolution flow exclusively through the Go microservice (`jeechallenger-pyqs`):
+  * **Server Components (SSR)**: `/lists/[slug]/page.jsx` fetches data directly via `pyqsService.getPlaylistBySlug(slug, { userId })` from the unified service layer (`server/services/pyqs.js`).
+  * **Client Interactions (BFF Proxy)**: Client components call `app/api/playlists/...`, which delegates to the Go backend via centralized authentication and base URL configurations in `server/services/pyqs.js` using NextAuth-signed HS256 JWT tokens.
 
 ### 1.2 Dumb Frontend Principle
 * Next.js renders only the presentation layer.

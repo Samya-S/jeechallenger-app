@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { pyqsService } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export async function GET(request) {
   try {
@@ -18,28 +16,13 @@ export async function GET(request) {
     const paperId = searchParams.get('paper_id') || '';
     const limit = searchParams.get('limit') || '50';
 
-    const signedToken = jwt.sign(
-      { id: session.user.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-
-    let url = `${BACKEND_URL}/cbt/submissions?limit=${encodeURIComponent(limit)}`;
-    if (paperId) {
-      url += `&paper_id=${encodeURIComponent(paperId)}`;
-    }
-
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${signedToken}` },
-      cache: 'no-store',
+    const submissions = await pyqsService.getSubmissions({
+      userId: session.user.id,
+      paperId,
+      limit,
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ submissions: [] });
-    }
-
-    const json = await res.json();
-    return NextResponse.json({ submissions: json?.data || [] });
+    return NextResponse.json({ submissions });
   } catch (error) {
     console.error('Failed to fetch test submissions:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

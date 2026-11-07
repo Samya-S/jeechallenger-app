@@ -1,9 +1,6 @@
 'use server';
 
-import { Redis } from '@upstash/redis';
-
-// This automatically uses the Upstash env variables we set earlier
-const redis = Redis.fromEnv();
+import redis from '@/utils/redis';
 
 export async function incrementViewCount(slug) {
   if (!slug) return null;
@@ -33,7 +30,7 @@ export async function getBatchViewCounts(slugs) {
   if (!slugs || slugs.length === 0) return {};
   
   try {
-    const keys = slugs.map(slug => `views:articles:${slug}`);
+    const keys = slugs.map((slug) => `views:articles:${slug}`);
     
     // mget fetches multiple keys in a single Redis command
     const viewsArray = await redis.mget(...keys);

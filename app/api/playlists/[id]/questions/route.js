@@ -1,19 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { PYQS_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
-
-function getSignedToken(userId) {
-  return jwt.sign(
-    { id: userId },
-    process.env.NEXTAUTH_SECRET,
-    { algorithm: 'HS256' }
-  );
-}
 
 // POST /api/playlists/[id]/questions — add question to playlist
 export async function POST(req, { params }) {
@@ -25,14 +15,12 @@ export async function POST(req, { params }) {
 
     const { id } = await params;
     const body = await req.json();
-    const token = getSignedToken(session.user.id);
 
-    const res = await fetch(`${BACKEND_URL}/playlists/${id}/questions`, {
+    const res = await fetch(`${PYQS_API_URL}/playlists/${id}/questions`, {
       method: 'POST',
-      headers: {
+      headers: getAuthHeaders(session.user.id, {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      }),
       body: JSON.stringify(body),
     });
 

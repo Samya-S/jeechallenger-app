@@ -1,5 +1,5 @@
 import { getToken } from "next-auth/jwt";
-import jwt from "jsonwebtoken";
+import { PYQS_API_URL, signUserToken } from "@/server/services/pyqs";
 
 // Dynamic route evaluation - edge cache managed via Cache-Control headers
 export const dynamic = 'force-dynamic';
@@ -20,9 +20,8 @@ export async function processRequest(req, { params }) {
   const apiPath = pathParams.join('/');
   const url = new URL(req.url);
 
-  const targetUrl = process.env.NODE_ENV === 'production' || true
-    ? 'https://pyqs-api.jeechallenger.com/' + apiPath + url.search
-    : 'http://localhost:8080/' + apiPath + url.search;
+  const cleanApiPath = apiPath.startsWith('/') ? apiPath.slice(1) : apiPath;
+  const targetUrl = `${PYQS_API_URL}/${cleanApiPath}${url.search}`;
 
   // 3. Build forwarded headers
   const headers = new Headers();
@@ -32,7 +31,7 @@ export async function processRequest(req, { params }) {
   // 4. Attach Authorization only if user is logged in.
   //    The signed HS256 JWT is verified by Go using the shared NEXTAUTH_SECRET.
   if (token) {
-    const signedToken = jwt.sign(token, process.env.NEXTAUTH_SECRET, { algorithm: 'HS256' });
+    const signedToken = signUserToken(token);
     headers.set('Authorization', 'Bearer ' + signedToken);
   }
 

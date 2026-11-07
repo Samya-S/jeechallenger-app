@@ -3,20 +3,17 @@ import { notFound } from "next/navigation";
 import PaperDetailComponent from "@/components/resources/pyqs/PaperDetailComponent";
 import StructuredData from "@/components/common/StructuredData";
 import { ogImageMeta } from "@/utils/og-metadata";
-
-const BACKEND_URL = process.env.PYQS_API_URL || "https://pyqs-api.jeechallenger.com";
+import { pyqsService } from "@/server/services/pyqs";
 
 export const dynamicParams = true;
 
 async function fetchPaper(slug) {
   try {
-    const res = await fetch(`${BACKEND_URL}/papers/${slug}`, {
+    const paper = await pyqsService.getPaperBySlug(slug, {
       cache: "force-cache",
       next: { tags: [`paper-${slug}`] },
     });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.data || data;
+    return paper;
   } catch (error) {
     console.error(`Error fetching paper ${slug}:`, error);
     return null;
@@ -25,12 +22,8 @@ async function fetchPaper(slug) {
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch(`${BACKEND_URL}/papers`, {
-      cache: "force-cache",
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    const papers = data.data || data.papers || [];
+    const data = await pyqsService.getPapers({}, { cache: "force-cache" });
+    const papers = data?.data || data?.papers || [];
     return papers.filter((p) => p && p.slug).map((paper) => ({
       slug: paper.slug,
     }));

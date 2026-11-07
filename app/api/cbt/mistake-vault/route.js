@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { pyqsService } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export async function GET(request) {
   try {
@@ -16,36 +14,17 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const subject = searchParams.get('subject') || '';
-    const countOnly = searchParams.get('count_only') || '';
+    const countOnly = searchParams.get('count_only') === 'true';
 
-    const signedToken = jwt.sign(
-      { id: session.user.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-
-    let url = `${BACKEND_URL}/cbt/mistake-vault`;
-    const params = new URLSearchParams();
-    if (subject && subject !== 'ALL') params.set('subject', subject);
-    if (countOnly === 'true') params.set('count_only', 'true');
-    const queryString = params.toString();
-    if (queryString) {
-      url += `?${queryString}`;
-    }
-
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${signedToken}` },
-      cache: 'no-store',
+    const data = await pyqsService.getMistakeVault({
+      userId: session.user.id,
+      subject,
+      countOnly,
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ savedQuestionIds: [], items: [], total: 0 });
-    }
-
-    const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching mistake vault from microservice:', error);
+    console.error('Error fetching mistake vault via pyqsService:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -57,7 +36,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const { question_id } = body;
 
     if (!question_id) {
@@ -67,33 +46,21 @@ export async function POST(request) {
       );
     }
 
-    const signedToken = jwt.sign(
-      { id: session.user.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-
-    const res = await fetch(`${BACKEND_URL}/cbt/mistake-vault`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${signedToken}`,
-      },
-      body: JSON.stringify({ question_id }),
+    const result = await pyqsService.toggleMistakeVaultItem({
+      userId: session.user.id,
+      questionId: question_id,
     });
 
-    if (!res.ok) {
-      const errJson = await res.json().catch(() => ({}));
+    if (!result.ok) {
       return NextResponse.json(
-        { error: errJson.error || 'Failed to toggle mistake vault' },
-        { status: res.status }
+        { error: result.error || 'Failed to toggle mistake vault' },
+        { status: result.status || 500 }
       );
     }
 
-    const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json(result.data);
   } catch (error) {
-    console.error('Error toggling mistake vault via microservice:', error);
+    console.error('Error toggling mistake vault via pyqsService:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

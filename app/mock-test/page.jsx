@@ -1,7 +1,7 @@
 import React from 'react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { pyqsService } from '@/server/services/pyqs';
 import CBTHubComponent from '@/components/cbt/hub/CBTHubComponent';
 
 export const dynamic = 'force-dynamic';
@@ -14,8 +14,6 @@ export const metadata = {
     follow: true,
   },
 };
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export default async function MockTestHubPage({ searchParams }) {
   const resolvedSearchParams = await searchParams;
@@ -30,60 +28,37 @@ export default async function MockTestHubPage({ searchParams }) {
   let initialTotalPapers = 0;
   let initialTotalPages = 1;
 
-  // Pre-fetch initial page of papers and total count for instant, zero-flicker badge rendering
+  // Pre-fetch initial page of papers and total count for instant, zero-flicker badge rendering (revalidated every 5m)
   try {
-    const papersRes = await fetch(`${BACKEND_URL}/papers?page=1&limit=12`, {
-      next: { revalidate: 300 },
-    });
-    if (papersRes.ok) {
-      const papersJson = await papersRes.json();
-      initialPapers = papersJson?.data || papersJson?.papers || [];
-      if (papersJson?.meta) {
-        initialTotalPapers = papersJson.meta.total || 0;
-        initialTotalPages = papersJson.meta.total_pages || 1;
-      } else {
-        initialTotalPapers = initialPapers.length;
-      }
+    const papersJson = await pyqsService.getPapers(
+      { page: 1, limit: 12 },
+      { next: { revalidate: 300 } }
+    );
+    initialPapers = papersJson?.data || papersJson?.papers || [];
+    if (papersJson?.meta) {
+      initialTotalPapers = papersJson.meta.total || 0;
+      initialTotalPages = papersJson.meta.total_pages || 1;
+    } else {
+      initialTotalPapers = initialPapers.length;
     }
   } catch (err) {
     console.error('Failed to pre-fetch papers for CBT Hub SSR:', err);
   }
 
-  // If authenticated, fetch user submissions and mistake vault from Go microservice
+  // If authenticated, fetch user submissions and mistake vault from Go microservice via unified service
   if (session?.user?.id) {
-    const signedToken = jwt.sign(
-      { id: session.user.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-    const authHeaders = { Authorization: 'Bearer ' + signedToken };
-
     try {
-      const vaultUrl = isVaultTab
-        ? `${BACKEND_URL}/cbt/mistake-vault`
-        : `${BACKEND_URL}/cbt/mistake-vault?count_only=true`;
-
-      const [subsRes, vaultRes] = await Promise.all([
-        fetch(BACKEND_URL + '/cbt/submissions?limit=50', {
-          headers: authHeaders,
-          cache: 'no-store',
-        }),
-        fetch(vaultUrl, {
-          headers: authHeaders,
-          cache: 'no-store',
-        }),
+      const [subsData, vaultData] = await Promise.all([
+        pyqsService.getSubmissions({ userId: session.user.id, limit: 50 }, { cache: 'no-store' }),
+        pyqsService.getMistakeVault(
+          { userId: session.user.id, countOnly: !isVaultTab },
+          { cache: 'no-store' }
+        ),
       ]);
 
-      if (subsRes.ok) {
-        const subsJson = await subsRes.json();
-        submissions = subsJson?.data || [];
-      }
-
-      if (vaultRes.ok) {
-        const vaultJson = await vaultRes.json();
-        initialVaultCount = vaultJson?.total ?? 0;
-        vaultItems = vaultJson?.items || [];
-      }
+      submissions = subsData || [];
+      initialVaultCount = vaultData?.total ?? 0;
+      vaultItems = vaultData?.items || [];
     } catch (err) {
       console.error('Failed to load user CBT data from microservice:', err);
     }

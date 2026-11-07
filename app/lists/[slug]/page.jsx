@@ -3,14 +3,12 @@ import { cookies } from "next/headers";
 import { getServerSession } from "next-auth/next";
 import { decode } from "next-auth/jwt";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import jwt from "jsonwebtoken";
+import { pyqsService } from "@/server/services/pyqs";
 import PlaylistSlugPageClient from "@/components/playlists/PlaylistSlugPageClient";
 import StructuredData from "@/components/common/StructuredData";
 import { ogImageMeta } from "@/utils/og-metadata";
 
 export const dynamic = "force-dynamic";
-
-const BACKEND_URL = process.env.PYQS_API_URL || "https://pyqs-api.jeechallenger.com";
 
 const fetchPlaylistMetadata = cache(async (slug) => {
   try {
@@ -47,31 +45,19 @@ const fetchPlaylistMetadata = cache(async (slug) => {
       }
     }
 
-    // 3. If authenticated, sign Bearer JWT for the Go microservice
-    let headers = {};
-    if (userId) {
-      const token = jwt.sign(
-        { id: userId },
-        process.env.NEXTAUTH_SECRET,
-        { algorithm: "HS256" }
-      );
-      headers = { Authorization: `Bearer ${token}` };
-    }
-
-    const res = await fetch(`${BACKEND_URL}/playlists/${slug}`, {
-      headers,
-      cache: "no-store",
-    });
-
-    if (res.status === 403) {
+    // 3. Fetch playlist details via unified service
+    const data = await pyqsService.getPlaylistBySlug(slug, { userId });
+    if (!data) return null;
+    if (data.is_private) {
       return { is_private: true, is_owner: false };
     }
-    if (!res.ok) return null;
-    const json = await res.json();
-    if (!json?.data?.playlist) return null;
+
+    const playlist = data?.playlist || data;
+    if (!playlist) return null;
+
     return {
-      ...json.data.playlist,
-      is_owner: Boolean(json.data.is_owner),
+      ...playlist,
+      is_owner: Boolean(data.is_owner),
     };
   } catch (err) {
     console.error(`Error fetching playlist metadata for ${slug}:`, err);

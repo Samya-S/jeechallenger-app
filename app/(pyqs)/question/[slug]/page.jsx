@@ -5,20 +5,17 @@ import StructuredData from "@/components/common/StructuredData";
 import { ogImageMeta } from "@/utils/og-metadata";
 import { createQuestionMetaDescription } from "@/utils/seo-utils";
 import { getSiteUrl } from "@/config/site-url";
-
-const BACKEND_URL = process.env.PYQS_API_URL || "https://pyqs-api.jeechallenger.com";
+import { pyqsService } from "@/server/services/pyqs";
 
 export const dynamicParams = true;
 
 async function fetchQuestion(slug) {
   try {
-    const res = await fetch(`${BACKEND_URL}/questions/${slug}`, {
+    const question = await pyqsService.getQuestionBySlug(slug, {
       cache: "force-cache",
       next: { tags: [`question-${slug}`] },
     });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.data || data;
+    return question;
   } catch (error) {
     console.error(`Error fetching question ${slug}:`, error);
     return null;
@@ -84,7 +81,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} - JEE Challenger`,
+      title,
       description,
       images: pageOg.twitterImages,
     },

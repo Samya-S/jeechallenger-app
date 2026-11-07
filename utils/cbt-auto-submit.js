@@ -1,7 +1,5 @@
 import redis from '@/utils/redis';
-import jwt from 'jsonwebtoken';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+import { pyqsService } from '@/server/services/pyqs';
 
 /**
  * Auto-submits an in-flight CBT test session to the Go microservice
@@ -49,39 +47,18 @@ export async function autoSubmitCbtSession(sessionId, existingSessionData = null
     throw new Error('Session user_id is missing');
   }
 
-  // 3. Delegate evaluation to Go microservice using internal signed JWT
-  const signedToken = jwt.sign(
-    { id: userId },
-    process.env.NEXTAUTH_SECRET,
-    { algorithm: 'HS256' }
-  );
-
-  const submitRes = await fetch(`${BACKEND_URL}/cbt/submit`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${signedToken}`,
-    },
-    body: JSON.stringify({
+  // 3. Delegate evaluation to Go microservice via unified service
+  const submission = await pyqsService.submitExam({
+    userId,
+    payload: {
       paper_id: paperId,
       started_at: new Date(startedAt).toISOString(),
       submitted_at: new Date(submittedAt).toISOString(),
       time_taken_seconds: timeTakenSeconds,
       status: 'AUTO_SUBMITTED_TIME_EXPIRED',
       responses,
-    }),
+    },
   });
-
-  if (!submitRes.ok) {
-    const errData = await submitRes.json().catch(() => ({}));
-    throw new Error(errData.error || `Microservice evaluation failed with status ${submitRes.status}`);
-  }
-
-  const json = await submitRes.json();
-  const submission = json?.data;
-  if (!submission) {
-    throw new Error('Invalid response structure received from evaluation microservice');
-  }
 
   // 4. Atomically purge Redis in-flight hash and remove from expiring sessions set
   await Promise.all([

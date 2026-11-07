@@ -1,55 +1,35 @@
 import React from 'react';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import jwt from 'jsonwebtoken';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { pyqsService } from '@/server/services/pyqs';
 import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
 import CBTSolutionReview from '@/components/cbt/results/CBTSolutionReview';
 import CBTAttemptSwitcher from '@/components/cbt/results/CBTAttemptSwitcher';
 import CBTRetakeButton from '@/components/cbt/results/CBTRetakeButton';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
-import { ArrowLeft, RotateCcw, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
-
 async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
   try {
-    // 1. Fetch paper and pre-assembled canonical questions from Go microservice
-    const paperRes = await fetch(`${BACKEND_URL}/papers/${slug}`, {
-      cache: 'no-store',
-    });
-    if (!paperRes.ok) return null;
-    const paperJson = await paperRes.json();
-    const paper = paperJson?.data;
-    if (!paper) return null;
-
     if (!sessionUserId) return null;
 
-    // 2. Prepare authenticated JWT header for Go microservice
-    const signedToken = jwt.sign(
-      { id: sessionUserId },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-    const authHeaders = {
-      Authorization: `Bearer ${signedToken}`,
-    };
+    // 1. Fetch paper and canonical questions via unified service
+    const paper = await pyqsService.getPaperBySlug(slug);
+    if (!paper) return null;
 
-    // 3. Fetch all user attempts for this paper (for attempt switcher and fallback to latest)
+    // 2. Fetch all user attempts for this paper (for attempt switcher and fallback to latest)
     let allAttempts = [];
     try {
-      const listRes = await fetch(`${BACKEND_URL}/cbt/submissions?paper_id=${encodeURIComponent(paper.paper_id)}&limit=50`, {
-        headers: authHeaders,
-        cache: 'no-store',
+      allAttempts = await pyqsService.getSubmissions({
+        userId: sessionUserId,
+        paperId: paper.paper_id,
+        limit: 50,
       });
-      if (listRes.ok) {
-        const listJson = await listRes.json();
-        allAttempts = listJson?.data || [];
-      }
     } catch (listErr) {
       console.warn('Failed to load user attempt history:', listErr);
     }
@@ -60,14 +40,11 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
       return null;
     }
 
-    // 4. Fetch specific submission from Go microservice
-    const subRes = await fetch(`${BACKEND_URL}/cbt/submissions/${targetSubmissionId}`, {
-      headers: authHeaders,
-      cache: 'no-store',
+    // 3. Fetch specific submission via unified service
+    const submission = await pyqsService.getSubmissionById({
+      userId: sessionUserId,
+      submissionId: targetSubmissionId,
     });
-    if (!subRes.ok) return null;
-    const subJson = await subRes.json();
-    const submission = subJson?.data;
     if (!submission) return null;
 
     return {
@@ -78,7 +55,7 @@ async function loadSubmissionAndQuestions(slug, submissionId, sessionUserId) {
       paperSlug: paper.slug || slug,
     };
   } catch (error) {
-    console.error('Failed to load submission data from microservice:', error);
+    console.error('Failed to load submission data via pyqsService:', error);
     return null;
   }
 }
@@ -136,7 +113,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
     <div className="min-h-screen text-gray-900 dark:text-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Top Navigation & Breadcrumbs Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col sm:row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
           <Breadcrumbs
             crumbs={[
               { label: 'Mock Tests', href: '/mock-test' },

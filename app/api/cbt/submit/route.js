@@ -1,10 +1,8 @@
 import { getToken } from 'next-auth/jwt';
-import jwt from 'jsonwebtoken';
 import redis from '@/utils/redis';
+import { pyqsService } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
 export async function POST(req) {
   try {
@@ -83,39 +81,18 @@ export async function POST(req) {
       }
     }
 
-    // 3. Delegate evaluation and persistence exclusively to Go microservice
-    const signedToken = jwt.sign(
-      { id: token.id },
-      process.env.NEXTAUTH_SECRET,
-      { algorithm: 'HS256' }
-    );
-
-    const submitRes = await fetch(`${BACKEND_URL}/cbt/submit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${signedToken}`,
-      },
-      body: JSON.stringify({
+    // 3. Delegate evaluation to Go microservice via unified service
+    const submission = await pyqsService.submitExam({
+      userId: token.id,
+      payload: {
         paper_id: paperId,
         started_at: new Date(startedAt).toISOString(),
         submitted_at: new Date(submittedAt).toISOString(),
         time_taken_seconds: timeTakenSeconds,
         status: 'MANUAL_SUBMISSION',
         responses,
-      }),
+      },
     });
-
-    if (!submitRes.ok) {
-      const errData = await submitRes.json().catch(() => ({}));
-      throw new Error(errData.error || `Microservice evaluation failed with status ${submitRes.status}`);
-    }
-
-    const json = await submitRes.json();
-    const submission = json?.data;
-    if (!submission) {
-      throw new Error('Invalid response structure received from evaluation microservice');
-    }
 
     // 4. Mark session completed and delete temporary in-flight Redis cache & expiring set
     await Promise.all([

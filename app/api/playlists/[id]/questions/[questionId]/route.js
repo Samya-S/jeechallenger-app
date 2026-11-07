@@ -1,19 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { PYQS_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
-
-const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
-
-function getSignedToken(userId) {
-  return jwt.sign(
-    { id: userId },
-    process.env.NEXTAUTH_SECRET,
-    { algorithm: 'HS256' }
-  );
-}
 
 // DELETE /api/playlists/[id]/questions/[questionId] — remove question from playlist
 export async function DELETE(req, { params }) {
@@ -24,11 +14,10 @@ export async function DELETE(req, { params }) {
     }
 
     const { id, questionId } = await params;
-    const token = getSignedToken(session.user.id);
 
-    const res = await fetch(`${BACKEND_URL}/playlists/${id}/questions/${questionId}`, {
+    const res = await fetch(`${PYQS_API_URL}/playlists/${id}/questions/${questionId}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: getAuthHeaders(session.user.id),
     });
 
     const data = await res.json();

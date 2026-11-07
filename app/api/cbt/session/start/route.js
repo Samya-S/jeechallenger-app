@@ -1,6 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import redis from '@/utils/redis';
 import { autoSubmitCbtSession } from '@/utils/cbt-auto-submit';
+import { pyqsService } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
 
@@ -130,15 +131,13 @@ export async function POST(req) {
       }
     }
 
-    // 2. Fetch paper duration from Go microservice
-    const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+    // 2. Fetch paper duration via unified pyqsService
     let durationMinutes = 180;
     try {
-      const pRes = await fetch(`${BACKEND_URL}/papers/${paper_slug}`, { cache: 'no-store' });
-      if (pRes.ok) {
-        const pData = await pRes.json();
-        if (pData?.data?.duration_minutes) {
-          durationMinutes = pData.data.duration_minutes;
+      if (paper_slug) {
+        const paper = await pyqsService.getPaperBySlug(paper_slug);
+        if (paper?.duration_minutes) {
+          durationMinutes = paper.duration_minutes;
         }
       }
     } catch (err) {

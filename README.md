@@ -167,19 +167,21 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### Backend & APIs
 
-- **Authentication**: NextAuth.js v4 with Google OAuth provider
+- **Unified Service Layer (`server/services/`)**: Centralized internal SDK and single source of truth for microservice communication, token signing, and caching rules:
+  - `pyqs.js`: Go PYQ & CBT microservice client (`pyqs-api.jeechallenger.com`) for questions, papers, attempts, mistake vault, and test submissions.
+  - `ai.js`: Python AI Tutor microservice client (`ai-api.jeechallenger.com`) with streaming chat proxy and multipart file upload forwarding.
+  - `syllabus-tracker.js`: Syllabus tracker database service for MongoDB progress persistence.
+- **Authentication**: NextAuth.js v4 with Google OAuth provider & HS256 JWT microservice authentication tokens
 - **Databases (Microservice Architecture)**: 
   - `jee_challenger_auth`: User sessions and authentication (indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
   - `jee_challenger_ai`: AI Tutor chat history
   - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress (indexed on `user_id` unique)
   - `jee_challenger_pyqs`: High-performance Go microservice with MongoDB for Question Bank and Paper metadata
-- **FastAPI AI Tutor Microservice**: Python & FastAPI microservice connected via Next.js proxy route `/api/ai/[...path]` with JWT authentication and streaming chat responses
-- **Go PYQ Microservice**: High-performance Go microservice connected via Next.js proxy route `/api/pyqs/[...path]` with JWT authentication and Cloudflare R2 image CDN
-- **Caching / Rate Limiting**: Upstash Redis
-- **Token Handling**: jsonwebtoken (JWT)
+- **Caching & Live CBT State**: Upstash Redis (session locks, heartbeat sync, kiosk device transfer, and rate limiting)
+- **Token Handling**: Centralized `jsonwebtoken` (JWT) signing with `NEXTAUTH_SECRET`
 - **Email Service**: Nodemailer for contact form
 - **News API**: GNews API for real-time updates
-- **API Routes**: Next.js API routes
+- **BFF API Routes (`app/api/`)**: Next.js Backend-For-Frontend API routes serving as secure browser-to-backend proxies and external webhook receivers
 
 
 ### Development & Deployment
@@ -210,38 +212,53 @@ npm install
 3. Create a `.env.local` file in the root directory and add your environment variables:
 
 ```env
-# Email Configuration (for Contact form)
-AUTH_EMAIL=your-email@example.com
-AUTH_PASS=your-email-app-password
-SENDER_EMAIL=your-email@example.com
-RECEIVER_EMAIL=recipient@example.com
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# MongoDB Connection
+MONGODB_URI=your-mongodb-connection-string
+
+# Upstash Redis (Session Management & CBT State)
+UPSTASH_REDIS_REST_URL=your-upstash-redis-url
+UPSTASH_REDIS_REST_TOKEN=your-upstash-redis-token
+
+# Email Configuration (Nodemailer)
+AUTH_EMAIL=your-email@gmail.com
+AUTH_PASS=your-app-password
+SENDER_EMAIL=your-sender-email@gmail.com
+RECEIVER_EMAILS=receiver1@example.com,receiver2@example.com
 
 # GNews API Configuration
 GNEWS_API_KEY=your-gnews-api-key
 
-# Google OAuth Configuration (for NextAuth)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+# Site Configuration
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
-# NextAuth Configuration
-NEXTAUTH_SECRET=your-nextauth-secret
-NEXTAUTH_URL=http://localhost:3000
+# Cloudflare Analytics (Optional)
+NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN=your-token
 
-# MongoDB Configuration (for auth adapter and chat history)
-MONGODB_URI=your-mongodb-connection-string
+# Google Analytics (Optional)
+NEXT_PUBLIC_GA_MEASUREMENT_ID=your-ga-id
 
-# Upstash Redis Configuration (for rate limiting / caching)
-UPSTASH_REDIS_REST_URL=your-upstash-redis-url
-UPSTASH_REDIS_REST_TOKEN=your-upstash-redis-token
+# Google AdSense (Optional)
+NEXT_PUBLIC_ADSENSE_CLIENT_ID=your-adsense-id
 
-# JWT Configuration
-JWT_SECRET=your-jwt-secret
+# Internal Cron Secret (Optional, for CBT auto-submit)
+INTERNAL_CRON_SECRET=your-cron-secret
 
-# On-Demand Revalidation (must match REVALIDATION_SECRET in jeechallenger-pyqs)
-REVALIDATION_SECRET=your-secure-revalidation-secret
+# On-Demand Revalidation Secret (for Go backend & pipeline cache purges)
+REVALIDATION_SECRET=your-revalidation-secret
 
 # PYQ Go Backend Microservice URL (optional, defaults to https://pyqs-api.jeechallenger.com)
 PYQS_API_URL=https://pyqs-api.jeechallenger.com
+
+# AI Tutor Python Backend Microservice URL (optional, defaults to https://ai-api.jeechallenger.com)
+AI_API_URL=https://ai-api.jeechallenger.com
 ```
 
 4. Run the development server:
@@ -250,94 +267,78 @@ PYQS_API_URL=https://pyqs-api.jeechallenger.com
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
 ## Building for Production
 
+To create an optimized production build:
+
 ```bash
 npm run build
-npm start
 ```
+
+This will run Turbopack production compilation, Next.js page generation, sitemap generation, and static SEO XML outputs.
 
 
 ## Project Structure
 
-```
+```text
 jeechallenger-app/
-├── app/                        # Next.js App Router pages
-│   ├── (about)/                # Connect and Support
-│   │   ├── contact-us/         # Contact form
-│   │   └── donate/             # Support & Donations
-│   ├── (home)/                 # Home page specific routes and components
-│   ├── (legal)/                # Legal policies
-│   │   ├── disclaimer/         # Disclaimer
-│   │   ├── privacy-policy/     # Global Privacy Policy
-│   │   └── terms-of-service/   # Global Terms of Service
-│   ├── (official-links)/       # JEE official links & resources
-│   │   ├── jee-advanced/       # JEE Advanced official links
-│   │   └── jee-main/           # JEE Main official links
-│   ├── (pyqs)/                 # Previous Year Questions system
-│   │   ├── paper/[slug]/       # Dedicated Full Paper page with section navigation
-│   │   ├── previous-year-questions/ # Main PYQ Hub & Practice feed
-│   │   └── question/[slug]/    # Dedicated Single Question page with KaTeX derivations
-│   ├── (read-more)/            # Reading and content pages
-│   │   ├── blog/               # Blog post display with dynamic routes
-│   │   │   ├── [slug]/         # Dynamic blog post pages
-│   │   │   ├── components/     # Blog UI components (TOC, Share, etc.)
-│   │   │   └── hooks/          # Blog custom hooks
-│   │   ├── blogs/              # Blog listing page with search/filter
-│   │   └── news/               # Latest JEE news section
-│   ├── (resources)/            # Resources
-│   │   ├── chemistry/          # Chemistry resources
-│   │   │   ├── periodic-table/ # Interactive Periodic Table explorer tool
-│   │   │   └── unit-converter/ # Chemistry unit converter tool
-│   │   ├── mathematics/        # Mathematics resources
-│   │   │   └── unit-converter/ # Mathematics unit converter tool
-│   │   └── physics/            # Physics resources
-│   │       └── unit-converter/ # Physics unit converter tool
-│   ├── (seo)/                  # SEO and Meta routes
-│   │   ├── image-sitemap.xml/  # Sitemap generator
-│   │   ├── og/                 # OpenGraph image generator
-│   │   └── rss.xml/            # RSS feed generator
-│   ├── (user)/                 # User-centric routes
-│   │   ├── login/              # Login functionality
-│   │   └── profile/            # User profile dashboard
-│   ├── ai-tutor/               # AI Tutor functionality
-│   │   ├── chat/               # Main chat interface and logic
-│   │   └── components/         # AI Tutor specific components
-│   ├── api/                    # API routes
-│   │   ├── ai/                 # Reverse proxy to FastAPI AI Tutor microservice
-│   │   ├── auth/               # NextAuth API endpoints
-│   │   ├── pyqs/               # Reverse proxy to Go PYQ microservice
+├── app/                        # Next.js App Router routes
+│   ├── (about)/                # About pages (contact-us, donate, etc.)
+│   ├── (home)/                 # Homepage components and layouts
+│   ├── (legal)/                # Legal pages (privacy-policy, terms-of-service, etc.)
+│   ├── (official-links)/       # JEE Main and Advanced official resource portals
+│   ├── (pyqs)/                 # Previous Year Questions hub, /paper/[slug], /question/[slug]
+│   ├── (read-more)/            # Blogs and news pages
+│   ├── (resources)/            # Formula sheets, Unit converters, Periodic Table explorer
+│   ├── (seo)/                  # Sitemap, RSS, and OpenGraph generators
+│   ├── (user)/                 # Login and candidate user profile dashboard
+│   ├── ai-tutor/               # AI Tutor chat interface and attachment uploaders
+│   ├── api/                    # Backend-For-Frontend (BFF) API routes
+│   │   ├── ai/                 # Proxy to FastAPI AI Tutor microservice via aiService
+│   │   ├── auth/               # NextAuth API endpoints & Google OAuth callbacks
+│   │   ├── cbt/                # CBT Redis session management, heartbeat sync, and submit
+│   │   ├── playlists/          # User playlists & bookmarks CRUD routes
+│   │   ├── pyqs/               # Proxy to Go PYQ microservice & cache purge webhook (revalidate)
 │   │   └── syllabus-tracker/   # Syllabus tracker sync API
-│   └── syllabus-tracker/       # Progress tracking system
+│   ├── lists/                  # Custom question playlists and bookmarks (/lists/[slug])
+│   ├── mock-test/              # Official timed CBT Mock Test simulator & Mistake Vault
+│   └── syllabus-tracker/       # Cloud-synced preparation tracking system
 ├── components/                 # Reusable React components
+│   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
-│   ├── modals/                 # Modal components
-│   ├── providers/              # Context providers
-│   ├── resources/              # Resources components
-│   │   └── pyqs/               # PYQ components (PYQFilterBar, PYQQuestionCard, etc.)
-│   └── ui/                     # UI components (CustomSelect, BlogCard, etc.)
+│   ├── modals/                 # Modal dialogs
+│   ├── playlists/              # Playlist sidebars, tables, and popover components
+│   ├── providers/              # React Context providers
+│   ├── resources/              # Formula sheets, unit converters, and PYQ components
+│   └── ui/                     # Primitives (CustomSelect, BlogCard, etc.)
 ├── config/                     # Configuration files
-├── data/                       # Content data
-│   ├── blogs/                  # MDX blog articles
-│   ├── resources/              # Formula, Unit Conversion, and Periodic Table data
-│   │   ├── chemistry-formula-data.js
-│   │   ├── mathematics-formula-data.js
-│   │   ├── periodic-table-data.js
-│   │   ├── periodic-table-explorer-constants.js
-│   │   ├── physics-formula-data.js
-│   │   └── unit-conversion-data.js
-│   ├── faq-data.js             # General FAQ data
-│   └── syllabus-data.js        # Syllabus Tracker data
-├── docs/                       # Documentation
+├── data/                       # Static resource data and formula constants
+├── docs/                       # Technical blueprints and specifications
 │   ├── blog-structure.md       # Blog system documentation
+│   ├── cbt-master-spec.md      # CBT Exam Simulator & 3-Tier State Machine master blueprint
 │   ├── color-system.md         # Design system colors
-│   └── product-vision.md       # Platform vision and goals
+│   ├── playlists-master-spec.md# Question Playlists & Custom Bookmarks master blueprint
+│   ├── product-vision.md       # Platform vision and goals
+│   └── traffic-growth-strategy.md # Traffic, SEO, and indexing strategy
 ├── public/                     # Static assets
-├── server/                     # Server actions
-└── utils/                      # Utility functions
+├── server/                     # Server-side business logic
+│   ├── services/               # Centralized microservice clients & SDKs
+│   │   ├── ai.js               # Python AI Tutor microservice client
+│   │   ├── pyqs.js             # Go PYQ & CBT microservice client
+│   │   └── syllabus-tracker.js # Syllabus progress MongoDB service
+│   ├── contact-actions.js      # Contact form email server action
+│   ├── news-actions.js         # GNews server action
+│   └── views-actions.js        # Upstash Redis article view counts
+└── utils/                      # Low-level utilities & infrastructure singletons
+    ├── cbt-auto-submit.js      # Lazy & cron expired CBT exam finalizer
+    ├── cbt-helpers.js          # CBT palette, timer, and score formatting helpers
+    ├── mongodb.js              # MongoDB client singleton
+    ├── pyq-helpers.js          # PYQ taxonomy, slugs, and color mappings
+    ├── redis.js                # Upstash Redis client singleton
+    └── seo-utils.js            # JSON-LD Schema & meta description generators
 ```
 
 
