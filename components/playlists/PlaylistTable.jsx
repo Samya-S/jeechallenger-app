@@ -4,7 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search, Trash2, BookOpen, Filter, Sparkles, Loader2 } from "lucide-react";
 import CustomSelect from "@/components/ui/CustomSelect";
-import { formatExamOrigin, SUBJECT_COLORS, DIFFICULTY_COLORS } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getExamBadgeColor, SUBJECT_COLORS, DIFFICULTY_COLORS } from "@/utils/pyq-helpers";
 
 const BATCH_SIZE = 25;
 
@@ -287,8 +287,10 @@ export default function PlaylistTable({
                         </td>
 
                         {/* Exam / Year */}
-                        <td className="py-3.5 px-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell whitespace-nowrap text-[11px]">
-                          {origin}
+                        <td className="py-3.5 px-3 hidden lg:table-cell whitespace-nowrap">
+                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold border ${getExamBadgeColor(q.exam_type || origin)}`}>
+                            {origin}
+                          </span>
                         </td>
 
                         {/* Difficulty */}
