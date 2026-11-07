@@ -28,6 +28,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
+import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
 import { formatExamOrigin, getPaperSlug, SUBJECT_COLORS, DIFFICULTY_COLORS, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
@@ -318,6 +319,7 @@ export default function QuestionDetailComponent({ question }) {
 
               {/* Action Buttons (Share & Report Bug) */}
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <QuestionBookmarkButton questionId={question._id} />
                 <button
                   type="button"
                   onClick={handleShare}

@@ -21,6 +21,7 @@ import {
   Bug
 } from 'lucide-react';
 import ReportQuestionModal from '@/components/modals/ReportQuestionModal';
+import QuestionBookmarkButton from '@/components/playlists/QuestionBookmarkButton';
 
 const SUBJECT_BADGE_COLORS = {
   Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
@@ -407,7 +408,6 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
           filteredAttempts.map((att) => {
             const qDoc = questionMap.get(String(att.question_id));
             const qIdStr = String(att.question_id);
-            const isSaved = savedVaultQKeys.has(qIdStr);
 
             const isCorrect = att.is_correct;
             const isAttempted = att.is_evaluated;
@@ -499,20 +499,8 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                       <span>{marksPrefix} Marks</span>
                     </span>
 
-                    {/* Bookmark to Mistake Vault (Persisted to MongoDB) */}
-                    <button
-                      type="button"
-                      onClick={() => handleToggleVault(att, qDoc)}
-                      className={`p-1.5 rounded-lg border text-xs transition-all cursor-pointer ${
-                        isSaved
-                          ? 'bg-amber-500 border-amber-600 text-white'
-                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 hover:text-amber-500'
-                      }`}
-                      title={isSaved ? 'Saved in Mistake Vault' : 'Save to Mistake Vault'}
-                      aria-label={isSaved ? 'Remove from Mistake Vault' : 'Save to Mistake Vault'}
-                    >
-                      {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                    </button>
+                    {/* Bookmark to Playlists / Mistake Vault */}
+                    <QuestionBookmarkButton questionId={att.question_id || qDoc?._id} />
 
                     {/* Report Bug Button */}
                     <button

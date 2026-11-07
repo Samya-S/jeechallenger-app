@@ -31,6 +31,7 @@ import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import CBTMockTestModal from "@/components/modals/CBTMockTestModal";
 import { SUBJECT_COLORS, DIFFICULTY_COLORS, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
+import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
 
 function PaperDetailContent({ paperData }) {
   const { data: session } = useSession();
@@ -678,6 +679,7 @@ function PaperDetailContent({ paperData }) {
                           <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[q.difficulty] || q.difficulty}</span>
                         </span>
                       )}
+                      <QuestionBookmarkButton questionId={q._id} />
                     </div>
                   </div>
 
