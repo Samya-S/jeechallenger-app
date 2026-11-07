@@ -192,6 +192,7 @@ const MoreMaterialsComponent = () => {
               <Link
                 href="https://drive.google.com/drive/folders/1gs_ehca1F1-K9g3q_Q0mTteUSGzd6z8F?usp=sharing"
                 target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Upload your study materials to the website"
                 className="inline-block"
               >

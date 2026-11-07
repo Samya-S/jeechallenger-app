@@ -6,6 +6,7 @@ const TelegramJoinFloat = () => {
       <a
         href="https://t.me/+oOnj4y_ZYqYyZjA1"
         target="_blank"
+        rel="noopener noreferrer"
         className="telegram-float bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-md dark:shadow-gray-900"
         style={{
           position: "fixed",

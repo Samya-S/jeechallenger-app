@@ -126,6 +126,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                 <Link
                   href="https://t.me/+oOnj4y_ZYqYyZjA1"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className={`${currentTheme.textColor} font-semibold`}
                   aria-label="Join our Telegram channel"
                 >
@@ -160,6 +161,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
                   <Link
                     href={`https://t.me/${url}`}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="underline hover:text-red-800 dark:hover:text-red-200"
                   >
                     view it directly on Telegram
