@@ -41,6 +41,7 @@ export default function CBTHubComponent({
   user,
   submissions = [],
   initialVaultItems = [],
+  initialVaultCount = 0,
   initialPapers = [],
   initialTotalPapers = 0,
   initialTotalPages = 1,
@@ -197,21 +198,38 @@ export default function CBTHubComponent({
     setPage(1);
   };
 
-  // Vault state (MongoDB-backed)
+  // Vault state (MongoDB-backed with on-demand deferred loading)
   const [vaultItems, setVaultItems] = useState(initialVaultItems);
+  const [vaultLoading, setVaultLoading] = useState(
+    (tabParam === 'vault' || tabParam === 'mistake-vault') && initialVaultItems.length === 0 && Boolean(user)
+  );
   const [vaultSubjectFilter, setVaultSubjectFilter] = useState('ALL');
   const [expandedSolutions, setExpandedSolutions] = useState(() => new Set());
-  const [isVaultMounting, setIsVaultMounting] = useState(tabParam === 'vault' || tabParam === 'mistake-vault');
   const [visibleVaultCount, setVisibleVaultCount] = useState(10);
+  const hasLoadedVaultRef = useRef(initialVaultItems.length > 0);
+  const vaultCount = hasLoadedVaultRef.current ? vaultItems.length : (initialVaultCount ?? 0);
 
+  // Lazy fetch mistake vault questions if directly navigating or active tab matches
   useEffect(() => {
-    if (isVaultMounting) {
-      const timer = setTimeout(() => {
-        setIsVaultMounting(false);
-      }, 50);
-      return () => clearTimeout(timer);
+    if (activeTab === 'vault' && !hasLoadedVaultRef.current && !vaultLoading && user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVaultLoading(true);
+      fetch('/api/cbt/mistake-vault')
+        .then((res) => res.json())
+        .then((data) => {
+          const items = data.items || [];
+          setVaultItems(items);
+          hasLoadedVaultRef.current = true;
+          setVaultLoading(false);
+        })
+        .catch((err) => {
+          console.error('Failed to load mistake vault questions:', err);
+          setVaultItems([]);
+          hasLoadedVaultRef.current = true;
+          setVaultLoading(false);
+        });
     }
-  }, [isVaultMounting]);
+  }, [activeTab, user, vaultLoading]);
 
   // Filter vault items
   const filteredVaultItems = useMemo(() => {
@@ -290,8 +308,24 @@ export default function CBTHubComponent({
     setActiveTab(tab);
     setPage(1);
     if (tab === 'vault') {
-      setIsVaultMounting(true);
       setVisibleVaultCount(10);
+      if (!hasLoadedVaultRef.current && user) {
+        setVaultLoading(true);
+        fetch('/api/cbt/mistake-vault')
+          .then((res) => res.json())
+          .then((data) => {
+            const items = data.items || [];
+            setVaultItems(items);
+            hasLoadedVaultRef.current = true;
+            setVaultLoading(false);
+          })
+          .catch((err) => {
+            console.error('Failed to load mistake vault questions:', err);
+            setVaultItems([]);
+            hasLoadedVaultRef.current = true;
+            setVaultLoading(false);
+          });
+      }
     }
   };
 
@@ -371,7 +405,7 @@ export default function CBTHubComponent({
                   <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Mistake Vault</span>
                 </div>
                 <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1 block">
-                  {vaultItems.length} Qs
+                  {vaultCount} Qs
                 </span>
               </div>
             </div>
@@ -422,8 +456,8 @@ export default function CBTHubComponent({
               }`}
             >
               <Bookmark className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="hidden sm:inline">Mistake Vault ({vaultItems.length})</span>
-              <span className="sm:hidden">Vault ({vaultItems.length})</span>
+              <span className="hidden sm:inline">Mistake Vault ({vaultCount})</span>
+              <span className="sm:hidden">Vault ({vaultCount})</span>
             </button>
           </div>
         </div>
@@ -709,12 +743,12 @@ export default function CBTHubComponent({
                             <Clock className="w-3.5 h-3.5 text-blue-500" />
                             <span>{mins} mins elapsed</span>
                           </span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                             <Target className="w-3.5 h-3.5" />
                             <span>{accuracy.toFixed(1)}% Accuracy</span>
                           </span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span>{sub.summary?.total_attempted ?? 0} Attempted</span>
                         </div>
                       </div>
@@ -788,71 +822,83 @@ export default function CBTHubComponent({
             ) : (
               <>
                 {/* Vault Header & Filter Bar */}
-                <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">
-                      Subject:
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setVaultSubjectFilter('ALL')}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        vaultSubjectFilter === 'ALL'
-                          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm border border-gray-900 dark:border-white'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-transparent'
-                      }`}
-                    >
-                      All ({vaultItems.length})
-                    </button>
-                    {[
-                      {
-                        sub: 'Physics',
-                        activeClass: 'bg-blue-600 text-white shadow-sm border border-blue-600',
-                        unselClass: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/60',
-                      },
-                      {
-                        sub: 'Chemistry',
-                        activeClass: 'bg-emerald-600 text-white shadow-sm border border-emerald-600',
-                        unselClass: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60',
-                      },
-                      {
-                        sub: 'Mathematics',
-                        activeClass: 'bg-purple-600 text-white shadow-sm border border-purple-600',
-                        unselClass: 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60',
-                      },
-                    ].map(({ sub, activeClass, unselClass }) => {
-                      const count = vaultItems.filter((i) => i.subject === sub).length;
-                      const isSel = vaultSubjectFilter === sub;
-                      return (
-                        <button
-                          key={sub}
-                          type="button"
-                          onClick={() => setVaultSubjectFilter(sub)}
-                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            isSel ? activeClass : unselClass
-                          }`}
-                        >
-                          {sub} ({count})
-                        </button>
-                      );
-                    })}
+                {vaultLoading ? (
+                  <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 animate-pulse flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-14 bg-gray-200 dark:bg-gray-800 rounded" />
+                      <div className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                      <div className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                      <div className="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded-xl" />
+                    </div>
+                    <div className="h-4 w-48 bg-gray-200 dark:bg-gray-800 rounded hidden sm:block" />
                   </div>
+                ) : (
+                  <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">
+                        Subject:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setVaultSubjectFilter('ALL')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          vaultSubjectFilter === 'ALL'
+                            ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm border border-gray-900 dark:border-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-transparent'
+                        }`}
+                      >
+                        All ({vaultItems.length})
+                      </button>
+                      {[
+                        {
+                          sub: 'Physics',
+                          activeClass: 'bg-blue-600 text-white shadow-sm border border-blue-600',
+                          unselClass: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/60',
+                        },
+                        {
+                          sub: 'Chemistry',
+                          activeClass: 'bg-emerald-600 text-white shadow-sm border border-emerald-600',
+                          unselClass: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60',
+                        },
+                        {
+                          sub: 'Mathematics',
+                          activeClass: 'bg-purple-600 text-white shadow-sm border border-purple-600',
+                          unselClass: 'text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 hover:bg-purple-100 dark:hover:bg-purple-900/60',
+                        },
+                      ].map(({ sub, activeClass, unselClass }) => {
+                        const count = vaultItems.filter((i) => i.subject === sub).length;
+                        const isSel = vaultSubjectFilter === sub;
+                        return (
+                          <button
+                            key={sub}
+                            type="button"
+                            onClick={() => setVaultSubjectFilter(sub)}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isSel ? activeClass : unselClass
+                            }`}
+                          >
+                            {sub} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Questions bookmarked from your test attempts for revision
-                    </span>
-                    <Link
-                      href="/lists"
-                      className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
-                    >
-                      Open in Lists <ArrowUpRight className="w-3.5 h-3.5" />
-                    </Link>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Questions bookmarked from your test attempts for revision
+                      </span>
+                      <Link
+                        href="/lists"
+                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      >
+                        Open in Lists <ArrowUpRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Vault Questions Feed */}
-                {isVaultMounting ? (
+                {vaultLoading ? (
                   <div className="space-y-6 animate-pulse" data-testid="cbt-vault-skeleton">
                     {[1, 2, 3].map((n) => (
                       <div

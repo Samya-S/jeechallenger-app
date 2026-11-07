@@ -16,6 +16,7 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const subject = searchParams.get('subject') || '';
+    const countOnly = searchParams.get('count_only') || '';
 
     const signedToken = jwt.sign(
       { id: session.user.id },
@@ -24,8 +25,12 @@ export async function GET(request) {
     );
 
     let url = `${BACKEND_URL}/cbt/mistake-vault`;
-    if (subject && subject !== 'ALL') {
-      url += `?subject=${encodeURIComponent(subject)}`;
+    const params = new URLSearchParams();
+    if (subject && subject !== 'ALL') params.set('subject', subject);
+    if (countOnly === 'true') params.set('count_only', 'true');
+    const queryString = params.toString();
+    if (queryString) {
+      url += `?${queryString}`;
     }
 
     const res = await fetch(url, {

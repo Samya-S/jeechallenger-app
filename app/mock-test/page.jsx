@@ -17,11 +17,15 @@ export const metadata = {
 
 const BACKEND_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
 
-export default async function MockTestHubPage() {
+export default async function MockTestHubPage({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+  const isVaultTab = resolvedSearchParams?.tab === 'vault' || resolvedSearchParams?.tab === 'mistake-vault';
+
   const session = await getServerSession(authOptions);
 
   let submissions = [];
   let vaultItems = [];
+  let initialVaultCount = 0;
   let initialPapers = [];
   let initialTotalPapers = 0;
   let initialTotalPages = 1;
@@ -55,12 +59,16 @@ export default async function MockTestHubPage() {
     const authHeaders = { Authorization: 'Bearer ' + signedToken };
 
     try {
+      const vaultUrl = isVaultTab
+        ? `${BACKEND_URL}/cbt/mistake-vault`
+        : `${BACKEND_URL}/cbt/mistake-vault?count_only=true`;
+
       const [subsRes, vaultRes] = await Promise.all([
         fetch(BACKEND_URL + '/cbt/submissions?limit=50', {
           headers: authHeaders,
           cache: 'no-store',
         }),
-        fetch(BACKEND_URL + '/cbt/mistake-vault', {
+        fetch(vaultUrl, {
           headers: authHeaders,
           cache: 'no-store',
         }),
@@ -73,6 +81,7 @@ export default async function MockTestHubPage() {
 
       if (vaultRes.ok) {
         const vaultJson = await vaultRes.json();
+        initialVaultCount = vaultJson?.total ?? 0;
         vaultItems = vaultJson?.items || [];
       }
     } catch (err) {
@@ -85,6 +94,7 @@ export default async function MockTestHubPage() {
       user={session?.user || null}
       submissions={submissions}
       initialVaultItems={vaultItems}
+      initialVaultCount={initialVaultCount}
       initialPapers={initialPapers}
       initialTotalPapers={initialTotalPapers}
       initialTotalPages={initialTotalPages}
