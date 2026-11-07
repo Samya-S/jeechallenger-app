@@ -10,7 +10,7 @@ import {
   Calculator,
 } from "lucide-react";
 
-import { conversionData } from "@/data/resources/unit-conversion-data";
+import { CONVERSION_DATA } from "@/data/resources/unit-conversion-data";
 
 const SUBJECTS = [
   {
@@ -200,7 +200,7 @@ export default function UnitConverter({ subject = "physics" }) {
 
   // Derived categories
   const categories = useMemo(() => {
-    const all = Object.keys(conversionData);
+    const all = Object.keys(CONVERSION_DATA);
     const allowed = subjectConfig.categories;
     return all.filter((c) => allowed.includes(c));
   }, [subjectConfig]);
@@ -220,8 +220,8 @@ export default function UnitConverter({ subject = "physics" }) {
 
   // Update default units when category changes
   useEffect(() => {
-    if (!category || !conversionData[category]) return;
-    const units = Object.keys(conversionData[category].units);
+    if (!category || !CONVERSION_DATA[category]) return;
+    const units = Object.keys(CONVERSION_DATA[category].units);
     setFromUnit(units[0]);
     setToUnit(units[1] || units[0]);
   }, [category]);
@@ -234,10 +234,10 @@ export default function UnitConverter({ subject = "physics" }) {
       return;
     }
 
-    if (!category || !conversionData[category]) return;
+    if (!category || !CONVERSION_DATA[category]) return;
 
-    const fromData = conversionData[category].units[fromUnit];
-    const toData = conversionData[category].units[toUnit];
+    const fromData = CONVERSION_DATA[category].units[fromUnit];
+    const toData = CONVERSION_DATA[category].units[toUnit];
 
     if (!fromData || !toData) {
       setOutputValue("");
@@ -315,7 +315,7 @@ export default function UnitConverter({ subject = "physics" }) {
         </div>
 
         {/* Converter Body */}
-        {category && conversionData[category] && (
+        {category && CONVERSION_DATA[category] && (
           <div className="p-6 md:p-8">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
               {/* FROM Column */}
@@ -337,7 +337,7 @@ export default function UnitConverter({ subject = "physics" }) {
                 <CustomDropdown
                   value={fromUnit}
                   onChange={setFromUnit}
-                  options={Object.keys(conversionData[category].units)}
+                  options={Object.keys(CONVERSION_DATA[category].units)}
                   theme={theme}
                 />
               </div>
@@ -373,7 +373,7 @@ export default function UnitConverter({ subject = "physics" }) {
                 <CustomDropdown
                   value={toUnit}
                   onChange={setToUnit}
-                  options={Object.keys(conversionData[category].units)}
+                  options={Object.keys(CONVERSION_DATA[category].units)}
                   theme={theme}
                 />
               </div>

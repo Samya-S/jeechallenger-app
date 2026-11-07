@@ -14,7 +14,7 @@ const HeroAnimation3D = dynamic(() => import("./HeroAnimation3D"), {
 
 // Mathematically regular pentagon vertices: center at (50%, 50%), radius R = 41%
 // All 5 badges are equidistant from the center (R = 41.00%) and equidistant from each other (48.20%)
-const pentagonBadges = [
+const PENTAGON_BADGES = [
   {
     id: "cbt",
     label: "CBT Mock Tests",
@@ -148,7 +148,7 @@ const Hero = () => {
               <HeroAnimation3D />
 
               {/* Floating 3D Micro Glass Badges Overlay (5 Mathematically Equidistant Pentagon Orbit) */}
-              {pentagonBadges.map((b) => {
+              {PENTAGON_BADGES.map((b) => {
                 const Icon = b.icon;
                 return (
                   <div

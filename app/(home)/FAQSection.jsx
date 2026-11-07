@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, HelpCircle, Send } from "lucide-react";
 import { FaChalkboardTeacher } from "react-icons/fa";
-import { homepageFAQs } from "@/data/faq-data";
+import { HOMEPAGE_FAQS } from "@/data/faq-data";
 
 /**
  * Formats FAQ answers with structured lists if they contain numbered points (e.g. 1) ... 2) ...)
@@ -81,7 +81,7 @@ function renderFaqAnswer(answer) {
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(0); // first item open by default
 
-  const faqs = homepageFAQs?.questions || [];
+  const faqs = HOMEPAGE_FAQS?.questions || [];
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? -1 : index);

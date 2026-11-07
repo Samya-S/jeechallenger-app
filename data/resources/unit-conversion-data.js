@@ -1,4 +1,4 @@
-export const conversionData = {
+export const CONVERSION_DATA = {
   // --- Space & Time ---
   Length: {
     base: "Meter (m)",

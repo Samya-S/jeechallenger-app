@@ -1,4 +1,4 @@
-export const periodicTableData = [
+export const PERIODIC_TABLE_DATA = [
   {
     number: 1,
     symbol: "H",

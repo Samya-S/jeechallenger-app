@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import SyllabusTrackerComponent from './SyllabusTrackerComponent';
 import StructuredData from '@/components/common/StructuredData';
-import { syllabusTrackerFAQs } from '@/data/faq-data';
+import { SYLLABUS_TRACKER_FAQS } from '@/data/faq-data';
 import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
@@ -42,7 +42,7 @@ export default function SyllabusTrackerPage() {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={syllabusTrackerFAQs} />
+      <StructuredData type="faq" data={SYLLABUS_TRACKER_FAQS} />
       <StructuredData 
         type="breadcrumb" 
         data={{

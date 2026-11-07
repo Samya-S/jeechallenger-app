@@ -33,7 +33,7 @@ import Breadcrumbs from '@/components/common/Breadcrumbs';
 import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
 import CBTMockTestModal from '@/components/modals/CBTMockTestModal';
 import { normalizeOptions } from '@/utils/cbt-helpers';
-import { getExamBadgeColor, subjectColors } from '@/utils/pyq-helpers';
+import { getExamBadgeColor } from '@/utils/pyq-helpers';
 import PYQQuestionCard from '@/components/resources/pyqs/PYQQuestionCard';
 import { YearFilterPills } from '@/components/resources/pyqs/PYQFilterBar';
 

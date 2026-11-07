@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Search, Sliders, Layers, RefreshCw, X, ChevronDown } from "lucide-react";
-import { periodicTableData } from "@/data/resources/periodic-table-data";
+import { PERIODIC_TABLE_DATA } from "@/data/resources/periodic-table-data";
 import { CATEGORIES, STATES, BLOCKS, HEATMAP_MODES } from "@/data/resources/periodic-table-explorer-constants";
 import ElementDetailsModal from "./ElementDetailsModal";
 
@@ -92,7 +92,7 @@ export default function PeriodicTableExplorer() {
   }, [heatmapMode]);
 
   // Group elements into categories
-  const elements = useMemo(() => periodicTableData, []);
+  const elements = useMemo(() => PERIODIC_TABLE_DATA, []);
 
   // Filter elements based on search, category, block
   const filteredElementMap = useMemo(() => {

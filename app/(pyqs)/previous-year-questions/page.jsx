@@ -1,6 +1,6 @@
 import PreviousYearQuestionsComponent from './PreviousYearQuestionsComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { pyqFAQs } from '@/data/faq-data'
+import { PYQ_FAQS } from '@/data/faq-data'
 import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
@@ -61,7 +61,7 @@ const PreviousYearQuestionsPage = () => {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={pyqFAQs} />
+      <StructuredData type="faq" data={PYQ_FAQS} />
       <StructuredData
         type="breadcrumb"
         data={{

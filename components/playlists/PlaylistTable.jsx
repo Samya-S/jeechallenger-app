@@ -4,7 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search, Trash2, BookOpen, Filter, Sparkles, Loader2 } from "lucide-react";
 import CustomSelect from "@/components/ui/CustomSelect";
-import { formatExamOrigin, subjectColors, difficultyColors } from "@/utils/pyq-helpers";
+import { formatExamOrigin, SUBJECT_COLORS, DIFFICULTY_COLORS } from "@/utils/pyq-helpers";
 
 const BATCH_SIZE = 25;
 
@@ -247,10 +247,10 @@ export default function PlaylistTable({
                 <>
                   {visibleQuestions.map((q, idx) => {
                     const subColor =
-                      subjectColors[q.subject] ||
+                      SUBJECT_COLORS[q.subject] ||
                       "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
                     const diffColor =
-                      difficultyColors[q.difficulty] ||
+                      DIFFICULTY_COLORS[q.difficulty] ||
                       "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
                     const origin = formatExamOrigin(q.original_paper_id, q.exam_year, q.exam_type);
 

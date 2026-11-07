@@ -30,7 +30,7 @@ import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import CBTMockTestModal from "@/components/modals/CBTMockTestModal";
-import { subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
+import { SUBJECT_COLORS, DIFFICULTY_COLORS, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 function PaperDetailContent({ paperData }) {
   const { data: session } = useSession();
@@ -651,7 +651,7 @@ function PaperDetailContent({ paperData }) {
                       <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
                         Q{q.question_number}
                       </span>
-                      <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[q.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
+                      <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${SUBJECT_COLORS[q.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
                         <span className="hidden sm:inline">{q.subject}</span>
                         <span className="sm:hidden">{SUBJECT_SHORT_NAMES[q.subject] || q.subject}</span>
                       </span>
@@ -673,7 +673,7 @@ function PaperDetailContent({ paperData }) {
                         </span>
                       )}
                       {q.difficulty && (
-                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800"}`}>
+                        <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${DIFFICULTY_COLORS[q.difficulty] || "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800"}`}>
                           <span className="hidden sm:inline">{q.difficulty}</span>
                           <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[q.difficulty] || q.difficulty}</span>
                         </span>

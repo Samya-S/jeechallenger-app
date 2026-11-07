@@ -7,7 +7,7 @@ import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
 import QuestionBookmarkButton from "@/components/playlists/QuestionBookmarkButton";
-import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamHoverColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, SUBJECT_COLORS, DIFFICULTY_COLORS, getExamHoverColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAction, solutionBehavior }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -149,7 +149,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
             <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
               #{practiceIndex}
             </span>
-            <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
+            <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${SUBJECT_COLORS[question.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
               <span className="hidden sm:inline">{question.subject}</span>
               <span className="sm:hidden">{SUBJECT_SHORT_NAMES[question.subject] || question.subject}</span>
             </span>
@@ -166,7 +166,7 @@ export default function PYQQuestionCard({ question, practiceIndex, extraHeaderAc
               </span>
             )}
             {question.difficulty && (
-              <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
+              <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${DIFFICULTY_COLORS[question.difficulty] || ""}`}>
                 <span className="hidden sm:inline">{question.difficulty}</span>
                 <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[question.difficulty] || question.difficulty}</span>
               </span>

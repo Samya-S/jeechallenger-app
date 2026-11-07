@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import ReportQuestionModal from '@/components/modals/ReportQuestionModal';
 
-const subjectBadgeColors = {
+const SUBJECT_BADGE_COLORS = {
   Physics: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60",
   Chemistry: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60",
   Mathematics: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60",
@@ -462,7 +462,7 @@ export default function CBTSolutionReview({ submission, questionsData = [] }) {
                     <span className="px-3 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black rounded-lg shadow-sm">
                       Q{att.question_number}
                     </span>
-                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectBadgeColors[att.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
+                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${SUBJECT_BADGE_COLORS[att.subject] || "text-gray-600 bg-gray-100 border-gray-200"}`}>
                       {att.subject}
                     </span>
                     {(qDoc?.chapter || att.section_name) && (

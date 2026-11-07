@@ -28,7 +28,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import MarkdownMathRenderer from "@/components/common/MarkdownMathRenderer";
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";
 import ReportQuestionModal from "@/components/modals/ReportQuestionModal";
-import { formatExamOrigin, getPaperSlug, subjectColors, difficultyColors, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
+import { formatExamOrigin, getPaperSlug, SUBJECT_COLORS, DIFFICULTY_COLORS, getExamBadgeColor, MARKS_TO_ALL_COLOR, SUBJECT_SHORT_NAMES, DIFFICULTY_SHORT_NAMES } from "@/utils/pyq-helpers";
 
 export default function QuestionDetailComponent({ question }) {
   const [copied, setCopied] = useState(false);
@@ -279,12 +279,12 @@ export default function QuestionDetailComponent({ question }) {
             <div className="flex items-start justify-between gap-3 mb-3">
               {/* Metadata Badges */}
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${subjectColors[question.subject] || "bg-gray-100 text-gray-700"}`}>
+                <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${SUBJECT_COLORS[question.subject] || "bg-gray-100 text-gray-700"}`}>
                   <span className="hidden sm:inline">{question.subject}</span>
                   <span className="sm:hidden">{SUBJECT_SHORT_NAMES[question.subject] || question.subject}</span>
                 </span>
                 {question.difficulty && (
-                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${difficultyColors[question.difficulty] || ""}`}>
+                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${DIFFICULTY_COLORS[question.difficulty] || ""}`}>
                     <span className="hidden sm:inline">{question.difficulty}</span>
                     <span className="sm:hidden">{DIFFICULTY_SHORT_NAMES[question.difficulty] || question.difficulty}</span>
                   </span>

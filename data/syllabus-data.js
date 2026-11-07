@@ -1,5 +1,5 @@
 // JEE Syllabus Data Structure
-export const syllabusData = {
+export const SYLLABUS_DATA = {
   physics: {
     name: "Physics",
     color: "bg-blue-500",

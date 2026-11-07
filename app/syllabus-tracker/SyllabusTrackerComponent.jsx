@@ -17,7 +17,7 @@ import {
   ChevronsDownUp,
   ChevronsUpDown,
 } from 'lucide-react';
-import { syllabusData } from '@/data/syllabus-data';
+import { SYLLABUS_DATA } from '@/data/syllabus-data';
 import {
   subscribeProgressData,
   getProgressStorageSnapshot,
@@ -77,7 +77,7 @@ const SyllabusTrackerComponent = () => {
 
   const progressData = useProgressDataFromStorage(userId);
   const overallStats = useMemo(
-    () => calculateOverallProgress(syllabusData, progressData),
+    () => calculateOverallProgress(SYLLABUS_DATA, progressData),
     [progressData]
   );
 
@@ -315,7 +315,7 @@ const SyllabusTrackerComponent = () => {
     let totalPyqs = 0;
     let totalRevision = 0;
 
-    Object.entries(syllabusData).forEach(([subjectKey, subjectObj]) => {
+    Object.entries(SYLLABUS_DATA).forEach(([subjectKey, subjectObj]) => {
       const subjProgress = progressData[subjectKey] || {};
       subjectObj.chapters.forEach((ch) => {
         const p = subjProgress[ch.id];
@@ -346,7 +346,7 @@ const SyllabusTrackerComponent = () => {
   const filteredSubjects = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
-    return Object.entries(syllabusData)
+    return Object.entries(SYLLABUS_DATA)
       .map(([subjectKey, subjectObj]) => {
         const subjProgress = progressData[subjectKey] || {};
         const filteredChapters = subjectObj.chapters.filter((ch) => {
@@ -594,7 +594,7 @@ const SyllabusTrackerComponent = () => {
 
             {/* Right: 3 Subject Progress Cards with Open-Bottom Circular Arc */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              {Object.entries(syllabusData).map(([subjectKey, subjectObj]) => {
+              {Object.entries(SYLLABUS_DATA).map(([subjectKey, subjectObj]) => {
                 const st = calculateSubjectProgress(subjectKey, subjectObj.chapters, progressData);
                 const radius = 36;
                 const circumference = 2 * Math.PI * radius;
@@ -836,7 +836,7 @@ const SyllabusTrackerComponent = () => {
           onClose={() => setShowShareModal(false)}
           progressData={progressData}
           overallStats={overallStats}
-          syllabusData={syllabusData}
+          syllabusData={SYLLABUS_DATA}
         />
 
         {/* Reset Confirmation Modal */}

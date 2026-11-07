@@ -1,7 +1,7 @@
 // FAQ Data for Different Pages
 // Used for Structured Data (JSON-LD) and potentially UI FAQs
 
-export const homepageFAQs = {
+export const HOMEPAGE_FAQS = {
   questions: [
     {
       question: "What is JEE Challenger?",
@@ -46,7 +46,7 @@ export const homepageFAQs = {
   ]
 };
 
-export const physicsFAQs = {
+export const PHYSICS_FAQS = {
   questions: [
     {
       question: "What are the best books for JEE Physics?",
@@ -71,7 +71,7 @@ export const physicsFAQs = {
   ]
 };
 
-export const chemistryFAQs = {
+export const CHEMISTRY_FAQS = {
   questions: [
     {
       question: "What are the best books for JEE Chemistry?",
@@ -96,7 +96,7 @@ export const chemistryFAQs = {
   ]
 };
 
-export const mathematicsFAQs = {
+export const MATHEMATICS_FAQS = {
   questions: [
     {
       question: "What are the best books for JEE Mathematics?",
@@ -121,7 +121,7 @@ export const mathematicsFAQs = {
   ]
 };
 
-export const pyqFAQs = {
+export const PYQ_FAQS = {
   questions: [
     {
       question: "Why are previous year questions important for JEE?",
@@ -146,7 +146,7 @@ export const pyqFAQs = {
   ]
 };
 
-export const aiTutorFAQs = {
+export const AI_TUTOR_FAQS = {
   questions: [
     {
       question: "How does the JEE Challenger AI Tutor work?",
@@ -171,7 +171,7 @@ export const aiTutorFAQs = {
   ]
 };
 
-export const syllabusTrackerFAQs = {
+export const SYLLABUS_TRACKER_FAQS = {
   questions: [
     {
       question: "How does the JEE Syllabus Tracker work?",
@@ -196,7 +196,7 @@ export const syllabusTrackerFAQs = {
   ]
 };
 
-export const newsFAQs = {
+export const NEWS_FAQS = {
   questions: [
     {
       question: "How often is JEE news updated on JEE Challenger?",

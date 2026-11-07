@@ -204,9 +204,6 @@ export const DIFFICULTY_COLORS = {
   Hard: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800",
 };
 
-export const subjectColors = SUBJECT_COLORS;
-export const difficultyColors = DIFFICULTY_COLORS;
-
 const EXAM_TYPE_COLORS = {
   JEE_MAIN: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
   JEE_ADVANCED: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800",

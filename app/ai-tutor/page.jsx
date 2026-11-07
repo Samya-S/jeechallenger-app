@@ -1,5 +1,5 @@
 import StructuredData from '@/components/common/StructuredData';
-import { aiTutorFAQs } from '@/data/faq-data';
+import { AI_TUTOR_FAQS } from '@/data/faq-data';
 import { ogImageMeta } from '@/utils/og-metadata';
 
 const pageOg = ogImageMeta({
@@ -40,7 +40,7 @@ export default function AITutorPage() {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={aiTutorFAQs} />
+      <StructuredData type="faq" data={AI_TUTOR_FAQS} />
       <StructuredData 
         type="breadcrumb" 
         data={{

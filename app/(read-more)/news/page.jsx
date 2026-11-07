@@ -1,6 +1,6 @@
 import NewsComponent from './NewsComponent';
 import StructuredData from '@/components/common/StructuredData';
-import { newsFAQs } from '@/data/faq-data';
+import { NEWS_FAQS } from '@/data/faq-data';
 import { fetchNews } from '@/server/news-actions';
 import { ogImageMeta } from '@/utils/og-metadata';
 
@@ -54,7 +54,7 @@ export default async function NewsPage() {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={newsFAQs} />
+      <StructuredData type="faq" data={NEWS_FAQS} />
       <StructuredData 
         type="breadcrumb" 
         data={{

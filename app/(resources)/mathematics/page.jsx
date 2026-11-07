@@ -1,6 +1,6 @@
 import MathematicsComponent from './MathematicsComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { mathematicsFAQs } from '@/data/faq-data'
+import { MATHEMATICS_FAQS } from '@/data/faq-data'
 import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
@@ -41,7 +41,7 @@ const MathematicsPage = () => {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={mathematicsFAQs} />
+      <StructuredData type="faq" data={MATHEMATICS_FAQS} />
       <StructuredData
         type="breadcrumb"
         data={{

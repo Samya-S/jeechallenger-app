@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check, Search } from "lucide-react";
 
-const colorThemes = {
+const COLOR_THEMES = {
   orange: {
     borderOpen: "border-orange-500 ring-1 ring-orange-500",
     chevronOpen: "text-orange-500",
@@ -33,7 +33,7 @@ export default function CustomSelect({
   size = "md",
   color = "orange",
 }) {
-  const theme = colorThemes[color] || colorThemes.orange;
+  const theme = COLOR_THEMES[color] || COLOR_THEMES.orange;
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const containerRef = useRef(null);

@@ -1,6 +1,6 @@
 import ChemistryComponent from './ChemistryComponent'
 import StructuredData from '@/components/common/StructuredData'
-import { chemistryFAQs } from '@/data/faq-data'
+import { CHEMISTRY_FAQS } from '@/data/faq-data'
 import { ogImageMeta } from '@/utils/og-metadata'
 
 const pageOg = ogImageMeta({
@@ -41,7 +41,7 @@ const ChemistryPage = () => {
   return (
     <>
       {/* Structured Data for SEO */}
-      <StructuredData type="faq" data={chemistryFAQs} />
+      <StructuredData type="faq" data={CHEMISTRY_FAQS} />
       <StructuredData
         type="breadcrumb"
         data={{

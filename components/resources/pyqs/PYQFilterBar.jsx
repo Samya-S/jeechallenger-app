@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Search, RotateCcw, Filter, BookOpen, FileText, ChevronDown } from "lucide-react";
-import { syllabusData } from "@/data/syllabus-data";
+import { SYLLABUS_DATA } from "@/data/syllabus-data";
 import CustomSelect from "@/components/ui/CustomSelect";
 
 const EXAM_TYPES = [
@@ -202,14 +202,14 @@ export default function PYQFilterBar({
     let list = [];
     if (!filters.subject || filters.subject === "ALL") {
       const allChaps = [
-        ...(syllabusData.physics?.chapters || []),
-        ...(syllabusData.chemistry?.chapters || []),
-        ...(syllabusData.mathematics?.chapters || []),
+        ...(SYLLABUS_DATA.physics?.chapters || []),
+        ...(SYLLABUS_DATA.chemistry?.chapters || []),
+        ...(SYLLABUS_DATA.mathematics?.chapters || []),
       ];
       list = Array.from(new Set(allChaps.map((c) => c.name))).sort();
     } else {
       const subKey = filters.subject.toLowerCase();
-      const chaps = syllabusData[subKey]?.chapters || [];
+      const chaps = SYLLABUS_DATA[subKey]?.chapters || [];
       list = chaps.map((c) => c.name);
     }
 

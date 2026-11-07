@@ -1,6 +1,6 @@
 import HomeComponent from "./HomeComponent";
 import StructuredData from "@/components/common/StructuredData";
-import { homepageFAQs } from "@/data/faq-data";
+import { HOMEPAGE_FAQS } from "@/data/faq-data";
 import { getAllArticles } from "@/utils/articles";
 
 export default async function Home() {
@@ -11,7 +11,7 @@ export default async function Home() {
       {/* Structured Data for SEO */}
       <StructuredData type="organization" />
       <StructuredData type="website" />
-      <StructuredData type="faq" data={homepageFAQs} />
+      <StructuredData type="faq" data={HOMEPAGE_FAQS} />
       <StructuredData 
         type="breadcrumb" 
         data={{
