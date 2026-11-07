@@ -14,6 +14,7 @@ In strict adherence to the JEE Challenger platform architecture:
 * All playlist CRUD, question hydration, deduplication, and slug resolution flow exclusively through the Go microservice (`jeechallenger-pyqs`):
   * **Server Components (SSR)**: `/lists/[slug]/page.jsx` fetches data directly via `pyqsService.getPlaylistBySlug(slug, { userId })` from the unified service layer (`server/services/pyqs.js`).
   * **Client Interactions (BFF Proxy)**: Client components call `app/api/playlists/...`, which delegates to the Go backend via centralized authentication and base URL configurations in `server/services/pyqs.js` using NextAuth-signed HS256 JWT tokens.
+  * **Unified Global State (`BookmarkContext`)**: All client-side playlist and bookmark state is managed through a single, app-wide `BookmarkContext` mounted in `ConditionalLayout.jsx`. This eliminates duplicate initial `/api/playlists` fetches and guarantees real-time cross-page synchronization between question cards and the `/lists` dashboard.
 
 ### 1.2 Dumb Frontend Principle
 * Next.js renders only the presentation layer.
@@ -47,8 +48,12 @@ There is **no** separate private vs public URL. The URL is always `/lists/[slug]
 
 ## 3. Question Cards & Bookmark Popover UX
 
-### 3.1 Bookmark Button on `PYQQuestionCard`
-* Positioned in the top-right toolbar of every question card.
+### 3.1 Universal Question Bookmark Button (`<QuestionBookmarkButton />`)
+* Consistently embedded across all four primary question views:
+  1. **PYQ Question Cards** (`components/resources/pyqs/PYQQuestionCard.jsx`)
+  2. **Full Shift Papers** (`components/resources/pyqs/PaperDetailComponent.jsx`)
+  3. **Dedicated Question Pages** (`components/resources/pyqs/QuestionDetailComponent.jsx`)
+  4. **CBT Solution Reviews** (`components/cbt/results/CBTSolutionReview.jsx`)
 * **Visual States**:
   * **Filled Icon** (accent blue): Question is present in at least one of the user's playlists.
   * **Outline Icon** (muted gray): Question is not present in any playlist.
@@ -59,7 +64,7 @@ There is **no** separate private vs public URL. The URL is always `/lists/[slug]
   2. Checking/unchecking triggers an immediate background mutation (`POST` / `DELETE` to Go microservice).
   3. Inline input at bottom: `+ Create new list...` allows creating a custom playlist on the fly and immediately adding the current question to it.
 * **Unauthenticated Visitor**:
-  * Shows a clean, minimal popover text: *"Sign in to save questions to your lists"*. No aggressive dialogs or jarring redirects.
+  * Displays a branded prompt with an explicit **"Sign In to Bookmark"** call-to-action button linking directly to `/login?callbackUrl=...` with automatic return after sign-in.
 
 ---
 
@@ -89,9 +94,9 @@ There is **no** separate private vs public URL. The URL is always `/lists/[slug]
 
 ### 5.2 Question Table Columns
 1. **Index**: `#1`, `#2`, ...
-2. **Title**: Clickable question title navigating to `/pyq/[slug]`.
+2. **Title**: Clickable question title navigating to `/question/[slug]`.
 3. **Subject**: Color-coded pill (Physics: cyan, Chemistry: emerald, Math: violet).
 4. **Chapter**: Subtle badge.
-5. **Exam & Year**: Formatted (e.g. `JEE Main 2026 · 2 Apr Shift 1`).
+5. **Exam & Year**: Formatted (e.g. `JEE Main 2026 — 2 Apr Shift 1`).
 6. **Difficulty**: Easy (green), Medium (amber), Hard (red).
 7. **Action**: "Solve" link button.

@@ -9,6 +9,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - [Features](#features)
   - [Core Features](#-core-features)
   - [Computer-Based Test (CBT) Mock Test Engine](#-computer-based-test-cbt-mock-test-engine)
+  - [Question Lists & Revision Vaults](#-question-lists--revision-vaults)
   - [User Experience](#-user-experience)
   - [Study Resources](#-study-resources)
   - [Previous Year Questions](#-previous-year-questions)
@@ -36,6 +37,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 - **Computer-Based Test (CBT) Mock Test Engine (`/mock-test`)**: Authentic NTA (JEE Main) and TCS iON (JEE Advanced) full-length 3-hour examination simulator with 3-tier state hierarchy (Zustand -> IndexedDB -> Upstash Redis), multi-device anti-collision lease, official palette states, multi-correct checkbox input with partial marking (`MULTI_CORRECT_PARTIAL`), Section B 5-of-10 attempt enforcement, automatic Mistake Vault sync with active recall, interactive Time Traps & Speed Wins pacing analytics, and factual Attempt Rate scorecard evaluation.
 - **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/question/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/paper/:slug`) with section navigation.
+- **Question Lists & Revision Vaults (`/lists`)**: Create, organize, and practice personalized question lists. Save challenging problems to Favourites, track incorrect answers with an automatic Mistake Vault, share public lists with peers, and bookmark questions with real-time synchronization across PYQ cards, full shift papers, standalone questions, and CBT solution reviews.
 - **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history.
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking and cloud sync.
 - **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics.
@@ -102,6 +104,29 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - **Interactive Time Traps & Speed Wins**: Benchmark pacing dashboard with click-to-jump smooth scrolling and amber focus highlight pulse.
   - **Mistake Vault with Active Recall**: Automatically stores incorrect attempts in MongoDB Atlas with step-by-step solutions collapsed and closed by default.
   - **In-Situ Bug Reporting**: Direct `<Bug />` report trigger on every review card linking into `ReportQuestionModal`.
+
+
+### 📑 Question Lists & Revision Vaults
+
+> 📖 **Full Architectural Specification**: See the comprehensive [Question Playlists & Custom Bookmarks Master Blueprint](docs/playlists-master-spec.md) for data schemas, Go microservice endpoints, and state synchronization details.
+
+- **Personalized Revision Playlists (`/lists`)**:
+  - System-seeded default lists: **Favourites** (priority revision) and **Mistake Vault** (revision tracker).
+  - Create custom lists with personalized titles, descriptions, and public/private visibility toggles.
+  - Search, sort, and filter bookmarked questions by Subject, Difficulty, and Chapter with progressive infinite scroll.
+  - Direct "Solve" shortcuts navigating to standalone question solver pages.
+  - Public playlist sharing with one-click link copying and clone-to-account capability for peers and study groups.
+- **Universal Question Bookmarking**:
+  - Embedded `<QuestionBookmarkButton />` consistently available across all four question surfaces:
+    1. **PYQ Question Cards** (`/previous-year-questions`)
+    2. **Full Shift Paper Explorers** (`/paper/[slug]`)
+    3. **Dedicated Question Pages** (`/question/[slug]`)
+    4. **CBT Exam Solution Reviews** (`/mock-test/[slug]/results`)
+  - One-click multi-playlist checkbox selector with instant in-flight mutation and in-popover custom list creation.
+  - Direct "Sign In to Bookmark" call-to-action for guest visitors with automatic post-login return.
+- **Real-Time State Synchronization**:
+  - Single source of truth via unified global `BookmarkContext` at the application root (`ConditionalLayout`).
+  - Zero duplicate network requests; adding, editing, or deleting lists immediately updates bookmark popovers across the entire platform without page refreshes.
 
 
 ### 👨‍🏫 AI Tutor
@@ -310,7 +335,7 @@ jeechallenger-app/
 │   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
 │   ├── modals/                 # Modal dialogs
-│   ├── playlists/              # Playlist sidebars, tables, and popover components
+│   ├── playlists/              # Unified BookmarkContext, sidebars, tables, and popover components
 │   ├── providers/              # React Context providers
 │   ├── resources/              # Formula sheets, unit converters, and PYQ components
 │   └── ui/                     # Primitives (CustomSelect, BlogCard, etc.)

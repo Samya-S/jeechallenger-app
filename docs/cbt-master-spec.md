@@ -529,7 +529,7 @@ Manual submission or client-side timer expiration.
     "submission_id": "6720f128...",
     "total_score": 184,
     "max_marks": 300,
-    "redirect_url": "/mock-test/results/6720f128..."
+    "redirect_url": "/mock-test/jee-main-2026-apr-2nd-shift-1/results?submission=6720f128..."
   }
   ```
 
@@ -747,13 +747,13 @@ Every question in the `jee_challenger_pyqs` database adheres to the canonical sc
 
 ## 12. Post-Exam Scorecard & Review Experience
 
-Once submitted, the student lands on the permanent analysis route (`/mock-test/results/[submissionId]`):
+Once submitted, the student lands on the permanent analysis route (`/mock-test/[paperSlug]/results?submission=[submissionId]`):
 
 1. **Executive Scorecard Banner**: Total Score, Max Marks, Subject Scores, Accuracy %, Time Used, and factual **Attempt Rate** (`84.0% (63/75)`). Zero misleading pseudo-percentiles ("Emptiness is better than wrong").
 2. **Design System Color Harmony**:
    * **Best Score Overview Card**: Royal Blue (`bg-blue-50/50 text-blue-600 border-blue-200`)
    * **Mistake Vault Overview Card**: Golden Amber (`bg-amber-50/50 text-amber-600 border-amber-200`) with Bookmark icon
-   * **Subject Filter Pills**: Physics (Blue), Chemistry (Emerald), Mathematics (Purple), All (Neutral dark/light)
+   * **Subject Filter Pills**: Physics (Blue), Chemistry (Emerald), Mathematics (Purple), All (Neutral dark/light) with responsive mobile labels (`Phy`, `Chem`, `Maths`, `All`)
 3. **Pacing Heatmap & Interactive Time Traps**:
    * Symmetrical 3-row layout categorized into Time Traps, Speed Wins, and Subject Averages.
    * **Interactive Click-to-Jump**: Clicking any Time Trap or Speed Win pill smoothly scrolls to that question's review card, automatically switches to the correct subject filter, opens the step-by-step solution, and pulses with an amber focus highlight (`ring-4 ring-amber-500 shadow-2xl`).
@@ -761,6 +761,7 @@ Once submitted, the student lands on the permanent analysis route (`/mock-test/r
    * Automatically populated with all incorrect attempts (`is_correct === false`).
    * Step-by-step solutions are **collapsed and closed by default** so candidates can attempt the problem again without immediate answer leakage.
    * Solution reveals exclusively when the user clicks **"View Step-by-Step Solution"**.
+   * Each question card features the universal `<QuestionBookmarkButton />` allowing students to bookmark questions to custom playlists directly from review.
 5. **Multi-Correct Review**:
    * Renders multiple selected option badges and highlights partial credit awards (`Partially Correct (+X marks)` vs `Correct` vs `Incorrect`).
 6. **In-Situ Bug Reporting**:
