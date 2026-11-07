@@ -4,7 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search, Trash2, BookOpen, Filter, Sparkles, Loader2 } from "lucide-react";
 import CustomSelect from "@/components/ui/CustomSelect";
-import { formatExamOrigin, getExamBadgeColor, SUBJECT_COLORS, DIFFICULTY_COLORS } from "@/utils/pyq-helpers";
+import { formatExamType, getExamBadgeColor, SUBJECT_COLORS, DIFFICULTY_COLORS } from "@/utils/pyq-helpers";
 
 const BATCH_SIZE = 25;
 
@@ -248,11 +248,12 @@ export default function PlaylistTable({
                   {visibleQuestions.map((q, idx) => {
                     const subColor =
                       SUBJECT_COLORS[q.subject] ||
-                      "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
+                      "bg-gray-500/10 text-gray-600 dark:text-gray-400";
                     const diffColor =
                       DIFFICULTY_COLORS[q.difficulty] ||
-                      "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20";
-                    const origin = formatExamOrigin(q.original_paper_id, q.exam_year, q.exam_type);
+                      "bg-gray-500/10 text-gray-600 dark:text-gray-400";
+                    const examName = formatExamType(q);
+                    const examBadgeColor = getExamBadgeColor(q.exam_type || examName);
 
                     return (
                       <tr
@@ -267,7 +268,9 @@ export default function PlaylistTable({
                         {/* Problem Title */}
                         <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-gray-100">
                           <Link
-                            href={`/pyq/${q.slug}`}
+                            href={`/question/${q.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 md:line-clamp-1"
                           >
                             {q.title || "Untitled Question"}
@@ -286,10 +289,10 @@ export default function PlaylistTable({
                           {q.chapter || "—"}
                         </td>
 
-                        {/* Exam / Year */}
+                        {/* Exam */}
                         <td className="py-3.5 px-3 hidden lg:table-cell whitespace-nowrap">
-                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold border ${getExamBadgeColor(q.exam_type || origin)}`}>
-                            {origin}
+                          <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${examBadgeColor}`}>
+                            {examName}
                           </span>
                         </td>
 
@@ -304,7 +307,9 @@ export default function PlaylistTable({
                         <td className="py-3.5 px-4 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             <Link
-                              href={`/pyq/${q.slug}`}
+                              href={`/question/${q.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors cursor-pointer"
                             >
                               <span>Solve</span>

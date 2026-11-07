@@ -127,6 +127,34 @@ function parseShiftAndDate(cleanPaper, isShort = false) {
 }
 
 /**
+ * Formats the exam name (e.g. "JEE Main" or "JEE Advanced").
+ *
+ * @param {Object|string} questionOrExamType
+ * @param {Object} [options]
+ * @param {boolean} [options.isShort=false]
+ * @returns {string} Formatted exam label ("JEE Main" | "JEE Advanced" or "Main" | "Adv")
+ */
+export function formatExamType(questionOrExamType, { isShort = false } = {}) {
+  if (!questionOrExamType) return isShort ? "Main" : "JEE Main";
+
+  if (typeof questionOrExamType === "string") {
+    const isAdv = questionOrExamType.toUpperCase().includes("ADVANCED");
+    if (isShort) return isAdv ? "Adv" : "Main";
+    return isAdv ? "JEE Advanced" : "JEE Main";
+  }
+
+  const paperId = questionOrExamType.original_paper_id || "";
+  const cleanPaper = paperId.replace(/_/g, " ").trim();
+  const examType =
+    questionOrExamType.exam_type ||
+    (cleanPaper.toLowerCase().includes("advanced") ? "JEE_ADVANCED" : "JEE_MAIN");
+
+  const isAdv = String(examType).toUpperCase().includes("ADVANCED");
+  if (isShort) return isAdv ? "Adv" : "Main";
+  return isAdv ? "JEE Advanced" : "JEE Main";
+}
+
+/**
  * Formats the exam origin badge label for any JEE question.
  * Supports both full desktop and concise mobile formats.
  *
