@@ -17,8 +17,21 @@ export default function CBTMobileGuard({ children, paperSlug }) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    setIsMobile(isMobileDevice());
+    const mobile = isMobileDevice();
+    setIsMobile(mobile);
     setChecked(true);
+
+    // If mobile is detected, immediately release any active fullscreen lock
+    if (mobile && typeof document !== 'undefined') {
+      const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+      if (isFs) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
   }, []);
 
   // Avoid flash — render nothing until client check is done
