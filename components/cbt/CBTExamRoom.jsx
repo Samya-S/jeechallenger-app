@@ -15,6 +15,7 @@ import CBTCandidateLogin from './gateway/CBTCandidateLogin';
 import CBTGeneralInstructions from './gateway/CBTGeneralInstructions';
 import CBTDeclarationGateway from './gateway/CBTDeclarationGateway';
 import CBTTransferModal from './CBTTransferModal';
+import CBTNoticeModal from './CBTNoticeModal';
 import { Loader2 } from 'lucide-react';
 
 export default function CBTExamRoom({
@@ -47,6 +48,15 @@ export default function CBTExamRoom({
   const [pendingTransferSession, setPendingTransferSession] = useState(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
+  const [noticeModal, setNoticeModal] = useState({
+    isOpen: false,
+    type: 'ERROR',
+    title: '',
+    message: '',
+    onAction: null,
+    actionText: '',
+    cancelText: 'Close',
+  });
 
   // Request fullscreen as soon as the Exam UI opens/mounts in browser
   useEffect(() => {
@@ -216,7 +226,26 @@ export default function CBTExamRoom({
       setGatewayStage('EXAM');
     } catch (err) {
       console.error('Failed to transfer session lease:', err);
-      alert('Could not transfer examination session: ' + err.message);
+      setNoticeModal({
+        isOpen: true,
+        type: 'TRANSFER_ERROR',
+        title: 'Session Transfer Failed',
+        message: err.message || 'Could not transfer examination session lease.',
+        actionText: 'Retry Transfer',
+        cancelText: 'Cancel & Exit',
+        onAction: () => {
+          setNoticeModal((prev) => ({ ...prev, isOpen: false }));
+          handleConfirmTransfer();
+        },
+        onClose: () => {
+          setNoticeModal((prev) => ({ ...prev, isOpen: false }));
+          setIsTransferModalOpen(false);
+          setPendingTransferSession(null);
+          if (typeof window !== 'undefined') {
+            window.location.href = '/mock-test';
+          }
+        },
+      });
     } finally {
       setIsTransferring(false);
     }
@@ -250,7 +279,31 @@ export default function CBTExamRoom({
         });
 
         if (!res.ok) {
-          throw new Error('Failed to start session on server');
+          const errData = await res.json().catch(() => ({}));
+          if (res.status === 401) {
+            setNoticeModal({
+              isOpen: true,
+              type: 'AUTH',
+              title: 'Authentication Required',
+              message: errData.message || 'Authentication required. Please sign in to take a CBT mock test.',
+              actionText: 'Sign In to Continue',
+              cancelText: 'Exit to Catalog',
+              onAction: () => {
+                if (typeof window !== 'undefined') {
+                  const currentPath = window.location.pathname + window.location.search;
+                  window.location.href = `/login?callbackUrl=${encodeURIComponent(currentPath)}`;
+                }
+              },
+              onClose: () => {
+                setNoticeModal((prev) => ({ ...prev, isOpen: false }));
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/mock-test';
+                }
+              },
+            });
+            return;
+          }
+          throw new Error(errData.message || errData.error || 'Failed to start session on server');
         }
 
         const session = await res.json();
@@ -272,7 +325,24 @@ export default function CBTExamRoom({
         setGatewayStage('EXAM');
       } catch (err) {
         console.error('Failed to start exam session:', err);
-        alert('Could not start examination session. Please try again or contact the invigilator.');
+        setNoticeModal({
+          isOpen: true,
+          type: 'ERROR',
+          title: 'Unable to Start Exam',
+          message: err.message || 'Could not start examination session. Please check your connection and try again.',
+          actionText: 'Try Again',
+          cancelText: 'Exit to Catalog',
+          onAction: () => {
+            setNoticeModal((prev) => ({ ...prev, isOpen: false }));
+            handleReadyToBegin(defaultLanguage);
+          },
+          onClose: () => {
+            setNoticeModal((prev) => ({ ...prev, isOpen: false }));
+            if (typeof window !== 'undefined') {
+              window.location.href = '/mock-test';
+            }
+          },
+        });
       } finally {
         setIsStartingSession(false);
       }
@@ -479,6 +549,18 @@ export default function CBTExamRoom({
       <CBTInstructionsModal
         isOpen={isInstructionsOpen}
         onClose={() => setIsInstructionsOpen(false)}
+      />
+
+      {/* CBT In-App Notice & Error Modal (Eliminates raw browser alerts) */}
+      <CBTNoticeModal
+        isOpen={noticeModal.isOpen}
+        type={noticeModal.type}
+        title={noticeModal.title}
+        message={noticeModal.message}
+        onAction={noticeModal.onAction}
+        onClose={noticeModal.onClose}
+        actionText={noticeModal.actionText}
+        cancelText={noticeModal.cancelText}
       />
     </div>
   );

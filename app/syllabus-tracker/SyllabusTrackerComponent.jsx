@@ -36,6 +36,7 @@ import SubjectCard from './SubjectCard';
 import { ChapterList } from './ChapterRow';
 import ShareProgressModal from './ShareProgressModal';
 import SyncConflictModal from './SyncConflictModal';
+import SyllabusNoticeModal from './SyllabusNoticeModal';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import Link from 'next/link';
 
@@ -93,6 +94,12 @@ const SyllabusTrackerComponent = () => {
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [noticeModal, setNoticeModal] = useState({
+    isOpen: false,
+    type: 'success',
+    title: '',
+    message: '',
+  });
 
   // Sync state
   const [syncEnabled, setSyncEnabled] = useState(false);
@@ -296,12 +303,23 @@ const SyllabusTrackerComponent = () => {
       reader.onload = (e) => {
         const success = importProgress(userId, e.target.result);
         if (success) {
-          alert('Progress imported successfully!');
+          setNoticeModal({
+            isOpen: true,
+            type: 'success',
+            title: 'Progress Imported Successfully',
+            message: 'Your JEE syllabus progress and chapter tasks have been successfully loaded and updated.',
+          });
         } else {
-          alert('Failed to import progress. Please check the file format.');
+          setNoticeModal({
+            isOpen: true,
+            type: 'error',
+            title: 'Import Failed',
+            message: 'Failed to import progress. Please verify the file format and ensure it is a valid JEE syllabus progress backup JSON.',
+          });
         }
       };
       reader.readAsText(file);
+      event.target.value = '';
     }
   };
 
@@ -873,6 +891,15 @@ const SyllabusTrackerComponent = () => {
             </div>
           </div>
         )}
+
+        {/* Syllabus Tracker In-App Notice Modal (Replaces browser alerts) */}
+        <SyllabusNoticeModal
+          isOpen={noticeModal.isOpen}
+          type={noticeModal.type}
+          title={noticeModal.title}
+          message={noticeModal.message}
+          onClose={() => setNoticeModal((prev) => ({ ...prev, isOpen: false }))}
+        />
       </div>
     </div>
   );

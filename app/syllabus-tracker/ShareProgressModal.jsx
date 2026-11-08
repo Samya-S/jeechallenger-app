@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as htmlToImage from 'html-to-image';
 import { getSiteUrl } from '@/config/site-url';
+import { AlertTriangle, RotateCcw } from 'lucide-react';
 
 /**
  * ShareProgressModal - Modal component for generating and sharing progress report
@@ -11,6 +12,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
   const reportRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
+  const [generationError, setGenerationError] = useState('');
 
   // Calculate subject-wise progress
   const getSubjectProgress = () => {
@@ -52,6 +54,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
     if (!reportRef.current) return;
     
     setIsGenerating(true);
+    setGenerationError('');
     try {
       // Wait for fonts and all styles to fully load
       await document.fonts.ready;
@@ -73,7 +76,7 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
       setGeneratedImage(imageData);
     } catch (error) {
       console.error('Error generating image:', error);
-      alert('Failed to generate image. Please try again.');
+      setGenerationError('Failed to generate progress image. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -412,6 +415,23 @@ const ShareProgressModal = ({ isOpen, onClose, progressData, overallStats, sylla
           <div className="text-center py-4">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Generating your report...</p>
+          </div>
+        )}
+
+        {/* In-App Error Notification (Replaces browser alert) */}
+        {generationError && !isGenerating && (
+          <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-2xl flex items-center justify-between gap-3 text-red-600 dark:text-red-400 text-xs sm:text-sm mt-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>{generationError}</span>
+            </div>
+            <button
+              onClick={generateImage}
+              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
           </div>
         )}
 
