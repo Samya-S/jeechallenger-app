@@ -279,6 +279,10 @@ INTERNAL_CRON_SECRET=your-cron-secret
 # On-Demand Revalidation Secret (for Go backend & pipeline cache purges)
 REVALIDATION_SECRET=your-revalidation-secret
 
+# Microservice Internal Machine-to-Machine Secrets (HS256 X-Internal-Token)
+PYQS_SERVICE_SECRET=your-pyqs-service-secret
+AI_SERVICE_SECRET=your-ai-service-secret
+
 # PYQ Go Backend Microservice URL (optional, defaults to https://pyqs-api.jeechallenger.com)
 PYQS_API_URL=https://pyqs-api.jeechallenger.com
 
@@ -352,6 +356,7 @@ jeechallenger-app/
 ├── server/                     # Server-side business logic
 │   ├── services/               # Centralized microservice clients & SDKs
 │   │   ├── ai.js               # Python AI Tutor microservice client
+│   │   ├── internal-token.js   # Short-lived internal service JWT signer (X-Internal-Token)
 │   │   ├── pyqs.js             # Go PYQ & CBT microservice client
 │   │   └── syllabus-tracker.js # Syllabus progress MongoDB service
 │   ├── contact-actions.js      # Contact form email server action
