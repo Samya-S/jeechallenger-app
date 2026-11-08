@@ -293,7 +293,7 @@ export default function UnitConverter({ subject = "physics" }) {
       {/* ========================================================================= */}
       {/* Main Converter Card                                                       */}
       {/* ========================================================================= */}
-      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06] overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-gray-800 ring-1 ring-black/[0.03] dark:ring-white/[0.06]">
         {/* Category Tabs */}
         <div className="bg-slate-50 dark:bg-[#0d1320] p-5 sm:p-6 border-b border-slate-200 dark:border-gray-800 rounded-t-3xl">
           <div className="flex flex-wrap justify-center gap-2.5">
