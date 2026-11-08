@@ -1,3 +1,15 @@
+const jwt = require('jsonwebtoken');
+
+function getPyqsServiceToken() {
+  const secret = process.env.PYQS_SERVICE_SECRET;
+  if (!secret) return null;
+  return jwt.sign(
+    { iss: 'jeechallenger-web', aud: 'pyqs-service' },
+    secret,
+    { algorithm: 'HS256', expiresIn: '60s' }
+  );
+}
+
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
@@ -57,7 +69,7 @@ async function getPaperRoutes() {
 
     const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
       signal: controller.signal,
-      headers: { Accept: 'application/json' },
+      headers: { Accept: 'application/json', ...(getPyqsServiceToken() ? { 'X-Internal-Token': getPyqsServiceToken() } : {}) },
     });
     clearTimeout(timeoutId);
 
@@ -101,7 +113,7 @@ async function getQuestionRoutes() {
 
       const res = await fetch(`${PYQS_API_URL}/questions/sitemap?limit=10000&page=${page}`, {
         signal: controller.signal,
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json', ...(getPyqsServiceToken() ? { 'X-Internal-Token': getPyqsServiceToken() } : {}) },
       });
       clearTimeout(timeoutId);
 

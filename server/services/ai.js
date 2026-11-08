@@ -1,3 +1,4 @@
+import { attachServiceToken } from './internal-token';
 import jwt from 'jsonwebtoken';
 
 export const AI_API_URL = process.env.AI_API_URL || 'https://ai-api.jeechallenger.com';
@@ -16,12 +17,14 @@ export function signAiToken(tokenOrId) {
 /**
  * Generates authorization headers containing the signed Bearer token.
  */
-export function getAiAuthHeaders(tokenOrId, extraHeaders = {}) {
-  const signedToken = signAiToken(tokenOrId);
-  return {
-    Authorization: `Bearer ${signedToken}`,
-    ...extraHeaders,
-  };
+export function getAiAuthHeaders(tokenOrId = null, extraHeaders = {}) {
+  const headers = { ...extraHeaders };
+  attachServiceToken(headers, 'ai-service');
+  if (tokenOrId) {
+    const signedToken = signAiToken(tokenOrId);
+    headers['Authorization'] = `Bearer ${signedToken}`;
+  }
+  return headers;
 }
 
 /**
@@ -55,6 +58,7 @@ export const aiService = {
       headers.set('content-type', contentType);
     }
     headers.set('Authorization', `Bearer ${signedToken}`);
+    attachServiceToken(headers, 'ai-service');
 
     try {
       const fetchOptions = {

@@ -1,3 +1,15 @@
+import jwt from 'jsonwebtoken';
+
+function getPyqsServiceToken() {
+  const secret = process.env.PYQS_SERVICE_SECRET;
+  if (!secret) return null;
+  return jwt.sign(
+    { iss: 'jeechallenger-web', aud: 'pyqs-service' },
+    secret,
+    { algorithm: 'HS256', expiresIn: '60s' }
+  );
+}
+
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
@@ -86,9 +98,11 @@ async function fetchDynamicPapers() {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const sToken = getPyqsServiceToken();
+    const headers = { Accept: 'application/json', ...(sToken ? { 'X-Internal-Token': sToken } : {}) };
     const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
       signal: controller.signal,
-      headers: { Accept: 'application/json' },
+      headers,
     });
     clearTimeout(timeoutId);
     if (!res.ok) return [];
@@ -111,9 +125,11 @@ async function fetchDynamicQuestions() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+      const sToken = getPyqsServiceToken();
+      const headers = { Accept: 'application/json', ...(sToken ? { 'X-Internal-Token': sToken } : {}) };
       const res = await fetch(`${PYQS_API_URL}/questions/image-sitemap?limit=10000&page=${page}`, {
         signal: controller.signal,
-        headers: { Accept: 'application/json' },
+        headers,
       });
       clearTimeout(timeoutId);
 

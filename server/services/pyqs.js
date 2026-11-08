@@ -1,3 +1,4 @@
+import { getServiceToken, attachServiceToken } from './internal-token';
 import jwt from 'jsonwebtoken';
 
 export const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
@@ -16,12 +17,14 @@ export function signUserToken(tokenOrId) {
 /**
  * Generates authorization headers containing the signed Bearer token.
  */
-export function getAuthHeaders(tokenOrId, extraHeaders = {}) {
-  const token = signUserToken(tokenOrId);
-  return {
-    Authorization: `Bearer ${token}`,
-    ...extraHeaders,
-  };
+export function getAuthHeaders(tokenOrId = null, extraHeaders = {}) {
+  const headers = { ...extraHeaders };
+  attachServiceToken(headers, 'pyqs-service');
+  if (tokenOrId) {
+    const token = signUserToken(tokenOrId);
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
 }
 
 /**
@@ -47,7 +50,8 @@ export const pyqsService = {
       }
     }
 
-    const res = await fetch(`${PYQS_API_URL}/papers?${params.toString()}`, fetchOptions);
+    const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
+    const res = await fetch(`${PYQS_API_URL}/papers?${params.toString()}`, { ...fetchOptions, headers });
     if (!res.ok) {
       throw new Error(`Failed to fetch papers: ${res.status} ${res.statusText}`);
     }
@@ -61,7 +65,9 @@ export const pyqsService = {
     if (!slug) return null;
 
     try {
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
       const res = await fetch(`${PYQS_API_URL}/papers/${encodeURIComponent(slug)}`, {
+        headers,
         cache: 'no-store',
         ...fetchOptions,
       });
@@ -89,7 +95,8 @@ export const pyqsService = {
     if (!slug) return null;
 
     try {
-      const res = await fetch(`${PYQS_API_URL}/questions/${encodeURIComponent(slug)}`, fetchOptions);
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
+      const res = await fetch(`${PYQS_API_URL}/questions/${encodeURIComponent(slug)}`, { ...fetchOptions, headers });
       if (!res.ok) return null;
       const json = await res.json();
       return json?.data || json;

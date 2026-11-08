@@ -1,3 +1,4 @@
+import { attachServiceToken } from '@/server/services/internal-token';
 import { getToken } from "next-auth/jwt";
 import { PYQS_API_URL, signUserToken } from "@/server/services/pyqs";
 
@@ -27,6 +28,7 @@ export async function processRequest(req, { params }) {
   const headers = new Headers();
   const contentType = req.headers.get('content-type');
   if (contentType) headers.set('content-type', contentType);
+  attachServiceToken(headers, 'pyqs-service');
 
   // 4. Attach Authorization only if user is logged in.
   //    The signed HS256 JWT is verified by Go using the shared NEXTAUTH_SECRET.
