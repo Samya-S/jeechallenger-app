@@ -22,6 +22,6 @@ export async function GET(req, { params }) {
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error('Error fetching playlist by slug:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: err.message }, { status: 500 });
   }
 }

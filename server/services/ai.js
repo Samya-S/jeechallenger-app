@@ -40,7 +40,7 @@ export const aiService = {
    */
   async forwardProxyRequest({ req, pathParams = [], token }) {
     if (!token) {
-      return new Response(JSON.stringify({ detail: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized', detail: 'Unauthorized' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -90,7 +90,7 @@ export const aiService = {
       });
     } catch (error) {
       console.error('[aiService] Proxy Error:', error);
-      return new Response(JSON.stringify({ detail: 'Backend connection failed' }), {
+      return new Response(JSON.stringify({ success: false, error: 'BAD_GATEWAY', message: 'Backend connection failed', detail: 'Backend connection failed' }), {
         status: 502,
         headers: { 'Content-Type': 'application/json' },
       });

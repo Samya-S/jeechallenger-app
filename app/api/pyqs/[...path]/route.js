@@ -75,7 +75,11 @@ export async function processRequest(req, { params }) {
     });
   } catch (error) {
     console.error('[pyqs-proxy] Error:', error);
-    return new Response(JSON.stringify({ error: 'Backend connection failed' }), { status: 502 });
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'BACKEND_CONNECTION_FAILED',
+      message: 'Failed to communicate with the PYQs service'
+    }), { status: 502, headers: { 'Content-Type': 'application/json' } });
   }
 }
 

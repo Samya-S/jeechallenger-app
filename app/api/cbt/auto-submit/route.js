@@ -8,20 +8,20 @@ export async function POST(req) {
     const authHeader = req.headers.get('authorization');
     const cronSecret = process.env.INTERNAL_CRON_SECRET;
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      return Response.json({ error: 'UNAUTHORIZED', message: 'Invalid cron authorization secret.' }, { status: 401 });
+      return Response.json({ success: false, error: 'UNAUTHORIZED', message: 'Invalid cron authorization secret.' }, { status: 401 });
     }
 
     const body = await req.json().catch(() => ({}));
     const { session_id } = body;
 
     if (!session_id) {
-      return Response.json({ error: 'session_id is required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'session_id is required' }, { status: 400 });
     }
 
     const result = await autoSubmitCbtSession(session_id);
     return Response.json(result);
   } catch (error) {
     console.error('Failed to auto-submit expired CBT exam:', error);
-    return Response.json({ error: 'Auto-submit failed: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Auto-submit failed: ' + error.message }, { status: 500 });
   }
 }

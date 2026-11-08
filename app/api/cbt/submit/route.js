@@ -9,7 +9,7 @@ export async function POST(req) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token || !token.id) {
       return Response.json(
-        { error: 'UNAUTHORIZED', message: 'Authentication required. Please sign in to submit exam.' },
+        { success: false, error: 'UNAUTHORIZED', message: 'Authentication required. Please sign in to submit exam.' },
         { status: 401 }
       );
     }
@@ -18,29 +18,29 @@ export async function POST(req) {
     const { session_id, instance_id, final_question_time_map } = body;
 
     if (!session_id) {
-      return Response.json({ error: 'session_id is required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'session_id is required' }, { status: 400 });
     }
 
     // Ownership check: session key must belong to authenticated user
     const expectedPrefix = `cbt:session:${token.id}:`;
     if (!session_id.startsWith(expectedPrefix)) {
-      return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
+      return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
     // 1. Fetch full in-flight session from Redis
     const sessionData = await redis.hgetall(session_id);
     if (!sessionData || Object.keys(sessionData).length === 0) {
-      return Response.json({ error: 'Session not found or already submitted' }, { status: 404 });
+      return Response.json({ success: false, error: 'NOT_FOUND', message: 'Session not found or already submitted' }, { status: 404 });
     }
 
     // Defense-in-depth: verify stored user_id matches authenticated token
     if (sessionData.user_id && sessionData.user_id !== token.id) {
-      return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
+      return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
     // Concurrency sanity check
     if (instance_id && sessionData.active_instance_id && sessionData.active_instance_id !== instance_id) {
-      return Response.json({ error: 'SESSION_REVOKED', message: 'Test was transferred to another device.' }, { status: 409 });
+      return Response.json({ success: false, error: 'SESSION_REVOKED', message: 'Test was transferred to another device.' }, { status: 409 });
     }
 
     const paperId = sessionData.paper_id;
@@ -115,6 +115,6 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Failed to submit CBT exam:', error);
-    return Response.json({ error: 'Failed to process submission: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Failed to process submission: ' + error.message }, { status: 500 });
   }
 }

@@ -10,7 +10,7 @@ export async function GET(req) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token || !token.id) {
       return Response.json(
-        { error: 'UNAUTHORIZED', message: 'Authentication required.' },
+        { success: false, error: 'UNAUTHORIZED', message: 'Authentication required.' },
         { status: 401 }
       );
     }
@@ -18,7 +18,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const paper_id = searchParams.get('paper_id');
     if (!paper_id) {
-      return Response.json({ error: 'paper_id is required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'paper_id is required' }, { status: 400 });
     }
 
     const userId = token.id;
@@ -52,7 +52,7 @@ export async function GET(req) {
     return Response.json({ has_active_session: false });
   } catch (error) {
     console.error('Failed to check CBT session status:', error);
-    return Response.json({ error: 'Internal server error: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Internal server error: ' + error.message }, { status: 500 });
   }
 }
 
@@ -62,6 +62,7 @@ export async function POST(req) {
     if (!token || !token.id) {
       return Response.json(
         {
+          success: false,
           error: 'UNAUTHORIZED',
           message: 'Authentication required. Please sign in to take a CBT mock test.',
           redirect_url: '/login',
@@ -74,10 +75,10 @@ export async function POST(req) {
     const { paper_id, paper_slug, instance_id } = body;
 
     if (!paper_id) {
-      return Response.json({ error: 'paper_id is required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'paper_id is required' }, { status: 400 });
     }
     if (!instance_id) {
-      return Response.json({ error: 'instance_id is required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'instance_id is required' }, { status: 400 });
     }
 
     const userId = token.id;
@@ -180,6 +181,6 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Failed to start/resume CBT session:', error);
-    return Response.json({ error: 'Internal server error: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Internal server error: ' + error.message }, { status: 500 });
   }
 }

@@ -7,7 +7,7 @@ export async function GET(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token?.id) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -21,7 +21,7 @@ export async function GET(req) {
     });
   } catch (error) {
     console.error("Error fetching syllabus progress:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+    return new Response(JSON.stringify({ success: false, error: "INTERNAL_SERVER_ERROR", message: "Internal Server Error" }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -32,7 +32,7 @@ export async function POST(req) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token?.id) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -42,7 +42,7 @@ export async function POST(req) {
     const { progress } = body;
 
     if (!progress) {
-      return new Response(JSON.stringify({ error: "Progress data is required" }), {
+      return new Response(JSON.stringify({ success: false, error: "BAD_REQUEST", message: "Progress data is required" }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -56,7 +56,7 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error("Error updating syllabus progress:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+    return new Response(JSON.stringify({ success: false, error: "INTERNAL_SERVER_ERROR", message: "Internal Server Error" }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

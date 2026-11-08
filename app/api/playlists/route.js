@@ -10,7 +10,7 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }
 
     const res = await fetch(`${PYQS_API_URL}/playlists`, {
@@ -22,7 +22,7 @@ export async function GET() {
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error('Error fetching playlists:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: err.message }, { status: 500 });
   }
 }
 
@@ -31,7 +31,7 @@ export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
@@ -48,6 +48,6 @@ export async function POST(req) {
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error('Error creating playlist:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: err.message }, { status: 500 });
   }
 }

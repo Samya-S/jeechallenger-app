@@ -10,7 +10,7 @@ export async function DELETE(req, { params }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Authentication required' }, { status: 401 });
     }
 
     const { id, questionId } = await params;
@@ -24,6 +24,6 @@ export async function DELETE(req, { params }) {
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error('Error removing question from playlist:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: err.message }, { status: 500 });
   }
 }

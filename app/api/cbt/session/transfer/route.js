@@ -12,7 +12,7 @@ export async function POST(req) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token || !token.id) {
       return Response.json(
-        { error: 'UNAUTHORIZED', message: 'Authentication required to transfer exam session.' },
+        { success: false, error: 'UNAUTHORIZED', message: 'Authentication required to transfer exam session.' },
         { status: 401 }
       );
     }
@@ -21,13 +21,13 @@ export async function POST(req) {
     const { session_id, new_instance_id } = body;
 
     if (!session_id || !new_instance_id) {
-      return Response.json({ error: 'session_id and new_instance_id are required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'session_id and new_instance_id are required' }, { status: 400 });
     }
 
     // Ownership check: session key must belong to authenticated user
     const expectedPrefix = `cbt:session:${token.id}:`;
     if (!session_id.startsWith(expectedPrefix)) {
-      return Response.json({ error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
+      return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
     // Fast in-memory burst throttle before touching Redis (protects Upstash daily quota)
@@ -35,7 +35,7 @@ export async function POST(req) {
     const lastTransferAt = userTransferCooldown.get(token.id) || 0;
     if (now - lastTransferAt < 5000) {
       return Response.json(
-        { error: 'TOO_MANY_REQUESTS', message: 'Please wait a moment before requesting another session transfer.' },
+        { success: false, error: 'TOO_MANY_REQUESTS', message: 'Please wait a moment before requesting another session transfer.' },
         { status: 429 }
       );
     }
@@ -50,11 +50,11 @@ export async function POST(req) {
 
     const sessionData = await redis.hgetall(session_id);
     if (!sessionData || Object.keys(sessionData).length === 0) {
-      return Response.json({ error: 'Session not found or expired' }, { status: 404 });
+      return Response.json({ success: false, error: 'NOT_FOUND', message: 'Session not found or expired' }, { status: 404 });
     }
 
     if (sessionData.status && sessionData.status !== 'IN_PROGRESS') {
-      return Response.json({ error: 'SESSION_TERMINATED', message: 'Exam has already been finalized.' }, { status: 410 });
+      return Response.json({ success: false, error: 'SESSION_TERMINATED', message: 'Exam has already been finalized.' }, { status: 410 });
     }
 
     // Atomically transfer active lease to new instance in Redis
@@ -85,6 +85,6 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Failed to transfer session lease:', error);
-    return Response.json({ error: 'Failed to transfer lease: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Failed to transfer lease: ' + error.message }, { status: 500 });
   }
 }

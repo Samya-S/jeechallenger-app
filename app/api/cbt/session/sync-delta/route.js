@@ -8,7 +8,7 @@ export async function POST(req) {
     const { session_id, instance_id, delta } = body;
 
     if (!session_id || !instance_id) {
-      return Response.json({ error: 'session_id and instance_id are required' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'session_id and instance_id are required' }, { status: 400 });
     }
 
     // 1. Fetch current active lease from Redis
@@ -17,13 +17,14 @@ export async function POST(req) {
     const status = sessionMeta?.status;
 
     if (status && status !== 'IN_PROGRESS') {
-      return Response.json({ error: 'SESSION_TERMINATED', message: 'Test has already been submitted.' }, { status: 410 });
+      return Response.json({ success: false, error: 'SESSION_TERMINATED', message: 'Test has already been submitted.' }, { status: 410 });
     }
 
     // 2. Concurrency Check: If instance ID doesn't match, this device was revoked!
     if (activeInstanceId && activeInstanceId !== instance_id) {
       return Response.json(
         {
+          success: false,
           error: 'SESSION_REVOKED',
           message: 'Exam was transferred to another device. You cannot continue this test simultaneously.',
         },
@@ -48,6 +49,6 @@ export async function POST(req) {
     return Response.json({ success: true, updated_at: Date.now() });
   } catch (error) {
     console.error('Failed to sync CBT delta:', error);
-    return Response.json({ error: 'Failed to sync delta: ' + error.message }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Failed to sync delta: ' + error.message }, { status: 500 });
   }
 }

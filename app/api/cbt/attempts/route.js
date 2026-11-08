@@ -9,7 +9,7 @@ export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Authentication required' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -25,6 +25,6 @@ export async function GET(request) {
     return NextResponse.json({ submissions });
   } catch (error) {
     console.error('Failed to fetch test submissions:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: error.message }, { status: 500 });
   }
 }

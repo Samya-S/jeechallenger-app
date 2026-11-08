@@ -17,7 +17,7 @@ async function handleRevalidate(req) {
     const expectedSecret = process.env.REVALIDATION_SECRET;
 
     if (!expectedSecret || secret !== expectedSecret) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      return Response.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }
 
     let paths = [];
@@ -60,7 +60,7 @@ async function handleRevalidate(req) {
     tags = Array.from(new Set(tags));
 
     if (paths.length === 0 && tags.length === 0) {
-      return Response.json({ error: 'Missing path, paths, tag, or tags parameter' }, { status: 400 });
+      return Response.json({ success: false, error: 'BAD_REQUEST', message: 'Missing path, paths, tag, or tags parameter' }, { status: 400 });
     }
 
     // Purge cache for each path
@@ -97,6 +97,6 @@ async function handleRevalidate(req) {
     });
   } catch (error) {
     console.error('[pyqs-revalidate] Error:', error);
-    return Response.json({ error: 'Failed to revalidate' }, { status: 500 });
+    return Response.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: 'Failed to revalidate' }, { status: 500 });
   }
 }

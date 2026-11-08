@@ -12,7 +12,7 @@ export async function POST(req, { params }) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Authentication required' }, { status: 401 });
     }
 
     const res = await fetch(`${PYQS_API_URL}/playlists/slug/${slug}/clone`, {
@@ -25,6 +25,6 @@ export async function POST(req, { params }) {
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.error('Error cloning playlist by slug:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'INTERNAL_SERVER_ERROR', message: err.message }, { status: 500 });
   }
 }
