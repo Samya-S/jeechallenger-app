@@ -28,6 +28,45 @@ export function getAiAuthHeaders(tokenOrId = null, extraHeaders = {}) {
 }
 
 /**
+ * In-memory velocity gatekeeper for AI chat message generation.
+ * Enforces a 2-second cooldown per user to prevent rapid-fire token exhaustion and script spam.
+ */
+const lastMessageTimestamps = new Map();
+let lastCleanupTime = Date.now();
+
+const COOLDOWN_MS = 2000;
+const CLEANUP_INTERVAL_MS = 60000; // 1 minute
+const ENTRY_TTL_MS = 30000;        // Prune records older than 30 seconds
+
+function checkAiMessageCooldown(userId) {
+  if (!userId) return { allowed: true };
+  const now = Date.now();
+
+  // Periodic pruning of stale entries to prevent memory accumulation
+  if (now - lastCleanupTime > CLEANUP_INTERVAL_MS || lastMessageTimestamps.size > 5000) {
+    lastCleanupTime = now;
+    for (const [uid, timestamp] of lastMessageTimestamps.entries()) {
+      if (now - timestamp > ENTRY_TTL_MS) {
+        lastMessageTimestamps.delete(uid);
+      }
+    }
+  }
+
+  const lastTime = lastMessageTimestamps.get(userId);
+  if (lastTime && (now - lastTime) < COOLDOWN_MS) {
+    const retryAfter = Math.max(1, Math.ceil((COOLDOWN_MS - (now - lastTime)) / 1000));
+    return {
+      allowed: false,
+      retryAfterSeconds: retryAfter,
+    };
+  }
+
+  // Update timestamp only on allowed request
+  lastMessageTimestamps.set(userId, now);
+  return { allowed: true };
+}
+
+/**
  * Unified Python AI Microservice Client
  * Single Source of Truth for https://ai-api.jeechallenger.com
  */
@@ -44,6 +83,37 @@ export const aiService = {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // 2-Second Gatekeeper: Enforce velocity cooldown on costly AI message generation
+    // Covers both new chat message creation (POST /chats) and existing chat replies (POST /chats/[id]/messages)
+    const cleanPath = pathParams.filter(Boolean);
+    const isAiMessageRequest =
+      req.method === 'POST' &&
+      ((cleanPath.length === 1 && cleanPath[0] === 'chats') ||
+       (cleanPath.length === 3 && cleanPath[0] === 'chats' && cleanPath[2] === 'messages'));
+
+    if (isAiMessageRequest) {
+      const userId = token.id || token.sub || token.email;
+      const cooldown = checkAiMessageCooldown(userId);
+      if (!cooldown.allowed) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'RATE_LIMITED',
+            message: 'Please wait a moment before sending another message.',
+            retry_after: cooldown.retryAfterSeconds,
+          }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(cooldown.retryAfterSeconds),
+              'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
+          }
+        );
+      }
     }
 
     const signedToken = signAiToken(token);
