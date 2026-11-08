@@ -33,20 +33,28 @@ const MOBILE_PLACEHOLDERS = [
 ];
 
 const parseApiError = async (response, defaultMessage) => {
-  if (response.status === 429) {
-    return "You've reached your daily limit for AI chat messages. Please try again tomorrow.";
-  }
   try {
     const errorData = await response.text();
     try {
       const jsonError = JSON.parse(errorData);
-      return jsonError.detail || jsonError.message || defaultMessage;
+      const serverMessage = jsonError.detail || jsonError.message || jsonError.error;
+      if (serverMessage && typeof serverMessage === 'string') {
+        return serverMessage;
+      }
     } catch {
-      return errorData || defaultMessage;
+      if (errorData && typeof errorData === 'string' && errorData.length < 250 && !errorData.includes('<!DOCTYPE')) {
+        return errorData;
+      }
     }
   } catch {
-    return defaultMessage;
+    // Response stream could not be read
   }
+
+  // Graceful fallbacks only if server returned no body or unparseable HTML
+  if (response.status === 429) {
+    return "You've sent too many requests. Please wait a moment before trying again.";
+  }
+  return defaultMessage;
 };
 
 const AITutorComponent = ({ chatId: urlChatId = null }) => {
@@ -584,12 +592,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       console.error("Error sending message:", error);
 
       let displayMessage = "Sorry, I'm having trouble connecting right now. Please try again in a moment.";
-      if (typeof error.message === 'string' && (
-        error.message.includes('limit') ||
-        error.message.includes('File size') ||
-        error.message.includes('Unsupported file type')
-      )) {
-        displayMessage = error.message;
+      if (error && typeof error.message === 'string' && error.message.trim()) {
+        const msg = error.message.trim();
+        if (!msg.startsWith('TypeError') && !msg.startsWith('SyntaxError') && !msg.includes('Failed to fetch')) {
+          displayMessage = msg;
+        }
       }
 
       const errorMessage = {
@@ -759,26 +766,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         }
 
         if (!reqResponse.ok) {
-          let errorMessage = `HTTP ${reqResponse.status}: ${reqResponse.statusText}`;
-
-          if (reqResponse.status === 429) {
-            errorMessage = "You've reached your daily limit for file uploads. Please try again tomorrow.";
-          } else if (reqResponse.status === 413) {
-            errorMessage = "File size too large. Please choose a smaller file.";
-          } else if (reqResponse.status === 400) {
-            errorMessage = "Unsupported file type.";
-          } else {
-            try {
-              const errorData = await reqResponse.text();
-              try {
-                const jsonError = JSON.parse(errorData);
-                errorMessage = jsonError.detail || jsonError.message || errorMessage;
-              } catch {
-                errorMessage = errorData || errorMessage;
-              }
-            } catch { }
-          }
-
+          const errorMessage = await parseApiError(reqResponse, `Upload failed (HTTP ${reqResponse.status})`);
           throw new Error(errorMessage);
         }
 
@@ -825,12 +813,11 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     } catch (error) {
       console.error(error)
       let displayError = 'Failed to upload files';
-      if (typeof error.message === 'string' && (
-        error.message.includes('limit') ||
-        error.message.includes('File size') ||
-        error.message.includes('Unsupported file type')
-      )) {
-        displayError = error.message;
+      if (error && typeof error.message === 'string' && error.message.trim()) {
+        const msg = error.message.trim();
+        if (!msg.startsWith('TypeError') && !msg.includes('Failed to fetch')) {
+          displayError = msg;
+        }
       }
       setUploadError(displayError);
     } finally {
