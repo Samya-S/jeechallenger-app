@@ -3,6 +3,53 @@ import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/utils/mongodb";
 import { ObjectId } from "mongodb";
+import { headers } from "next/headers";
+
+function parseUserAgent(ua) {
+  if (!ua) return { browser: 'Unknown', os: 'Unknown', device: 'Desktop' };
+  
+  let device = 'Desktop';
+  if (/mobile/i.test(ua)) device = 'Mobile';
+  else if (/tablet|ipad/i.test(ua)) device = 'Tablet';
+  
+  let os = 'Unknown';
+  if (/windows/i.test(ua)) os = 'Windows';
+  else if (/macintosh|mac os x/i.test(ua)) os = 'macOS';
+  else if (/android/i.test(ua)) os = 'Android';
+  else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
+  else if (/linux/i.test(ua)) os = 'Linux';
+  
+  let browser = 'Unknown';
+  if (/edg/i.test(ua)) browser = 'Edge';
+  else if (/chrome|crios/i.test(ua) && !/edg/i.test(ua)) browser = 'Chrome';
+  else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = 'Safari';
+  else if (/firefox|fxios/i.test(ua)) browser = 'Firefox';
+  else if (/opera|opr/i.test(ua)) browser = 'Opera';
+  
+  return { browser, os, device };
+}
+
+function getClientIp(h) {
+  if (!h) return 'Unknown';
+  const cfIp = h.get('cf-connecting-ip');
+  if (cfIp) return cfIp.trim();
+  const xForwarded = h.get('x-forwarded-for');
+  if (xForwarded) {
+    const firstIp = xForwarded.split(',')[0].trim();
+    if (firstIp) return firstIp;
+  }
+  const xReal = h.get('x-real-ip');
+  if (xReal) return xReal.trim();
+  return 'Unknown';
+}
+
+function getClientLocation(h) {
+  if (!h) return { city: null, country: null };
+  const city = h.get('cf-ipcity') || h.get('x-vercel-ip-city') || null;
+  const country = h.get('cf-ipcountry') || h.get('x-vercel-ip-country') || null;
+  return { city, country };
+}
+
 
 // 1. Initialize the default adapter
 const defaultAdapter = MongoDBAdapter(clientPromise);
@@ -112,12 +159,40 @@ export const authOptions = {
         }
       }
 
-      // --- DAILY LOGIN TRACKER (The JWT Throttling Trick) ---
-      // This logic runs for both new logins and returning sessions on a new day.
-      // If the token's logged date doesn't match today, we hit the DB. Otherwise, we skip completely!
-      if (token.id && !token.error && token.last_logged_date !== todayString) {
-        
-        // Use Promise.all to run both DB updates concurrently in the background
+      // --- DAILY DEVICE & IP LOGIN TRACKER ---
+      // Runs when a user opens the app or returns on a new day or with a different device/IP.
+      let reqHeaders = null;
+      try {
+        reqHeaders = await headers();
+      } catch (err) {
+        // Headers may not be available outside active request scope
+      }
+
+      const clientIp = getClientIp(reqHeaders);
+      const { browser, os, device } = parseUserAgent(reqHeaders?.get('user-agent'));
+      const { city, country } = getClientLocation(reqHeaders);
+      const currentSignature = `${todayString}::${clientIp}::${device}::${browser}`;
+
+      if (token.id && !token.error && token.last_login_signature !== currentSignature) {
+        const logFilter = {
+          user_id: new ObjectId(token.id),
+          date: todayString,
+          ip: clientIp,
+          device,
+        };
+
+        const logDoc = {
+          user_id: new ObjectId(token.id),
+          date: todayString,
+          timestamp: now,
+          ip: clientIp,
+          device,
+          browser,
+          os,
+          city,
+          country,
+        };
+
         await Promise.all([
           // 1. Maintain the `last_login` timestamp dynamically
           db.collection("users").updateOne(
@@ -125,24 +200,15 @@ export const authOptions = {
             { $set: { last_login: now } }
           ),
           
-          // 2. Upsert the daily log to calculate returning users accurately
+          // 2. Upsert the log for this user, date, IP, and device
           db.collection("login_logs").updateOne(
-            { 
-              user_id: new ObjectId(token.id), 
-              date: todayString 
-            },
-            { 
-              $setOnInsert: { 
-                user_id: new ObjectId(token.id), 
-                date: todayString, 
-                timestamp: now 
-              } 
-            },
+            logFilter,
+            { $setOnInsert: logDoc },
             { upsert: true }
           )
         ]).catch(err => console.error("Failed to update daily login tracker:", err));
 
-        // Stamp the token with today's date so it doesn't trigger the DB again today
+        token.last_login_signature = currentSignature;
         token.last_logged_date = todayString;
       }
 
