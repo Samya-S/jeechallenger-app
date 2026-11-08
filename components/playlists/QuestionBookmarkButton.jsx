@@ -1,6 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  useDismiss,
+  useRole,
+  useInteractions,
+  FloatingPortal,
+} from "@floating-ui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,23 +42,38 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
   const [newListName, setNewListName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const popoverRef = useRef(null);
 
   const playlists = contextPlaylists || [];
 
-  // Close on outside click
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
-        setIsOpen(false);
+  // Dynamic boundary-aware positioning with Floating UI
+  const { refs, floatingStyles, context, isPositioned } = useFloating({
+    open: isOpen,
+    onOpenChange: (open) => {
+      if (open && status === "authenticated") {
+        loadData();
+      }
+      setIsOpen(open);
+      if (!open) {
         setErrorMsg("");
       }
-    }
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+    },
+    placement: "bottom-end",
+    strategy: "fixed",
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(8),
+      flip({ fallbackAxisSideDirection: "start", padding: 12 }),
+      shift({ padding: 12 }),
+    ],
+  });
+
+
+  const dismiss = useDismiss(context, {
+    outsidePress: true,
+    escapeKey: true,
+  });
+  const role = useRole(context, { role: "dialog" });
+  const { getReferenceProps, getFloatingProps } = useInteractions([dismiss, role]);
 
   // Load playlists and specific question membership when popover opens
   const loadData = async () => {
@@ -199,10 +225,13 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
   const isBookmarked = isSaved(questionId) || membershipSet.size > 0;
 
   return (
-    <div className={`relative inline-block ${className}`} ref={popoverRef}>
+    <div className={`relative inline-block ${className}`}>
       <button
         type="button"
-        onClick={handleToggleOpen}
+        ref={refs.setReference}
+        {...getReferenceProps({
+          onClick: handleToggleOpen,
+        })}
         title={isBookmarked ? "Saved to playlists" : "Save to playlist"}
         aria-label="Save to playlist"
         className={`p-1.5 rounded-lg transition-all cursor-pointer ${
@@ -214,9 +243,20 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
         <Bookmark className={`w-4 h-4 ${isBookmarked ? "fill-current" : ""}`} />
       </button>
 
-      {/* Popover */}
+      {/* Boundary-Aware Popover via FloatingPortal */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl z-50 p-3 text-left animate-in fade-in zoom-in-95 duration-100">
+        <FloatingPortal>
+          <div
+            ref={refs.setFloating}
+            style={{
+              ...floatingStyles,
+              visibility: isPositioned ? "visible" : "hidden",
+            }}
+            {...getFloatingProps()}
+            className={`z-50 w-72 max-w-[calc(100vw-24px)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl p-3 text-left transition-opacity duration-150 ${
+              isPositioned ? "opacity-100" : "opacity-0"
+            }`}
+          >
           {/* Unauthenticated State */}
           {status !== "authenticated" ? (
             <div className="p-3 text-center space-y-3">
@@ -342,7 +382,8 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
               </form>
             </div>
           )}
-        </div>
+          </div>
+        </FloatingPortal>
       )}
     </div>
   );
