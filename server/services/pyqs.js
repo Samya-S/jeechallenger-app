@@ -18,8 +18,7 @@ export function signUserToken(tokenOrId) {
  * Generates authorization headers containing the signed Bearer token.
  */
 export function getAuthHeaders(tokenOrId = null, extraHeaders = {}) {
-  const headers = { ...extraHeaders };
-  attachServiceToken(headers, 'pyqs-service');
+  const headers = attachServiceToken({ ...extraHeaders }, 'pyqs-service');
   if (tokenOrId) {
     const token = signUserToken(tokenOrId);
     headers['Authorization'] = `Bearer ${token}`;

@@ -18,8 +18,7 @@ export function signAiToken(tokenOrId) {
  * Generates authorization headers containing the signed Bearer token.
  */
 export function getAiAuthHeaders(tokenOrId = null, extraHeaders = {}) {
-  const headers = { ...extraHeaders };
-  attachServiceToken(headers, 'ai-service');
+  const headers = attachServiceToken({ ...extraHeaders }, 'ai-service');
   if (tokenOrId) {
     const signedToken = signAiToken(tokenOrId);
     headers['Authorization'] = `Bearer ${signedToken}`;
