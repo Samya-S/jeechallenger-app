@@ -745,12 +745,12 @@ export default function CBTHubComponent({
                             <Clock className="w-3.5 h-3.5 text-blue-500" />
                             <span>{mins} mins elapsed</span>
                           </span>
-                          <span>â€¢</span>
+                          <span>&bull;</span>
                           <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                             <Target className="w-3.5 h-3.5" />
                             <span>{accuracy.toFixed(1)}% Accuracy</span>
                           </span>
-                          <span>â€¢</span>
+                          <span>&bull;</span>
                           <span>{sub.summary?.total_attempted ?? 0} Attempted</span>
                         </div>
                       </div>
