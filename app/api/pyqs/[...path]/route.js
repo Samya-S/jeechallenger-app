@@ -84,7 +84,4 @@ export async function processRequest(req, { params }) {
 }
 
 export const GET    = processRequest;
-export const POST   = processRequest;
-export const PUT    = processRequest;
-export const PATCH  = processRequest;
-export const DELETE = processRequest;
+// Only GET is exported: public visitors and students only read PYQs catalog data through this proxy

@@ -32,6 +32,5 @@ export async function processRequest(req, { params }) {
 // Export standard Next.js route handlers
 export const GET    = processRequest;
 export const POST   = processRequest;
-export const PUT    = processRequest;
 export const PATCH  = processRequest;
 export const DELETE = processRequest;
