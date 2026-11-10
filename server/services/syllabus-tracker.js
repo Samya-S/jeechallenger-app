@@ -1,29 +1,30 @@
-import clientPromise from '../../utils/mongodb.js';
-import { ObjectId } from 'mongodb';
-
-const DB_NAME = 'jee_challenger_syllabus_tracker';
-const COLLECTION_NAME = 'progress';
+import { PYQS_API_URL, getAuthHeaders } from './pyqs';
 
 export const syllabusTrackerService = {
   /**
-   * Fetches syllabus progress for a specific user ID.
+   * Fetches syllabus progress for a specific user ID via Go microservice.
    */
   async getProgress(userId) {
     if (!userId) {
       throw new Error('syllabusTrackerService: userId is required');
     }
 
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
-    const doc = await db.collection(COLLECTION_NAME).findOne({
-      user_id: new ObjectId(userId),
+    const res = await fetch(`${PYQS_API_URL}/syllabus/progress`, {
+      headers: getAuthHeaders(userId),
+      cache: 'no-store',
     });
 
-    return doc?.progress || {};
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to fetch syllabus progress from backend');
+    }
+
+    const data = await res.json();
+    return data?.progress || {};
   },
 
   /**
-   * Updates or upserts syllabus progress for a user ID.
+   * Updates or upserts syllabus progress for a user ID via Go microservice.
    */
   async updateProgress(userId, progress) {
     if (!userId) {
@@ -33,19 +34,18 @@ export const syllabusTrackerService = {
       throw new Error('syllabusTrackerService: progress data is required');
     }
 
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
+    const res = await fetch(`${PYQS_API_URL}/syllabus/progress`, {
+      method: 'POST',
+      headers: getAuthHeaders(userId, {
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify({ progress }),
+    });
 
-    await db.collection(COLLECTION_NAME).updateOne(
-      { user_id: new ObjectId(userId) },
-      {
-        $set: {
-          progress,
-          updated_at: new Date(),
-        },
-      },
-      { upsert: true }
-    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to update syllabus progress in backend');
+    }
 
     return { success: true };
   },
