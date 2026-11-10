@@ -195,13 +195,12 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Unified Service Layer (`server/services/`)**: Centralized internal SDK and single source of truth for microservice communication, token signing, and caching rules:
   - `pyqs.js`: Go PYQ & CBT microservice client (`pyqs-api.jeechallenger.com`) for questions, papers, attempts, mistake vault, and test submissions.
   - `ai.js`: Python AI Tutor microservice client (`ai-api.jeechallenger.com`) with streaming chat proxy and multipart file upload forwarding.
-  - `syllabus-tracker.js`: Syllabus tracker database service for MongoDB progress persistence.
+  - `syllabus-tracker.js`: Syllabus tracker microservice client delegating progress synchronization and milestone retrieval to the Go PYQs microservice (`pyqs-api.jeechallenger.com`).
 - **Authentication**: NextAuth.js v4 with Google OAuth provider & HS256 JWT microservice authentication tokens
 - **Databases (Microservice Architecture)**: 
-  - `jee_challenger_auth`: User sessions and authentication (indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
-  - `jee_challenger_ai`: AI Tutor chat history
-  - `jee_challenger_syllabus_tracker`: Cloud synced syllabus progress (indexed on `user_id` unique)
-  - `jee_challenger_pyqs`: High-performance Go microservice with MongoDB for Question Bank and Paper metadata
+  - `jee_challenger_auth`: User sessions, accounts, and authentication (direct NextAuth adapter connection; indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
+  - `jee_challenger_ai`: AI Tutor chat history and message logs (owned by FastAPI AI backend)
+  - `jee_challenger_pyqs` & `jee_challenger_syllabus_tracker`: Question bank, paper metadata, CBT test scorecards, mistake vault, revision playlists, and syllabus progress (owned and served exclusively by the high-performance Go microservice)
 - **Caching & Live CBT State**: Upstash Redis (session locks, heartbeat sync, kiosk device transfer, and rate limiting)
 - **Token Handling**: Centralized `jsonwebtoken` (JWT) signing with `NEXTAUTH_SECRET`
 - **Email Service**: Nodemailer for contact form
