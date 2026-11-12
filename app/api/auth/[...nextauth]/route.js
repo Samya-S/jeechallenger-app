@@ -45,8 +45,17 @@ function getClientIp(h) {
 
 function getClientLocation(h) {
   if (!h) return { city: null, country: null };
-  const city = h.get('cf-ipcity') || h.get('x-vercel-ip-city') || null;
+  const rawCity = h.get('cf-ipcity') || h.get('x-vercel-ip-city') || null;
   const country = h.get('cf-ipcountry') || h.get('x-vercel-ip-country') || null;
+  
+  let city = rawCity;
+  if (city) {
+    try {
+      city = decodeURIComponent(city);
+    } catch {
+      // Keep raw string if malformed percent-encoding
+    }
+  }
   return { city, country };
 }
 
