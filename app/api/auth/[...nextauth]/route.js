@@ -105,8 +105,14 @@ export const authOptions = {
   
   callbacks: {
     async jwt({ token, user, trigger }) {
-      const client = await clientPromise;
-      const db = client.db();
+      const USER_VERIFY_INTERVAL_MS = 5 * 60 * 1000;
+      let dbPromise = null;
+      const getDb = () => {
+        if (!dbPromise) {
+          dbPromise = clientPromise.then((client) => client.db());
+        }
+        return dbPromise;
+      };
       const now = new Date();
       const todayString = now.toISOString().split('T')[0]; // Yields "YYYY-MM-DD"
 
@@ -114,9 +120,11 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.created_at = user.created_at ? user.created_at.toISOString() : now.toISOString();
+        token.verified_at = Date.now();
         
         const planId = user.subscription_plan_id;
         if (planId) {
+          const db = await getDb();
           const queryId = typeof planId === 'string' ? new ObjectId(planId) : planId;
           const plan = await db.collection("subscription_plans").findOne({ _id: queryId });
           
@@ -129,20 +137,37 @@ export const authOptions = {
           token.services = {};
         }
       } 
-      // --- SUBSEQUENT REQUESTS (Verify user still exists) ---
+      // --- SUBSEQUENT REQUESTS (Periodic TTL revalidation of user existence) ---
       else if (token?.id) {
-        const existingUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
-        
-        if (!existingUser) {
-          // User was deleted from the DB! Flag the token.
-          token.error = "UserDeleted";
-          return token; 
+        const needsVerification =
+          !token.verified_at || Date.now() - token.verified_at > USER_VERIFY_INTERVAL_MS;
+
+        if (needsVerification) {
+          const db = await getDb();
+          const existingUser = await db.collection("users").findOne(
+            { _id: new ObjectId(token.id) },
+            { projection: { _id: 1 } }
+          );
+
+          if (!existingUser) {
+            // User was deleted from the DB! Flag the token.
+            token.error = "UserDeleted";
+            return token;
+          }
+
+          token.verified_at = Date.now();
         }
       }
 
       // --- SESSION UPDATES (e.g., after Stripe payment) ---
       if (trigger === "update" && token.id) {
+        const db = await getDb();
         const updatedUser = await db.collection("users").findOne({ _id: new ObjectId(token.id) });
+        if (!updatedUser) {
+          token.error = "UserDeleted";
+          return token;
+        }
+        token.verified_at = Date.now();
         
         if (updatedUser && updatedUser.subscription_plan_id) {
           const planQueryId = typeof updatedUser.subscription_plan_id === 'string' 
@@ -174,6 +199,7 @@ export const authOptions = {
       const currentSignature = `${todayString}::${clientIp}::${device}::${browser}`;
 
       if (token.id && !token.error && token.last_login_signature !== currentSignature) {
+        const db = await getDb();
         const logFilter = {
           user_id: new ObjectId(token.id),
           date: todayString,
