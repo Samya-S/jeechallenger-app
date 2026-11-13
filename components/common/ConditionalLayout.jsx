@@ -4,7 +4,8 @@ import { Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import DonationModal from "@/components/modals/DonationModal";
+// import DonationModal from "@/components/modals/DonationModal";
+import FeedbackModal from "@/components/modals/FeedbackModal";
 import TelegramGateProvider from '../providers/TelegramGateProvider';
 import { BookmarkProvider } from '@/components/playlists/BookmarkContext';
 
@@ -40,7 +41,8 @@ export default function ConditionalLayout({ children }) {
         </main>
       )}
       {!isMinimalLayout && <Footer />}
-      {!isMinimalLayout && <DonationModal />}
+      {/* {!isMinimalLayout && <DonationModal />} */}
+      {!isMinimalLayout && <FeedbackModal />}
     </BookmarkProvider>
     </TelegramGateProvider>
   );

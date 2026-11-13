@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import DonationBox from '@/components/modals/DonationBox';
+import { notifyModalCleared, COMMON_MODAL_STORAGE_KEY } from '@/utils/modal-events';
 
 const DonationModal = () => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		// Check if modal has been shown in this session
-		const hasSeenModal = sessionStorage.getItem('hasSeenDonationModal');
+		const hasSeenModal = sessionStorage.getItem(COMMON_MODAL_STORAGE_KEY);
 		if (!hasSeenModal) {
 			// Delay modal appearance to prevent CLS and give user time to explore
 			const timer = setTimeout(() => {
@@ -20,8 +21,7 @@ const DonationModal = () => {
 
 	const handleClose = () => {
 		setIsOpen(false);
-		sessionStorage.setItem('hasSeenDonationModal', 'true');
-		window.dispatchEvent(new CustomEvent('donationModalClosed'));
+		notifyModalCleared();
 	};
 
 	if (!isOpen) return null;

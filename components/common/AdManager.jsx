@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { isAdExcluded, AD_CONFIG } from '@/config/ad-config';
 import { DONATION_CONFIG } from '@/config/donation-config';
+import { isInitialModalCleared, MODAL_CLEARED_EVENT } from '@/utils/modal-events';
 
 // Module-scoped flag: coordinates smooth navigation from AdBlock modal to excluded pages
 let isNavigatingFromAdBlockModal = false;
@@ -357,12 +358,7 @@ export default function AdManager() {
     AD_CONFIG.enabled &&
     (AD_CONFIG.providers.monetag || AD_CONFIG.providers.googleAdSense);
   const isExcluded = isAdExcluded(pathname);
-  const [isModalCleared, setIsModalCleared] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return Boolean(sessionStorage.getItem('hasSeenDonationModal'));
-    }
-    return false;
-  });
+  const [isModalCleared, setIsModalCleared] = useState(isInitialModalCleared);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -371,8 +367,8 @@ export default function AdManager() {
       setIsModalCleared(true);
     };
 
-    window.addEventListener('donationModalClosed', handleModalClose);
-    return () => window.removeEventListener('donationModalClosed', handleModalClose);
+    window.addEventListener(MODAL_CLEARED_EVENT, handleModalClose);
+    return () => window.removeEventListener(MODAL_CLEARED_EVENT, handleModalClose);
   }, []);
 
   // Intercept SPA navigations to excluded pages before Next.js's router starts.

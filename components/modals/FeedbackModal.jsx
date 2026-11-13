@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { submitFeedbackForm } from '@/server/contact-actions';
 import DonationBox from '@/components/modals/DonationBox';
+import { notifyModalCleared, COMMON_MODAL_STORAGE_KEY } from '@/utils/modal-events';
 
 const validateEmail = (email) => {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -24,7 +25,7 @@ const FeedbackModal = () => {
 
 	useEffect(() => {
 		// Check if modal has been shown in this session
-		const hasSeenModal = sessionStorage.getItem('hasSeenFeedbackModal');
+		const hasSeenModal = sessionStorage.getItem(COMMON_MODAL_STORAGE_KEY);
 		if (!hasSeenModal) {
 			// Delay modal appearance to prevent CLS and give user time to explore
 			const timer = setTimeout(() => {
@@ -51,13 +52,13 @@ const FeedbackModal = () => {
 				setFormData({ name: "", email: "", feedback: "" });
 				setIsSubmitted(true);
 				setIsError(false);
-				sessionStorage.setItem('hasSeenFeedbackModal', 'true');
+				sessionStorage.setItem(COMMON_MODAL_STORAGE_KEY, 'true');
 
 				// Removed the auto-close timeout here so users have time to see the donation request
 				// // Close modal after success
 				// setTimeout(() => {
 				// 	setIsOpen(false);
-				// 	sessionStorage.setItem('hasSeenFeedbackModal', 'true');
+				// 	sessionStorage.setItem(COMMON_MODAL_STORAGE_KEY, 'true');
 				// }, 3000);
 			} else {
 				setErrorMessage("Oops! Something went wrong. Please try again.");
@@ -77,7 +78,7 @@ const FeedbackModal = () => {
 
 	const handleClose = () => {
 		setIsOpen(false);
-		sessionStorage.setItem('hasSeenFeedbackModal', 'true');
+		notifyModalCleared();
 	};
 
 	if (!isOpen) return null;
