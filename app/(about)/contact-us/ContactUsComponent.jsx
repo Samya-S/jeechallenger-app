@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Mail, Send, Clock, Sparkles, CheckCircle2, AlertCircle, ArrowUpRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Mail, Send, Clock, Sparkles, CheckCircle2, AlertCircle, ArrowUpRight, Lock } from "lucide-react";
 import { FaTelegram } from "react-icons/fa";
 import { submitContactUsForm } from "@/server/contact-actions";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
@@ -17,12 +18,26 @@ const validateEmail = (email) => {
 };
 
 const ContactUsComponent = () => {
+  const { data: session } = useSession();
+  const isLoggedIn = Boolean(session?.user?.email);
+
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session?.user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData((prev) => ({
+        ...prev,
+        name: session.user.name || prev.name,
+        email: session.user.email || prev.email,
+      }));
+    }
+  }, [session]);
 
   const isFormValid = 
     formData.name.trim() !== "" && 
@@ -39,11 +54,18 @@ const ContactUsComponent = () => {
     setIsLoading(true);
 
     try {
-      const result = await submitContactUsForm(formData);
+      const result = await submitContactUsForm({
+        ...formData,
+        isAutofilled: isLoggedIn,
+      });
 
       if (result.success) {
         setResponseMessage("Woohoo! Your message is on its way. Thank you!");
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({
+          name: session?.user?.name || "",
+          email: session?.user?.email || "",
+          message: "",
+        });
         setIsSubmitted(true);
         setIsError(false);
         setTimeout(() => setIsSubmitted(false), 10000);
@@ -196,9 +218,16 @@ const ContactUsComponent = () => {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="email" className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    {isLoggedIn && (
+                      <span className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                        <Lock className="w-3 h-3" /> Signed in
+                      </span>
+                    )}
+                  </div>
                   <input
                     id="email"
                     type="email"
@@ -206,14 +235,17 @@ const ContactUsComponent = () => {
                     placeholder="e.g. rahul@example.com"
                     value={formData.email}
                     onChange={handleChange}
+                    readOnly={isLoggedIn}
                     required
-                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#090d16] border rounded-xl focus:outline-none dark:text-white placeholder-gray-400 text-sm transition-colors ${
-                      formData.email && !validateEmail(formData.email)
-                        ? "border-red-500 dark:border-red-500 focus:border-red-500"
-                        : "border-slate-200 dark:border-gray-800 focus:border-blue-500 dark:focus:border-blue-400"
+                    className={`w-full px-4 py-3 rounded-xl focus:outline-none text-sm transition-colors ${
+                      isLoggedIn
+                        ? "bg-gray-100 dark:bg-gray-800/60 border border-slate-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 cursor-not-allowed select-none"
+                        : formData.email && !validateEmail(formData.email)
+                        ? "bg-slate-50 dark:bg-[#090d16] border border-red-500 dark:border-red-500 focus:border-red-500 dark:text-white placeholder-gray-400"
+                        : "bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-gray-800 focus:border-blue-500 dark:focus:border-blue-400 dark:text-white placeholder-gray-400"
                     }`}
                   />
-                  {formData.email && !validateEmail(formData.email) && (
+                  {!isLoggedIn && formData.email && !validateEmail(formData.email) && (
                     <p className="mt-1.5 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" />
                       Please enter a valid email address.

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { Lock } from 'lucide-react';
 import { submitFeedbackForm } from '@/server/contact-actions';
 import DonationBox from '@/components/modals/DonationBox';
 import { notifyModalCleared, COMMON_MODAL_STORAGE_KEY } from '@/utils/modal-events';
@@ -10,6 +12,9 @@ const validateEmail = (email) => {
 };
 
 const FeedbackModal = () => {
+	const { data: session } = useSession();
+	const isLoggedIn = Boolean(session?.user?.email);
+
 	const [isOpen, setIsOpen] = useState(false);
 	const [formData, setFormData] = useState({ name: "", email: "", feedback: "" });
 	const [isSubmitted, setIsSubmitted] = useState(false);
@@ -17,6 +22,17 @@ const FeedbackModal = () => {
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (session?.user) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect
+			setFormData((prev) => ({
+				...prev,
+				name: session.user.name || prev.name,
+				email: session.user.email || prev.email,
+			}));
+		}
+	}, [session]);
 
 	const isFormValid =
 		formData.name.trim() !== "" &&
@@ -45,21 +61,21 @@ const FeedbackModal = () => {
 		setIsLoading(true);
 
 		try {
-			const result = await submitFeedbackForm(formData);
+			const result = await submitFeedbackForm({
+				...formData,
+				isAutofilled: isLoggedIn,
+			});
 
 			if (result.success) {
 				setResponseMessage("Thank you for your feedback! We really appreciate it.");
-				setFormData({ name: "", email: "", feedback: "" });
+				setFormData({
+					name: session?.user?.name || "",
+					email: session?.user?.email || "",
+					feedback: "",
+				});
 				setIsSubmitted(true);
 				setIsError(false);
 				sessionStorage.setItem(COMMON_MODAL_STORAGE_KEY, 'true');
-
-				// Removed the auto-close timeout here so users have time to see the donation request
-				// // Close modal after success
-				// setTimeout(() => {
-				// 	setIsOpen(false);
-				// 	sessionStorage.setItem(COMMON_MODAL_STORAGE_KEY, 'true');
-				// }, 3000);
 			} else {
 				setErrorMessage("Oops! Something went wrong. Please try again.");
 				setIsError(true);
@@ -169,23 +185,34 @@ const FeedbackModal = () => {
 							</div>
 
 							<div>
-								<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
-									Email <span className="text-red-500">*</span>
-								</label>
+								<div className="flex items-center justify-between mb-2">
+									<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left">
+										Email <span className="text-red-500">*</span>
+									</label>
+									{isLoggedIn && (
+										<span className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+											<Lock className="w-3 h-3" /> Signed in
+										</span>
+									)}
+								</div>
 								<input
 									id="email"
-									className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ring-offset-transparent dark:bg-gray-700 dark:text-white transition duration-200 ${formData.email && !validateEmail(formData.email)
-										? "border-red-500 dark:border-red-500 focus:ring-red-500"
-										: "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
-										}`}
+									className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none ring-offset-transparent transition duration-200 ${
+										isLoggedIn
+											? "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-not-allowed select-none"
+											: formData.email && !validateEmail(formData.email)
+											? "border-red-500 dark:border-red-500 focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:text-white"
+											: "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+									}`}
 									type="email"
 									name="email"
 									placeholder="Your email address"
 									value={formData.email}
 									onChange={handleChange}
+									readOnly={isLoggedIn}
 									required
 								/>
-								{formData.email && !validateEmail(formData.email) && (
+								{!isLoggedIn && formData.email && !validateEmail(formData.email) && (
 									<p className="mt-1 text-xs text-red-500 dark:text-red-400 text-left">
 										Please enter a valid email address.
 									</p>

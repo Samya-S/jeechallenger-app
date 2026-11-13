@@ -30,6 +30,15 @@ function getReceiverEmails() {
     .filter(Boolean);
 }
 
+function getEmailSourceBadge(isAutofilled, hasEmail = true) {
+  if (!hasEmail) {
+    return '<span style="display: inline-block; background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; margin-left: 6px;">Anonymous</span>';
+  }
+  return isAutofilled
+    ? '<span style="display: inline-block; background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; margin-left: 6px;">Autofilled (Signed-in)</span>'
+    : '<span style="display: inline-block; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; margin-left: 6px;">User-entered</span>';
+}
+
 // ── Exported Server Actions ──
 
 export const submitContactUsForm = async (formData) => {
@@ -54,6 +63,8 @@ export const submitContactUsForm = async (formData) => {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
+    const isAutofilled = Boolean(formData.isAutofilled);
+    const emailBadge = getEmailSourceBadge(isAutofilled, true);
 
     const receiverEmails = getReceiverEmails();
     const transporter = getTransporter();
@@ -67,7 +78,7 @@ export const submitContactUsForm = async (formData) => {
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
           <h2 style="color: #333;">New Contact Us Form Submission</h2>
           <p><strong>Name:</strong> ${safeName}</p>
-          <p><strong>Email:</strong> ${safeEmail}</p>
+          <p><strong>Email:</strong> ${safeEmail} ${emailBadge}</p>
           <p><strong>Message:</strong></p>
           <p style="background-color: #fff; padding: 10px; border-radius: 4px; color: #333; border: 1px solid #ddd; white-space: pre-wrap;">
             ${safeMessage}
@@ -111,6 +122,8 @@ export const submitFeedbackForm = async (formData) => {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeFeedback = escapeHtml(feedback);
+    const isAutofilled = Boolean(formData.isAutofilled);
+    const emailBadge = getEmailSourceBadge(isAutofilled, true);
 
     const receiverEmails = getReceiverEmails();
     const transporter = getTransporter();
@@ -124,7 +137,7 @@ export const submitFeedbackForm = async (formData) => {
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
           <h2 style="color: #333;">New Website Feedback</h2>
           <p><strong>Name:</strong> ${safeName}</p>
-          <p><strong>Email:</strong> ${safeEmail}</p>
+          <p><strong>Email:</strong> ${safeEmail} ${emailBadge}</p>
           <p><strong>Feedback:</strong></p>
           <p style="background-color: #fff; padding: 10px; border-radius: 4px; color: #333; border: 1px solid #ddd; white-space: pre-wrap;">
             ${safeFeedback}
@@ -170,6 +183,8 @@ export const submitQuestionBugReport = async (reportData) => {
     const safeIssueType = escapeHtml(issueType);
     const safeDescription = escapeHtml(description);
     const safeReporterEmail = escapeHtml(reporterEmail || 'Anonymous');
+    const isAutofilled = Boolean(reportData.isAutofilled);
+    const reporterEmailBadge = getEmailSourceBadge(isAutofilled, Boolean(reporterEmail));
     const safeSubject = escapeHtml(String(questionMeta.subject || ''));
     const safeChapter = escapeHtml(String(questionMeta.chapter || ''));
     const safeExamType = escapeHtml(String(questionMeta.exam_type || ''));
@@ -234,7 +249,7 @@ export const submitQuestionBugReport = async (reportData) => {
                       </h1>
                     </div>
                     <p style="margin: 0; font-size: 13px; color: #64748b;">
-                      Reported by: <strong style="color: #334155;">${safeReporterEmail}</strong> &bull; ${reportedAt} IST
+                      Reported by: <strong style="color: #334155;">${safeReporterEmail}</strong> ${reporterEmailBadge} &bull; ${reportedAt} IST
                     </p>
                   </div>
 

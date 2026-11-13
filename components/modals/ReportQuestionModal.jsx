@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Bug, X, Send, CheckCircle, AlertTriangle, ChevronDown } from "lucide-react";
+import { Bug, X, Send, CheckCircle, AlertTriangle, ChevronDown, Lock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { submitQuestionBugReport } from "@/server/contact-actions";
 import { formatExamOrigin } from "@/utils/pyq-helpers";
@@ -17,6 +17,7 @@ const ISSUE_TYPES = [
 
 export default function ReportQuestionModal({ isOpen, onClose, question }) {
   const { data: session } = useSession();
+  const isLoggedIn = Boolean(session?.user?.email);
 
   const [mounted, setMounted] = useState(false);
   const [issueType, setIssueType] = useState("");
@@ -28,6 +29,7 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -52,6 +54,7 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
   // Auto-fill email from session
   useEffect(() => {
     if (session?.user?.email) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setReporterEmail(session.user.email);
     }
   }, [session]);
@@ -59,13 +62,16 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
   // Reset state when modal is re-opened
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIssueType("");
       setIsDropdownOpen(false);
       setDescription("");
       setIsLoading(false);
       setIsSubmitted(false);
       setIsError(false);
-      if (!session?.user?.email) {
+      if (session?.user?.email) {
+        setReporterEmail(session.user.email);
+      } else {
         setReporterEmail("");
       }
     }
@@ -88,6 +94,7 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
       issueType,
       description: description.trim(),
       reporterEmail: reporterEmail.trim() || null,
+      isAutofilled: isLoggedIn,
       questionMeta: {
         _id: question._id,
         slug: question.slug,
@@ -280,24 +287,35 @@ export default function ReportQuestionModal({ isOpen, onClose, question }) {
                 )}
               </div>
 
-              {/* Reporter Email (optional) */}
+              {/* Reporter Email */}
               <div>
                 <label
                   htmlFor="reporterEmail"
                   className="block text-base font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   Your Email{" "}
-                  <span className="text-gray-400 dark:text-gray-500 font-normal text-sm">
-                    (optional — so we can follow up with you)
-                  </span>
+                  {isLoggedIn ? (
+                    <span className="inline-flex items-center gap-1 text-gray-400 dark:text-gray-500 font-normal text-sm">
+                      <Lock className="w-3.5 h-3.5" /> (Linked to your signed-in account)
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 dark:text-gray-500 font-normal text-sm">
+                      (optional — so we can follow up with you)
+                    </span>
+                  )}
                 </label>
                 <input
                   id="reporterEmail"
                   type="email"
                   value={reporterEmail}
                   onChange={(e) => setReporterEmail(e.target.value)}
+                  readOnly={isLoggedIn}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-base focus:outline-none focus:ring-1 focus:ring-red-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition"
+                  className={`w-full px-4 py-2.5 border rounded-lg text-base focus:outline-none focus:ring-1 focus:ring-red-400 focus:border-transparent transition ${
+                    isLoggedIn
+                      ? "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-not-allowed select-none"
+                      : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  }`}
                 />
               </div>
 
