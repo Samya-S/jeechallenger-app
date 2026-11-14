@@ -359,12 +359,15 @@ jeechallenger-app/
 │   ├── product-vision.md       # Platform vision and goals
 │   └── traffic-growth-strategy.md # Traffic, SEO, and indexing strategy
 ├── public/                     # Static assets
+├── scripts/                    # Build, testing, and SEO automation scripts
+│   ├── generate-static-seo.mjs # Static SEO XML and sitemap generator
+│   └── test-contact-actions.mjs# Contact form action test runner
 ├── server/                     # Server-side business logic
 │   ├── services/               # Centralized microservice clients & SDKs
 │   │   ├── ai.js               # Python AI Tutor microservice client
 │   │   ├── internal-token.js   # Short-lived internal service JWT signer (X-Internal-Token)
 │   │   ├── pyqs.js             # Go PYQ & CBT microservice client
-│   │   └── syllabus-tracker.js # Syllabus progress MongoDB service
+│   │   └── syllabus-tracker.js # Syllabus progress Go microservice client
 │   ├── contact-actions.js      # Contact form email server action
 │   ├── news-actions.js         # GNews server action
 │   └── views-actions.js        # Upstash Redis article view counts
