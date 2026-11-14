@@ -315,7 +315,8 @@ This will run Turbopack production compilation, Next.js page generation, sitemap
 jeechallenger-app/
 ├── app/                        # Next.js App Router routes
 │   ├── (about)/                # About pages (contact-us, donate, etc.)
-│   ├── (home)/                 # Homepage components and layouts
+│   ├── (home)/                 # Homepage components, layout, and modular showcase
+│   │   └── components/feature-hub/ # Decoupled demo widgets (CBT, PYQ, AI Tutor, Syllabus, Resources, Official, Blogs) and mock data
 │   ├── (legal)/                # Legal pages (privacy-policy, terms-of-service, etc.)
 │   ├── (official-links)/       # JEE Main and Advanced official resource portals
 │   ├── (pyqs)/                 # Previous Year Questions hub, /paper/[slug], /question/[slug]
