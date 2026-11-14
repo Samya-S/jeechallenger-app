@@ -360,7 +360,7 @@ export default function PaperQuestionCard({
               onClick={() => onReportQuestion(q)}
               title="Report a bug in this question"
               aria-label="Report a bug"
-              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-800 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:border-red-800 transition-colors duration-100 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-solid border-gray-200 dark:border-gray-800 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-500 hover:border-red-200 dark:hover:border-red-800 transition-colors duration-100 cursor-pointer"
             >
               <Bug className="w-4 h-4" />
             </button>
