@@ -325,6 +325,8 @@ jeechallenger-app/
 │   ├── (seo)/                  # Sitemap, RSS, and OpenGraph generators
 │   ├── (user)/                 # Login and candidate user profile dashboard
 │   ├── ai-tutor/               # AI Tutor chat interface and attachment uploaders
+│   │   ├── components/         # ChatMessageList, ChatInputArea, WelcomeScreen, ChatSidebar, AITutorNavbar
+│   │   └── utils/              # aiTutorUtils.js (date grouping, error normalization, dynamic placeholders)
 │   ├── api/                    # Backend-For-Frontend (BFF) API routes
 │   │   ├── ai/                 # Proxy to FastAPI AI Tutor microservice via aiService
 │   │   ├── auth/               # NextAuth API endpoints & Google OAuth callbacks

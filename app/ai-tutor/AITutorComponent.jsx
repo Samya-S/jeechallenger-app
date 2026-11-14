@@ -3,59 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { FaPaperPlane, FaChalkboardTeacher, FaUser, FaSpinner, FaPaperclip, FaRedo, FaStopCircle, FaChevronDown } from "react-icons/fa";
+import { FaSpinner, FaChevronDown } from "react-icons/fa";
 
 import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";
 import ChatSidebar from "@/app/ai-tutor/components/ChatSidebar";
-import FileAttachment from "@/app/ai-tutor/components/FileAttachment";
+import ChatMessageList from "@/app/ai-tutor/components/ChatMessageList";
+import ChatInputArea from "@/app/ai-tutor/components/ChatInputArea";
 import { API_ENDPOINTS } from "@/config/api-endpoints-config";
-import MarkdownMathRenderer from '@/components/common/MarkdownMathRenderer';
-import TextareaAutosize from 'react-textarea-autosize';
-
-const AIResponseRenderer = ({ content }) => <MarkdownMathRenderer content={content} />;
-
-const DESKTOP_PLACEHOLDERS = [
-  "Ask me anything about JEE preparation...",
-  "Ask a question on Physics, Chemistry, or Mathematics...",
-  "Need help solving a difficult problem? Ask here...",
-  "Ask about study plans, formula derivations, or concepts...",
-  "Type your question or attach a problem to solve...",
-  "Ask about JEE Main & Advanced strategies..."
-];
-
-const MOBILE_PLACEHOLDERS = [
-  "Ask a JEE question...",
-  "Ask anything about JEE...",
-  "Ask Physics, Chem or Maths...",
-  "Type your question here...",
-  "Ask for help with a problem...",
-  "Ask a concept or formula..."
-];
-
-const parseApiError = async (response, defaultMessage) => {
-  try {
-    const errorData = await response.text();
-    try {
-      const jsonError = JSON.parse(errorData);
-      const serverMessage = jsonError.detail || jsonError.message || jsonError.error;
-      if (serverMessage && typeof serverMessage === 'string') {
-        return serverMessage;
-      }
-    } catch {
-      if (errorData && typeof errorData === 'string' && errorData.length < 250 && !errorData.includes('<!DOCTYPE')) {
-        return errorData;
-      }
-    }
-  } catch {
-    // Response stream could not be read
-  }
-
-  // Graceful fallbacks only if server returned no body or unparseable HTML
-  if (response.status === 429) {
-    return "You've sent too many requests. Please wait a moment before trying again.";
-  }
-  return defaultMessage;
-};
+import {
+  DESKTOP_PLACEHOLDERS,
+  MOBILE_PLACEHOLDERS,
+  parseApiError,
+  groupMessagesByDate
+} from "@/app/ai-tutor/utils/aiTutorUtils";
 
 const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const router = useRouter();
@@ -90,7 +50,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     const errorParam = searchParams.get('error');
 
     if (errorParam) {
-      // Set the beautiful UI error message
       if (errorParam === 'Callback' || errorParam === 'AccessDenied') {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setAuthError('Authentication was cancelled or failed. Please try again.');
@@ -98,12 +57,10 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         setAuthError('An error occurred during login. Please try again.');
       }
 
-      // Use Next.js router to securely wipe the URL parameters
       router.replace('/ai-tutor', { scroll: false });
     }
   }, [searchParams, router]);
   // --- END OF REACTIVE URL CLEANUP ---
-
 
   // Automatically open the sidebar if the user is on a desktop
   useEffect(() => {
@@ -373,9 +330,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
     }
 
-    // The button hides when:
-    // 1) The response of the latest message is completely visible, OR
-    // 2) The latest user message is at the top of the page (or past it)
     const shouldHide = isResponseFullyVisible || isLastUserMsgAtOrPastTop;
     setShowScrollBottom(!shouldHide);
   };
@@ -416,19 +370,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       }
     }
 
-    // Immediately set the title
     document.title = desiredTitle;
 
-    // Next.js fetches the RSC payload for the new page on navigation and applies its static metadata,
-    // which overwrites our client-side title a split second later. 
-    // This observer watches the <head> tag and forces it back to our desired title if Next.js tries to change it.
     const observer = new MutationObserver(() => {
       if (document.title !== desiredTitle) {
         document.title = desiredTitle;
       }
     });
 
-    // Observe the entire head in case Next.js completely swaps the <title> DOM node
     observer.observe(document.head, {
       childList: true,
       subtree: true,
@@ -438,43 +387,118 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     return () => observer.disconnect();
   }, [activeChatId, chats]);
 
-
   // Group messages by date
-  const groupMessagesByDate = (messages) => {
-    const groups = {};
+  const messageGroups = groupMessagesByDate(messages);
 
-    messages.forEach((message) => {
-      const date = new Date(message.timestamp);
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
+  // Sort groups by their earliest message timestamp
+  const sortedGroupEntries = Object.entries(messageGroups).sort(([, messagesA], [, messagesB]) => {
+    const earliestA = Math.min(...messagesA.map(m => new Date(m.timestamp)));
+    const earliestB = Math.min(...messagesB.map(m => new Date(m.timestamp)));
+    return earliestA - earliestB;
+  });
 
-      let dateKey;
-      if (date.toDateString() === today.toDateString()) {
-        dateKey = "Today";
-      } else if (date.toDateString() === yesterday.toDateString()) {
-        dateKey = "Yesterday";
-      } else {
-        dateKey = date.toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
+  // Show loading state while NextAuth determines session status
+  if (status === "loading") {
+    return (
+      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
+        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
+      </div>
+    );
+  }
+
+  // Show loading spinner while redirecting if unauthenticated
+  if (status === "unauthenticated" || !session?.user) {
+    return (
+      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
+        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
+      </div>
+    );
+  }
+
+  const handleDirectFileUpload = async (files) => {
+    setUploadError("");
+    setIsUploading(true);
+
+    const compiledFiles = [];
+
+    try {
+      for (const file of Array.from(files)) {
+        const reqResponse = await fetch(API_ENDPOINTS.FILES.REQUEST_UPLOAD, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
         });
+
+        if (reqResponse.status === 401) {
+          handleLogout();
+          return;
+        }
+
+        if (!reqResponse.ok) {
+          const errorMessage = await parseApiError(reqResponse, `Upload failed (HTTP ${reqResponse.status})`);
+          throw new Error(errorMessage);
+        }
+
+        const reqData = await reqResponse.json();
+        const { presigned_url, file_path } = reqData;
+
+        const r2Response = await fetch(presigned_url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream'
+          },
+          body: file
+        });
+
+        if (!r2Response.ok) {
+          throw new Error(`Direct upload failed with status code: ${r2Response.status}`);
+        }
+
+        const confirmResponse = await fetch(API_ENDPOINTS.FILES.CONFIRM_UPLOAD, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            file_path: file_path,
+            filename: file.name,
+            mime_type: file.type || 'application/octet-stream',
+            file_size: file.size
+          })
+        });
+
+        if (!confirmResponse.ok) {
+          throw new Error(`Failed to commit file upload state metadata token.`);
+        }
+
+        const confirmData = await confirmResponse.json();
+        if (confirmData.files && confirmData.files[0]) {
+          compiledFiles.push(confirmData.files[0]);
+        }
       }
 
-      if (!groups[dateKey]) {
-        groups[dateKey] = [];
+      setAttachedFiles(prev => [...prev, ...compiledFiles]);
+    } catch (error) {
+      console.error(error);
+      let displayError = 'Failed to upload files';
+      if (error && typeof error.message === 'string' && error.message.trim()) {
+        const msg = error.message.trim();
+        if (!msg.startsWith('TypeError') && !msg.includes('Failed to fetch')) {
+          displayError = msg;
+        }
       }
-      groups[dateKey].push(message);
-    });
+      setUploadError(displayError);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-    // Sort messages within each group by timestamp
-    Object.keys(groups).forEach(dateKey => {
-      groups[dateKey].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-    });
-
-    return groups;
+  const removeAttachedFile = (fileId) => {
+    setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
   const sendMessage = async () => {
@@ -575,7 +599,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       );
       setAttachedFiles([]);
     } catch (error) {
-      // Intercept the intentional abort
       if (error.name === 'AbortError' || error === 'User stopped generation') {
         const stopMessage = {
           id: crypto.randomUUID(),
@@ -615,8 +638,6 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleKeyPress = (e) => {
-    // On mobile devices and tablets, allow Enter to insert a new line naturally
-    // Mobile users tap the Send button to send messages
     const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || ('ontouchstart' in window && window.innerWidth < 1024));
     if (isMobileDevice) {
       return;
@@ -688,146 +709,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     }
   };
 
-  const handleLoginError = (errorMessage) => {
-    setAuthError(errorMessage);
-  };
-
   const handleLogout = async () => {
-    // setChats([]);
-    // setActiveChatId(null);
-    // setMessages([]);
-    // setInputMessage("");
-    // setIsLoading(false);
-    // setIsLoadingChats(false);
-    // setIsLoadingMessages(false);
-    // // setSidebarOpen(false);
-    // setAuthError("");
-    // setAttachedFiles([]);
-    // setIsUploading(false);
-    // setUploadError("");
-
-    // lastLoadedChatIdRef.current = null;
-
-    // Trigger NextAuth signout
     await signOut({ callbackUrl: window.location.pathname + window.location.search });
-  };
-
-  const messageGroups = groupMessagesByDate(messages);
-
-  // Sort groups by their earliest message timestamp
-  const sortedGroupEntries = Object.entries(messageGroups).sort(([, messagesA], [, messagesB]) => {
-    const earliestA = Math.min(...messagesA.map(m => new Date(m.timestamp)));
-    const earliestB = Math.min(...messagesB.map(m => new Date(m.timestamp)));
-    return earliestA - earliestB;
-  });
-
-  // Show loading state while NextAuth determines session status
-  if (status === "loading") {
-    return (
-      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
-        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
-      </div>
-    );
-  }
-
-  // Show loading spinner while redirecting if unauthenticated
-  if (status === "unauthenticated" || !session?.user) {
-    return (
-      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
-        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
-      </div>
-    );
-  }
-
-  const handleDirectFileUpload = async (files) => {
-    setUploadError("");
-    setIsUploading(true);
-
-    const compiledFiles = [];
-
-    try {
-      // Loop sequentially or in parallel over each chosen asset to process split transaction states securely
-      for (const file of Array.from(files)) {
-        // Phase 1: Request upload url negotiation block
-        const reqResponse = await fetch(API_ENDPOINTS.FILES.REQUEST_UPLOAD, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            filename: file.name,
-            mime_type: file.type || 'application/octet-stream',
-            file_size: file.size
-          })
-        });
-
-        if (reqResponse.status === 401) {
-          handleLogout();
-          return;
-        }
-
-        if (!reqResponse.ok) {
-          const errorMessage = await parseApiError(reqResponse, `Upload failed (HTTP ${reqResponse.status})`);
-          throw new Error(errorMessage);
-        }
-
-        const reqData = await reqResponse.json();
-        const { presigned_url, file_path } = reqData;
-
-        // Phase 2: Direct Binary Stream Pipeline to Cloudflare R2 via HTTP PUT Method
-        const r2Response = await fetch(presigned_url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': file.type || 'application/octet-stream'
-          },
-          body: file
-        });
-
-        if (!r2Response.ok) {
-          throw new Error(`Direct upload failed with status code: ${r2Response.status}`);
-        }
-
-        // Phase 3: Transaction confirmation commit block indexing back to MongoDB
-        const confirmResponse = await fetch(API_ENDPOINTS.FILES.CONFIRM_UPLOAD, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            file_path: file_path,
-            filename: file.name,
-            mime_type: file.type || 'application/octet-stream',
-            file_size: file.size
-          })
-        });
-
-        if (!confirmResponse.ok) {
-          throw new Error(`Failed to commit file upload state metadata token.`);
-        }
-
-        const confirmData = await confirmResponse.json();
-        if (confirmData.files && confirmData.files[0]) {
-          compiledFiles.push(confirmData.files[0]);
-        }
-      }
-
-      setAttachedFiles(prev => [...prev, ...compiledFiles]);
-    } catch (error) {
-      console.error(error)
-      let displayError = 'Failed to upload files';
-      if (error && typeof error.message === 'string' && error.message.trim()) {
-        const msg = error.message.trim();
-        if (!msg.startsWith('TypeError') && !msg.includes('Failed to fetch')) {
-          displayError = msg;
-        }
-      }
-      setUploadError(displayError);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  // Restore removeAttachedFile handler
-  const removeAttachedFile = (fileId) => {
-    setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
   return (
@@ -857,220 +740,21 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
             {/* Messages Wrapper with Scroll-to-Bottom Button */}
             <div className="relative flex-1 min-h-0 flex flex-col">
-              {/* Messages Container */}
-              <div
-                ref={messagesContainerRef}
+              <ChatMessageList
+                messagesContainerRef={messagesContainerRef}
+                messagesEndRef={messagesEndRef}
                 onScroll={handleMessagesScroll}
-                className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 min-h-0 bg-gray-50 dark:bg-gray-900 scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
-              >
-                <div className="max-w-4xl mx-auto">
-                  {isLoadingMessages ? (
-                    <div className="flex items-center justify-center py-16">
-                      <FaSpinner className="animate-spin text-blue-500 mr-2" />
-                      <span className="text-gray-500 dark:text-gray-400">Loading messages...</span>
-                    </div>
-                  ) : Object.keys(messageGroups).length === 0 ? (
-                    <div className="text-center py-8 sm:py-16">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
-                        <FaChalkboardTeacher className="text-white text-2xl sm:text-3xl" />
-                      </div>
-                      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-                        Welcome to JEE Challenger AI Tutor!
-                      </h1>
-                      <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-md mx-auto">
-                        Your personalized JEE preparation assistant
-                      </p>
-                      <div className="max-w-2xl mx-auto space-y-4 text-left bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg">
-                        <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold">
-                          What I can help you with:
-                        </p>
-                        <ul className="text-gray-600 dark:text-gray-300 text-sm space-y-2 ml-4">
-                          <li className="flex items-center space-x-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span>Physics, Chemistry, and Mathematics concepts</span>
-                          </li>
-                          <li className="flex items-center space-x-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span>JEE Main and Advanced preparation strategies</span>
-                          </li>
-                          <li className="flex items-center space-x-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span>Study material recommendations</span>
-                          </li>
-                          <li className="flex items-center space-x-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span>Problem-solving techniques</span>
-                          </li>
-                          <li className="flex items-center space-x-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span>Exam tips and time management</span>
-                          </li>
-                        </ul>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                          Just type your question below and I&lsquo;ll help you excel in your JEE journey!
-                        </p>
-                        <div className="mt-4 sm:mt-6 space-y-3">
-                          <p className="text-gray-700 dark:text-gray-200 text-sm font-medium">
-                            Try asking:
-                          </p>
-                          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                            {[
-                              "What are the important topics for JEE Physics?",
-                              "How to solve integration problems?",
-                              "Best books for JEE Chemistry",
-                              "Time management tips for JEE"
-                            ].map((suggestion, index) => (
-                              <button
-                                key={index}
-                                onClick={() => setInputMessage(suggestion)}
-                                className="text-xs sm:text-sm bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 border border-blue-200 dark:border-blue-800"
-                              >
-                                {suggestion}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    sortedGroupEntries.map(([date, dateMessages]) => (
-                      <div key={date}>
-                        {/* Date Separator */}
-                        <div className="flex items-center justify-center my-8">
-                          <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                              {date}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Messages for this date */}
-                        <div className="space-y-4">
-                          {dateMessages.map((message) => (
-                            <div
-                              key={message.id}
-                              id={`message-${message.id}`}
-                              className={`flex scroll-mt-8 sm:scroll-mt-12 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                            >
-                              <div
-                                className={`flex items-start md:space-x-3 w-full md:max-w-[80%] ${message.sender === "user" ? "flex-row-reverse md:space-x-reverse" : ""}`}
-                              >
-                                {/* Avatar */}
-                                <div
-                                  className={`hidden md:flex w-8 h-8 rounded-full items-center justify-center flex-shrink-0 ${message.sender === "user"
-                                    ? "bg-blue-500"
-                                    : "bg-gradient-to-r from-blue-500 to-purple-600"
-                                    }`}
-                                >
-                                  {message.sender === "user" ? (
-                                    <FaUser className="text-white text-sm" />
-                                  ) : (
-                                    <FaChalkboardTeacher className="text-white text-sm" />
-                                  )}
-                                </div>
-
-                                <div className="flex flex-col max-w-full min-w-0">
-                                  {/* Message Bubble */}
-                                  <div
-                                    className={`px-5 py-4 shadow-sm min-w-0 overflow-hidden rounded-2xl ${message.sender === "user"
-                                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-[2px]"
-                                      : message.isError
-                                        ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-tl-[2px]"
-                                        : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 shadow-md rounded-tl-[2px]"
-                                      }`}
-                                  >
-                                    {message.sender === "ai" ? (
-                                      message.isError ? (
-                                        <div className="flex flex-col items-start">
-                                          <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                            {message.text}
-                                          </p>
-                                          {message.failedText && (
-                                            <button
-                                              onClick={() => {
-                                                // 1. Remove this error message from the chat
-                                                setMessages(prev => prev.filter(m => m.id !== message.id));
-                                                // 2. Put their text back into the input box
-                                                setInputMessage(message.failedText);
-                                                // 3. Focus the input so they can instantly hit enter again
-                                                inputRef.current?.focus();
-                                              }}
-                                              className="mt-3 flex items-center space-x-2 text-sm font-medium bg-red-50 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-200 px-3 py-1.5 rounded-lg transition-colors border border-red-200 dark:border-red-700"
-                                            >
-                                              <FaRedo className="text-xs" />
-                                              <span>Retry Message</span>
-                                            </button>
-                                          )}
-                                        </div>
-                                      ) : (
-                                        <AIResponseRenderer content={message.text} />
-                                      )
-                                    ) : (
-                                      <p className="text-base leading-relaxed whitespace-pre-wrap text-left">
-                                        {message.text}
-                                      </p>
-                                    )}
-
-                                    {/* Display attached files in user messages */}
-                                    {message.sender === "user" && message.attachedFiles && message.attachedFiles.length > 0 && (
-                                      <div className="mt-3 space-y-2">
-                                        {/* <p className="text-xs opacity-80">Attached files:</p> */}
-                                        {message.attachedFiles.map((file) => (
-                                          <FileAttachment
-                                            key={file.id}
-                                            file={file}
-                                            showRemove={false}
-                                          />
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                  {/* Timestamp */}
-                                  <p
-                                    className={`text-xs whitespace-nowrap mt-1 ${message.sender === "user"
-                                      ? "text-blue-500 dark:text-blue-400 text-right"
-                                      : message.isError
-                                        ? "text-red-600 dark:text-red-400"
-                                        : "text-gray-500 dark:text-gray-400"
-                                      }`}
-                                  >
-                                    {message.timestamp.toLocaleTimeString("en-US", {
-                                      hour: "numeric",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    })}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                  )}
-
-                  {/* Loading indicator - AI is thinking... */}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
-                        <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
-                          <FaChalkboardTeacher className="text-white text-sm" />
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] flex flex-col items-start">
-                          <div className="flex items-center space-x-2">
-                            <FaSpinner className="text-blue-500 animate-spin" />
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              AI is thinking...
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div ref={messagesEndRef} />
-                </div>
-              </div>
+                isLoadingMessages={isLoadingMessages}
+                messageGroups={messageGroups}
+                sortedGroupEntries={sortedGroupEntries}
+                isLoading={isLoading}
+                onSelectSuggestion={(suggestion) => setInputMessage(suggestion)}
+                onRetryMessage={(message) => {
+                  setMessages((prev) => prev.filter((m) => m.id !== message.id));
+                  setInputMessage(message.failedText);
+                  inputRef.current?.focus();
+                }}
+              />
 
               {/* Floating Scroll to Latest Message Button */}
               {showScrollBottom && (
@@ -1086,123 +770,22 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
             </div>
 
             {/* Input Area */}
-            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-3 py-2.5 sm:px-6 sm:py-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg">
-              <div className="max-w-4xl mx-auto">
-                {/* Attached Files Display */}
-                {attachedFiles.length > 0 && (
-                  <div className="mb-3 space-y-1">
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Attached files ({attachedFiles.length}):
-                    </p>
-                    <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
-                      {attachedFiles.map((file) => (
-                        <FileAttachment
-                          key={file.id}
-                          file={file}
-                          onRemove={removeAttachedFile}
-                          showRemove={true}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Uploading animation above textarea */}
-                {isUploading && (
-                  <div className="flex items-center justify-center mb-1">
-                    <FaSpinner className="animate-spin text-blue-600 mr-2 text-sm" />
-                    <span className="text-blue-700 dark:text-blue-300 text-sm">Uploading file(s)...</span>
-                  </div>
-                )}
-                {uploadError && (
-                  <div className="mb-1 p-1.5 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs text-center">
-                    {uploadError}
-                  </div>
-                )}
-
-                <div className="w-full flex items-center border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all p-2">
-
-                  {/* File Upload Button - Left side */}
-                  <button
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    disabled={isLoading || isUploading}
-                    className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 z-20"
-                    title="Attach files"
-                    aria-label="Attach files"
-                  >
-                    <FaPaperclip className="text-lg" />
-                  </button>
-
-                  {/* Textarea Wrapper - Center */}
-                  <div className="relative flex-1 flex items-center mx-3 min-h-[24px]">
-
-                    {!inputMessage && (
-                      <div className="absolute left-1 right-1 block text-gray-500 dark:text-gray-400 pointer-events-none truncate select-none z-0">
-                        {placeholder}
-                      </div>
-                    )}
-
-                    <TextareaAutosize
-                      ref={inputRef}
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      minRows={1}
-                      maxRows={5}
-                      className="w-full py-1 px-1 resize-none bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-y-auto scrollbar-hide relative z-10"
-                      onPaste={e => {
-                        if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
-                          e.preventDefault();
-                          handleDirectFileUpload(e.clipboardData.files);
-                        }
-                      }}
-                    />
-                  </div>
-
-                  {/* Hidden file input for direct upload */}
-                  <input
-                    type="file"
-                    multiple
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    onChange={e => {
-                      if (e.target.files && e.target.files.length > 0) {
-                        handleDirectFileUpload(e.target.files);
-                        e.target.value = null;
-                      }
-                    }}
-                    accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
-                  />
-
-                  {/* Send / Stop Button - Right side */}
-                  {isLoading ? (
-                    <button
-                      onClick={() => abortController?.abort("User stopped generation")}
-                      className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400"
-                      title="Stop generating"
-                      aria-label="Stop generating"
-                    >
-                      <FaStopCircle className="text-lg" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={sendMessage}
-                      disabled={!inputMessage.trim() || isUploading}
-                      className={`flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 ${inputMessage.trim() && !isUploading
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                        }`}
-                      aria-label="Send message"
-                    >
-                      <FaPaperPlane className="text-base -ml-[1px]" />
-                    </button>
-                  )}
-                </div>
-                <p className="hidden md:block text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
-                  Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
-                </p>
-              </div>
-            </div>
+            <ChatInputArea
+              attachedFiles={attachedFiles}
+              removeAttachedFile={removeAttachedFile}
+              isUploading={isUploading}
+              uploadError={uploadError}
+              fileInputRef={fileInputRef}
+              inputRef={inputRef}
+              inputMessage={inputMessage}
+              setInputMessage={setInputMessage}
+              placeholder={placeholder}
+              handleKeyPress={handleKeyPress}
+              handleDirectFileUpload={handleDirectFileUpload}
+              isLoading={isLoading}
+              abortController={abortController}
+              sendMessage={sendMessage}
+            />
           </div>
         </div>
       </div>
