@@ -191,28 +191,27 @@ export default function CBTAvailablePapersTab({
 
       {/* Pagination Controls matching PYQPapersList */}
       {!papersLoading && totalPages > 1 && (
-        <div className="flex items-center justify-between gap-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between gap-4 pt-4">
           <button
             type="button"
             disabled={page <= 1}
             onClick={() => onPageChange(Math.max(1, page - 1))}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Previous</span>
           </button>
 
           <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
-            Page <strong className="font-bold text-gray-900 dark:text-white">{page}</strong> of{' '}
-            <strong className="font-bold text-gray-900 dark:text-white">{totalPages}</strong>
-            <span className="ml-2 text-xs text-gray-500">({totalPapers} Papers)</span>
+            Page <strong className="font-bold text-gray-900 dark:text-white">{Number(page || 1).toLocaleString("en-IN")}</strong> of{" "}
+            <strong className="font-bold text-gray-900 dark:text-white">{Number(totalPages || 1).toLocaleString("en-IN")}</strong>
           </span>
 
           <button
             type="button"
             disabled={page >= totalPages}
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm cursor-pointer"
           >
             <span>Next</span>
             <ChevronRight className="w-4 h-4" />
