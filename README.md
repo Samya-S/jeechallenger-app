@@ -339,6 +339,7 @@ jeechallenger-app/
 │   └── syllabus-tracker/       # Cloud-synced preparation tracking system
 ├── components/                 # Reusable React components
 │   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
+│   │   └── hub/                # CBTHubComponent, CBTHubPerformanceStrip, and tabs/ (papers, attempts, vault)
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
 │   ├── modals/                 # Modal dialogs
 │   ├── playlists/              # Unified BookmarkContext, sidebars, tables, and popover components
