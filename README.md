@@ -337,6 +337,7 @@ jeechallenger-app/
 │   ├── lists/                  # Custom question playlists and bookmarks (/lists/[slug])
 │   ├── mock-test/              # Official timed CBT Mock Test simulator & Mistake Vault
 │   └── syllabus-tracker/       # Cloud-synced preparation tracking system
+│       └── components/         # SyllabusToolbar, SyllabusOverviewCard, SyllabusFilterBar, and progress cards
 ├── components/                 # Reusable React components
 │   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
 │   │   └── hub/                # CBTHubComponent, CBTHubPerformanceStrip, and tabs/ (papers, attempts, vault)

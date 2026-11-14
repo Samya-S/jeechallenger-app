@@ -1,22 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useSyncExternalStore, useEffect } from 'react';
+import React, { useState, useMemo, useSyncExternalStore, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import {
-  Cloud,
-  CloudOff,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-  Search,
-  X,
-  Share2,
-  Download,
-  Upload,
-  RotateCcw,
-  ChevronsDownUp,
-  ChevronsUpDown,
-} from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { SYLLABUS_DATA } from '@/data/syllabus-data';
 import {
   subscribeProgressData,
@@ -37,10 +25,9 @@ import { ChapterList } from './ChapterRow';
 import ShareProgressModal from './ShareProgressModal';
 import SyncConflictModal from './SyncConflictModal';
 import SyllabusNoticeModal from './SyllabusNoticeModal';
-import Breadcrumbs from '@/components/common/Breadcrumbs';
-import Link from 'next/link';
-
-import { usePathname, useSearchParams } from 'next/navigation';
+import SyllabusToolbar from './components/SyllabusToolbar';
+import SyllabusOverviewCard from './components/SyllabusOverviewCard';
+import SyllabusFilterBar from './components/SyllabusFilterBar';
 
 function useProgressDataFromStorage(userId) {
   const snapshot = useSyncExternalStore(
@@ -105,7 +92,7 @@ const SyllabusTrackerComponent = () => {
   const [syncEnabled, setSyncEnabled] = useState(false);
   const [syncStatus, setSyncStatus] = useState('idle'); // 'idle', 'syncing', 'synced', 'error'
   const [isInitializingSync, setIsInitializingSync] = useState(false);
-  const isInitializingSyncRef = React.useRef(false);
+  const isInitializingSyncRef = useRef(false);
   const [syncInitialized, setSyncInitialized] = useState(false);
 
   // Conflict modal state
@@ -276,7 +263,6 @@ const SyllabusTrackerComponent = () => {
     }));
   };
 
-
   const handleResetAll = async () => {
     resetAllProgress(userId);
     setShowResetConfirm(false);
@@ -389,8 +375,6 @@ const SyllabusTrackerComponent = () => {
       .filter((item) => item.filteredChapters.length > 0);
   }, [searchQuery, statusFilter, progressData]);
 
-  const isFiltering = searchQuery.trim() !== '' || statusFilter !== 'all';
-
   const visibleSubjectKeys = useMemo(
     () => filteredSubjects.map((s) => s.subjectKey),
     [filteredSubjects]
@@ -427,368 +411,37 @@ const SyllabusTrackerComponent = () => {
         />
 
         {/* Top Header + Action Toolbar */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
-              JEE Syllabus Tracker
-            </h1>
-            <p className="mt-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Track your preparation progress across Physics, Chemistry, and Mathematics
-            </p>
-          </div>
-
-          {/* Utility Toolbar: Cloud Sync + Share / Export / Import / Reset */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Cloud Sync Pill */}
-            {!isAuthenticated ? (
-              <Link
-                href={`/login?callbackUrl=${encodedReturnUrl}`}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 text-xs font-semibold text-gray-700 dark:text-gray-200 shadow-2xs transition-colors"
-                title="Log in to sync your progress across devices"
-              >
-                <Cloud className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span>Sign in to Cloud Sync</span>
-              </Link>
-            ) : (
-              <button
-                type="button"
-                role="switch"
-                aria-checked={syncEnabled}
-                onClick={handleToggleSync}
-                disabled={isInitializingSync}
-                title={syncEnabled ? "Click to turn off cloud sync" : "Click to turn on cloud sync"}
-                className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 shadow-2xs transition-all cursor-pointer select-none ${
-                  isInitializingSync ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <div className="flex items-center gap-1.5 text-xs font-semibold">
-                  {!syncEnabled ? (
-                    <>
-                      <CloudOff className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="text-gray-500 dark:text-gray-400">Sync Off</span>
-                    </>
-                  ) : syncStatus === 'syncing' ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 text-blue-500 animate-spin" />
-                      <span className="text-blue-600 dark:text-blue-400">Syncing...</span>
-                    </>
-                  ) : syncStatus === 'error' ? (
-                    <>
-                      <AlertCircle className="w-3.5 h-3.5 text-red-500" />
-                      <span className="text-red-600 dark:text-red-400">Sync Error</span>
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-emerald-600 dark:text-emerald-400">Cloud Synced</span>
-                    </>
-                  )}
-                </div>
-
-                {/* Toggle track and knob */}
-                <div
-                  aria-hidden="true"
-                  className={`w-8 h-[18px] rounded-full transition-colors relative shrink-0 ${
-                    syncEnabled ? 'bg-blue-600' : 'bg-slate-200 dark:bg-gray-700'
-                  }`}
-                >
-                  <span
-                    className={`absolute top-[2px] left-[2px] bg-white rounded-full h-3.5 w-3.5 shadow-xs transition-transform duration-200 ease-in-out ${
-                      syncEnabled ? 'translate-x-[14px]' : 'translate-x-0'
-                    }`}
-                  />
-                </div>
-              </button>
-            )}
-
-            {/* Share Button */}
-            <button
-              type="button"
-              onClick={() => setShowShareModal(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>Share Progress</span>
-            </button>
-
-            {/* Export Button */}
-            <button
-              type="button"
-              onClick={handleExport}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
-              title="Export Progress JSON"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export</span>
-            </button>
-
-            {/* Import Button */}
-            <label
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-2xs transition-colors cursor-pointer"
-              title="Import Progress JSON"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Import</span>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImport}
-                className="hidden"
-              />
-            </label>
-
-            {/* Reset Button */}
-            <button
-              type="button"
-              onClick={() => setShowResetConfirm(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-gray-900 border border-solid border-slate-200 dark:border-gray-800 hover:border-red-300 dark:hover:border-red-800/80 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs transition-colors cursor-pointer"
-              title="Reset All Progress"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset</span>
-            </button>
-          </div>
-        </div>
+        <SyllabusToolbar
+          isAuthenticated={isAuthenticated}
+          encodedReturnUrl={encodedReturnUrl}
+          syncEnabled={syncEnabled}
+          syncStatus={syncStatus}
+          isInitializingSync={isInitializingSync}
+          onToggleSync={handleToggleSync}
+          onOpenShareModal={() => setShowShareModal(true)}
+          onExport={handleExport}
+          onImport={handleImport}
+          onOpenResetConfirm={() => setShowResetConfirm(true)}
+        />
 
         {/* Overview Bento Card: Overall Progress + Task Breakdown */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-md shadow-slate-200/70 dark:shadow-none border border-slate-200 dark:border-gray-800 p-6 sm:p-8 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-            {/* Left: Overall Completion */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="flex items-baseline justify-between">
-                <div>
-                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
-                    Overall Progress
-                  </span>
-                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-1">
-                    {overallStats.percentage}%
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    {overallStats.completedTasks} / {overallStats.totalTasks}
-                  </span>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400">
-                    tasks completed
-                  </span>
-                </div>
-              </div>
-
-              <div className="w-full bg-slate-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-600 via-emerald-500 to-purple-600 rounded-full transition-all duration-300"
-                  style={{ width: `${overallStats.percentage}%` }}
-                />
-              </div>
-
-              {/* Task Type Totals Row */}
-              <div className="grid grid-cols-3 gap-2.5 pt-1">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
-                  <div className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {statusSummary.totalTheory}/88
-                  </div>
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Theory Done
-                  </div>
-                </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
-                  <div className="text-base sm:text-lg font-bold text-orange-600 dark:text-orange-400">
-                    {statusSummary.totalPyqs}/88
-                  </div>
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    PYQs Done
-                  </div>
-                </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800">
-                  <div className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                    {statusSummary.totalRevision}/88
-                  </div>
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Revision Done
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: 3 Subject Progress Cards with Open-Bottom Circular Arc */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              {Object.entries(SYLLABUS_DATA).map(([subjectKey, subjectObj]) => {
-                const st = calculateSubjectProgress(subjectKey, subjectObj.chapters, progressData);
-                const radius = 36;
-                const circumference = 2 * Math.PI * radius;
-                const arcDegrees = 240; // 240deg arc leaves a 120deg gap at the bottom
-                const startAngle = 270 - arcDegrees / 2; // 150deg keeps the arc symmetric around top center
-                const arcLength = circumference * (arcDegrees / 360);
-                const filledLength = (st.percentage / 100) * arcLength;
-
-                const accentStroke =
-                  subjectKey === 'physics'
-                    ? 'text-blue-600 dark:text-blue-500'
-                    : subjectKey === 'chemistry'
-                      ? 'text-emerald-600 dark:text-emerald-500'
-                      : 'text-purple-600 dark:text-purple-500';
-                const accentFill =
-                  subjectKey === 'physics'
-                    ? 'fill-blue-600 dark:fill-blue-400'
-                    : subjectKey === 'chemistry'
-                      ? 'fill-emerald-600 dark:fill-emerald-400'
-                      : 'fill-purple-600 dark:fill-purple-400';
-
-                return (
-                  <div
-                    key={subjectKey}
-                    className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0d1320] border border-slate-200 dark:border-gray-800 flex flex-col items-center justify-between"
-                  >
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">
-                      {subjectObj.name}
-                    </span>
-
-                    {/* Open-Bottom Circular Arc Gauge (240deg) */}
-                    <div className="relative w-32 h-26 my-1 flex items-center justify-center">
-                      <svg
-                        viewBox="0 0 100 84"
-                        className="w-full h-full overflow-visible"
-                      >
-                        {/* Background Arc Track */}
-                        <circle
-                          cx="50"
-                          cy="46"
-                          r={radius}
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="8"
-                          strokeLinecap="round"
-                          strokeDasharray={`${arcLength} ${circumference}`}
-                          transform={`rotate(${startAngle} 50 46)`}
-                          className="text-slate-200 dark:text-gray-800"
-                        />
-                        {/* Active Progress Arc */}
-                        <circle
-                          cx="50"
-                          cy="46"
-                          r={radius}
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="8"
-                          strokeLinecap="round"
-                          strokeDasharray={`${filledLength} ${circumference}`}
-                          transform={`rotate(${startAngle} 50 46)`}
-                          className={`${accentStroke} transition-all duration-300`}
-                        />
-                        {/* Exact Center of Circle (x=50, y=44): Percentage */}
-                        <text
-                          x="50"
-                          y="44"
-                          textAnchor="middle"
-                          dominantBaseline="central"
-                          className={`text-[18px] font-extrabold ${accentFill}`}
-                        >
-                          {st.percentage}%
-                        </text>
-                        {/* Inside Open Bottom Gap of Circle (x=50, y=71): X/Y tasks */}
-                        <text
-                          x="50"
-                          y="71"
-                          textAnchor="middle"
-                          dominantBaseline="central"
-                          className="text-[9.5px] font-semibold fill-gray-500 dark:fill-gray-400"
-                        >
-                          {st.completedTasks}/{st.totalTasks} tasks
-                        </text>
-                      </svg>
-                    </div>
-
-                    <div className="w-full pt-2.5 border-t border-slate-200/80 dark:border-gray-800 text-center text-xs text-gray-500 dark:text-gray-400">
-                      <strong className="text-gray-800 dark:text-gray-200">
-                        {st.chaptersCompleted}/{st.totalChapters}
-                      </strong>{' '}
-                      chapters done
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <SyllabusOverviewCard
+          overallStats={overallStats}
+          statusSummary={statusSummary}
+          progressData={progressData}
+        />
 
         {/* Search & 4-Stage Status Filter Control Bar */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-slate-200 dark:border-gray-800 p-4 mb-6">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search chapters or units (e.g. Thermodynamics, Optics, Organic)..."
-                className="w-full pl-10 pr-9 py-2.5 bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-gray-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 text-sm text-gray-900 dark:text-white placeholder-gray-400 transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
-                  aria-label="Clear search"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* 4-Stage Status Filter Pills + Expand/Collapse All */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              {[
-                { key: 'all', label: 'All' },
-                { key: 'not-started', label: 'Not Started' },
-                { key: 'in-progress', label: 'In Progress' },
-                { key: 'completed', label: 'Completed' },
-              ].map((tab) => {
-                const active = statusFilter === tab.key;
-                const count = statusSummary[tab.key];
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setStatusFilter(tab.key)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-solid transition-all cursor-pointer ${active
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                        : 'bg-slate-50 dark:bg-[#0d1320] text-gray-600 dark:text-gray-300 border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700'
-                      }`}
-                  >
-                    <span>{tab.label}</span>
-                    <span
-                      className={`px-1.5 py-0.5 rounded-md text-[11px] ${active
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-200/70 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-                        }`}
-                    >
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-
-              <button
-                type="button"
-                onClick={handleToggleExpandAll}
-                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-300 bg-slate-50 dark:bg-[#0d1320] border border-solid border-slate-200 dark:border-gray-800 hover:border-slate-300 dark:hover:border-gray-700 transition-colors cursor-pointer ml-1"
-              >
-                {allExpanded ? (
-                  <>
-                    <ChevronsDownUp className="w-3.5 h-3.5" />
-                    <span>Collapse All</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronsUpDown className="w-3.5 h-3.5" />
-                    <span>Expand All</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <SyllabusFilterBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onClearSearch={() => setSearchQuery('')}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          statusSummary={statusSummary}
+          allExpanded={allExpanded}
+          onToggleExpandAll={handleToggleExpandAll}
+        />
 
         {/* Empty State when filters/search match 0 chapters */}
         {filteredSubjects.length === 0 ? (
@@ -906,4 +559,3 @@ const SyllabusTrackerComponent = () => {
 };
 
 export default SyllabusTrackerComponent;
-
