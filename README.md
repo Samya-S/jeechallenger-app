@@ -344,6 +344,8 @@ jeechallenger-app/
 │   ├── playlists/              # Unified BookmarkContext, sidebars, tables, and popover components
 │   ├── providers/              # React Context providers
 │   ├── resources/              # Formula sheets, unit converters, and PYQ components
+│   │   └── pyqs/               # PaperDetailComponent, PYQImageLightbox, and modular paper views
+│   │       └── paper-detail/   # PaperHeader, PaperNavigation, and PaperQuestionCard subcomponents
 │   └── ui/                     # Primitives (CustomSelect, BlogCard, etc.)
 ├── config/                     # Configuration files
 ├── data/                       # Static resource data and formula constants
