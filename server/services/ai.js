@@ -146,12 +146,52 @@ export const aiService = {
       }
 
       const response = await fetch(targetUrlWithQuery, fetchOptions);
+      const responseContentType = response.headers.get('content-type') || '';
+
+      // If upstream failed with an infrastructure error or non-JSON body (e.g. Vercel timeout 504)
+      if (!response.ok && (!responseContentType.includes('application/json') || response.status === 504 || response.status === 502)) {
+        const rawText = await response.text();
+        let isJson = false;
+        try {
+          JSON.parse(rawText);
+          isJson = true;
+        } catch {}
+
+        if (!isJson) {
+          const isTimeout = response.status === 504 || rawText.includes('FUNCTION_INVOCATION_TIMEOUT') || rawText.includes('GATEWAY_TIMEOUT');
+          const errorMessage = isTimeout
+            ? 'The AI service is taking longer than expected to respond. Please try again in a moment.'
+            : 'AI service temporarily unavailable. Please try again.';
+
+          return new Response(JSON.stringify({
+            success: false,
+            error: isTimeout ? 'TIMEOUT' : 'BAD_GATEWAY',
+            message: errorMessage,
+            detail: errorMessage
+          }), {
+            status: isTimeout ? 504 : 502,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
+          });
+        }
+
+        return new Response(rawText, {
+          status: response.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-store, no-cache, must-revalidate',
+          },
+        });
+      }
+
       const responseBody = await response.arrayBuffer();
 
       return new Response(responseBody, {
         status: response.status,
         headers: {
-          'Content-Type': response.headers.get('content-type') || 'application/json',
+          'Content-Type': responseContentType || 'application/json',
           'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
           Pragma: 'no-cache',
           Expires: '0',

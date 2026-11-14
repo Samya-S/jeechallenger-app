@@ -17,6 +17,13 @@ export const MOBILE_PLACEHOLDERS = [
 ];
 
 export const parseApiError = async (response, defaultMessage) => {
+  if (response.status === 504) {
+    return "The AI tutor took longer than expected to respond. Please click 'Retry Message' to try again.";
+  }
+  if (response.status === 429) {
+    return "You've sent too many requests. Please wait a moment before trying again.";
+  }
+
   try {
     const errorData = await response.text();
     try {
@@ -26,6 +33,16 @@ export const parseApiError = async (response, defaultMessage) => {
         return serverMessage;
       }
     } catch {
+      if (
+        errorData &&
+        typeof errorData === 'string' &&
+        (errorData.includes('FUNCTION_INVOCATION_TIMEOUT') ||
+         errorData.includes('GATEWAY_TIMEOUT') ||
+         errorData.includes('An error occurred with your deployment'))
+      ) {
+        return "The AI tutor took longer than expected to respond. Please click 'Retry Message' to try again.";
+      }
+
       if (errorData && typeof errorData === 'string' && errorData.length < 250 && !errorData.includes('<!DOCTYPE')) {
         return errorData;
       }
@@ -34,10 +51,6 @@ export const parseApiError = async (response, defaultMessage) => {
     // Response stream could not be read
   }
 
-  // Graceful fallbacks only if server returned no body or unparseable HTML
-  if (response.status === 429) {
-    return "You've sent too many requests. Please wait a moment before trying again.";
-  }
   return defaultMessage;
 };
 
