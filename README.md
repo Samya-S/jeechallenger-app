@@ -272,7 +272,7 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=your-ga-id
 # Google AdSense (Optional)
 NEXT_PUBLIC_ADSENSE_CLIENT_ID=your-adsense-id
 
-# Internal Cron Secret (Optional, for CBT auto-submit)
+# Internal Cron Secret (Required for Cloudflare Worker CBT auto-submit)
 INTERNAL_CRON_SECRET=your-cron-secret
 
 # On-Demand Revalidation Secret (for Go backend & pipeline cache purges)

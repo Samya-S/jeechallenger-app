@@ -4,11 +4,22 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
-    // Optional secret verification to protect against unauthenticated trigger spam
-    const authHeader = req.headers.get('authorization');
+    // Enforce fail-closed machine-to-machine authentication (Cloudflare Worker cron sweeper)
     const cronSecret = process.env.INTERNAL_CRON_SECRET;
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      return Response.json({ success: false, error: 'UNAUTHORIZED', message: 'Invalid cron authorization secret.' }, { status: 401 });
+    if (!cronSecret) {
+      console.error('[CBT Auto-Submit] CRITICAL: INTERNAL_CRON_SECRET is not configured on the server.');
+      return Response.json(
+        { success: false, error: 'SERVER_MISCONFIGURED', message: 'Internal cron authorization is not configured.' },
+        { status: 500 }
+      );
+    }
+
+    const authHeader = req.headers.get('authorization');
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      return Response.json(
+        { success: false, error: 'UNAUTHORIZED', message: 'Invalid cron authorization secret.' },
+        { status: 401 }
+      );
     }
 
     const body = await req.json().catch(() => ({}));
