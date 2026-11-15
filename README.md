@@ -352,6 +352,7 @@ jeechallenger-app/
 ├── config/                     # Configuration files
 ├── data/                       # Static resource data and formula constants
 ├── docs/                       # Technical blueprints and specifications
+│   ├── assets/                 # Technical documentation diagrams and assets
 │   ├── blog-structure.md       # Blog system documentation
 │   ├── cbt-master-spec.md      # CBT Exam Simulator & 3-Tier State Machine master blueprint
 │   ├── color-system.md         # Design system colors
@@ -372,9 +373,13 @@ jeechallenger-app/
 │   ├── news-actions.js         # GNews server action
 │   └── views-actions.js        # Upstash Redis article view counts
 └── utils/                      # Low-level utilities & infrastructure singletons
+    ├── articles.js             # Blog and article loading utilities
     ├── cbt-auto-submit.js      # Lazy & cron expired CBT exam finalizer
     ├── cbt-helpers.js          # CBT palette, timer, and score formatting helpers
+    ├── modal-events.js         # Global custom event bus for modals
     ├── mongodb.js              # MongoDB client singleton
+    ├── og-image.jsx            # Edge JSX OpenGraph image generator template
+    ├── og-metadata.js          # Route-level OpenGraph & Twitter metadata generator
     ├── pyq-helpers.js          # PYQ taxonomy, slugs, badges, and search snippet helpers
     └── redis.js                # Upstash Redis client singleton
 ```
