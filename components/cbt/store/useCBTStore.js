@@ -88,16 +88,19 @@ export const useCBTStore = create((setState, getState) => ({
       }
     }
 
-    // Default first question state
-    const firstQ = questions[0];
-    const firstQId = firstQ ? String(firstQ._id) : null;
-    if (firstQId && (!mergedPaletteStates[firstQId] || mergedPaletteStates[firstQId] === 1)) {
-      mergedPaletteStates[firstQId] = 2; // Not Answered (visited)
+    // Determine target active question on resume (IndexedDB > server rehydrated > default 0)
+    const rawResumedIndex = localCache?.activeQuestionIndex ?? (sessionData?.active_question_index !== undefined ? Number(sessionData.active_question_index) : 0);
+    const targetIndex = (rawResumedIndex >= 0 && rawResumedIndex < (questions?.length || 0)) ? rawResumedIndex : 0;
+
+    const activeQ = questions[targetIndex] || questions[0];
+    const activeQId = activeQ ? String(activeQ._id) : null;
+    if (activeQId && (!mergedPaletteStates[activeQId] || mergedPaletteStates[activeQId] === 1)) {
+      mergedPaletteStates[activeQId] = 2; // Not Answered (visited)
     }
 
     const initialUncommitted = {
-      selected_options: (firstQId && mergedAnswers[firstQId]?.selected_options) ? [...mergedAnswers[firstQId].selected_options] : [],
-      numeric_value: (firstQId && mergedAnswers[firstQId]?.numeric_value) || null,
+      selected_options: (activeQId && mergedAnswers[activeQId]?.selected_options) ? [...mergedAnswers[activeQId].selected_options] : [],
+      numeric_value: (activeQId && mergedAnswers[activeQId]?.numeric_value) || null,
     };
 
     setState({
@@ -106,8 +109,8 @@ export const useCBTStore = create((setState, getState) => ({
       examType: paper?.exam_type || 'JEE_MAIN',
       paperMetadata: paper,
       questions: questions || [],
-      activeQuestionIndex: 0,
-      activeSubject: questions[0]?.subject || 'Physics',
+      activeQuestionIndex: targetIndex,
+      activeSubject: activeQ?.subject || 'Physics',
       activeSectionIndex: 0,
       isTerminated: false,
       expiresAt: expires_at,
@@ -127,6 +130,7 @@ export const useCBTStore = create((setState, getState) => ({
           answers: mergedAnswers,
           paletteStates: mergedPaletteStates,
           questionTimeMap: mergedTimeMap,
+          activeQuestionIndex: targetIndex,
         });
       } catch (e) {
         console.warn('Failed to prime IndexedDB cache:', e);
@@ -187,11 +191,12 @@ export const useCBTStore = create((setState, getState) => ({
 
     if (typeof window !== 'undefined' && typeof indexedDB !== 'undefined' && sessionId) {
       try {
-        const { answers, paletteStates, questionTimeMap } = getState();
+        const { answers, paletteStates, questionTimeMap, activeQuestionIndex } = getState();
         await set(`cbt_local_${sessionId}`, {
           answers,
           paletteStates,
           questionTimeMap,
+          activeQuestionIndex,
         });
       } catch (e) {
         console.warn('Failed to persist to IndexedDB on reclaim:', e);
@@ -531,6 +536,7 @@ export const useCBTStore = create((setState, getState) => ({
         answers,
         paletteStates,
         questionTimeMap: liveTimeMap,
+        activeQuestionIndex,
         updatedAt: Date.now(),
       });
     } catch (e) {
@@ -584,6 +590,7 @@ export const useCBTStore = create((setState, getState) => ({
           session_id: sessionId,
           instance_id: instanceId,
           delta,
+          active_question_index: getState().activeQuestionIndex,
         }),
       });
 
@@ -648,6 +655,7 @@ export const useCBTStore = create((setState, getState) => ({
           session_id: sessionId,
           instance_id: instanceId,
           delta,
+          active_question_index: activeQuestionIndex,
         }),
       });
 

@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  const paper = await pyqsService.getPaperBySlug(slug);
+  const paper = await pyqsService.getCBTPaperBySlug(slug);
 
   if (!paper) {
     return {
@@ -39,7 +39,7 @@ export default async function MockTestPage({ params }) {
     redirect(`/login?callbackUrl=/mock-test/${slug}`);
   }
 
-  const paper = await pyqsService.getPaperBySlug(slug);
+  const paper = await pyqsService.getCBTPaperBySlug(slug);
 
   if (!paper || !paper.questions || paper.questions.length === 0) {
     notFound();

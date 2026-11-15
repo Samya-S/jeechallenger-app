@@ -88,6 +88,37 @@ export const pyqsService = {
   },
 
   /**
+   * Fetches sanitized paper and questions for live CBT exam room.
+   * Guaranteed zero-knowledge: contains no answers, solutions, or hint metadata.
+   */
+  async getCBTPaperBySlug(slug, fetchOptions = {}) {
+    if (!slug) return null;
+
+    try {
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
+      const res = await fetch(`${PYQS_API_URL}/cbt/papers/${encodeURIComponent(slug)}`, {
+        headers,
+        cache: 'no-store',
+        ...fetchOptions,
+      });
+
+      if (!res.ok) {
+        return null;
+      }
+
+      const json = await res.json();
+      const paper = json?.data || json;
+      if (paper && Array.isArray(paper.questions) && paper.questions.length > 0) {
+        return paper;
+      }
+      return paper || null;
+    } catch (err) {
+      console.error(`[pyqsService] Failed to fetch CBT paper "${slug}":`, err);
+      return null;
+    }
+  },
+
+  /**
    * Fetches individual question by its slug.
    */
   async getQuestionBySlug(slug, fetchOptions = {}) {

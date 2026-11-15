@@ -119,6 +119,7 @@ export async function POST(req) {
           active_instance_id: existing.active_instance_id,
           is_same_instance: isSameInstance,
           rehydrated_answers: rehydratedAnswers,
+          active_question_index: existing.active_question_index !== undefined ? Number(existing.active_question_index) : 0,
         });
       } else {
         // Defensive Lazy Auto-Submit Guard: Exam expired while candidate was away
@@ -136,7 +137,7 @@ export async function POST(req) {
     let durationMinutes = 180;
     try {
       if (paper_slug) {
-        const paper = await pyqsService.getPaperBySlug(paper_slug);
+        const paper = await pyqsService.getCBTPaperBySlug(paper_slug);
         if (paper?.duration_minutes) {
           durationMinutes = paper.duration_minutes;
         }

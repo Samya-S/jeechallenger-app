@@ -82,7 +82,8 @@ To maintain absolute architectural purity across the ecosystem:
    * The Go backend (`jeechallenger-pyqs`) is the **sole system** authorized to connect directly to the `jee_challenger_pyqs` MongoDB database for papers and questions.
    * Next.js frontend (`jeechallenger-app`) **never queries `papers` or `production` directly via MongoDB**.
 2. **Canonical Microservice Endpoints**:
-   * **Exam Room Ingestion**: `GET /papers/{slug}` — The Go service reassembles questions in strict section order (`paper.sections[].question_ids`), transforms image URLs to CDN format, and returns the complete test payload.
+   * **Exam Room Ingestion**: `GET /cbt/papers/{slug}` — The Go service delivers sanitized test questions in strict section order (`paper.sections[].question_ids`), transforms image URLs to CDN format, and completely strips all answers, step-by-step solutions, and hint metadata (enforcing zero-knowledge exam delivery).
+   * **Practice Mode & Post-Exam Scorecard Review**: `GET /papers/{slug}` — Returns full paper details including official answer keys and step-by-step LaTeX solutions for practice mode and post-exam review.
    * **Scorecard Evaluation & Review**: `GET /cbt/submissions/{id}` and `GET /cbt/submissions` — Authenticated via NextAuth-signed HS256 JWT tokens.
 3. **Fail-Fast & Zero Fallback Logics**:
    * If an endpoint returns 404 or an error, execution stops immediately and renders `notFound()`.
@@ -237,6 +238,7 @@ To maintain complete modularity and eliminate client-side type inference:
 "started_at": 1714002000,
 "expires_at": 1714012800, // UTC Epoch seconds
 "active_instance_id": "inst_7f9c2a",
+"active_question_index": 14, // Exact question on screen for authentic NTA crash/reload resumption
 "last_heartbeat": 1714003420,
 "status": "IN_PROGRESS", // "IN_PROGRESS" | "SUBMITTED"
 
@@ -276,10 +278,13 @@ To maintain complete modularity and eliminate client-side type inference:
 ---
 
 ### 3.3 Disconnection, Offline Queue & Recovery
-1. Every state change writes to local IndexedDB immediately.
+1. Every state change writes to local IndexedDB immediately, including `activeQuestionIndex`.
 2. The question number is added to an in-memory `pendingSyncQueue` Set.
-3. A non-blocking worker flushes `pendingSyncQueue` to `/api/cbt/session/sync-delta`.
-4. **If Network Drops**:
+3. A non-blocking worker flushes `pendingSyncQueue` and `active_question_index` to `/api/cbt/session/sync-delta`.
+4. **Authentic NTA Resumption on Page Refresh / Machine Switch**:
+   * When rehydrating, the client reads `activeQuestionIndex` (preferring local IndexedDB, falling back to server Redis session).
+   * The candidate lands directly on the exact question they were actively viewing prior to the reload/transfer, matching the TCS iON / NTA center recovery standard.
+5. **If Network Drops**:
    * The UI remains fully functional; writes continue into IndexedDB.
    * `pendingSyncQueue` retains un-synced question keys.
    * When `window.addEventListener('online')` fires, the queue flushes the entire accumulated batch in a single atomic `HSET` call.
@@ -458,6 +463,7 @@ Initializes a new test attempt or resumes an existing one.
     "duration_minutes": 180,
     "is_resumed": false,
     "active_instance_id": "inst_7f9c2a",
+    "active_question_index": 0,
     "rehydrated_answers": {}
   }
   ```
@@ -471,6 +477,7 @@ Non-blocking background delta sync called on answer changes, 60s cloud keepalive
   {
     "session_id": "cbt_sess_89a12c",
     "instance_id": "inst_7f9c2a",
+    "active_question_index": 14,
     "delta": {
       "q_14": {
         "selected_option": "B",

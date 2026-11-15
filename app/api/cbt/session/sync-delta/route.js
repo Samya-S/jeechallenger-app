@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { session_id, instance_id, delta } = body;
+    const { session_id, instance_id, delta, active_question_index } = body;
 
     if (!session_id || !instance_id) {
       return Response.json({ success: false, error: 'BAD_REQUEST', message: 'session_id and instance_id are required' }, { status: 400 });
@@ -42,6 +42,10 @@ export async function POST(req) {
         // key is typically "q_14"
         updates[key] = typeof val === 'string' ? val : JSON.stringify(val);
       }
+    }
+
+    if (typeof active_question_index === 'number' && active_question_index >= 0) {
+      updates.active_question_index = active_question_index;
     }
 
     await redis.hset(session_id, updates);

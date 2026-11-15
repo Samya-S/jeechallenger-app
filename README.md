@@ -99,6 +99,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - Layer 2: Local Crash Guard (IndexedDB `<1 ms` persistence against accidental browser close).
   - Layer 3: Cloud Persistence (Upstash Redis delta sync via lightweight HTTP REST calls).
   - Multi-device leased mutex anti-collision preventing concurrent device cheating (409 Conflict lockout overlay).
+  - **Zero-Knowledge Security & Authentic Question Resumption**: Dedicated `/cbt/papers/:slug` microservice endpoint delivering questions stripped of solutions, answers, and hints. Resumes seamlessly on the exact active question on page reload or device transfer matching TCS iON center behavior.
 - **Comprehensive Scorecard & Pacing Analytics (`/mock-test/[slug]/results`)**:
   - **Factual Attempt Rate**: Replaced pseudo-percentiles with accurate attempted question ratios (`Attempt Rate: 84.0% (63/75)`).
   - **Interactive Time Traps & Speed Wins**: Benchmark pacing dashboard with click-to-jump smooth scrolling and amber focus highlight pulse.
