@@ -141,7 +141,7 @@ const DisclaimerComponent = () => {
 									DMCA &amp; Copyright Takedown
 								</h3>
 								<p>
-									We take intellectual property rights seriously and ensure all content is either original or public domain. However, if you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									We take intellectual property rights seriously and ensure all content is either original or public domain. However, if you are a copyright holder and believe any content on this platform infringes your intellectual property rights, please contact us immediately at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 								<p>
 									We will promptly investigate and remove any infringing content upon proper notification.
@@ -320,7 +320,7 @@ const DisclaimerComponent = () => {
 									Contact Information
 								</h3>
 								<p>
-									If you have any questions or concerns regarding this disclaimer, or if you believe any content on this platform violates your rights, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									If you have any questions or concerns regarding this disclaimer, or if you believe any content on this platform violates your rights, please contact us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 							</div>
 						</section>

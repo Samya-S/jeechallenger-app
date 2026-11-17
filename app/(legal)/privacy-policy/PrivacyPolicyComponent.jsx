@@ -62,7 +62,7 @@ const PrivacyPolicyComponent = () => {
 								At <strong>JEE Challenger</strong>, accessible at <a href={getSiteUrl()} className="text-blue-600 dark:text-blue-400 hover:underline">{getSiteUrl()}</a>, protecting your privacy is a priority. This Privacy Policy describes the types of information collected and recorded by JEE Challenger and how we use, protect, and manage that information.
 							</p>
 							<p>
-								If you have questions or need additional information about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+								If you have questions or need additional information about our Privacy Policy, please contact us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 							</p>
 						</div>
 
@@ -227,7 +227,7 @@ const PrivacyPolicyComponent = () => {
 									Data Retention
 								</h3>
 								<p>
-									Contact form inquiries are retained for a reasonable period to address your concerns and improve our services. To request deletion of your contact information, please email us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									Contact form inquiries are retained for a reasonable period to address your concerns and improve our services. To request deletion of your contact information, please email us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 							</div>
 						</section>
@@ -294,7 +294,7 @@ const PrivacyPolicyComponent = () => {
 									<li><strong>Right to Data Portability:</strong> Export locally stored data using available export features</li>
 								</ul>
 								<p>
-									To exercise any of these rights, contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									To exercise any of these rights, contact us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 							</div>
 						</section>
@@ -343,7 +343,7 @@ const PrivacyPolicyComponent = () => {
 									Questions About This Policy?
 								</h3>
 								<p className="text-gray-700 dark:text-gray-300 mb-3 text-sm sm:text-base">
-									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									If you have questions or concerns about our Privacy Policy, please contact us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 								<p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
 									Also see: <Link href="/terms-of-service" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Terms of Service</Link> &bull; <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">Disclaimer</Link>

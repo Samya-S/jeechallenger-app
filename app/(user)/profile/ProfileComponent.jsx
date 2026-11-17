@@ -204,10 +204,10 @@ const ProfileContent = () => {
                     <p className="text-sm text-red-600 dark:text-red-400 mt-2">
                       To delete your account and all associated data, please email us at{' '}
                       <a
-                        href="mailto:jeechallenger@gmail.com"
+                        href="mailto:contact@jeechallenger.com"
                         className="underline hover:text-red-800 dark:hover:text-red-200"
                       >
-                        jeechallenger@gmail.com
+                        contact@jeechallenger.com
                       </a>
                       {' '}with your request.
                     </p>

@@ -119,7 +119,7 @@ const ContactUsComponent = () => {
               <div className="space-y-3.5">
                 {/* Email Card */}
                 <a
-                  href="mailto:jeechallenger@gmail.com"
+                  href="mailto:contact@jeechallenger.com"
                   className="group flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all shadow-sm"
                 >
                   <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -133,7 +133,7 @@ const ContactUsComponent = () => {
                       <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                     </div>
                     <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-                      jeechallenger@gmail.com
+                      contact@jeechallenger.com
                     </p>
                     <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5">
                       Fastest channel for official inquiries

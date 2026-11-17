@@ -129,7 +129,7 @@ const TermsOfServiceComponent = () => {
 								<ul className="list-disc pl-6 space-y-2">
 									<li>You will provide accurate and complete information when authenticating.</li>
 									<li>You are responsible for maintaining the confidentiality of your account and for all activity that occurs under it.</li>
-									<li>You will notify us immediately at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a> if you suspect any unauthorised use of your account.</li>
+									<li>You will notify us immediately at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a> if you suspect any unauthorised use of your account.</li>
 									<li>You must be at least 13 years of age to create an account. If you are under 18, you confirm you have parental or guardian consent.</li>
 								</ul>
 								<div className="bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/60 rounded-xl p-4">
@@ -278,7 +278,7 @@ const TermsOfServiceComponent = () => {
 									We reserve the right to suspend or terminate your access to all or any part of the Platform at any time, with or without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties, or for any other reason at our sole discretion.
 								</p>
 								<p>
-									You may stop using the Platform at any time. If you have an account, you may request deletion of your data by contacting us at <a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									You may stop using the Platform at any time. If you have an account, you may request deletion of your data by contacting us at <a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 							</div>
 						</section>
@@ -326,7 +326,7 @@ const TermsOfServiceComponent = () => {
 								<h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Contact Us</h2>
 								<p>
 									If you have any questions or concerns about these Terms of Service, please contact us at{' '}
-									<a href="mailto:jeechallenger@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">jeechallenger@gmail.com</a>.
+									<a href="mailto:legal@jeechallenger.com" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold">legal@jeechallenger.com</a>.
 								</p>
 							</div>
 

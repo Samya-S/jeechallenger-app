@@ -7,10 +7,13 @@ async function runTests() {
   console.log('Testing server/contact-actions.js...');
 
   // Mock environment variables for testing
-  process.env.AUTH_EMAIL = 'test@example.com';
-  process.env.AUTH_PASS = 'mockpassword';
-  process.env.SENDER_EMAIL = 'sender@example.com';
-  process.env.RECEIVER_EMAILS = 'receiver1@example.com, receiver2@example.com';
+  process.env.SMTP_HOST = 'smtp.resend.com';
+  process.env.SMTP_PORT = '465';
+  process.env.SMTP_SECURE = 'true';
+  process.env.SMTP_USER = 'resend';
+  process.env.SMTP_PASS = 'mockpassword';
+  process.env.SENDER_EMAIL = '"JEE Challenger Support" <noreply@jeechallenger.com>';
+  process.env.RECEIVER_EMAILS = 'contact@jeechallenger.com';
   process.env.NEXT_PUBLIC_APP_URL = 'https://jeechallenger.com';
 
   // Test 1: Validation rejection on empty/missing fields

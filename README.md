@@ -252,11 +252,14 @@ MONGODB_URI=your-mongodb-connection-string
 UPSTASH_REDIS_REST_URL=your-upstash-redis-url
 UPSTASH_REDIS_REST_TOKEN=your-upstash-redis-token
 
-# Email Configuration (Nodemailer)
-AUTH_EMAIL=your-email@gmail.com
-AUTH_PASS=your-app-password
-SENDER_EMAIL=your-sender-email@gmail.com
-RECEIVER_EMAILS=receiver1@example.com,receiver2@example.com
+# Email Configuration (Nodemailer / Generic SMTP)
+SMTP_HOST=your-smtp-host
+SMTP_PORT=465 # 465 (SSL) or 587 (STARTTLS)
+SMTP_SECURE=true # true for 465, false for 587/2525
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-password
+SENDER_EMAIL="Support <noreply@example.com>"
+RECEIVER_EMAILS=admin@example.com
 
 # GNews API Configuration
 GNEWS_API_KEY=your-gnews-api-key

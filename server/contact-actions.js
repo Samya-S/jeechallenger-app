@@ -9,11 +9,23 @@ let transporterInstance = null;
 
 function getTransporter() {
   if (!transporterInstance) {
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT);
+    const secure = process.env.SMTP_SECURE === 'true';
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+
+    if (!host || !port || !user || !pass) {
+      throw new Error('SMTP configuration missing: SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS must be defined.');
+    }
+
     transporterInstance = nodemailer.createTransport({
-      service: 'gmail',
+      host,
+      port,
+      secure,
       auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASS,
+        user,
+        pass,
       },
     });
 
@@ -24,7 +36,11 @@ function getTransporter() {
 }
 
 function getReceiverEmails() {
-  return (process.env.RECEIVER_EMAILS || process.env.RECEIVER_EMAIL || '')
+  const raw = process.env.RECEIVER_EMAILS;
+  if (!raw) {
+    throw new Error('RECEIVER_EMAILS is not defined in environment variables');
+  }
+  return raw
     .split(',')
     .map((email) => email.trim())
     .filter(Boolean);
@@ -70,9 +86,14 @@ export const submitContactUsForm = async (formData) => {
     const transporter = getTransporter();
     const siteUrl = getSiteUrl();
 
+    if (!process.env.SENDER_EMAIL) {
+      throw new Error('SENDER_EMAIL is not defined in environment variables');
+    }
+
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: receiverEmails,
+      replyTo: `${safeName} <${safeEmail}>`,
       subject: `New Contact Us Form Submission by ${name} | JEE Challenger`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
@@ -129,9 +150,14 @@ export const submitFeedbackForm = async (formData) => {
     const transporter = getTransporter();
     const siteUrl = getSiteUrl();
 
+    if (!process.env.SENDER_EMAIL) {
+      throw new Error('SENDER_EMAIL is not defined in environment variables');
+    }
+
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: receiverEmails,
+      replyTo: `${safeName} <${safeEmail}>`,
       subject: `New Feedback from ${name} | JEE Challenger`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
@@ -218,9 +244,14 @@ export const submitQuestionBugReport = async (reportData) => {
     const receiverEmails = getReceiverEmails();
     const transporter = getTransporter();
 
+    if (!process.env.SENDER_EMAIL) {
+      throw new Error('SENDER_EMAIL is not defined in environment variables');
+    }
+
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: receiverEmails,
+      ...(reporterEmail ? { replyTo: reporterEmail } : {}),
       subject: `🐛 [PYQ Bug Report] ${questionMeta.subject}: ${questionMeta.title || questionMeta.slug} | JEE Challenger`,
       html: `
         <!DOCTYPE html>
