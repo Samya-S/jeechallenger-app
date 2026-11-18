@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Generate source maps for production builds
-  productionBrowserSourceMaps: true,
   // Target modern browsers to reduce polyfills
   compiler: {
     // Remove console logs in production
