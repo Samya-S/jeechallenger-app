@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
+import ExamCountdown from '@/components/common/ExamCountdown';
 
 const ScrollToTopButton = dynamic(() => import('@/components/ui/ScrollToTopButton'), {
   ssr: false
@@ -33,8 +34,13 @@ const JeeAdvancedComponent = () => {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto pb-12">
+        {/* Exam Countdown Widget */}
+        <div className="-mt-10 sm:-mt-12 relative z-20 px-4 sm:px-6 lg:px-8 mb-4 sm:mb-8">
+          <ExamCountdown examKey="JEE_ADVANCED" />
+        </div>
+
         {/* Official Website Section */}
-        <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+        <section className="pt-8 sm:pt-12 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Official JEE Advanced Website
@@ -220,7 +226,7 @@ const JeeAdvancedComponent = () => {
               <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
                 <div className="flex-1 text-center md:text-left">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold tracking-wide uppercase mb-4">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                     Instant Push Alerts
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
