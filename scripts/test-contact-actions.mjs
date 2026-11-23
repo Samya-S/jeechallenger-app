@@ -14,7 +14,7 @@ async function runTests() {
   process.env.SMTP_PASS = 'mockpassword';
   process.env.SENDER_EMAIL = '"JEE Challenger Support" <noreply@jeechallenger.com>';
   process.env.RECEIVER_EMAILS = 'contact@jeechallenger.com';
-  process.env.NEXT_PUBLIC_APP_URL = 'https://jeechallenger.com';
+  process.env.NEXT_PUBLIC_APP_URL = 'https://www.jeechallenger.com';
 
   // Test 1: Validation rejection on empty/missing fields
   console.log('Test 1: Bad request schema validation');
