@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PYQS_API_URL, getAuthHeaders } from '@/server/services/pyqs';
+import { BACKEND_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +13,7 @@ export async function GET() {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }
 
-    const res = await fetch(`${PYQS_API_URL}/playlists`, {
+    const res = await fetch(`${BACKEND_API_URL}/playlists`, {
       headers: getAuthHeaders(session.user.id),
       cache: 'no-store',
     });
@@ -36,7 +36,7 @@ export async function POST(req) {
 
     const body = await req.json();
 
-    const res = await fetch(`${PYQS_API_URL}/playlists`, {
+    const res = await fetch(`${BACKEND_API_URL}/playlists`, {
       method: 'POST',
       headers: getAuthHeaders(session.user.id, {
         'Content-Type': 'application/json',

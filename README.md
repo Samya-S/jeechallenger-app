@@ -194,9 +194,9 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ### Backend & APIs
 
 - **Unified Service Layer (`server/services/`)**: Centralized internal SDK and single source of truth for microservice communication, token signing, and caching rules:
-  - `pyqs.js`: Go PYQ & CBT microservice client (`pyqs-api.jeechallenger.com`) for questions, papers, attempts, mistake vault, and test submissions.
+  - `pyqs.js`: Go backend client (`backend-api.jeechallenger.com`) for questions, papers, attempts, mistake vault, and test submissions.
   - `ai.js`: Python AI Tutor microservice client (`ai-api.jeechallenger.com`) with streaming chat proxy and multipart file upload forwarding.
-  - `syllabus-tracker.js`: Syllabus tracker microservice client delegating progress synchronization and milestone retrieval to the Go PYQs microservice (`pyqs-api.jeechallenger.com`).
+  - `syllabus-tracker.js`: Syllabus tracker microservice client delegating progress synchronization and milestone retrieval to the Go backend (`backend-api.jeechallenger.com`).
 - **Authentication**: NextAuth.js v4 with Google OAuth provider & HS256 JWT microservice authentication tokens
 - **Databases (Microservice Architecture)**: 
   - `jee_challenger_auth`: User sessions, accounts, and authentication (direct NextAuth adapter connection; indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
@@ -283,11 +283,11 @@ INTERNAL_CRON_SECRET=your-cron-secret
 REVALIDATION_SECRET=your-revalidation-secret
 
 # Microservice Internal Machine-to-Machine Secrets (HS256 X-Internal-Token)
-PYQS_SERVICE_SECRET=your-pyqs-service-secret
+BACKEND_SERVICE_SECRET=your-backend-service-secret
 AI_SERVICE_SECRET=your-ai-service-secret
 
-# PYQ Go Backend Microservice URL (optional, defaults to https://pyqs-api.jeechallenger.com)
-PYQS_API_URL=https://pyqs-api.jeechallenger.com
+# Go Backend URL (optional, defaults to https://backend-api.jeechallenger.com)
+BACKEND_API_URL=https://backend-api.jeechallenger.com
 
 # AI Tutor Python Backend Microservice URL (optional, defaults to https://ai-api.jeechallenger.com)
 AI_API_URL=https://ai-api.jeechallenger.com

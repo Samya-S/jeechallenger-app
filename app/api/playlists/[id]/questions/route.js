@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PYQS_API_URL, getAuthHeaders } from '@/server/services/pyqs';
+import { BACKEND_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ export async function POST(req, { params }) {
     const { id } = await params;
     const body = await req.json();
 
-    const res = await fetch(`${PYQS_API_URL}/playlists/${id}/questions`, {
+    const res = await fetch(`${BACKEND_API_URL}/playlists/${id}/questions`, {
       method: 'POST',
       headers: getAuthHeaders(session.user.id, {
         'Content-Type': 'application/json',

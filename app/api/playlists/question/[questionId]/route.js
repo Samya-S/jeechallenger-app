@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PYQS_API_URL, getAuthHeaders } from '@/server/services/pyqs';
+import { BACKEND_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
 
     const { questionId } = await params;
 
-    const res = await fetch(`${PYQS_API_URL}/playlists/question/${questionId}`, {
+    const res = await fetch(`${BACKEND_API_URL}/playlists/question/${questionId}`, {
       headers: getAuthHeaders(session.user.id),
       cache: 'no-store',
     });

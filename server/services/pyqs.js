@@ -1,7 +1,7 @@
 import { getServiceToken, attachServiceToken } from './internal-token';
 import jwt from 'jsonwebtoken';
 
-export const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+export const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://backend-api.jeechallenger.com';
 
 /**
  * Creates an HS256 JWT signed with NEXTAUTH_SECRET for backend authentication.
@@ -18,7 +18,7 @@ export function signUserToken(tokenOrId) {
  * Generates authorization headers containing the signed Bearer token.
  */
 export function getAuthHeaders(tokenOrId = null, extraHeaders = {}) {
-  const headers = attachServiceToken({ ...extraHeaders }, 'pyqs-service');
+  const headers = attachServiceToken({ ...extraHeaders }, 'backend-service');
   if (tokenOrId) {
     const token = signUserToken(tokenOrId);
     headers['Authorization'] = `Bearer ${token}`;
@@ -27,11 +27,11 @@ export function getAuthHeaders(tokenOrId = null, extraHeaders = {}) {
 }
 
 /**
- * Unified Go PYQs & CBT Microservice Client
- * Single Source of Truth for https://pyqs-api.jeechallenger.com
+ * Unified Go Backend Client
+ * Single Source of Truth for https://backend-api.jeechallenger.com
  */
 export const pyqsService = {
-  baseUrl: PYQS_API_URL,
+  baseUrl: BACKEND_API_URL,
 
   /**
    * Fetches paginated papers catalog.
@@ -49,8 +49,8 @@ export const pyqsService = {
       }
     }
 
-    const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
-    const res = await fetch(`${PYQS_API_URL}/papers?${params.toString()}`, { ...fetchOptions, headers });
+    const headers = attachServiceToken(new Headers(fetchOptions.headers), 'backend-service');
+    const res = await fetch(`${BACKEND_API_URL}/papers?${params.toString()}`, { ...fetchOptions, headers });
     if (!res.ok) {
       throw new Error(`Failed to fetch papers: ${res.status} ${res.statusText}`);
     }
@@ -64,8 +64,8 @@ export const pyqsService = {
     if (!slug) return null;
 
     try {
-      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
-      const res = await fetch(`${PYQS_API_URL}/papers/${encodeURIComponent(slug)}`, {
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'backend-service');
+      const res = await fetch(`${BACKEND_API_URL}/papers/${encodeURIComponent(slug)}`, {
         headers,
         cache: 'no-store',
         ...fetchOptions,
@@ -95,8 +95,8 @@ export const pyqsService = {
     if (!slug) return null;
 
     try {
-      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
-      const res = await fetch(`${PYQS_API_URL}/cbt/papers/${encodeURIComponent(slug)}`, {
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'backend-service');
+      const res = await fetch(`${BACKEND_API_URL}/cbt/papers/${encodeURIComponent(slug)}`, {
         headers,
         cache: 'no-store',
         ...fetchOptions,
@@ -125,8 +125,8 @@ export const pyqsService = {
     if (!slug) return null;
 
     try {
-      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'pyqs-service');
-      const res = await fetch(`${PYQS_API_URL}/questions/${encodeURIComponent(slug)}`, { ...fetchOptions, headers });
+      const headers = attachServiceToken(new Headers(fetchOptions.headers), 'backend-service');
+      const res = await fetch(`${BACKEND_API_URL}/questions/${encodeURIComponent(slug)}`, { ...fetchOptions, headers });
       if (!res.ok) return null;
       const json = await res.json();
       return json?.data || json;
@@ -144,7 +144,7 @@ export const pyqsService = {
 
     try {
       const headers = userId ? getAuthHeaders(userId) : {};
-      const res = await fetch(`${PYQS_API_URL}/playlists/${encodeURIComponent(slug)}`, {
+      const res = await fetch(`${BACKEND_API_URL}/playlists/${encodeURIComponent(slug)}`, {
         headers,
         cache: 'no-store',
         ...fetchOptions,
@@ -174,7 +174,7 @@ export const pyqsService = {
         params.set('paper_id', paperId);
       }
 
-      const res = await fetch(`${PYQS_API_URL}/cbt/submissions?${params.toString()}`, {
+      const res = await fetch(`${BACKEND_API_URL}/cbt/submissions?${params.toString()}`, {
         headers: getAuthHeaders(userId),
         cache: 'no-store',
         ...fetchOptions,
@@ -196,7 +196,7 @@ export const pyqsService = {
     if (!userId || !submissionId) return null;
 
     try {
-      const res = await fetch(`${PYQS_API_URL}/cbt/submissions/${encodeURIComponent(submissionId)}`, {
+      const res = await fetch(`${BACKEND_API_URL}/cbt/submissions/${encodeURIComponent(submissionId)}`, {
         headers: getAuthHeaders(userId),
         cache: 'no-store',
         ...fetchOptions,
@@ -229,7 +229,7 @@ export const pyqsService = {
       }
 
       const queryString = params.toString();
-      const url = `${PYQS_API_URL}/cbt/mistake-vault${queryString ? `?${queryString}` : ''}`;
+      const url = `${BACKEND_API_URL}/cbt/mistake-vault${queryString ? `?${queryString}` : ''}`;
 
       const res = await fetch(url, {
         headers: getAuthHeaders(userId),
@@ -257,7 +257,7 @@ export const pyqsService = {
       throw new Error('pyqsService: userId and questionId are required');
     }
 
-    const res = await fetch(`${PYQS_API_URL}/cbt/mistake-vault`, {
+    const res = await fetch(`${BACKEND_API_URL}/cbt/mistake-vault`, {
       method: 'POST',
       headers: getAuthHeaders(userId, {
         'Content-Type': 'application/json',
@@ -290,7 +290,7 @@ export const pyqsService = {
       throw new Error('pyqsService: userId and payload are required for submission');
     }
 
-    const res = await fetch(`${PYQS_API_URL}/cbt/submit`, {
+    const res = await fetch(`${BACKEND_API_URL}/cbt/submit`, {
       method: 'POST',
       headers: getAuthHeaders(userId, {
         'Content-Type': 'application/json',

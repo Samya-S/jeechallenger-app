@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-function getPyqsServiceToken() {
-  const secret = process.env.PYQS_SERVICE_SECRET;
+function getBackendServiceToken() {
+  const secret = process.env.BACKEND_SERVICE_SECRET;
   if (!secret) return null;
   return jwt.sign(
-    { iss: 'jeechallenger-web', aud: 'pyqs-service' },
+    { iss: 'jeechallenger-web', aud: 'backend-service' },
     secret,
     { algorithm: 'HS256', expiresIn: '60s' }
   );
@@ -15,7 +15,7 @@ const path = require('path');
 const matter = require('gray-matter');
 const { getSiteUrl } = require('./config/site-url');
 
-const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://backend-api.jeechallenger.com';
 
 /**
  * Fetch local MDX blog posts
@@ -67,9 +67,9 @@ async function getPaperRoutes() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
+    const res = await fetch(`${BACKEND_API_URL}/papers/sitemap`, {
       signal: controller.signal,
-      headers: { Accept: 'application/json', ...(getPyqsServiceToken() ? { 'X-Internal-Token': getPyqsServiceToken() } : {}) },
+      headers: { Accept: 'application/json', ...(getBackendServiceToken() ? { 'X-Internal-Token': getBackendServiceToken() } : {}) },
     });
     clearTimeout(timeoutId);
 
@@ -111,9 +111,9 @@ async function getQuestionRoutes() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const res = await fetch(`${PYQS_API_URL}/questions/sitemap?limit=10000&page=${page}`, {
+      const res = await fetch(`${BACKEND_API_URL}/questions/sitemap?limit=10000&page=${page}`, {
         signal: controller.signal,
-        headers: { Accept: 'application/json', ...(getPyqsServiceToken() ? { 'X-Internal-Token': getPyqsServiceToken() } : {}) },
+        headers: { Accept: 'application/json', ...(getBackendServiceToken() ? { 'X-Internal-Token': getBackendServiceToken() } : {}) },
       });
       clearTimeout(timeoutId);
 

@@ -2,12 +2,12 @@ import jwt from 'jsonwebtoken';
 
 /**
  * Creates a short-lived (60s) machine-to-machine JWT for internal microservices.
- * @param {'pyqs-service' | 'ai-service'} audience
+ * @param {'backend-service' | 'ai-service'} audience
  * @returns {string | null}
  */
 export function getServiceToken(audience) {
-  const secret = audience === 'pyqs-service'
-    ? process.env.PYQS_SERVICE_SECRET
+  const secret = audience === 'backend-service'
+    ? process.env.BACKEND_SERVICE_SECRET
     : process.env.AI_SERVICE_SECRET;
 
   if (!secret) return null;
@@ -29,7 +29,7 @@ export function getServiceToken(audience) {
  * Attaches X-Internal-Token to headers.
  * Supports Headers instance, plain object, or creates a new Headers instance.
  * @param {Headers | Record<string, string> | null | undefined} headers
- * @param {'pyqs-service' | 'ai-service'} audience
+ * @param {'backend-service' | 'ai-service'} audience
  * @returns {Headers | Record<string, string>}
  */
 export function attachServiceToken(headers, audience) {

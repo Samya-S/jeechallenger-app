@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-function getPyqsServiceToken() {
-  const secret = process.env.PYQS_SERVICE_SECRET;
+function getBackendServiceToken() {
+  const secret = process.env.BACKEND_SERVICE_SECRET;
   if (!secret) return null;
   return jwt.sign(
-    { iss: 'jeechallenger-web', aud: 'pyqs-service' },
+    { iss: 'jeechallenger-web', aud: 'backend-service' },
     secret,
     { algorithm: 'HS256', expiresIn: '60s' }
   );
@@ -15,7 +15,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 
 const SITE_URL = 'https://www.jeechallenger.com';
-const PYQS_API_URL = process.env.PYQS_API_URL || 'https://pyqs-api.jeechallenger.com';
+const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://backend-api.jeechallenger.com';
 
 function escapeXml(str) {
   if (!str) return '';
@@ -98,9 +98,9 @@ async function fetchDynamicPapers() {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    const sToken = getPyqsServiceToken();
+    const sToken = getBackendServiceToken();
     const headers = { Accept: 'application/json', ...(sToken ? { 'X-Internal-Token': sToken } : {}) };
-    const res = await fetch(`${PYQS_API_URL}/papers/sitemap`, {
+    const res = await fetch(`${BACKEND_API_URL}/papers/sitemap`, {
       signal: controller.signal,
       headers,
     });
@@ -125,9 +125,9 @@ async function fetchDynamicQuestions() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const sToken = getPyqsServiceToken();
+      const sToken = getBackendServiceToken();
       const headers = { Accept: 'application/json', ...(sToken ? { 'X-Internal-Token': sToken } : {}) };
-      const res = await fetch(`${PYQS_API_URL}/questions/image-sitemap?limit=10000&page=${page}`, {
+      const res = await fetch(`${BACKEND_API_URL}/questions/image-sitemap?limit=10000&page=${page}`, {
         signal: controller.signal,
         headers,
       });

@@ -1,4 +1,4 @@
-import { PYQS_API_URL, getAuthHeaders } from './pyqs';
+import { BACKEND_API_URL, getAuthHeaders } from './pyqs';
 
 export const syllabusTrackerService = {
   /**
@@ -9,7 +9,7 @@ export const syllabusTrackerService = {
       throw new Error('syllabusTrackerService: userId is required');
     }
 
-    const res = await fetch(`${PYQS_API_URL}/syllabus/progress`, {
+    const res = await fetch(`${BACKEND_API_URL}/syllabus/progress`, {
       headers: getAuthHeaders(userId),
       cache: 'no-store',
     });
@@ -34,7 +34,7 @@ export const syllabusTrackerService = {
       throw new Error('syllabusTrackerService: progress data is required');
     }
 
-    const res = await fetch(`${PYQS_API_URL}/syllabus/progress`, {
+    const res = await fetch(`${BACKEND_API_URL}/syllabus/progress`, {
       method: 'POST',
       headers: getAuthHeaders(userId, {
         'Content-Type': 'application/json',
