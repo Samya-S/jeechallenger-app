@@ -9,7 +9,7 @@ const userTransferCooldown = new Map();
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.JWT_SECRET });
     if (!token || !token.id) {
       return Response.json(
         { success: false, error: 'UNAUTHORIZED', message: 'Authentication required to transfer exam session.' },

@@ -203,7 +203,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - `jee_challenger_ai`: AI Tutor chat history and message logs (owned by FastAPI AI backend)
   - `jee_challenger_pyqs` & `jee_challenger_syllabus_tracker`: Question bank, paper metadata, CBT test scorecards, mistake vault, revision playlists, and syllabus progress (owned and served exclusively by the high-performance Go microservice)
 - **Caching & Live CBT State**: Upstash Redis (session locks, heartbeat sync, and kiosk device transfer)
-- **Token Handling**: Centralized `jsonwebtoken` (JWT) signing with `NEXTAUTH_SECRET`
+- **Token Handling**: Centralized `jsonwebtoken` (JWT) signing with `JWT_SECRET`
 - **Email Service**: Nodemailer for contact form
 - **News API**: GNews API for real-time updates
 - **BFF API Routes (`app/api/`)**: Next.js Backend-For-Frontend API routes serving as secure browser-to-backend proxies and external webhook receivers
@@ -239,7 +239,7 @@ npm install
 ```env
 # NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-nextauth-secret
+JWT_SECRET=your-jwt-secret
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id

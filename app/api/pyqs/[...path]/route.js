@@ -13,7 +13,7 @@ export async function processRequest(req, { params }) {
   //    Token may be null for unauthenticated users - that is fine.
   //    Public routes (/questions, /papers) work without auth.
   //    The Go backend enforces auth on protected routes (/admin/*).
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({ req, secret: process.env.JWT_SECRET });
 
   // 2. Build the target URL
   const resolvedParams = await params;
@@ -31,7 +31,7 @@ export async function processRequest(req, { params }) {
   attachServiceToken(headers, 'backend-service');
 
   // 4. Attach Authorization only if user is logged in.
-  //    The signed HS256 JWT is verified by Go using the shared NEXTAUTH_SECRET.
+  //    The signed HS256 JWT is verified by Go using the shared JWT_SECRET.
   if (token) {
     const signedToken = signUserToken(token);
     headers.set('Authorization', 'Bearer ' + signedToken);

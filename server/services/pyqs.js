@@ -4,14 +4,14 @@ import jwt from 'jsonwebtoken';
 export const BACKEND_API_URL = process.env.BACKEND_API_URL || 'https://backend-api.jeechallenger.com';
 
 /**
- * Creates an HS256 JWT signed with NEXTAUTH_SECRET for backend authentication.
+ * Creates an HS256 JWT signed with JWT_SECRET for backend authentication.
  */
 export function signUserToken(tokenOrId) {
   if (!tokenOrId) {
     throw new Error('pyqsService: token or userId is required to generate authentication token');
   }
   const payload = typeof tokenOrId === 'object' ? tokenOrId : { id: tokenOrId };
-  return jwt.sign(payload, process.env.NEXTAUTH_SECRET, { algorithm: 'HS256' });
+  return jwt.sign(payload, process.env.JWT_SECRET, { algorithm: 'HS256' });
 }
 
 /**

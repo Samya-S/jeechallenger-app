@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.JWT_SECRET });
     if (!token?.id) {
       return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,
@@ -30,7 +30,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.JWT_SECRET });
     if (!token?.id) {
       return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,

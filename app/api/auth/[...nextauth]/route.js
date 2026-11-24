@@ -281,8 +281,8 @@ export const authOptions = {
     }
   },
   
-  // Must perfectly match the NEXTAUTH_SECRET in your FastAPI .env config
-  secret: process.env.NEXTAUTH_SECRET,
+  // Must perfectly match the JWT_SECRET across platform services
+  secret: process.env.JWT_SECRET,
 };
 
 const handler = NextAuth(authOptions);

@@ -34,7 +34,7 @@ const fetchPlaylistMetadata = cache(async (slug) => {
         if (rawToken) {
           const decoded = await decode({
             token: rawToken,
-            secret: process.env.NEXTAUTH_SECRET,
+            secret: process.env.JWT_SECRET,
           });
           if (decoded?.id || decoded?.sub) {
             userId = decoded.id || decoded.sub;

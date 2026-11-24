@@ -10,7 +10,7 @@ export const maxDuration = 60;
 
 export async function processRequest(req, { params }) {
   // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({ req, secret: process.env.JWT_SECRET });
   if (!token) {
     return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized", detail: "Unauthorized" }), {
       status: 401,

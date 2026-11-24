@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.JWT_SECRET });
     if (!token || !token.id) {
       return Response.json(
         { success: false, error: 'UNAUTHORIZED', message: 'Authentication required. Please sign in to submit exam.' },
