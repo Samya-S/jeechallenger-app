@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { Mail, Send, Clock, Sparkles, CheckCircle2, AlertCircle, ArrowUpRight, Lock } from "lucide-react";
 import { FaTelegram } from "react-icons/fa";
 import { submitContactUsForm } from "@/server/contact-actions";

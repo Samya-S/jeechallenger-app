@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { FileText, Clock, Award, ArrowUpRight, CheckCircle, ChevronLeft, ChevronRight, Timer, LogIn } from "lucide-react";
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
 import MockTestConfirmModal from "@/components/modals/MockTestConfirmModal";

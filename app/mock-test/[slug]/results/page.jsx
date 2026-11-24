@@ -1,8 +1,7 @@
 import React from 'react';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from '@/lib/auth';
 import { pyqsService } from '@/server/services/pyqs';
 import CBTScorecard from '@/components/cbt/results/CBTScorecard';
 import CBTPacingHeatmap from '@/components/cbt/results/CBTPacingHeatmap';
@@ -66,7 +65,7 @@ export async function generateMetadata({ params, searchParams }) {
   const slug = resolvedParams.slug;
   const submissionId = resolvedQuery?.submission;
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   const data = await loadSubmissionAndQuestions(slug, submissionId, session?.user?.id);
 
   if (!data?.submission) {
@@ -95,7 +94,7 @@ export default async function MockTestResultsPage({ params, searchParams }) {
   const slug = resolvedParams.slug;
   const submissionId = resolvedQuery?.submission;
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!session || !session.user) {
     redirect(`/login?callbackUrl=/mock-test/${slug}/results`);
   }

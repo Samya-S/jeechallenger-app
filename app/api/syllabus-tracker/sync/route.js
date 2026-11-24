@@ -1,19 +1,19 @@
-import { getToken } from "next-auth/jwt";
+import { getSession } from "@/lib/auth";
 import { syllabusTrackerService } from "@/server/services/syllabus-tracker";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token?.id) {
+    const session = await getSession(req);
+    if (!session?.user?.id) {
       return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const progress = await syllabusTrackerService.getProgress(token.id);
+    const progress = await syllabusTrackerService.getProgress(session.user.id);
 
     return new Response(JSON.stringify({ progress }), {
       status: 200,
@@ -30,8 +30,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token?.id) {
+    const session = await getSession(req);
+    if (!session?.user?.id) {
       return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized" }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
@@ -48,7 +48,7 @@ export async function POST(req) {
       });
     }
 
-    await syllabusTrackerService.updateProgress(token.id, progress);
+    await syllabusTrackerService.updateProgress(session.user.id, progress);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import Link from "next/link";
 import Image from "next/image";
 import GoogleAuthButton from "./GoogleAuthButton";

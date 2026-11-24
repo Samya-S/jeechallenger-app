@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { Share2, Check, Lock, Globe, Trash2, Edit3, Loader2, AlertTriangle, X, Copy } from "lucide-react";
 
 const emptySubscribe = () => () => {};

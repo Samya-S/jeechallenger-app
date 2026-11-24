@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from '@/lib/auth';
 import { BACKEND_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
 
 // GET /api/playlists — list all playlists for current user
-export async function GET() {
+export async function GET(req) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(req);
     if (!session || !session.user?.id) {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }
@@ -29,7 +28,7 @@ export async function GET() {
 // POST /api/playlists — create new custom playlist
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(req);
     if (!session || !session.user?.id) {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Unauthorized' }, { status: 401 });
     }

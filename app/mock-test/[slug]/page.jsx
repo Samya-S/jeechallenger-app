@@ -1,7 +1,6 @@
 import React from 'react';
 import { notFound, redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from '@/lib/auth';
 import { pyqsService } from '@/server/services/pyqs';
 import CBTExamRoom from '@/components/cbt/CBTExamRoom';
 import CBTMobileGuard from '@/components/cbt/CBTMobileGuard';
@@ -34,7 +33,7 @@ export default async function MockTestPage({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!session || !session.user) {
     redirect(`/login?callbackUrl=/mock-test/${slug}`);
   }

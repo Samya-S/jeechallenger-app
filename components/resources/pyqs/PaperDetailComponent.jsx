@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { BookOpen, Loader2 } from "lucide-react";
 
 import PYQImageLightbox from "@/components/resources/pyqs/PYQImageLightbox";

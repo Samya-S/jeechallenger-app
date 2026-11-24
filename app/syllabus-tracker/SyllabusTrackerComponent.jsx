@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useSyncExternalStore, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/components/AuthProvider';
 import { RotateCcw } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Breadcrumbs from '@/components/common/Breadcrumbs';

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import Link from "next/link";
 import Image from "next/image";
 import { FaUser, FaCog, FaShieldAlt, FaPalette, FaTrash, FaArrowLeft } from "react-icons/fa";

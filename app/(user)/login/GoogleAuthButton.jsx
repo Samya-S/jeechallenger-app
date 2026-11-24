@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "@/components/AuthProvider";
 
 const GoogleAuthButton = ({ callbackUrl = "/", onLoginError }) => {
   const [isLoading, setIsLoading] = useState(false);

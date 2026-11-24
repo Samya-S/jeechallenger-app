@@ -1,4 +1,4 @@
-import { getToken } from 'next-auth/jwt';
+import { getSession } from '@/lib/auth';
 import redis from '@/utils/redis';
 import { pyqsService } from '@/server/services/pyqs';
 
@@ -6,8 +6,9 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token || !token.id) {
+    const session = await getSession(req);
+    const user = session?.user;
+    if (!user || !user.id) {
       return Response.json(
         { success: false, error: 'UNAUTHORIZED', message: 'Authentication required. Please sign in to submit exam.' },
         { status: 401 }
@@ -22,7 +23,7 @@ export async function POST(req) {
     }
 
     // Ownership check: session key must belong to authenticated user
-    const expectedPrefix = `cbt:session:${token.id}:`;
+    const expectedPrefix = `cbt:session:${user.id}:`;
     if (!session_id.startsWith(expectedPrefix)) {
       return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
@@ -34,7 +35,7 @@ export async function POST(req) {
     }
 
     // Defense-in-depth: verify stored user_id matches authenticated token
-    if (sessionData.user_id && sessionData.user_id !== token.id) {
+    if (sessionData.user_id && sessionData.user_id !== user.id) {
       return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
@@ -83,7 +84,7 @@ export async function POST(req) {
 
     // 3. Delegate evaluation to Go microservice via unified service
     const submission = await pyqsService.submitExam({
-      userId: token.id,
+      userId: user.id,
       payload: {
         paper_id: paperId,
         started_at: new Date(startedAt).toISOString(),

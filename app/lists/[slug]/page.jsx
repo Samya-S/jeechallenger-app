@@ -1,8 +1,5 @@
 import React, { cache } from "react";
-import { cookies } from "next/headers";
-import { getServerSession } from "next-auth/next";
-import { decode } from "next-auth/jwt";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "@/lib/auth";
 import { pyqsService } from "@/server/services/pyqs";
 import PlaylistSlugPageClient from "@/components/playlists/PlaylistSlugPageClient";
 import StructuredData from "@/components/common/StructuredData";
@@ -12,38 +9,8 @@ export const dynamic = "force-dynamic";
 
 const fetchPlaylistMetadata = cache(async (slug) => {
   try {
-    let userId = null;
-
-    // 1. Try resolving session via NextAuth
-    try {
-      const session = await getServerSession(authOptions);
-      if (session?.user?.id) {
-        userId = session.user.id;
-      }
-    } catch {
-      // Ignore session resolution errors to fall back to session cookie
-    }
-
-    // 2. Fall back to decoding session cookie directly for resilience
-    if (!userId) {
-      try {
-        const cookieStore = await cookies();
-        const rawToken =
-          cookieStore.get("next-auth.session-token")?.value ||
-          cookieStore.get("__Secure-next-auth.session-token")?.value;
-        if (rawToken) {
-          const decoded = await decode({
-            token: rawToken,
-            secret: process.env.JWT_SECRET,
-          });
-          if (decoded?.id || decoded?.sub) {
-            userId = decoded.id || decoded.sub;
-          }
-        }
-      } catch {
-        // Ignore cookie decoding errors
-      }
-    }
+    const session = await getServerSession();
+    const userId = session?.user?.id || null;
 
     // 3. Fetch playlist details via unified service
     const data = await pyqsService.getPlaylistBySlug(slug, { userId });

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "@/components/AuthProvider";
 import { FaSpinner, FaChevronDown } from "react-icons/fa";
 
 import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";

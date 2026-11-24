@@ -1,4 +1,4 @@
-import { getToken } from 'next-auth/jwt';
+import { getSession } from '@/lib/auth';
 import redis from '@/utils/redis';
 import { autoSubmitCbtSession } from '@/utils/cbt-auto-submit';
 import { pyqsService } from '@/server/services/pyqs';
@@ -7,8 +7,9 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token || !token.id) {
+    const session = await getSession(req);
+    const user = session?.user;
+    if (!user || !user.id) {
       return Response.json(
         { success: false, error: 'UNAUTHORIZED', message: 'Authentication required.' },
         { status: 401 }
@@ -21,7 +22,7 @@ export async function GET(req) {
       return Response.json({ success: false, error: 'BAD_REQUEST', message: 'paper_id is required' }, { status: 400 });
     }
 
-    const userId = token.id;
+    const userId = user.id;
     const sessionKey = `cbt:session:${userId}:${paper_id}`;
     const existing = await redis.hgetall(sessionKey);
     const now = Date.now();
@@ -58,8 +59,9 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token || !token.id) {
+    const session = await getSession(req);
+    const user = session?.user;
+    if (!user || !user.id) {
       return Response.json(
         {
           success: false,
@@ -81,7 +83,7 @@ export async function POST(req) {
       return Response.json({ success: false, error: 'BAD_REQUEST', message: 'instance_id is required' }, { status: 400 });
     }
 
-    const userId = token.id;
+    const userId = user.id;
     const sessionKey = `cbt:session:${userId}:${paper_id}`;
 
     // 1. Check if an active session already exists in Redis

@@ -1,4 +1,4 @@
-import { getToken } from 'next-auth/jwt';
+import { getSession } from '@/lib/auth';
 import redis from '@/utils/redis';
 
 export const dynamic = 'force-dynamic';
@@ -9,8 +9,9 @@ const userTransferCooldown = new Map();
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    if (!token || !token.id) {
+    const session = await getSession(req);
+    const user = session?.user;
+    if (!user || !user.id) {
       return Response.json(
         { success: false, error: 'UNAUTHORIZED', message: 'Authentication required to transfer exam session.' },
         { status: 401 }
@@ -25,21 +26,21 @@ export async function POST(req) {
     }
 
     // Ownership check: session key must belong to authenticated user
-    const expectedPrefix = `cbt:session:${token.id}:`;
+    const expectedPrefix = `cbt:session:${user.id}:`;
     if (!session_id.startsWith(expectedPrefix)) {
       return Response.json({ success: false, error: 'FORBIDDEN', message: 'You do not own this exam session.' }, { status: 403 });
     }
 
     // Fast in-memory burst throttle before touching Redis (protects Upstash daily quota)
     const now = Date.now();
-    const lastTransferAt = userTransferCooldown.get(token.id) || 0;
+    const lastTransferAt = userTransferCooldown.get(user.id) || 0;
     if (now - lastTransferAt < 5000) {
       return Response.json(
         { success: false, error: 'TOO_MANY_REQUESTS', message: 'Please wait a moment before requesting another session transfer.' },
         { status: 429 }
       );
     }
-    userTransferCooldown.set(token.id, now);
+    userTransferCooldown.set(user.id, now);
 
     // Prune stale entries if map grows
     if (userTransferCooldown.size > 500) {

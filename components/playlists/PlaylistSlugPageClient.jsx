@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import Link from "next/link";
 import { Lock, AlertCircle, ArrowLeft } from "lucide-react";
 import PlaylistHeader from "@/components/playlists/PlaylistHeader";

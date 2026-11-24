@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from '@/lib/auth';
 import { BACKEND_API_URL, getAuthHeaders } from '@/server/services/pyqs';
 
 export const dynamic = 'force-dynamic';
@@ -8,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/playlists/[id]/questions — add question to playlist
 export async function POST(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(req);
     if (!session || !session.user?.id) {
       return NextResponse.json({ success: false, error: 'UNAUTHORIZED', message: 'Authentication required' }, { status: 401 });
     }

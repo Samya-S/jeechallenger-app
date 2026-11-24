@@ -1,6 +1,5 @@
 import React from 'react';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from '@/lib/auth';
 import { pyqsService } from '@/server/services/pyqs';
 import CBTHubComponent from '@/components/cbt/hub/CBTHubComponent';
 
@@ -19,7 +18,7 @@ export default async function MockTestHubPage({ searchParams }) {
   const resolvedSearchParams = await searchParams;
   const isVaultTab = resolvedSearchParams?.tab === 'vault' || resolvedSearchParams?.tab === 'mistake-vault';
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   let submissions = [];
   let vaultItems = [];

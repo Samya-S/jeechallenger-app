@@ -1,5 +1,5 @@
 import { attachServiceToken } from '@/server/services/internal-token';
-import { getToken } from "next-auth/jwt";
+import { getSession } from "@/lib/auth";
 import { BACKEND_API_URL, signUserToken } from "@/server/services/pyqs";
 
 // Dynamic route evaluation - edge cache managed via Cache-Control headers
@@ -9,11 +9,11 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export async function processRequest(req, { params }) {
-  // 1. Try to read the NextAuth session cookie.
+  // 1. Try to read the student session cookie.
   //    Token may be null for unauthenticated users - that is fine.
   //    Public routes (/questions, /papers) work without auth.
   //    The Go backend enforces auth on protected routes (/admin/*).
-  const token = await getToken({ req, secret: process.env.JWT_SECRET });
+  const session = await getSession(req);
 
   // 2. Build the target URL
   const resolvedParams = await params;
@@ -32,8 +32,8 @@ export async function processRequest(req, { params }) {
 
   // 4. Attach Authorization only if user is logged in.
   //    The signed HS256 JWT is verified by Go using the shared JWT_SECRET.
-  if (token) {
-    const signedToken = signUserToken(token);
+  if (session?.user) {
+    const signedToken = signUserToken(session.user);
     headers.set('Authorization', 'Bearer ' + signedToken);
   }
 
@@ -53,7 +53,7 @@ export async function processRequest(req, { params }) {
     const response = await fetch(targetUrl, fetchOptions);
     const responseBody = await response.arrayBuffer();
 
-    const isPublicGet = req.method === 'GET' && !token && response.ok;
+    const isPublicGet = req.method === 'GET' && !session?.user && response.ok;
 
     const responseHeaders = {
       'Content-Type': response.headers.get('content-type') || 'application/json',

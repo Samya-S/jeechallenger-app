@@ -1,4 +1,4 @@
-import { getToken } from "next-auth/jwt";
+import { getSession } from "@/lib/auth";
 import { aiService } from "@/server/services/ai";
 
 // Force the route to always be evaluated dynamically (disables route caching)
@@ -9,9 +9,9 @@ export const revalidate = 0;
 export const maxDuration = 60;
 
 export async function processRequest(req, { params }) {
-  // 1. Securely extract the NextAuth JWT from the hidden HTTP-Only cookie
-  const token = await getToken({ req, secret: process.env.JWT_SECRET });
-  if (!token) {
+  // 1. Securely extract the student session from user_session cookie
+  const session = await getSession(req);
+  if (!session || !session.user) {
     return new Response(JSON.stringify({ success: false, error: "UNAUTHORIZED", message: "Unauthorized", detail: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -25,7 +25,7 @@ export async function processRequest(req, { params }) {
   return aiService.forwardProxyRequest({
     req,
     pathParams,
-    token,
+    token: session.user,
   });
 }
 

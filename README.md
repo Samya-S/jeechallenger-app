@@ -38,7 +38,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 - **Computer-Based Test (CBT) Mock Test Engine (`/mock-test`)**: Authentic NTA (JEE Main) and TCS iON (JEE Advanced) full-length 3-hour examination simulator with 3-tier state hierarchy (Zustand -> IndexedDB -> Upstash Redis), multi-device anti-collision lease, official palette states, multi-correct checkbox input with partial marking (`MULTI_CORRECT_PARTIAL`), Section B 5-of-10 attempt enforcement, automatic Mistake Vault sync with active recall, interactive Time Traps & Speed Wins pacing analytics, and factual Attempt Rate scorecard evaluation.
 - **Previous Year Questions (PYQs)**: Interactive practice hub with multi-parameter filtering, instant answer evaluation, dedicated question pages (`/question/:slug`) with step-by-step KaTeX derivations, and full shift paper explorers (`/paper/:slug`) with section navigation.
 - **Question Lists & Revision Vaults (`/lists`)**: Create, organize, and practice personalized question lists. Save challenging problems to Favourites, track incorrect answers with an automatic Mistake Vault, share public lists with peers, and bookmark questions with real-time synchronization across PYQ cards, full shift papers, standalone questions, and CBT solution reviews.
-- **AI Tutor**: Personalized JEE preparation assistance powered by NextAuth authentication and MongoDB-backed chat history.
+- **AI Tutor**: Personalized JEE preparation assistance powered by Google authentication and FastAPI AI Tutor microservice chat history.
 - **Syllabus Tracker**: Track your JEE preparation progress across all subjects with chapter-wise completion tracking and cloud sync.
 - **Study Materials**: Comprehensive resources including interactive Formula Sheets, Universal Unit Converters, a Periodic Table Explorer, and reference books for Physics, Chemistry, and Mathematics.
 - **Official Papers**: Direct access to JEE Main and Advanced official papers and answer keys.
@@ -132,7 +132,7 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 👨‍🏫 AI Tutor
 
-- Authentication via NextAuth.js (Google OAuth)
+- Authentication via Google OAuth 2.0 with Go Backend Token Service
 - File upload and attachment support
 - Markdown and LaTeX rendering for mathematical expressions
 - Chat history persistence backed by MongoDB
@@ -197,9 +197,9 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
   - `pyqs.js`: Go backend client (`backend-api.jeechallenger.com`) for questions, papers, attempts, mistake vault, and test submissions.
   - `ai.js`: Python AI Tutor microservice client (`ai-api.jeechallenger.com`) with streaming chat proxy and multipart file upload forwarding.
   - `syllabus-tracker.js`: Syllabus tracker microservice client delegating progress synchronization and milestone retrieval to the Go backend (`backend-api.jeechallenger.com`).
-- **Authentication**: NextAuth.js v4 with Google OAuth provider & HS256 JWT microservice authentication tokens
+- **Authentication**: Native Google OAuth 2.0 (`/api/auth/signin/google`, `/callback/google`, `/session`, `/logout`) with 30-day HttpOnly `user_session` cookie backed by Go backend HS256 JWT
 - **Databases (Microservice Architecture)**: 
-  - `jee_challenger_auth`: User sessions, accounts, and authentication (direct NextAuth adapter connection; indexed on `email`, `created_at`, `subscription_plan_id`, and `accounts.userId`)
+  - `jee_challenger_auth`: User accounts, subscription tiers, login logs, and JWT minting (owned exclusively by `jeechallenger-backend`)
   - `jee_challenger_ai`: AI Tutor chat history and message logs (owned by FastAPI AI backend)
   - `jee_challenger_pyqs` & `jee_challenger_syllabus_tracker`: Question bank, paper metadata, CBT test scorecards, mistake vault, revision playlists, and syllabus progress (owned and served exclusively by the high-performance Go microservice)
 - **Caching & Live CBT State**: Upstash Redis (session locks, heartbeat sync, and kiosk device transfer)
@@ -237,16 +237,12 @@ npm install
 3. Create a `.env.local` file in the root directory and add your environment variables:
 
 ```env
-# NextAuth Configuration
-NEXTAUTH_URL=http://localhost:3000
+# Platform JWT Secret (HS256 shared across services)
 JWT_SECRET=your-jwt-secret
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-# MongoDB Connection
-MONGODB_URI=your-mongodb-connection-string
 
 # Upstash Redis (Session Management & CBT State)
 UPSTASH_REDIS_REST_URL=your-upstash-redis-url
@@ -275,9 +271,6 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=your-ga-id
 
 # Google AdSense (Optional)
 NEXT_PUBLIC_ADSENSE_CLIENT_ID=your-adsense-id
-
-# Internal Cron Secret (Required for Cloudflare Worker CBT auto-submit)
-INTERNAL_CRON_SECRET=your-cron-secret
 
 # On-Demand Revalidation Secret (for Go backend & pipeline cache purges)
 REVALIDATION_SECRET=your-revalidation-secret
@@ -333,7 +326,7 @@ jeechallenger-app/
 │   │   └── utils/              # aiTutorUtils.js (date grouping, error normalization, dynamic placeholders)
 │   ├── api/                    # Backend-For-Frontend (BFF) API routes
 │   │   ├── ai/                 # Proxy to FastAPI AI Tutor microservice via aiService
-│   │   ├── auth/               # NextAuth API endpoints & Google OAuth callbacks
+│   │   ├── auth/               # Native Google OAuth endpoints (signin, callback, session, logout)
 │   │   ├── cbt/                # CBT Redis session management, heartbeat sync, and submit
 │   │   ├── playlists/          # User playlists & bookmarks CRUD routes
 │   │   ├── pyqs/               # Proxy to Go PYQ microservice & cache purge webhook (revalidate)
@@ -343,6 +336,7 @@ jeechallenger-app/
 │   └── syllabus-tracker/       # Cloud-synced preparation tracking system
 │       └── components/         # SyllabusToolbar, SyllabusOverviewCard, SyllabusFilterBar, and progress cards
 ├── components/                 # Reusable React components
+│   ├── AuthProvider.jsx        # Native auth context provider & session consumer hooks
 │   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
 │   │   └── hub/                # CBTHubComponent, CBTHubPerformanceStrip, and tabs/ (papers, attempts, vault)
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
@@ -363,6 +357,7 @@ jeechallenger-app/
 │   ├── playlists-master-spec.md# Question Playlists & Custom Bookmarks master blueprint
 │   ├── product-vision.md       # Platform vision and goals
 │   └── traffic-growth-strategy.md # Traffic, SEO, and indexing strategy
+├── lib/                        # Server & client native auth utilities (auth.js, authClient.js)
 ├── public/                     # Static assets
 ├── scripts/                    # Build, testing, and SEO automation scripts
 │   ├── generate-static-seo.mjs # Static SEO XML and sitemap generator
@@ -381,7 +376,6 @@ jeechallenger-app/
     ├── cbt-auto-submit.js      # Lazy & cron expired CBT exam finalizer
     ├── cbt-helpers.js          # CBT palette, timer, and score formatting helpers
     ├── modal-events.js         # Global custom event bus for modals
-    ├── mongodb.js              # MongoDB client singleton
     ├── og-image.jsx            # Edge JSX OpenGraph image generator template
     ├── og-metadata.js          # Route-level OpenGraph & Twitter metadata generator
     ├── pyq-helpers.js          # PYQ taxonomy, slugs, badges, and search snippet helpers

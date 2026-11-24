@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/components/AuthProvider';
 import { Lock } from 'lucide-react';
 import { submitFeedbackForm } from '@/server/contact-actions';
 import DonationBox from '@/components/modals/DonationBox';

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { Timer, X, Play, LogIn, ArrowRight, Clock, Award, FileText, AlertTriangle } from "lucide-react";
 import { getExamBadgeColor } from "@/utils/pyq-helpers";
 

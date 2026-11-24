@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
 
 const BookmarkContext = createContext({

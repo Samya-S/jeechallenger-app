@@ -12,7 +12,7 @@ import {
   useInteractions,
   FloatingPortal,
 } from "@floating-ui/react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bookmark, Plus, Loader2, Lock, Globe, AlertCircle, Check, LogIn } from "lucide-react";

@@ -1,5 +1,5 @@
 import "./globals.css";
-import NextAuthProvider from '@/components/common/NextAuthProvider';
+import { AuthProvider } from '@/components/AuthProvider';
 import ConditionalLayout from "@/components/common/ConditionalLayout";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { ThemeProvider } from '@/components/common/ThemeProvider';
@@ -95,14 +95,14 @@ export default function RootLayout({ children }) {
         <link rel="alternate" type="application/rss+xml" title="JEE Challenger RSS Feed" href="/rss.xml" />
       </head>
       <body className="antialiased min-h-screen bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-900 dark:to-indigo-900">
-        <NextAuthProvider>
+        <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <ConditionalLayout>
               {children}
             </ConditionalLayout>
             {/* <SplashCursor /> */}
           </ThemeProvider>
-        </NextAuthProvider>
+        </AuthProvider>
 
         {/* Manage ads loading and block detection conditionally based on route */}
         <AdManager />

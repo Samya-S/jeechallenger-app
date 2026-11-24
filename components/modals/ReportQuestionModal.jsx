@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Bug, X, Send, CheckCircle, AlertTriangle, ChevronDown, Lock } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/AuthProvider";
 import { submitQuestionBugReport } from "@/server/contact-actions";
 import { formatExamOrigin } from "@/utils/pyq-helpers";
 
