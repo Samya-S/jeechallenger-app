@@ -361,4 +361,27 @@ blockquote > p:last-child {
   100% {
     transform: translateX(-100%);
   }
-}
+}
+
+/* AI Tutor Thinking Indicator Wave (Fluid -4px Bounce) */
+@keyframes aiDotBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.animate-ai-dot-1 {
+  animation: aiDotBounce 1.2s infinite ease-in-out;
+}
+.animate-ai-dot-2 {
+  animation: aiDotBounce 1.2s infinite ease-in-out 0.2s;
+}
+.animate-ai-dot-3 {
+  animation: aiDotBounce 1.2s infinite ease-in-out 0.4s;
+}
+

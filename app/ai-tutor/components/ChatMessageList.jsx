@@ -147,15 +147,17 @@ export default function ChatMessageList({
         {isLoading && !isStreaming && (
           <div className="flex justify-start">
             <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
-              <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
+              <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center flex-shrink-0 shadow-sm">
                 <FaChalkboardTeacher className="text-white text-sm" />
               </div>
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] flex flex-col items-start">
-                <div className="flex items-center space-x-2">
-                  <FaSpinner className="text-blue-500 animate-spin" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    AI is thinking...
-                  </span>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-[2px] shadow-sm flex items-center space-x-2.5">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Thinking
+                </span>
+                <div className="flex items-center space-x-1 pl-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 animate-ai-dot-1" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 animate-ai-dot-2" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 animate-ai-dot-3" />
                 </div>
               </div>
             </div>
