@@ -133,10 +133,12 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 ### 👨‍🏫 AI Tutor
 
 - Authentication via Google OAuth 2.0 with Go Backend Token Service
-- File upload and attachment support
-- Markdown and LaTeX rendering for mathematical expressions
+- File upload and attachment support (images, documents, PDFs)
+- Markdown and LaTeX rendering for mathematical expressions with real-time partial chunk parsing
 - Chat history persistence backed by MongoDB
-- Real-time message streaming
+- **Real-Time Token-by-Token SSE Streaming**: Low-latency token delivery powered by an unbuffered Next.js BFF proxy (`X-Accel-Buffering: no`, `Cache-Control: no-cache, no-transform`) piping chunks directly from the FastAPI microservice to client-side `TextDecoder` streams
+- **Instant Abort & Stop Generation**: Full `AbortController` cancellation support to halt generation on demand without orphaned states
+- **Multi-Model Fallback Resilience**: Seamless automatic fallback across Gemini tiers for uninterrupted tutor availability
 
 
 ### 📊 Syllabus Tracker

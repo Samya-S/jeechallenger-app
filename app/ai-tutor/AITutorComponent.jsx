@@ -27,6 +27,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -521,33 +522,25 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     const controller = new AbortController();
     setAbortController(controller);
 
+    let tempAiId = null;
+
     try {
       let response;
-      let data;
 
-      if (!activeChatId) {
-        response = await fetch(API_ENDPOINTS.CHATS.CREATE, {
-          method: "POST",
-          credentials: 'include',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: userMessage.text,
-            file_ids: fileIds.length > 0 ? fileIds : undefined,
-          }),
-          signal: controller.signal,
-        });
-      } else {
-        response = await fetch(API_ENDPOINTS.CHATS.MESSAGES(activeChatId), {
-          method: "POST",
-          credentials: 'include',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: userMessage.text,
-            file_ids: fileIds.length > 0 ? fileIds : null,
-          }),
-          signal: controller.signal,
-        });
-      }
+      const endpoint = !activeChatId
+        ? API_ENDPOINTS.CHATS.CREATE_STREAM
+        : API_ENDPOINTS.CHATS.MESSAGES_STREAM(activeChatId);
+
+      response = await fetch(endpoint, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage.text,
+          file_ids: fileIds.length > 0 ? fileIds : undefined,
+        }),
+        signal: controller.signal,
+      });
 
       if (response.status === 401) {
         handleLogout();
@@ -558,46 +551,137 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         throw new Error(await parseApiError(response, "Failed to get response from AI"));
       }
 
-      data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
 
-      if (!activeChatId && data.chat_id) {
-        lastLoadedChatIdRef.current = data.chat_id;
-        setActiveChatId(data.chat_id);
-        setChats((prev) => [
+      if (contentType.includes("text/event-stream")) {
+        setIsStreaming(true);
+        tempAiId = `ai_temp_${crypto.randomUUID()}`;
+        setMessages((prev) => [
+          ...prev,
           {
-            id: data.chat_id,
-            title: data.chat_title || "New Chat",
-            updated_at: new Date().toISOString(),
+            id: tempAiId,
+            text: "",
+            sender: "ai",
+            timestamp: new Date(),
           },
-          ...prev.filter((c) => c.id !== data.chat_id),
         ]);
-        router.replace(`/ai-tutor/chat/${data.chat_id}`);
-      } else if (activeChatId) {
-        setChats((prev) =>
-          prev.map((c) =>
-            c.id === activeChatId
-              ? { ...c, updated_at: new Date().toISOString() }
-              : c
-          ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let accumulatedText = "";
+        let finalMessageId = null;
+        let newChatId = null;
+        let newChatTitle = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || !trimmed.startsWith("data:")) continue;
+            const dataStr = trimmed.slice(5).trim();
+            if (dataStr === "[DONE]") continue;
+
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed.type === "token" && parsed.content) {
+                accumulatedText += parsed.content;
+                const currentText = accumulatedText;
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === tempAiId ? { ...msg, text: currentText } : msg
+                  )
+                );
+              } else if (parsed.type === "done") {
+                finalMessageId = parsed.message_id;
+                if (parsed.chat_id) newChatId = parsed.chat_id;
+                if (parsed.chat_title) newChatTitle = parsed.chat_title;
+              } else if (parsed.type === "error") {
+                throw new Error(parsed.message || "Stream generation failed");
+              }
+            } catch (jsonErr) {
+              if (jsonErr.message && !jsonErr.message.includes("JSON")) {
+                throw jsonErr;
+              }
+            }
+          }
+        }
+
+        // Finalize message id with real ID from server
+        const actualAiId = `ai_${finalMessageId || crypto.randomUUID()}`;
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === tempAiId
+              ? { ...msg, id: actualAiId, text: accumulatedText }
+              : msg
+          )
         );
+
+        if (!activeChatId && newChatId) {
+          lastLoadedChatIdRef.current = newChatId;
+          setActiveChatId(newChatId);
+          setChats((prev) => [
+            {
+              id: newChatId,
+              title: newChatTitle || "New Chat",
+              updated_at: new Date().toISOString(),
+            },
+            ...prev.filter((c) => c.id !== newChatId),
+          ]);
+          router.replace(`/ai-tutor/chat/${newChatId}`);
+        } else if (activeChatId) {
+          setChats((prev) =>
+            prev.map((c) =>
+              c.id === activeChatId
+                ? { ...c, updated_at: new Date().toISOString() }
+                : c
+            ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+          );
+        }
+
+        setAttachedFiles([]);
+      } else {
+        // Fallback for non-streaming JSON responses
+        const data = await response.json();
+
+        if (!activeChatId && data.chat_id) {
+          lastLoadedChatIdRef.current = data.chat_id;
+          setActiveChatId(data.chat_id);
+          setChats((prev) => [
+            {
+              id: data.chat_id,
+              title: data.chat_title || "New Chat",
+              updated_at: new Date().toISOString(),
+            },
+            ...prev.filter((c) => c.id !== data.chat_id),
+          ]);
+          router.replace(`/ai-tutor/chat/${data.chat_id}`);
+        } else if (activeChatId) {
+          setChats((prev) =>
+            prev.map((c) =>
+              c.id === activeChatId
+                ? { ...c, updated_at: new Date().toISOString() }
+                : c
+            ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+          );
+        }
+
+        const aiMessage = {
+          id: `ai_${data.message_id || crypto.randomUUID()}`,
+          text: data.response,
+          sender: "ai",
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, aiMessage]);
+        setAttachedFiles([]);
       }
-
-      const aiMessage = {
-        id: `ai_${data.message_id || crypto.randomUUID()}`,
-        text: data.response,
-        sender: "ai",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-      setChats((prev) =>
-        prev.map((c) =>
-          c.id === activeChatId
-            ? { ...c, updated_at: new Date().toISOString() }
-            : c
-        ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-      );
-      setAttachedFiles([]);
     } catch (error) {
       if (error.name === 'AbortError' || error === 'User stopped generation') {
         const stopMessage = {
@@ -608,7 +692,10 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           isError: true,
           failedText: userMessage.text,
         };
-        setMessages((prev) => [...prev, stopMessage]);
+        setMessages((prev) => [
+          ...prev.filter((m) => m.id !== tempAiId),
+          stopMessage,
+        ]);
         return;
       }
 
@@ -631,9 +718,13 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         failedText: userMessage.text,
       };
 
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [
+        ...prev.filter((m) => m.id !== tempAiId),
+        errorMessage,
+      ]);
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -748,6 +839,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
                 messageGroups={messageGroups}
                 sortedGroupEntries={sortedGroupEntries}
                 isLoading={isLoading}
+                isStreaming={isStreaming}
                 onSelectSuggestion={(suggestion) => setInputMessage(suggestion)}
                 onRetryMessage={(message) => {
                   setMessages((prev) => prev.filter((m) => m.id !== message.id));

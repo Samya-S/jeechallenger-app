@@ -90,7 +90,9 @@ export const aiService = {
     const isAiMessageRequest =
       req.method === 'POST' &&
       ((cleanPath.length === 1 && cleanPath[0] === 'chats') ||
-       (cleanPath.length === 3 && cleanPath[0] === 'chats' && cleanPath[2] === 'messages'));
+       (cleanPath.length === 2 && cleanPath[0] === 'chats' && cleanPath[1] === 'stream') ||
+       (cleanPath.length === 3 && cleanPath[0] === 'chats' && cleanPath[2] === 'messages') ||
+       (cleanPath.length === 4 && cleanPath[0] === 'chats' && cleanPath[2] === 'messages' && cleanPath[3] === 'stream'));
 
     if (isAiMessageRequest) {
       const userId = token.id || token.sub || token.email;
@@ -182,6 +184,18 @@ export const aiService = {
           headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-store, no-cache, must-revalidate',
+          },
+        });
+      }
+
+      if (responseContentType.includes('text/event-stream')) {
+        return new Response(response.body, {
+          status: response.status,
+          headers: {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache, no-transform',
+            'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no',
           },
         });
       }

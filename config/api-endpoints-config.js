@@ -6,10 +6,12 @@ export const API_ENDPOINTS = {
   CHATS: {
     LIST: '/api/ai/chats',
     CREATE: '/api/ai/chats',
+    CREATE_STREAM: '/api/ai/chats/stream',
     GET: (chatId) => `/api/ai/chats/${chatId}`,
     UPDATE: (chatId) => `/api/ai/chats/${chatId}`,
     DELETE: (chatId) => `/api/ai/chats/${chatId}`,
     MESSAGES: (chatId) => `/api/ai/chats/${chatId}/messages`,
+    MESSAGES_STREAM: (chatId) => `/api/ai/chats/${chatId}/messages/stream`,
   },
   FILES: {
     REQUEST_UPLOAD: '/api/ai/files/request-upload',

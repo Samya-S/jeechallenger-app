@@ -16,6 +16,7 @@ export default function ChatMessageList({
   messageGroups,
   sortedGroupEntries,
   isLoading,
+  isStreaming = false,
   onSelectSuggestion,
   onRetryMessage
 }) {
@@ -143,7 +144,7 @@ export default function ChatMessageList({
         )}
 
         {/* Loading indicator - AI is thinking... */}
-        {isLoading && (
+        {isLoading && !isStreaming && (
           <div className="flex justify-start">
             <div className="flex items-start md:space-x-3 w-full max-w-[80%]">
               <div className="hidden md:flex w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full items-center justify-center">
