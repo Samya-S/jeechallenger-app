@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Target modern browsers to reduce polyfills
-  compiler: {
-    // Remove console logs in production
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
   // Turbopack config (enables Turbopack and handles chunk splitting automatically)
   turbopack: {},
   // Optimize imports for better tree-shaking
