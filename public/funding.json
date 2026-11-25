@@ -6,7 +6,7 @@
         "role": "maintainer",
         "name": "Samya Saha",
         "email": "samyasahaofficial@gmail.com",
-        "description": "I am a 5th-year BS-MS undergraduate in Statistics and Data Science at IIT Kharagpur. I am a full-stack developer (Next.js, C#, Python) currently exploring LLM architecture from scratch. I build open-source educational utilities like JEE Challenger to level the playing field for Indian students.",
+        "description": "I am a 5th-year undergraduate at IIT Kharagpur pursuing an integrated dual degree—BS in Mathematics & Computing and MS in Statistics & Data Science. I am a full-stack and systems developer (Next.js, Go, Python). I build open-source educational utilities like JEE Challenger to level the playing field for Indian students.",
         "webpageUrl": {
             "url": "https://samyasaha.vercel.app",
             "wellKnown": "https://samyasaha.vercel.app/.well-known/funding-manifest-urls"
@@ -16,7 +16,7 @@
         {
             "guid": "jee-challenger",
             "name": "JEE Challenger",
-            "description": "An independent, open-source EdTech utility for JEE Main/Advanced aspirants. Features include a custom Gemini-powered AI Doubt Tutor, a modular Syllabus Tracker, and an automated Python data pipeline for extracting and serving PYQs via an upcoming NTA-style CBT engine.",
+            "description": "An independent, open-source EdTech utility for JEE Main/Advanced aspirants. Features include an authentic NTA/TCS-clone CBT mock test engine, an automated Python data pipeline serving 3,700+ chapter-tagged PYQs, a modular 88-chapter Syllabus Tracker, and a Gemini-powered AI Doubt Tutor.",
             "webpageUrl": {
                 "url": "https://www.jeechallenger.com"
             },
@@ -31,6 +31,7 @@
                 "education",
                 "edtech",
                 "nextjs",
+                "golang",
                 "python",
                 "ai",
                 "test-prep"
@@ -54,10 +55,10 @@
         ],
         "plans": [
             {
-                "guid": "infra-ad-removal",
+                "guid": "infra-sustainability",
                 "status": "active",
-                "name": "Infrastructure & Ad-Removal Buffer",
-                "description": "Covers domain renewals, cloud databases, and Gemini API scaling costs so I can permanently remove display ads from the site, restoring a distraction-free learning environment.",
+                "name": "Infrastructure Runway & Ad-Free Operation",
+                "description": "Covers cloud database connection capacity, serverless compute, and Gemini AI API scaling costs to permanently sustain JEE Challenger as a 100% ad-free and paywall-free educational utility for students across India.",
                 "amount": 25000,
                 "currency": "INR",
                 "frequency": "one-time",
@@ -67,10 +68,10 @@
                 ]
             },
             {
-                "guid": "cbt-pipeline-dev",
+                "guid": "cbt-pipeline-maintainer",
                 "status": "active",
-                "name": "CBT Pipeline & Feature Development",
-                "description": "Student maintainer stipend to support my time completing the open-source Python PYQ extraction pipelines and deploying the CBT backend mock engine after my placement season.",
+                "name": "Maintainer Stipend & Practice Engine Scaling",
+                "description": "Student maintainer stipend supporting dedicated time to: (1) actively maintain the open-source Go and Python backend services, (2) scale the automated Python PYQ ingestion pipeline to expand the catalog from 3,700 to 10,000+ questions, and (3) engineer upcoming practice features like daily challenges and streak mechanics.",
                 "amount": 50000,
                 "currency": "INR",
                 "frequency": "one-time",
