@@ -1,29 +1,27 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import AITutorComponent from './AITutorComponent';
 import { Suspense } from 'react';
-import { FaSpinner } from 'react-icons/fa';
+import AITutorComponent from './AITutorComponent';
+import AITutorSkeleton from './components/AITutorSkeleton';
 
 export default function AITutorLayout({ children }) {
   const pathname = usePathname();
   const chatIdMatch = pathname.match(/^\/ai-tutor\/chat\/([^/]+)$/);
   const isMainChatUI = pathname === '/ai-tutor' || Boolean(chatIdMatch);
 
+  // If visiting an invalid sub-route (e.g. /ai-tutor/invalid-link), pass through to the 404 handler
+  if (!isMainChatUI) {
+    return children;
+  }
+
+  // Otherwise, render the persistent AI Tutor app shell + page metadata/SEO structured data
   return (
     <>
-      {isMainChatUI ? (
-        <Suspense fallback={
-          <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
-            <FaSpinner className="animate-spin text-blue-500 text-3xl" />
-          </div>
-        }>
-          <AITutorComponent chatId={chatIdMatch?.[1] ?? null} />
-        </Suspense>
-      ) : (
-        children
-      )}
-      {isMainChatUI && children}
+      <Suspense fallback={<AITutorSkeleton />}>
+        <AITutorComponent chatId={chatIdMatch?.[1] ?? null} />
+      </Suspense>
+      {children}
     </>
   );
 }

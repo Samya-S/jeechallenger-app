@@ -1,25 +1,27 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { FaHome, FaChalkboardTeacher, FaChevronDown, FaSignOutAlt, FaUser, FaComments, FaBars, FaTimes } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
-import AITutorThemeToggle from "@/app/ai-tutor/components/AITutorThemeToggle";
+import { 
+  PanelLeft, 
+  Plus, 
+  Sun, 
+  Moon, 
+  User as UserIcon, 
+  Home, 
+  LogOut,
+  ChevronDown
+} from "lucide-react";
+import { useTheme } from "@teispace/next-themes";
 
-const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
-  const profileImageLoader = ({ src }) => src;
+const AITutorNavbar = ({ user, onLogout, onToggleSidebar, onNewChat }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentSearchParams = searchParams.toString();
-  const fullCurrentPath = currentSearchParams ? `${pathname}?${currentSearchParams}` : pathname;
-  const encodedReturnUrl = encodeURIComponent(fullCurrentPath);
-
-  const isProfilePage = pathname === '/profile';
-  const isChatPage = pathname === '/ai-tutor' || pathname.startsWith('/ai-tutor/chat/');
+  const isDark = (resolvedTheme ?? theme) === "dark";
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -39,118 +41,130 @@ const AITutorNavbar = ({ user, onLogout, onToggleSidebar, sidebarOpen }) => {
   }, [dropdownOpen]);
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white px-3 sm:px-4 lg:px-6 shadow-lg transition-all duration-300 py-2.5 sm:py-3 lg:py-4">
-      <div className="relative flex items-center justify-between">
-        {/* Left - Home & Sidebar Toggle */}
-        <div className="flex items-center gap-2 flex-shrink-0 z-10">
-          {isChatPage && onToggleSidebar && (
-            <button
-              onClick={onToggleSidebar}
-              className="lg:hidden flex items-center justify-center bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white w-9 h-9"
-              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-            >
-              {sidebarOpen ? <FaTimes className="text-sm" /> : <FaBars className="text-sm" />}
-            </button>
-          )}
-          <Link
-            href="/"
-            className="flex items-center space-x-1.5 sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full text-white px-3 sm:px-3 lg:px-4 py-1.5 sm:py-1.5 lg:py-2"
-            title="Go to Home"
-          >
-            <FaHome className="transition-all duration-300 text-sm" />
-            <span className="font-medium transition-all duration-300 hidden xs:inline text-sm">Return</span>
-          </Link>
-        </div>
-
-        {/* Center - Title (Absolutely centered) */}
-        <Link href="/ai-tutor" className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2 sm:space-x-2 lg:space-x-4">
-          <div className="bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12">
-            <FaChalkboardTeacher className="text-white transition-all duration-300 text-base sm:text-lg lg:text-xl" />
-          </div>
-          <div className="text-left">
-            <h1 className="font-bold transition-all duration-300 whitespace-nowrap text-lg sm:text-xl lg:text-2xl">
-              <span className="hidden sm:inline">JEE Challenger AI Tutor</span>
-              <span className="inline sm:hidden">AI Tutor</span>
-            </h1>
-            <p className="text-blue-100 transition-all duration-300 whitespace-nowrap hidden md:block text-sm">
-              Your personalized JEE preparation assistant
-            </p>
-          </div>
-        </Link>
-
-        {/* Right - Theme toggle, user menu */}
-        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 flex-shrink-0 z-10">
-          <AITutorThemeToggle />
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setDropdownOpen((open) => !open)}
-              className="flex items-center sm:space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 px-1.5 sm:px-3 py-1.5 sm:py-1.5 lg:py-2"
-              title="User menu"
-              aria-label="User menu"
-            >
-              {user.image ? (
-                <Image
-                  src={user.image}
-                  alt={user.name}
-                  width={36}
-                  height={36}
-                  loader={profileImageLoader}
-                  unoptimized
-                  className="rounded-full border-2 border-white/30 object-cover transition-all duration-300 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9"
-                />
-              ) : (
-                <div className="rounded-full border-2 border-white/30 bg-white/20 flex items-center justify-center transition-all duration-300 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9">
-                  <FaUser className="text-white transition-all duration-300 text-sm" />
-                </div>
-              )}
-              <span className="font-medium text-white hidden md:inline transition-all duration-300 truncate max-w-[100px] lg:max-w-[150px] text-sm">{user.name}</span>
-              <FaChevronDown className={`text-white transition-all duration-300 hidden sm:inline text-sm ${dropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-44 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm">
-                {/* Menu Items */}
-                <div className="py-1 sm:py-2">
-                  {isProfilePage ? (
-                    <Link
-                      href="/ai-tutor"
-                      onClick={() => setDropdownOpen(false)}
-                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                    >
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                        <FaComments className="text-blue-500 group-hover:text-blue-600 text-sm" />
-                      </div>
-                      <span className="font-medium">Chat</span>
-                    </Link>
-                  ) : (
-                    <Link
-                      href={`/profile?returnUrl=${encodedReturnUrl}`}
-                      onClick={() => setDropdownOpen(false)}
-                      className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                    >
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                        <FaUser className="text-blue-500 group-hover:text-blue-600 text-sm" />
-                      </div>
-                      <span className="font-medium">Profile</span>
-                    </Link>
-                  )}
-                  <div className="border-t border-gray-100 dark:border-gray-700 my-0.5 sm:my-1"></div>
-                  <button
-                    onClick={() => { setDropdownOpen(false); onLogout(); }}
-                    className="w-full flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 space-x-2 sm:space-x-3 group"
-                  >
-                    <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0">
-                      <FaSignOutAlt className="text-red-500 group-hover:text-red-600 text-sm" />
-                    </div>
-                    <span className="font-medium">Sign Out</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+    // Strictly lg:hidden - Desktop has ZERO top bar, only the sidebar handles everything!
+    <header className="lg:hidden flex items-center justify-between px-3.5 py-2.5 bg-slate-50/95 dark:bg-[#090e18]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shrink-0 z-40">
+      {/* Left: Mobile Sidebar Toggle */}
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-2xs active:scale-95 transition-all"
+          aria-label="Toggle sidebar"
+          title="Toggle sidebar"
+        >
+          <PanelLeft className="w-4 h-4" />
+        </button>
       </div>
-    </div>
+
+      {/* Center: Brand Logo + AI Tutor Pill */}
+      <Link href="/" className="flex items-center gap-1.5 shrink-0" title="JEE Challenger Home">
+        <img
+          src="/brand/jee-challenger-navbar-no-tagline-light-mode.svg"
+          alt="JEE Challenger"
+          className="h-6 w-auto dark:hidden"
+        />
+        <img
+          src="/brand/jee-challenger-navbar-no-tagline-dark-mode.svg"
+          alt="JEE Challenger"
+          className="h-6 w-auto hidden dark:block"
+        />
+        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
+          AI Tutor
+        </span>
+      </Link>
+
+      {/* Right: Only the User Profile Avatar (Single clean button, zero congestion) */}
+      <div className="relative shrink-0" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={() => setDropdownOpen((open) => !open)}
+          className="flex items-center rounded-full p-0.5 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 active:scale-95 transition-transform"
+          title="User menu"
+          aria-label="User menu"
+        >
+          {user?.image ? (
+            <Image
+              src={user.image}
+              alt={user.name || "User"}
+              width={30}
+              height={30}
+              unoptimized
+              className="w-7 h-7 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs">
+              {user?.name ? user.name[0].toUpperCase() : <UserIcon className="w-3.5 h-3.5" />}
+            </div>
+          )}
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 p-1.5 animate-fadeIn">
+            <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800 mb-1">
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                {user?.name || "Student"}
+              </p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-400 truncate">
+                {user?.email}
+              </p>
+            </div>
+
+            {/* Quick Theme Toggle Option */}
+            <button
+              type="button"
+              onClick={() => {
+                setTheme(isDark ? "light" : "dark");
+              }}
+              className="group/menu-theme w-full flex items-center justify-between px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                {isDark ? (
+                  <Sun className="w-3.5 h-3.5 text-slate-400 group-hover/menu-theme:text-amber-400 transition-colors" />
+                ) : (
+                  <Moon className="w-3.5 h-3.5 text-slate-500 group-hover/menu-theme:text-slate-800 dark:group-hover/menu-theme:text-slate-200 transition-colors" />
+                )}
+                <span>Theme</span>
+              </div>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase">
+                {isDark ? "Dark" : "Light"}
+              </span>
+            </button>
+
+            <Link
+              href="/"
+              onClick={() => setDropdownOpen(false)}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <Home className="w-3.5 h-3.5 text-blue-500" />
+              <span>Return to Home</span>
+            </Link>
+
+            <Link
+              href="/profile"
+              onClick={() => setDropdownOpen(false)}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <UserIcon className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Profile</span>
+            </Link>
+
+            <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
+
+            <button
+              type="button"
+              onClick={() => {
+                setDropdownOpen(false);
+                onLogout?.();
+              }}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-500" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };
 

@@ -2,7 +2,12 @@
 
 import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { FaPaperclip, FaSpinner, FaStopCircle, FaPaperPlane } from "react-icons/fa";
+import { 
+  Paperclip, 
+  ArrowUp, 
+  Square 
+} from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
 import FileAttachment from "@/app/ai-tutor/components/FileAttachment";
 
 export default function ChatInputArea({
@@ -19,61 +24,64 @@ export default function ChatInputArea({
   handleDirectFileUpload,
   isLoading,
   abortController,
-  sendMessage
+  sendMessage,
 }) {
   return (
-    <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-3 py-2.5 sm:px-6 sm:py-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg">
+    <div className="bg-slate-50/80 dark:bg-[#0b101b]/90 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 px-3 py-2.5 sm:px-6 sm:py-3.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-xs shrink-0">
       <div className="max-w-4xl mx-auto">
-        {/* Attached Files Display */}
+        {/* Attached Files Preview Strip */}
         {attachedFiles.length > 0 && (
-          <div className="mb-3 space-y-1">
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Attached files ({attachedFiles.length}):
-            </p>
-            <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
+          <div className="mb-2.5 space-y-1.5">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1 font-medium">
+              <span>Attached files ({attachedFiles.length}):</span>
+            </div>
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto scrollbar-thin scrollbar-track-transparent hover:scrollbar-thumb-slate-300 dark:hover:scrollbar-thumb-slate-700">
               {attachedFiles.map((file) => (
-                <FileAttachment
-                  key={file.id}
-                  file={file}
-                  onRemove={removeAttachedFile}
-                  showRemove={true}
-                />
+                <div key={file.id} className="max-w-xs">
+                  <FileAttachment
+                    file={file}
+                    onRemove={removeAttachedFile}
+                    showRemove={true}
+                  />
+                </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Uploading animation above textarea */}
+        {/* Uploading Animation */}
         {isUploading && (
-          <div className="flex items-center justify-center mb-1">
-            <FaSpinner className="animate-spin text-blue-600 mr-2 text-sm" />
-            <span className="text-blue-700 dark:text-blue-300 text-sm">Uploading file(s)...</span>
+          <div className="flex items-center justify-center gap-2 mb-2 py-1 px-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-xl text-blue-700 dark:text-blue-300 text-xs">
+            <FaSpinner className="animate-spin text-xs" />
+            <span>Uploading file(s) securely...</span>
           </div>
         )}
+
+        {/* Upload Error Alert */}
         {uploadError && (
-          <div className="mb-1 p-1.5 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs text-center">
+          <div className="mb-2 p-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl text-rose-700 dark:text-rose-300 text-xs text-center font-medium">
             {uploadError}
           </div>
         )}
 
-        <div className="w-full flex items-center border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all p-2">
-
-          {/* File Upload Button - Left side */}
+        {/* Floating Input Card Container */}
+        <div className="relative flex items-end gap-2 p-2 rounded-2xl bg-white dark:bg-[#131b2e] border border-slate-300/90 dark:border-slate-700/80 shadow-xs focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all">
+          {/* File Attachment Button */}
           <button
+            type="button"
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
             disabled={isLoading || isUploading}
-            className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 z-20"
-            title="Attach files"
+            className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors disabled:opacity-50"
+            title="Attach files or images"
             aria-label="Attach files"
           >
-            <FaPaperclip className="text-lg" />
+            <Paperclip className="w-4 h-4" />
           </button>
 
-          {/* Textarea Wrapper - Center */}
-          <div className="relative flex-1 flex items-center mx-3 min-h-[24px]">
-
+          {/* Textarea Area */}
+          <div className="relative flex-1 min-h-[36px] flex items-center py-1">
             {!inputMessage && (
-              <div className="absolute left-1 right-1 block text-gray-500 dark:text-gray-400 pointer-events-none truncate select-none z-0">
+              <div className="absolute left-1 right-1 text-slate-400 dark:text-slate-400 pointer-events-none truncate select-none text-sm">
                 {placeholder}
               </div>
             )}
@@ -84,9 +92,9 @@ export default function ChatInputArea({
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               minRows={1}
-              maxRows={5}
-              className="w-full py-1 px-1 resize-none bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 dark:text-white overflow-y-auto scrollbar-hide relative z-10"
-              onPaste={e => {
+              maxRows={6}
+              className="w-full px-1 py-0.5 resize-none bg-transparent border-none focus:ring-0 focus:outline-none text-sm text-slate-900 dark:text-slate-100 overflow-y-auto scrollbar-hide relative z-10 leading-relaxed"
+              onPaste={(e) => {
                 if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
                   e.preventDefault();
                   handleDirectFileUpload(e.clipboardData.files);
@@ -95,13 +103,13 @@ export default function ChatInputArea({
             />
           </div>
 
-          {/* Hidden file input for direct upload */}
+          {/* Hidden File Input */}
           <input
             type="file"
             multiple
             ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={e => {
+            style={{ display: "none" }}
+            onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
                 handleDirectFileUpload(e.target.files);
                 e.target.value = null;
@@ -110,33 +118,41 @@ export default function ChatInputArea({
             accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.mp3,.wav,.ogg,.m4a"
           />
 
-          {/* Send / Stop Button - Right side */}
+          {/* Send / Stop Action Button */}
           {isLoading ? (
             <button
+              type="button"
               onClick={() => abortController?.abort("User stopped generation")}
-              className="flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400"
-              title="Stop generating"
-              aria-label="Stop generating"
+              className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0 bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition-all active:scale-95"
+              title="Stop generation"
+              aria-label="Stop generation"
             >
-              <FaStopCircle className="text-lg" />
+              <Square className="w-3.5 h-3.5 fill-current" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={sendMessage}
               disabled={!inputMessage.trim() || isUploading}
-              className={`flex-shrink-0 h-9 w-9 rounded-full transition-all duration-200 flex items-center justify-center shadow-sm z-20 ${inputMessage.trim() && !isUploading
-                ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                }`}
+              className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                inputMessage.trim() && !isUploading
+                  ? "bg-blue-600 hover:bg-blue-700 text-white shadow-xs active:scale-95 cursor-pointer"
+                  : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-400 cursor-not-allowed"
+              }`}
               aria-label="Send message"
             >
-              <FaPaperPlane className="text-base -ml-[1px]" />
+              <ArrowUp className="w-4 h-4 stroke-[2.5]" />
             </button>
           )}
         </div>
-        <p className="hidden md:block text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
-          Press Enter to send, Shift+Enter for new line • Click 📎 to attach files
-        </p>
+
+        {/* Bottom Helper Hints */}
+        <div className="hidden md:flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-400 mt-1.5 px-1 select-none">
+          <span>AI can make mistakes. Verify critical concepts & calculations.</span>
+          <p>
+            <kbd className="font-sans px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px]">Enter</kbd> to send • <kbd className="font-sans px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px]">Shift + Enter</kbd> for new line
+          </p>
+        </div>
       </div>
     </div>
   );

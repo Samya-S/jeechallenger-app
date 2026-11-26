@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FaFile, FaImage, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileAudio, FaFileAlt, FaDownload, FaEye, FaTimes } from "react-icons/fa";
+import { 
+  FileText, 
+  Image as ImageIcon, 
+  FileSpreadsheet, 
+  Download, 
+  Eye, 
+  X, 
+  File 
+} from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
 import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 
 const FileAttachment = ({ file, onRemove, showRemove = false }) => {
@@ -12,69 +21,60 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  const getFileIcon = (fileType) => {
-    switch (fileType) {
-      case 'image':
-        return <FaImage className="text-blue-500" />;
-      case 'pdf':
-        return <FaFilePdf className="text-red-500" />;
-      case 'document':
-        return <FaFileWord className="text-blue-600" />;
-      case 'spreadsheet':
-        return <FaFileExcel className="text-green-600" />;
-      case 'presentation':
-        return <FaFilePowerpoint className="text-orange-600" />;
-      case 'audio':
-        return <FaFileAudio className="text-purple-500" />;
-      case 'text':
-        return <FaFileAlt className="text-gray-600" />;
-      default:
-        return <FaFile className="text-gray-500" />;
+  const getFileType = (mimeType = "", filename = "") => {
+    if (mimeType.startsWith("image/")) return "image";
+    if (mimeType === "application/pdf") return "pdf";
+    if (mimeType.includes("word") || mimeType.includes("document")) return "document";
+    if (mimeType.includes("excel") || mimeType.includes("spreadsheet")) return "spreadsheet";
+    if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) return "presentation";
+    if (mimeType.startsWith("audio/")) return "audio";
+    if (mimeType.startsWith("text/")) return "text";
+
+    if (mimeType === "application/octet-stream" && filename) {
+      const ext = filename.toLowerCase().split(".").pop();
+      if (["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext)) return "image";
+      if (ext === "pdf") return "pdf";
+      if (["doc", "docx"].includes(ext)) return "document";
+      if (["xls", "xlsx"].includes(ext)) return "spreadsheet";
+      if (["ppt", "pptx"].includes(ext)) return "presentation";
+      if (["mp3", "wav", "ogg", "m4a"].includes(ext)) return "audio";
+      if (["txt", "csv", "json"].includes(ext)) return "text";
     }
+
+    return "other";
   };
 
-  const getFileType = (mimeType, filename = '') => {
-    // First try mime type
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType === 'application/pdf') return 'pdf';
-    if (mimeType.includes('word') || mimeType.includes('document')) return 'document';
-    if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return 'spreadsheet';
-    if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return 'presentation';
-    if (mimeType.startsWith('audio/')) return 'audio';
-    if (mimeType.startsWith('text/')) return 'text';
+  const fileCategory = getFileType(file.mime_type, file.original_filename);
 
-    // If mime type is generic (octet-stream), try file extension
-    if (mimeType === 'application/octet-stream' && filename) {
-      const extension = filename.toLowerCase().split('.').pop();
-
-      if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(extension)) {
-        return 'image';
-      }
-      if (extension === 'pdf') return 'pdf';
-      if (['doc', 'docx'].includes(extension)) return 'document';
-      if (['xls', 'xlsx'].includes(extension)) return 'spreadsheet';
-      if (['ppt', 'pptx'].includes(extension)) return 'presentation';
-      if (['mp3', 'wav', 'ogg', 'm4a'].includes(extension)) return 'audio';
-      if (['txt', 'csv', 'json'].includes(extension)) return 'text';
+  const getFileIcon = () => {
+    switch (fileCategory) {
+      case "image":
+        return <ImageIcon className="w-4 h-4 text-blue-500" />;
+      case "pdf":
+        return <FileText className="w-4 h-4 text-rose-500" />;
+      case "document":
+        return <FileText className="w-4 h-4 text-indigo-500" />;
+      case "spreadsheet":
+        return <FileSpreadsheet className="w-4 h-4 text-emerald-500" />;
+      default:
+        return <File className="w-4 h-4 text-slate-500" />;
     }
-
-    return 'other';
   };
 
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
+    if (!bytes || bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   };
 
   const handlePreview = async () => {
-    if (file.file_type === 'image') {
+    if (fileCategory === "image") {
       setLoading(true);
       try {
         const response = await fetch(API_ENDPOINTS.FILES.GET(file.id), {
-          credentials: 'include'
+          credentials: "include",
         });
 
         if (response.ok) {
@@ -83,7 +83,7 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
           setShowPreview(true);
         }
       } catch (error) {
-        console.error('Error loading preview:', error);
+        console.error("Error loading preview:", error);
       } finally {
         setLoading(false);
       }
@@ -95,15 +95,15 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
     setDownloading(true);
     try {
       const response = await fetch(API_ENDPOINTS.FILES.GET(file.id), {
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        window.open(data.download_url, '_blank');
+        window.open(data.download_url, "_blank");
       }
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error("Error downloading file:", error);
     } finally {
       setDownloading(false);
     }
@@ -116,62 +116,62 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
   return (
     <>
-      <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 min-w-0">
-        <div className="w-10 h-10 flex items-center justify-center shrink-0">
-          {getFileIcon(getFileType(file.mime_type, file.original_filename))}
+      <div className="flex items-center gap-2.5 p-2 bg-slate-100/90 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/60 min-w-0 transition-colors">
+        <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 shadow-2xs border border-slate-200/60 dark:border-slate-800">
+          {getFileIcon()}
         </div>
+
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
             {file.original_filename}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {formatFileSize(file.file_size)} • {getFileType(file.mime_type, file.original_filename)}
+          <p className="text-[10px] text-slate-400 dark:text-slate-400">
+            {formatFileSize(file.file_size)} • {fileCategory.toUpperCase()}
           </p>
-          {/* Extracted text display - commented out
-           {file.extracted_text && (
-             <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
-               {file.extracted_text.substring(0, 100)}...
-             </p>
-           )}
-           */}
         </div>
-        <div className="flex items-center space-x-1 shrink-0">
-          {file.file_type === 'image' && (
+
+        <div className="flex items-center gap-1 shrink-0">
+          {fileCategory === "image" && (
             <button
+              type="button"
               onClick={handlePreview}
               disabled={loading}
-              className="p-1.5 text-gray-400 hover:text-blue-500 transition-colors"
-              title="Preview"
+              className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors"
+              title="Preview image"
               aria-label="Preview image"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <FaSpinner className="animate-spin text-xs text-blue-500" />
               ) : (
-                <FaEye className="text-sm" />
+                <Eye className="w-3.5 h-3.5" />
               )}
             </button>
           )}
+
           <button
+            type="button"
             onClick={handleDownload}
             disabled={downloading}
-            className="p-1.5 text-gray-400 hover:text-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Download"
+            className="p-1 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+            title="Download file"
             aria-label="Download file"
           >
             {downloading ? (
-              <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+              <FaSpinner className="animate-spin text-xs text-emerald-500" />
             ) : (
-              <FaDownload className="text-sm" />
+              <Download className="w-3.5 h-3.5" />
             )}
           </button>
+
           {showRemove && onRemove && (
             <button
+              type="button"
               onClick={() => onRemove(file.id)}
-              className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-              title="Remove"
+              className="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors"
+              title="Remove file"
               aria-label="Remove file"
             >
-              <FaTimes className="text-sm" />
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
@@ -179,21 +179,23 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
 
       {/* Image Preview Modal */}
       {showPreview && previewUrl && (
-        <div className="fixed inset-0 !m-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm" onClick={closePreview}>
-          {/* Close Button: Fixed to top right, stays on screen regardless of scroll */}
+        <div
+          className="fixed inset-0 z-[10050] flex items-center justify-center bg-slate-900/80 dark:bg-black/85 backdrop-blur-sm p-4"
+          onClick={closePreview}
+        >
           <button
+            type="button"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent trigger closePreview from the parent
+              e.stopPropagation();
               closePreview();
             }}
-            className="fixed top-6 right-6 z-[60] text-white hover:text-gray-300 transition-colors p-2 bg-black/20 rounded-full"
+            className="fixed top-5 right-5 z-[10060] text-white hover:text-slate-300 p-2 bg-slate-900/40 rounded-full backdrop-blur-md transition-colors"
             aria-label="Close preview"
           >
-            <FaTimes className="text-3xl" />
+            <X className="w-6 h-6" />
           </button>
 
-          {/* Scrollable Container: Takes full viewport, allows scrolling */}
-          <div className="w-full h-full overflow-auto flex items-start justify-center p-4">
+          <div className="max-w-4xl max-h-[90vh] overflow-auto flex items-center justify-center">
             <Image
               src={previewUrl}
               alt={file.original_filename}
@@ -201,9 +203,8 @@ const FileAttachment = ({ file, onRemove, showRemove = false }) => {
               height={900}
               loader={previewImageLoader}
               unoptimized
-              onClick={(e) => e.stopPropagation()} // Stop propagation so clicking the image doesn't close it
-              // w-auto h-auto maintains aspect ratio while allowing internal scroll
-              className="m-auto w-auto h-auto object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+              className="w-auto h-auto max-h-[85vh] object-contain rounded-xl shadow-2xl"
             />
           </div>
         </div>

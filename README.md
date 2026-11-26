@@ -132,13 +132,16 @@ A comprehensive one-stop platform for all your JEE preparation needs, featuring 
 
 ### 👨‍🏫 AI Tutor
 
-- Authentication via Google OAuth 2.0 with Go Backend Token Service
-- File upload and attachment support (images, documents, PDFs)
-- Markdown and LaTeX rendering for mathematical expressions with real-time partial chunk parsing
-- Chat history persistence backed by MongoDB
-- **Real-Time Token-by-Token SSE Streaming**: Low-latency token delivery powered by an unbuffered Next.js BFF proxy (`X-Accel-Buffering: no`, `Cache-Control: no-cache, no-transform`) piping chunks directly from the FastAPI microservice to client-side `TextDecoder` streams
-- **Instant Abort & Stop Generation**: Full `AbortController` cancellation support to halt generation on demand without orphaned states
-- **Multi-Model Fallback Resilience**: Seamless automatic fallback across Gemini tiers for uninterrupted tutor availability
+- **Authentic Dual-Mode Interface**: Expanded sidebar (`w-72 sm:w-80`) with real-time title search and inline rename/delete, collapsing to an icon rail (`w-16`) with hover tooltips on desktop, and a touch slideover drawer on mobile.
+- **Unified Shared Skeleton Engine**: Single-source-of-truth primitives (`ChatListSkeleton`, `MessageListSkeleton`) ensuring 100% pixel-perfect continuity and zero layout shift from cold-load wireframes (`AITutorSkeleton`) to live authenticated views.
+- **Realistic Alternating Conversational Rhythm**: User question and AI derivation card wireframes with equation sub-blocks repeated seamlessly using a 90% bottom fade mask (`linear-gradient(to_bottom, black 90%, transparent 100%)`).
+- **Zero-Flicker State Machine**: Route-derived state initialization (`useState(Boolean(urlChatId))`) and strict route guards eliminating landing page flashes when opening chat threads.
+- **Multimedia Drag-and-Drop & Clipboard Paste**: Full-window frosted glass drop zone (`DragDropOverlay`) with paste listener (`Ctrl + V`) for direct photo and screenshot problem uploads.
+- **Real-Time Token-by-Token SSE Streaming**: Low-latency token delivery powered by an unbuffered Next.js BFF proxy (`X-Accel-Buffering: no`, `Cache-Control: no-cache, no-transform`) piping chunks directly from the FastAPI microservice to client-side `TextDecoder` streams.
+- **Background Stream Persistence**: Continues generating and persisting completed answers on the backend even if a student navigates between chats.
+- **Instant Abort & Stop Generation**: Full `AbortController` cancellation support to halt generation on demand without orphaned states.
+- **LaTeX & Mathematical Formula Constraints**: Responsive KaTeX styling with horizontal overflow scroll for multi-step derivations.
+- **Technical Blueprint**: Comprehensive architecture documented in [docs/ai-tutor-master-spec.md](docs/ai-tutor-master-spec.md).
 
 
 ### 📊 Syllabus Tracker
@@ -315,7 +318,7 @@ jeechallenger-app/
 ├── app/                        # Next.js App Router routes
 │   ├── (about)/                # About pages (contact-us, donate, etc.)
 │   ├── (home)/                 # Homepage components, layout, and modular showcase
-│   │   └── components/feature-hub/ # Decoupled demo widgets (CBT, PYQ, AI Tutor, Syllabus, Resources, Official, Blogs) and mock data
+│   │   └── components/feature-hub/ # Decoupled demo widgets (AI Tutor, Blogs, CBT, Official, PYQ, Resources, Syllabus) and mock data
 │   ├── (legal)/                # Legal pages (privacy-policy, terms-of-service, etc.)
 │   ├── (official-links)/       # JEE Main and Advanced official resource portals
 │   ├── (pyqs)/                 # Previous Year Questions hub, /paper/[slug], /question/[slug]
@@ -324,7 +327,8 @@ jeechallenger-app/
 │   ├── (seo)/                  # Sitemap, RSS, and OpenGraph generators
 │   ├── (user)/                 # Login and candidate user profile dashboard
 │   ├── ai-tutor/               # AI Tutor chat interface and attachment uploaders
-│   │   ├── components/         # ChatMessageList, ChatInputArea, WelcomeScreen, ChatSidebar, AITutorNavbar
+│   │   ├── components/         # AITutorNavbar, AITutorSkeleton, ChatInputArea, ChatMessageList, ChatSidebar, DragDropOverlay, FileAttachment, WelcomeScreen
+│   │   │   └── skeletons/      # Shared skeleton primitives (ChatListSkeleton, MessageListSkeleton)
 │   │   └── utils/              # aiTutorUtils.js (date grouping, error normalization, dynamic placeholders)
 │   ├── api/                    # Backend-For-Frontend (BFF) API routes
 │   │   ├── ai/                 # Proxy to FastAPI AI Tutor microservice via aiService
@@ -338,7 +342,6 @@ jeechallenger-app/
 │   └── syllabus-tracker/       # Cloud-synced preparation tracking system
 │       └── components/         # SyllabusToolbar, SyllabusOverviewCard, SyllabusFilterBar, and progress cards
 ├── components/                 # Reusable React components
-│   ├── AuthProvider.jsx        # Native auth context provider & session consumer hooks
 │   ├── cbt/                    # CBT exam rooms, palettes, scorecards, and solution review
 │   │   └── hub/                # CBTHubComponent, CBTHubPerformanceStrip, and tabs/ (papers, attempts, vault)
 │   ├── common/                 # Shared components (Breadcrumbs, MarkdownMathRenderer, etc.)
@@ -348,11 +351,13 @@ jeechallenger-app/
 │   ├── resources/              # Formula sheets, unit converters, and PYQ components
 │   │   └── pyqs/               # PaperDetailComponent, PYQImageLightbox, and modular paper views
 │   │       └── paper-detail/   # PaperHeader, PaperNavigation, and PaperQuestionCard subcomponents
-│   └── ui/                     # Primitives (CustomSelect, BlogCard, etc.)
+│   ├── ui/                     # Primitives (CustomSelect, BlogCard, etc.)
+│   └── AuthProvider.jsx        # Native auth context provider & session consumer hooks
 ├── config/                     # Configuration files
 ├── data/                       # Static resource data and formula constants
 ├── docs/                       # Technical blueprints and specifications
 │   ├── assets/                 # Technical documentation diagrams and assets
+│   ├── ai-tutor-master-spec.md # AI Tutor Engine, shared skeletons & SSE streaming blueprint
 │   ├── blog-structure.md       # Blog system documentation
 │   ├── cbt-master-spec.md      # CBT Exam Simulator & 3-Tier State Machine master blueprint
 │   ├── color-system.md         # Design system colors

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "@/components/AuthProvider";
 import { FaSpinner, FaChevronDown } from "react-icons/fa";
@@ -9,6 +9,8 @@ import AITutorNavbar from "@/app/ai-tutor/components/AITutorNavbar";
 import ChatSidebar from "@/app/ai-tutor/components/ChatSidebar";
 import ChatMessageList from "@/app/ai-tutor/components/ChatMessageList";
 import ChatInputArea from "@/app/ai-tutor/components/ChatInputArea";
+import DragDropOverlay from "@/app/ai-tutor/components/DragDropOverlay";
+import AITutorSkeleton from "@/app/ai-tutor/components/AITutorSkeleton";
 import { API_ENDPOINTS } from "@/config/api-endpoints-config";
 import {
   DESKTOP_PLACEHOLDERS,
@@ -29,7 +31,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingChats, setIsLoadingChats] = useState(false);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(Boolean(urlChatId));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authError, setAuthError] = useState("");
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -38,6 +40,9 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const [abortController, setAbortController] = useState(null);
   const [placeholder, setPlaceholder] = useState("Ask me anything about JEE preparation...");
   const [showScrollBottom, setShowScrollBottom] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showFloatingDate, setShowFloatingDate] = useState(false);
+  const [floatingDateText, setFloatingDateText] = useState("");
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -45,6 +50,89 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   const inputRef = useRef(null);
   const lastLoadedChatIdRef = useRef(null);
   const initialChatIdRef = useRef(urlChatId);
+  const dragCounterRef = useRef(0);
+  const lastScrollTopRef = useRef(0);
+  const floatingDateTimeoutRef = useRef(null);
+  const isStreamingRef = useRef(false);
+  const isAutoScrollPausedRef = useRef(false);
+  const skipNextScrollToUserRef = useRef(false);
+
+  const focusInput = useCallback(() => {
+    const isMobileDevice =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 || ("ontouchstart" in window && window.innerWidth < 1024));
+    if (isMobileDevice) return;
+
+    inputRef.current?.focus();
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
+  // Clean up floating date timer on unmount
+  useEffect(() => {
+    return () => {
+      if (floatingDateTimeoutRef.current) {
+        clearTimeout(floatingDateTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Window-level drag event listeners to prevent accidental browser file-drop navigation and ensure clean reset
+  useEffect(() => {
+    const handleWindowDragOver = (e) => {
+      e.preventDefault();
+    };
+    const handleWindowDrop = (e) => {
+      e.preventDefault();
+      dragCounterRef.current = 0;
+      setIsDragging(false);
+    };
+    const handleWindowDragLeave = (e) => {
+      // If the drag leaves the browser window entirely
+      if (
+        !e.relatedTarget ||
+        e.clientX <= 0 ||
+        e.clientY <= 0 ||
+        e.clientX >= window.innerWidth ||
+        e.clientY >= window.innerHeight
+      ) {
+        dragCounterRef.current = 0;
+        setIsDragging(false);
+      }
+    };
+    const handleWindowDragEnd = () => {
+      dragCounterRef.current = 0;
+      setIsDragging(false);
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        dragCounterRef.current = 0;
+        setIsDragging(false);
+      }
+    };
+    const handleMouseUp = () => {
+      if (dragCounterRef.current > 0) {
+        dragCounterRef.current = 0;
+        setIsDragging(false);
+      }
+    };
+
+    window.addEventListener('dragover', handleWindowDragOver);
+    window.addEventListener('drop', handleWindowDrop);
+    window.addEventListener('dragleave', handleWindowDragLeave);
+    window.addEventListener('dragend', handleWindowDragEnd);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('dragover', handleWindowDragOver);
+      window.removeEventListener('drop', handleWindowDrop);
+      window.removeEventListener('dragleave', handleWindowDragLeave);
+      window.removeEventListener('dragend', handleWindowDragEnd);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   // --- START OF REACTIVE URL CLEANUP ---
   useEffect(() => {
@@ -134,6 +222,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
       setMessages([]);
       setAttachedFiles([]);
       lastLoadedChatIdRef.current = null;
+      setIsLoadingMessages(false);
+      focusInput();
       return;
     }
 
@@ -142,6 +232,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     if (lastLoadedChatIdRef.current === urlChatId) return;
 
     lastLoadedChatIdRef.current = urlChatId;
+    setIsLoadingMessages(true);
 
     // eslint-disable-next-line react-hooks/immutability
     loadChatMessages(urlChatId);
@@ -239,6 +330,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const loadChatMessages = async (chatId) => {
+    isStreamingRef.current = false;
+    isAutoScrollPausedRef.current = false;
     setIsLoadingMessages(true);
     try {
       const response = await fetch(`${API_ENDPOINTS.CHATS.MESSAGES(chatId)}?limit=50`, {
@@ -270,6 +363,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
   // Scroll to last user message so it sits at top of viewport (exact position as on mount)
   const scrollToLastUserMessage = (smooth = false) => {
+    // If on landing page (no messages), always keep the container pinned at the top
+    if (!messages || messages.length === 0) {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = 0;
+      }
+      return;
+    }
+
     let lastUserMsg = null;
     for (let i = messages.length - 1; i >= 0; i--) {
       if (messages[i].sender === "user") {
@@ -294,11 +395,64 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     const container = messagesContainerRef.current;
     if (!container || messages.length === 0) {
       setShowScrollBottom(false);
+      setShowFloatingDate(false);
       return;
     }
 
+    const currentScrollTop = container.scrollTop;
+    const scrollDelta = lastScrollTopRef.current - currentScrollTop;
+    const isScrollingUp = scrollDelta > 5;
+    const isScrollingDown = scrollDelta < -5;
+
+    // Ephemeral Floating Date Pill: Triggers strictly on SCROLL UP into history
+    if (isScrollingUp && currentScrollTop > 40 && sortedGroupEntries.length > 0) {
+      const containerRect = container.getBoundingClientRect();
+      let activeDate = sortedGroupEntries[0]?.[0] || "Today";
+
+      for (const [date] of sortedGroupEntries) {
+        const el = document.querySelector(`[data-date-group="${date}"]`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.bottom >= containerRect.top) {
+            activeDate = date;
+            break;
+          }
+        }
+      }
+
+      setFloatingDateText(activeDate);
+      setShowFloatingDate(true);
+
+      if (floatingDateTimeoutRef.current) {
+        clearTimeout(floatingDateTimeoutRef.current);
+      }
+      floatingDateTimeoutRef.current = setTimeout(() => {
+        setShowFloatingDate(false);
+      }, 1400);
+    } else if (isScrollingDown || currentScrollTop <= 20) {
+      if (floatingDateTimeoutRef.current) {
+        clearTimeout(floatingDateTimeoutRef.current);
+      }
+      setShowFloatingDate(false);
+    }
+
+    lastScrollTopRef.current = currentScrollTop;
+
     const containerRect = container.getBoundingClientRect();
     const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    // Smart Auto-Scroll Pause during active streaming:
+    if (isStreamingRef.current) {
+      if (distanceFromBottom > 80) {
+        // Student scrolled up to read earlier equations/steps - pause auto-scroll
+        isAutoScrollPausedRef.current = true;
+      } else if (distanceFromBottom <= 50) {
+        // Student scrolled back to the bottom - resume auto-scroll
+        isAutoScrollPausedRef.current = false;
+      }
+      setShowScrollBottom(isAutoScrollPausedRef.current);
+      return;
+    }
 
     // Condition 1: The response of the latest message is completely visible
     let isResponseFullyVisible = distanceFromBottom <= 60;
@@ -348,15 +502,34 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   }, [activeChatId]);
 
   useEffect(() => {
+    // If AI is actively streaming tokens, respect the student's scroll state
+    if (isStreamingRef.current) {
+      if (!isAutoScrollPausedRef.current) {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        } else {
+          messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+        }
+      }
+      return;
+    }
+
+    if (skipNextScrollToUserRef.current) {
+      skipNextScrollToUserRef.current = false;
+      return;
+    }
+
     scrollToLastUserMessage();
     setShowScrollBottom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
-  // Focus input on mount
+  // Focus input on mount or when returning to new chat landing view
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (!urlChatId) {
+      focusInput();
+    }
+  }, [urlChatId, focusInput]);
 
   // Update document title dynamically based on active chat and prevent Next.js from overwriting it
   useEffect(() => {
@@ -398,22 +571,14 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     return earliestA - earliestB;
   });
 
-  // Show loading state while NextAuth determines session status
+  // Show skeleton state while NextAuth determines session status
   if (status === "loading") {
-    return (
-      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
-        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
-      </div>
-    );
+    return <AITutorSkeleton />;
   }
 
-  // Show loading spinner while redirecting if unauthenticated
+  // Show skeleton while redirecting if unauthenticated
   if (status === "unauthenticated" || !session?.user) {
-    return (
-      <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black flex items-center justify-center">
-        <FaSpinner className="animate-spin text-blue-500 text-3xl" />
-      </div>
-    );
+    return <AITutorSkeleton />;
   }
 
   const handleDirectFileUpload = async (files) => {
@@ -502,6 +667,55 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current += 1;
+    const hasFiles = e.dataTransfer?.types ? Array.from(e.dataTransfer.types).includes("Files") : false;
+    if (hasFiles) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = "copy";
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current -= 1;
+
+    // Detect if the cursor truly left the target container bounds
+    const isOutsideContainer =
+      !e.relatedTarget ||
+      (e.currentTarget && !e.currentTarget.contains(e.relatedTarget)) ||
+      e.clientX <= 0 ||
+      e.clientY <= 0 ||
+      e.clientX >= window.innerWidth ||
+      e.clientY >= window.innerHeight;
+
+    if (dragCounterRef.current <= 0 || isOutsideContainer) {
+      dragCounterRef.current = 0;
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current = 0;
+    setIsDragging(false);
+
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+      handleDirectFileUpload(e.dataTransfer.files);
+    }
+  };
+
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading || status !== "authenticated") return;
 
@@ -516,6 +730,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
+    isAutoScrollPausedRef.current = false;
     if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
 
     const fileIds = attachedFiles.map((file) => file.id);
@@ -555,6 +770,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
 
       if (contentType.includes("text/event-stream")) {
         setIsStreaming(true);
+        isStreamingRef.current = true;
+        isAutoScrollPausedRef.current = false;
         tempAiId = `ai_temp_${crypto.randomUUID()}`;
         setMessages((prev) => [
           ...prev,
@@ -614,6 +831,7 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         }
 
         // Finalize message id with real ID from server
+        skipNextScrollToUserRef.current = true;
         const actualAiId = `ai_${finalMessageId || crypto.randomUUID()}`;
         setMessages((prev) =>
           prev.map((msg) =>
@@ -679,11 +897,13 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
           timestamp: new Date(),
         };
 
+        skipNextScrollToUserRef.current = true;
         setMessages((prev) => [...prev, aiMessage]);
         setAttachedFiles([]);
       }
     } catch (error) {
       if (error.name === 'AbortError' || error === 'User stopped generation') {
+        skipNextScrollToUserRef.current = true;
         const stopMessage = {
           id: crypto.randomUUID(),
           text: "Generation stopped.",
@@ -725,6 +945,8 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
     } finally {
       setIsLoading(false);
       setIsStreaming(false);
+      isStreamingRef.current = false;
+      isAutoScrollPausedRef.current = false;
     }
   };
 
@@ -742,9 +964,17 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   const handleNewChat = () => {
-    if (typeof window !== 'undefined' && window.innerWidth < 1024) setSidebarOpen(false);
-    router.push('/ai-tutor');
-    inputRef.current?.focus();
+    if (typeof window !== "undefined" && window.innerWidth < 1024) setSidebarOpen(false);
+    if (activeChatId) {
+      lastLoadedChatIdRef.current = null;
+      setActiveChatId(null);
+      setMessages([]);
+      setAttachedFiles([]);
+    }
+    setInputMessage("");
+    setAttachedFiles([]);
+    router.push("/ai-tutor");
+    focusInput();
   };
 
   const handleSelectChat = (chatId) => {
@@ -805,81 +1035,134 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
   };
 
   return (
-    <div className="fixed inset-0 h-[100dvh] bg-gray-50 dark:bg-black overflow-hidden">
-      <div className="w-full h-full flex flex-col">
-        <AITutorNavbar
+    <div
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className="fixed inset-0 h-[100dvh] bg-slate-50 dark:bg-[#0b101b] overflow-hidden flex flex-col"
+    >
+      {/* Mobile-only Top Bar: completely hidden on desktop (lg:hidden) */}
+      <AITutorNavbar
+        user={session.user}
+        onLogout={handleLogout}
+        onToggleSidebar={handleToggleSidebar}
+        onNewChat={handleNewChat}
+      />
+
+      {/* Main Container: Sidebar + Main Chat Viewport */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <ChatSidebar
+          chats={chats}
+          activeChatId={activeChatId}
+          isLoadingChats={isLoadingChats}
+          isOpen={sidebarOpen}
+          initialChatId={urlChatId}
+          onToggle={handleToggleSidebar}
+          onNewChat={handleNewChat}
+          onSelectChat={handleSelectChat}
+          onDeleteChat={handleDeleteChat}
+          onRenameChat={handleRenameChat}
           user={session.user}
           onLogout={handleLogout}
-          onToggleSidebar={handleToggleSidebar}
-          sidebarOpen={sidebarOpen}
         />
 
-        <div className="flex flex-1 min-h-0">
-          <ChatSidebar
-            chats={chats}
-            activeChatId={activeChatId}
-            isLoadingChats={isLoadingChats}
-            isOpen={sidebarOpen}
-            initialChatId={initialChatIdRef.current}
-            onToggle={handleToggleSidebar}
-            onNewChat={handleNewChat}
-            onSelectChat={handleSelectChat}
-            onDeleteChat={handleDeleteChat}
-            onRenameChat={handleRenameChat}
-          />
+        <main className="flex-1 flex flex-col min-w-0 min-h-0 h-full relative bg-slate-50/50 dark:bg-[#0b101b]">
+          {/* Drag & Drop Visual Overlay */}
+          {isDragging && (
+            <DragDropOverlay
+              onDismiss={() => {
+                dragCounterRef.current = 0;
+                setIsDragging(false);
+              }}
+            />
+          )}
 
-          <div className="flex-1 flex flex-col min-w-0 min-h-0">
-            {/* Messages Wrapper with Scroll-to-Bottom Button */}
-            <div className="relative flex-1 min-h-0 flex flex-col">
-              <ChatMessageList
-                messagesContainerRef={messagesContainerRef}
-                messagesEndRef={messagesEndRef}
-                onScroll={handleMessagesScroll}
-                isLoadingMessages={isLoadingMessages}
-                messageGroups={messageGroups}
-                sortedGroupEntries={sortedGroupEntries}
-                isLoading={isLoading}
-                isStreaming={isStreaming}
-                onSelectSuggestion={(suggestion) => setInputMessage(suggestion)}
-                onRetryMessage={(message) => {
-                  setMessages((prev) => prev.filter((m) => m.id !== message.id));
-                  setInputMessage(message.failedText);
-                  inputRef.current?.focus();
-                }}
-              />
-
-              {/* Floating Scroll to Latest Message Button */}
-              {showScrollBottom && (
-                <button
-                  onClick={() => scrollToLastUserMessage(true)}
-                  className="absolute bottom-4 right-5 sm:right-8 z-30 w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-lg shadow-blue-500/25 dark:shadow-purple-900/40 border border-white/25 hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center group cursor-pointer"
-                  aria-label="Scroll to latest message"
-                  title="Scroll to latest message"
-                >
-                  <FaChevronDown className="text-sm sm:text-base group-hover:translate-y-0.5 transition-transform duration-150" />
-                </button>
-              )}
+          {/* Messages Wrapper with Scroll-to-Bottom Button & Floating Date Pill */}
+          <div className="relative flex-1 min-h-0 flex flex-col overflow-hidden">
+            {/* Ephemeral Floating Date Pill (Scroll-Up Only) */}
+            <div
+              id="floating-date-pill"
+              className={`absolute top-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none transition-all duration-300 ease-out ${
+                showFloatingDate
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 -translate-y-2 scale-95"
+              }`}
+              aria-hidden={!showFloatingDate}
+            >
+              <div className="bg-slate-900/85 dark:bg-slate-800/90 text-white dark:text-slate-200 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-medium shadow-md border border-white/10 dark:border-slate-700/60 select-none">
+                {floatingDateText}
+              </div>
             </div>
 
-            {/* Input Area */}
-            <ChatInputArea
-              attachedFiles={attachedFiles}
-              removeAttachedFile={removeAttachedFile}
-              isUploading={isUploading}
-              uploadError={uploadError}
-              fileInputRef={fileInputRef}
-              inputRef={inputRef}
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              placeholder={placeholder}
-              handleKeyPress={handleKeyPress}
-              handleDirectFileUpload={handleDirectFileUpload}
+            <ChatMessageList
+              messagesContainerRef={messagesContainerRef}
+              messagesEndRef={messagesEndRef}
+              onScroll={handleMessagesScroll}
+              isLoadingMessages={isLoadingMessages}
+              messageGroups={messageGroups}
+              sortedGroupEntries={sortedGroupEntries}
               isLoading={isLoading}
-              abortController={abortController}
-              sendMessage={sendMessage}
+              isStreaming={isStreaming}
+              isChatPage={Boolean(activeChatId || urlChatId)}
+              onSelectSuggestion={(suggestion) => {
+                setInputMessage(suggestion);
+                inputRef.current?.focus();
+              }}
+              onRetryMessage={(message) => {
+                setMessages((prev) => prev.filter((m) => m.id !== message.id));
+                setInputMessage(message.failedText);
+                inputRef.current?.focus();
+              }}
             />
+
+            {/* Floating Scroll to Latest Message Button */}
+            {showScrollBottom && (
+              <button
+                type="button"
+                onClick={() => {
+                  isAutoScrollPausedRef.current = false;
+                  setShowScrollBottom(false);
+                  if (isStreamingRef.current) {
+                    if (messagesContainerRef.current) {
+                      messagesContainerRef.current.scrollTo({
+                        top: messagesContainerRef.current.scrollHeight,
+                        behavior: "smooth",
+                      });
+                    } else {
+                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  } else {
+                    scrollToLastUserMessage(true);
+                  }
+                }}
+                className="absolute bottom-4 right-5 sm:right-8 z-30 w-10 h-10 sm:w-11 sm:h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/25 border border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center group cursor-pointer"
+                aria-label="Scroll to latest message"
+                title="Scroll to latest message"
+              >
+                <FaChevronDown className="text-sm sm:text-base group-hover:translate-y-0.5 transition-transform duration-150" />
+              </button>
+            )}
           </div>
-        </div>
+
+          {/* Input Area */}
+          <ChatInputArea
+            attachedFiles={attachedFiles}
+            removeAttachedFile={removeAttachedFile}
+            isUploading={isUploading}
+            uploadError={uploadError}
+            fileInputRef={fileInputRef}
+            inputRef={inputRef}
+            inputMessage={inputMessage}
+            setInputMessage={setInputMessage}
+            placeholder={placeholder}
+            handleKeyPress={handleKeyPress}
+            handleDirectFileUpload={handleDirectFileUpload}
+            isLoading={isLoading}
+            abortController={abortController}
+            sendMessage={sendMessage}
+          />
+        </main>
       </div>
     </div>
   );
