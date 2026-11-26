@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { Monitor, ArrowLeft, BookOpen } from 'lucide-react';
 
@@ -12,17 +12,25 @@ function isMobileDevice() {
   );
 }
 
+function subscribeMobile(callback) {
+  window.addEventListener('resize', callback);
+  return () => window.removeEventListener('resize', callback);
+}
+
+function getSnapshot() {
+  return isMobileDevice();
+}
+
+function getServerSnapshot() {
+  return null;
+}
+
 export default function CBTMobileGuard({ children, paperSlug }) {
-  const [isMobile, setIsMobile] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeMobile, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    const mobile = isMobileDevice();
-    setIsMobile(mobile);
-    setChecked(true);
-
     // If mobile is detected, immediately release any active fullscreen lock
-    if (mobile && typeof document !== 'undefined') {
+    if (isMobile && typeof document !== 'undefined') {
       const isFs = document.fullscreenElement || document.webkitFullscreenElement;
       if (isFs) {
         if (document.exitFullscreen) {
@@ -32,10 +40,10 @@ export default function CBTMobileGuard({ children, paperSlug }) {
         }
       }
     }
-  }, []);
+  }, [isMobile]);
 
   // Avoid flash — render nothing until client check is done
-  if (!checked) return null;
+  if (isMobile === null) return null;
 
   if (!isMobile) return children;
 

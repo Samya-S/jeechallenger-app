@@ -46,7 +46,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
   const playlists = contextPlaylists || [];
 
   // Dynamic boundary-aware positioning with Floating UI
-  const { refs, floatingStyles, context, isPositioned } = useFloating({
+  const { refs: { setReference, setFloating }, floatingStyles, context, isPositioned } = useFloating({
     open: isOpen,
     onOpenChange: (open) => {
       if (open && status === "authenticated") {
@@ -228,7 +228,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
     <div className={`relative inline-block ${className}`}>
       <button
         type="button"
-        ref={refs.setReference}
+        ref={setReference}
         {...getReferenceProps({
           onClick: handleToggleOpen,
         })}
@@ -247,7 +247,7 @@ export default function QuestionBookmarkButton({ questionId, className = "" }) {
       {isOpen && (
         <FloatingPortal>
           <div
-            ref={refs.setFloating}
+            ref={setFloating}
             style={{
               ...floatingStyles,
               visibility: isPositioned ? "visible" : "hidden",

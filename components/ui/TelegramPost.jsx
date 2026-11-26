@@ -1,11 +1,29 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef, useId } from "react";
+import { useState, useEffect, useRef, useId, useSyncExternalStore } from "react";
 import { useTheme } from "@teispace/next-themes";
+
+function subscribeMediaQuery(callback) {
+  const mq = window.matchMedia("(max-width: 639px)");
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getMediaQuerySnapshot() {
+  return window.matchMedia("(max-width: 639px)").matches;
+}
+
+function getMediaQueryServerSnapshot() {
+  return false;
+}
 
 const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) => {
   const [status, setStatus] = useState("loading"); // "loading" | "ready" | "error"
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useSyncExternalStore(
+    subscribeMediaQuery,
+    getMediaQuerySnapshot,
+    getMediaQueryServerSnapshot
+  );
   const containerRef = useRef(null);
   // useId gives a collision-free, SSR-safe unique ID per instance
   const instanceId = useId();
@@ -13,14 +31,7 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
-  // Track whether we're below Tailwind's `sm` breakpoint (640px)
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    setIsMobile(mq.matches);
-    const handler = (e) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+
 
   // Theme configuration dictionary
   const themeConfig = {
@@ -81,12 +92,15 @@ const TelegramPost = ({ url, themeGradient = "from-blue-600 to-purple-600" }) =>
     script.onload = () => setStatus("ready");
     script.onerror = () => setStatus("error");
 
-    containerRef.current.appendChild(script);
+    const container = containerRef.current;
+    if (container) {
+      container.appendChild(script);
+    }
 
     // Cleanup: wipe the container (removes the injected iframe too) on unmount/url/theme change
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
+      if (container) {
+        container.innerHTML = "";
       }
     };
   }, [url, isDark, isMobile]);

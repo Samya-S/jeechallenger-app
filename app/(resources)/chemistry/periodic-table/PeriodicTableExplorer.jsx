@@ -85,11 +85,12 @@ export default function PeriodicTableExplorer() {
   const [heatmapMode, setHeatmapMode] = useState("category");
   const [isMobileListMode, setIsMobileListMode] = useState(false);
 
-  // Clear filters when heatmap mode changes
-  useEffect(() => {
+  // Handler to change heatmap mode and clear active filters
+  const handleHeatmapModeChange = (mode) => {
+    setHeatmapMode(mode);
     setActiveCategory(null);
     setActiveState(null);
-  }, [heatmapMode]);
+  };
 
   // Group elements into categories
   const elements = useMemo(() => PERIODIC_TABLE_DATA, []);
@@ -301,7 +302,7 @@ export default function PeriodicTableExplorer() {
             <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Color By:</span>
             <CustomDropdown
               value={heatmapMode}
-              onChange={setHeatmapMode}
+              onChange={handleHeatmapModeChange}
               options={HEATMAP_MODES}
             />
           </div>

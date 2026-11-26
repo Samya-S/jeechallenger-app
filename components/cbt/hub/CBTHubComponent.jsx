@@ -183,30 +183,35 @@ export default function CBTHubComponent({
   );
   const [vaultSubjectFilter, setVaultSubjectFilter] = useState('ALL');
   const [visibleVaultCount, setVisibleVaultCount] = useState(10);
-  const hasLoadedVaultRef = useRef(initialVaultItems.length > 0);
-  const vaultCount = hasLoadedVaultRef.current ? vaultItems.length : (initialVaultCount ?? 0);
+  const [hasLoadedVault, setHasLoadedVault] = useState(initialVaultItems.length > 0);
+  const vaultCount = hasLoadedVault ? vaultItems.length : (initialVaultCount ?? 0);
 
   // Lazy fetch mistake vault questions if directly navigating or active tab matches
   useEffect(() => {
-    if (activeTab === 'vault' && !hasLoadedVaultRef.current && !vaultLoading && user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setVaultLoading(true);
+    if (activeTab === 'vault' && !hasLoadedVault && user) {
+      let cancelled = false;
       fetch('/api/cbt/mistake-vault')
         .then((res) => res.json())
         .then((data) => {
+          if (cancelled) return;
           const items = data.items || [];
           setVaultItems(items);
-          hasLoadedVaultRef.current = true;
+          setHasLoadedVault(true);
           setVaultLoading(false);
         })
         .catch((err) => {
+          if (cancelled) return;
           console.error('Failed to load mistake vault questions:', err);
           setVaultItems([]);
-          hasLoadedVaultRef.current = true;
+          setHasLoadedVault(true);
           setVaultLoading(false);
         });
+
+      return () => {
+        cancelled = true;
+      };
     }
-  }, [activeTab, user, vaultLoading]);
+  }, [activeTab, user, hasLoadedVault]);
 
   // Filter vault items
   const filteredVaultItems = useMemo(() => {
@@ -256,20 +261,20 @@ export default function CBTHubComponent({
     setPage(1);
     if (tab === 'vault') {
       setVisibleVaultCount(10);
-      if (!hasLoadedVaultRef.current && user) {
+      if (!hasLoadedVault && user) {
         setVaultLoading(true);
         fetch('/api/cbt/mistake-vault')
           .then((res) => res.json())
           .then((data) => {
             const items = data.items || [];
             setVaultItems(items);
-            hasLoadedVaultRef.current = true;
+            setHasLoadedVault(true);
             setVaultLoading(false);
           })
           .catch((err) => {
             console.error('Failed to load mistake vault questions:', err);
             setVaultItems([]);
-            hasLoadedVaultRef.current = true;
+            setHasLoadedVault(true);
             setVaultLoading(false);
           });
       }

@@ -46,12 +46,14 @@ export default function QuestionDetailComponent({ question }) {
   const [checkedState, setCheckedState] = useState(null);
   const [isSolutionRevealed, setIsSolutionRevealed] = useState(isDirectSolutionView);
 
-  // Auto-reveal solution if accessed with ?view=solution without hijacking scroll
-  useEffect(() => {
+  // Auto-reveal solution if accessed with ?view=solution during render transition
+  const [prevDirectView, setPrevDirectView] = useState(isDirectSolutionView);
+  if (prevDirectView !== isDirectSolutionView) {
+    setPrevDirectView(isDirectSolutionView);
     if (isDirectSolutionView) {
       setIsSolutionRevealed(true);
     }
-  }, [isDirectSolutionView]);
+  }
 
   if (!question) {
     return (

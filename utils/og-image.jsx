@@ -55,6 +55,7 @@ export function OgImageLayout({
   badge = 'JEE Challenger',
   theme = 'brand',
   baseUrl = getSiteUrl(),
+  iconSrc,
 }) {
   const colors = OG_THEMES[theme] || OG_THEMES.brand;
   const displayTitle = truncate(title, 100);
@@ -151,7 +152,8 @@ export function OgImageLayout({
             }}
           >
             <img
-              src={`${baseUrl}/brand/jee-challenger-icon-512-rounded.png`}
+              src={iconSrc || `${baseUrl}/brand/jee-challenger-icon-512-rounded.png`}
+              alt="JEE Challenger Icon"
               width={56}
               height={56}
               style={{
@@ -268,15 +270,23 @@ function buildImageResponse(element, fontRegular, fontSemiBold, fontBold) {
 export async function createOgImageResponse({ title, subtitle, badge, theme = 'brand', baseUrl }) {
   const resolvedBaseUrl = resolveBaseUrl(baseUrl);
 
-  // Read the STATIC fonts directly from the file system
+  // Read the STATIC fonts and brand icon directly from the file system
   const fontRegularPath = path.join(process.cwd(), 'public', 'fonts', 'Jost', 'static', 'Jost-Regular.ttf');
   const fontSemiBoldPath = path.join(process.cwd(), 'public', 'fonts', 'Jost', 'static', 'Jost-SemiBold.ttf');
   const fontBoldPath = path.join(process.cwd(), 'public', 'fonts', 'Jost', 'static', 'Jost-Bold.ttf');
+  const brandIconPath = path.join(process.cwd(), 'public', 'brand', 'jee-challenger-icon-512-rounded.png');
   
-  // Read both files
-  const fontRegularData = await fs.readFile(fontRegularPath);
-  const fontSemiBoldData = await fs.readFile(fontSemiBoldPath);
-  const fontBoldData = await fs.readFile(fontBoldPath);
+  // Read files in parallel
+  const [fontRegularData, fontSemiBoldData, fontBoldData, brandIconData] = await Promise.all([
+    fs.readFile(fontRegularPath),
+    fs.readFile(fontSemiBoldPath),
+    fs.readFile(fontBoldPath),
+    fs.readFile(brandIconPath).catch(() => null),
+  ]);
+
+  const iconSrc = brandIconData
+    ? `data:image/png;base64,${brandIconData.toString('base64')}`
+    : `${resolvedBaseUrl}/brand/jee-challenger-icon-512-rounded.png`;
   
   return buildImageResponse(
     (
@@ -286,6 +296,7 @@ export async function createOgImageResponse({ title, subtitle, badge, theme = 'b
         badge={badge}
         theme={theme}
         baseUrl={resolvedBaseUrl}
+        iconSrc={iconSrc}
       />
     ),
     fontRegularData,

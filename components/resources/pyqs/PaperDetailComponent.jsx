@@ -41,8 +41,8 @@ function PaperDetailContent({ paperData }) {
     router.push(`/mock-test/${slug}`);
   };
 
-  const sections = paperData?.sections || [];
-  const allQuestions = paperData?.questions || [];
+  const sections = useMemo(() => paperData?.sections || [], [paperData?.sections]);
+  const allQuestions = useMemo(() => paperData?.questions || [], [paperData?.questions]);
 
   // Extract unique subjects from sections
   const subjects = useMemo(() => {

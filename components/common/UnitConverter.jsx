@@ -206,53 +206,54 @@ export default function UnitConverter({ subject = "physics" }) {
   }, [subjectConfig]);
 
   const [category, setCategory] = useState(categories[0] || "Length");
-  const [fromUnit, setFromUnit] = useState("");
-  const [toUnit, setToUnit] = useState("");
+  const initialUnits = CONVERSION_DATA[categories[0] || "Length"]?.units || {};
+  const [fromUnit, setFromUnit] = useState(Object.keys(initialUnits)[0] || "");
+  const [toUnit, setToUnit] = useState(Object.keys(initialUnits)[1] || Object.keys(initialUnits)[0] || "");
   const [inputValue, setInputValue] = useState("1");
-  const [outputValue, setOutputValue] = useState("");
 
-  // Sync category if current category isn't valid for this subject
-  useEffect(() => {
+  // Adjust category and units during render if subject changes to an incompatible category
+  const [prevCategories, setPrevCategories] = useState(categories);
+  if (prevCategories !== categories) {
+    setPrevCategories(categories);
     if (!categories.includes(category)) {
-      setCategory(categories[0] || "");
+      const fallbackCat = categories[0] || "";
+      setCategory(fallbackCat);
+      if (fallbackCat && CONVERSION_DATA[fallbackCat]) {
+        const u = Object.keys(CONVERSION_DATA[fallbackCat].units);
+        setFromUnit(u[0] || "");
+        setToUnit(u[1] || u[0] || "");
+      }
     }
-  }, [categories, category]);
+  }
 
-  // Update default units when category changes
-  useEffect(() => {
-    if (!category || !CONVERSION_DATA[category]) return;
-    const units = Object.keys(CONVERSION_DATA[category].units);
-    setFromUnit(units[0]);
-    setToUnit(units[1] || units[0]);
-  }, [category]);
+  const handleCategoryChange = (newCat) => {
+    setCategory(newCat);
+    if (newCat && CONVERSION_DATA[newCat]) {
+      const units = Object.keys(CONVERSION_DATA[newCat].units);
+      setFromUnit(units[0] || "");
+      setToUnit(units[1] || units[0] || "");
+    }
+  };
 
-  // Compute conversion
-  useEffect(() => {
+  // Pure derived conversion output
+  const outputValue = useMemo(() => {
     const val = parseFloat(inputValue);
-    if (isNaN(val)) {
-      setOutputValue("");
-      return;
-    }
-
-    if (!category || !CONVERSION_DATA[category]) return;
+    if (isNaN(val)) return "";
+    if (!category || !CONVERSION_DATA[category]) return "";
 
     const fromData = CONVERSION_DATA[category].units[fromUnit];
     const toData = CONVERSION_DATA[category].units[toUnit];
-
-    if (!fromData || !toData) {
-      setOutputValue("");
-      return;
-    }
+    if (!fromData || !toData) return "";
 
     const baseValue = (val + fromData.c) * fromData.m;
     const finalValue = baseValue / toData.m - toData.c;
 
     if (finalValue === 0) {
-      setOutputValue("0");
+      return "0";
     } else if (Math.abs(finalValue) < 1e-6 || Math.abs(finalValue) > 1e6) {
-      setOutputValue(finalValue.toExponential(4).replace(/\+/, ""));
+      return finalValue.toExponential(4).replace(/\+/, "");
     } else {
-      setOutputValue(parseFloat(finalValue.toPrecision(7)).toString());
+      return parseFloat(finalValue.toPrecision(7)).toString();
     }
   }, [inputValue, fromUnit, toUnit, category]);
 
@@ -301,7 +302,7 @@ export default function UnitConverter({ subject = "physics" }) {
               <button
                 key={cat}
                 type="button"
-                onClick={() => setCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                   category === cat
                     ? `${theme.bg} text-white shadow-md ${theme.shadow} scale-105`

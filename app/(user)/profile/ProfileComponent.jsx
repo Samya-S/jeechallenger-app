@@ -12,28 +12,20 @@ const profileImageLoader = ({ src }) => src;
 
 const ProfileContent = () => {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme, setTheme } = useTheme();
 
   const returnUrl = searchParams.get('returnUrl');
+  const user = session?.user || null;
+  const loading = status === "loading";
 
   useEffect(() => {
-    if (status === "loading") return;
-
     if (status === "unauthenticated") {
       const profilePath = `/profile${returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''}`;
       router.push(`/login?callbackUrl=${encodeURIComponent(profilePath)}`);
-      return;
     }
-
-    if (status === "authenticated") {
-      setUser(session.user);
-      setLoading(false);
-    }
-  }, [status, session, router, returnUrl]);
+  }, [status, router, returnUrl]);
 
   if (loading) {
     return (

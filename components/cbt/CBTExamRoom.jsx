@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useCBTStore } from './store/useCBTStore';
 import CBTHeader from './CBTHeader';
 import CBTSectionBar from './CBTSectionBar';
@@ -38,6 +38,8 @@ export default function CBTExamRoom({
   const [gatewayStage, setGatewayStage] = useState('CHECKING');
   const [isReady, setIsReady] = useState(false);
   const [isStartingSession, setIsStartingSession] = useState(false);
+  const handleConfirmTransferRef = useRef(null);
+  const handleReadyToBeginRef = useRef(null);
 
   const [isPaletteCollapsed, setIsPaletteCollapsed] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -235,7 +237,7 @@ export default function CBTExamRoom({
         cancelText: 'Cancel & Exit',
         onAction: () => {
           setNoticeModal((prev) => ({ ...prev, isOpen: false }));
-          handleConfirmTransfer();
+          handleConfirmTransferRef.current?.();
         },
         onClose: () => {
           setNoticeModal((prev) => ({ ...prev, isOpen: false }));
@@ -250,6 +252,7 @@ export default function CBTExamRoom({
       setIsTransferring(false);
     }
   }, [pendingTransferSession, paperData, questionsData, initSession]);
+
 
   // Handler: Cancel transfer and return to mock test catalog
   const handleCancelTransfer = useCallback(() => {
@@ -334,7 +337,7 @@ export default function CBTExamRoom({
           cancelText: 'Exit to Catalog',
           onAction: () => {
             setNoticeModal((prev) => ({ ...prev, isOpen: false }));
-            handleReadyToBegin(defaultLanguage);
+            handleReadyToBeginRef.current?.(defaultLanguage);
           },
           onClose: () => {
             setNoticeModal((prev) => ({ ...prev, isOpen: false }));
@@ -349,6 +352,12 @@ export default function CBTExamRoom({
     },
     [paperData, questionsData, initSession]
   );
+
+  useEffect(() => {
+    handleConfirmTransferRef.current = handleConfirmTransfer;
+    handleReadyToBeginRef.current = handleReadyToBegin;
+  }, [handleConfirmTransfer, handleReadyToBegin]);
+
 
   // 60-Second Cloud Heartbeat & 5-Second Local IndexedDB Time Guard (Protects Upstash Free Tier)
   useEffect(() => {

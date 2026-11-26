@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, ChevronRight, List } from 'lucide-react';
 import styles from './TableOfContents.module.css';
 
@@ -13,14 +13,14 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC,
   const closeTimeoutRef = useRef(null);
 
   // Smoothly close the bottom sheet with exit animation
-  const closeSheet = () => {
+  const closeSheet = useCallback(() => {
     if (isClosing) return;
     setIsClosing(true);
     closeTimeoutRef.current = setTimeout(() => {
       setIsSheetOpen(false);
       setIsClosing(false);
     }, 240); // Matches .animate-slide-down duration
-  };
+  }, [isClosing]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -72,7 +72,7 @@ export function MobileTOC({ tableOfContents, activeHeading, showTOC, setShowTOC,
       window.addEventListener('keydown', handleKeyDown);
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSheetOpen, isClosing]);
+  }, [isSheetOpen, closeSheet]);
 
   // Ensure active heading is visible inside bottom sheet when opened
   useEffect(() => {

@@ -1,15 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { X, ZoomIn, ZoomOut, RotateCcw, Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 
+const emptySubscribe = () => () => {};
+
 export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose }) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [imageStatus, setImageStatus] = useState("loading"); // "loading" | "loaded" | "error"
+
+  // Reset image status on src change during render
+  const [prevSrc, setPrevSrc] = useState(src);
+  if (prevSrc !== src) {
+    setPrevSrc(src);
+    setImageStatus("loading");
+  }
 
   const imageRef = useRef(null);
   const positionRef = useRef({ x: 0, y: 0 });
@@ -44,15 +53,8 @@ export default function PYQImageLightbox({ src, alt = "Zoomed Diagram", onClose 
     setPosition(clamped);
   }, [clampPosition, scale]);
 
-  // Reset image status on src change
+  // Mount only on client for Portal - lock body scrolling
   useEffect(() => {
-    setImageStatus("loading");
-  }, [src]);
-
-  // Mount only on client for Portal
-  useEffect(() => {
-    setMounted(true);
-    // Lock body scrolling
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 

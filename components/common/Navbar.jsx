@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -21,8 +21,10 @@ import NavbarItems from "./NavbarItems";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTheme } from "@teispace/next-themes";
 
+const emptySubscribe = () => () => {};
+
 export default function NavBar() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [activeDesktopDropdown, setActiveDesktopDropdown] = useState(null);
   const [mobileDropdownState, setMobileDropdownState] = useState({});
@@ -44,10 +46,14 @@ export default function NavBar() {
     ? (currentSearchParams ? `/login?${currentSearchParams}` : '/login')
     : `/login?callbackUrl=${encodedReturnUrl}`;
 
-  // Set mounted for client-side portals
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Close menus immediately on route change during render
+  const [prevRouteKey, setPrevRouteKey] = useState(fullCurrentPath);
+  if (prevRouteKey !== fullCurrentPath) {
+    setPrevRouteKey(fullCurrentPath);
+    setShowMobileNav(false);
+    setActiveDesktopDropdown(null);
+    setMobileDropdownState({});
+  }
 
   // Handle scroll effect
   useEffect(() => {
@@ -61,13 +67,6 @@ export default function NavBar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close menus on route change cleanly
-  useEffect(() => {
-    setShowMobileNav(false);
-    setActiveDesktopDropdown(null);
-    setMobileDropdownState({});
-  }, [pathname, searchParams]);
 
   // Handle escape key and click outside to close desktop dropdowns
   useEffect(() => {
