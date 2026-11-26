@@ -844,22 +844,25 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         if (!activeChatId && newChatId) {
           lastLoadedChatIdRef.current = newChatId;
           setActiveChatId(newChatId);
+          const nowIso = new Date().toISOString();
           setChats((prev) => [
             {
               id: newChatId,
               title: newChatTitle || "New Chat",
-              updated_at: new Date().toISOString(),
+              last_message_at: nowIso,
+              updated_at: nowIso,
             },
             ...prev.filter((c) => c.id !== newChatId),
           ]);
           router.replace(`/ai-tutor/chat/${newChatId}`);
         } else if (activeChatId) {
+          const nowIso = new Date().toISOString();
           setChats((prev) =>
             prev.map((c) =>
               c.id === activeChatId
-                ? { ...c, updated_at: new Date().toISOString() }
+                ? { ...c, last_message_at: nowIso, updated_at: nowIso }
                 : c
-            ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            ).sort((a, b) => new Date(b.last_message_at) - new Date(a.last_message_at))
           );
         }
 
@@ -871,22 +874,25 @@ const AITutorComponent = ({ chatId: urlChatId = null }) => {
         if (!activeChatId && data.chat_id) {
           lastLoadedChatIdRef.current = data.chat_id;
           setActiveChatId(data.chat_id);
+          const nowIso = new Date().toISOString();
           setChats((prev) => [
             {
               id: data.chat_id,
               title: data.chat_title || "New Chat",
-              updated_at: new Date().toISOString(),
+              last_message_at: nowIso,
+              updated_at: nowIso,
             },
             ...prev.filter((c) => c.id !== data.chat_id),
           ]);
           router.replace(`/ai-tutor/chat/${data.chat_id}`);
         } else if (activeChatId) {
+          const nowIso = new Date().toISOString();
           setChats((prev) =>
             prev.map((c) =>
               c.id === activeChatId
-                ? { ...c, updated_at: new Date().toISOString() }
+                ? { ...c, last_message_at: nowIso, updated_at: nowIso }
                 : c
-            ).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            ).sort((a, b) => new Date(b.last_message_at) - new Date(a.last_message_at))
           );
         }
 

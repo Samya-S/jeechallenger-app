@@ -310,7 +310,7 @@ const ChatSidebar = ({
     };
 
     filteredChats.forEach((chat) => {
-      const category = categorizeDate(chat.updated_at);
+      const category = categorizeDate(chat.last_message_at);
       if (groups[category]) {
         groups[category].push(chat);
       } else {
