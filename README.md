@@ -392,24 +392,22 @@ jeechallenger-app/
 
 ## All versions
 
-### jeechallenger v2.0
+### jeechallenger v2.0 (2025 – Present)
 
 Upgraded the vanilla JavaScript project to a modern `Next.js` application with many more features.
 
 > [!NOTE]
-> This is a major update and is managed in this repository.
+> This is a major update and is actively maintained in this repository.
 
-### jeechallenger v1.2
+---
 
-This is version 1.2, made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at [Samya-S/jeechallenger-v1.2](https://github.com/Samya-S/jeechallenger-v1.2) (archived).
+### Legacy v1 Architecture (2021 – 2025)
 
-### jeechallenger v1.1
+The original v1 foundation is preserved in the parent repository **[Samya-S/jeechallenger-v1](https://github.com/Samya-S/jeechallenger-v1)** (archived) across its historical branches. For convenience, each version branch is also mirrored as an independent standalone archived repository:
 
-This version includes `PHP`. The code is available at [Samya-S/jeechallenger-v1.1](https://github.com/Samya-S/jeechallenger-v1.1) (archived).
-
-### jeechallenger v1.0
-
-This version is made using `HTML`, `CSS` and vanilla `JavaScript`. The code is available at [Samya-S/jeechallenger-v1.0](https://github.com/Samya-S/jeechallenger-v1.0) (archived).
+* **jeechallenger v1.2:** Reverted from PHP back to clean `HTML`, `CSS`, and vanilla `JavaScript`. Available on the [`main` branch of Samya-S/jeechallenger-v1](https://github.com/Samya-S/jeechallenger-v1/tree/main) and mirrored at [Samya-S/jeechallenger-v1.2](https://github.com/Samya-S/jeechallenger-v1.2) (archived).
+* **jeechallenger v1.1:** Migrated frontend pages from static HTML to `PHP` for modular template includes (`header.php`, `footer.php`) and form handling. Available on the [`v1.1` branch of Samya-S/jeechallenger-v1](https://github.com/Samya-S/jeechallenger-v1/tree/v1.1) and mirrored at [Samya-S/jeechallenger-v1.1](https://github.com/Samya-S/jeechallenger-v1.1) (archived).
+* **jeechallenger v1.0:** The initial release built using `HTML`, `CSS`, and vanilla `JavaScript`. Available on the [`v1.0` branch of Samya-S/jeechallenger-v1](https://github.com/Samya-S/jeechallenger-v1/tree/v1.0) and mirrored at [Samya-S/jeechallenger-v1.0](https://github.com/Samya-S/jeechallenger-v1.0) (archived).
 
 
 ## Contributing
